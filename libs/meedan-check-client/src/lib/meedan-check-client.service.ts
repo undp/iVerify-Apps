@@ -4,9 +4,9 @@ import {map} from 'rxjs/operators'
 
 @Injectable()
 export class MeedanCheckClientService {
-    CHECK_API_URL = 'https://check-api.checkmedia.org/api/graphql';
-    CHECK_API_TOKEN = 'cc31334816968ec56d5c3709d574ac94';
-    CHECK_API_TEAM = 'undp'
+    CHECK_API_URL = process.env.CHECK_API_URL;
+    CHECK_API_TOKEN = process.env.CHECK_API_TOKEN;
+    CHECK_API_TEAM = process.env.CHECK_API_TEAM;
     headers = {
         'Content-Type': 'application/json', 
         'X-Check-Token': `${this.CHECK_API_TOKEN}`,
