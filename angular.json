@@ -265,6 +265,27 @@
           }
         }
       }
+    },
+    "meedan-check-client": {
+      "root": "libs/meedan-check-client",
+      "sourceRoot": "libs/meedan-check-client/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/meedan-check-client/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/meedan-check-client"],
+          "options": {
+            "jestConfig": "libs/meedan-check-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }
