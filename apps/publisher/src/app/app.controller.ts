@@ -1,11 +1,10 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { MeedanCheckClientService } from 'libs/meedan-check-client/src/lib/meedan-check-client.service';
 
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService, private checkClient: MeedanCheckClientService) {}
+  constructor(private readonly appService: AppService) {}
 
   @Get()
   getData() {
