@@ -6,10 +6,7 @@ import { switchMap } from 'rxjs/operators';
 @Injectable()
 export class AppService {
   constructor(private checkClient: MeedanCheckClientService){}
-  getData(): { message: string } {
-    return { message: 'Welcome to publisher!' };
-  }
-
+  
   publishReportById(id: string): Observable<any>{
     return this.checkClient.getReport(id);
     //future pipeline will be similar to:

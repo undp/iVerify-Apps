@@ -6,11 +6,6 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getData() {
-    return this.appService.getData();
-  }
-
   @Post('meedan-reports')
   publishMeedanReports(@Body() body){
     const id = body['id'];
