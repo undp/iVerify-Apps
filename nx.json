@@ -37,6 +37,9 @@
     },
     "meedan-check-client": {
       "tags": []
+    },
+    "wp-client": {
+      "tags": []
     }
   }
 }
