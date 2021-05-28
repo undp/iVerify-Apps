@@ -286,6 +286,27 @@
           }
         }
       }
+    },
+    "wp-client": {
+      "root": "libs/wp-client",
+      "sourceRoot": "libs/wp-client/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/wp-client/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/wp-client"],
+          "options": {
+            "jestConfig": "libs/wp-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }
