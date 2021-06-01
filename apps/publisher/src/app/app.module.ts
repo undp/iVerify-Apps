@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 
 
 import { AppController } from './app.controller';
@@ -9,6 +9,7 @@ import {WpClientModule} from '@iverify/wp-client';
 
 @Module({
   imports: [
+    HttpModule,
     MeedanCheckClientModule,
     WpClientModule
   ],

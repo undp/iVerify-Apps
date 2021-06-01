@@ -1,15 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { HttpService, Injectable } from '@nestjs/common';
 import { MeedanCheckClientService } from 'libs/meedan-check-client/src/lib/meedan-check-client.service';
 import { CreateCategoryDto } from 'libs/wp-client/src/lib/interfaces/create-category.dto';
 import { CommentStatus, CreatePostDto, PostFormat, PostStatus } from 'libs/wp-client/src/lib/interfaces/create-post.dto';
 import { CreateTagDto } from 'libs/wp-client/src/lib/interfaces/create-tag.dto';
 import { WpClientService } from 'libs/wp-client/src/lib/wp-client.service';
 import { combineLatest, from, iif, Observable, of } from 'rxjs';
-import { catchError, concatMap, map, scan, switchMap, tap } from 'rxjs/operators';
+import { catchError, concatMap, map, scan, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 
 @Injectable()
 export class AppService {
   constructor(
+    private http: HttpService,
     private checkClient: MeedanCheckClientService, 
     private wpClient: WpClientService
     ){}
@@ -24,14 +25,24 @@ export class AppService {
     //   map(report => report.categories),
     //   switchMap(categories => iif(() => !!categories && categories.length, this.categoriesIds(categories), of(null)))
     // )
-    const author$: Observable<number> = this.wpClient.getAppUser();
-    const post$: Observable<any> = combineLatest([report$, author$]).pipe(
-      map(([report, author]) => this.buildPostFromReport(report, author)),
-      switchMap(postDto => this.wpClient.publishPost(postDto))
+    const mediaId$: Observable<number> = report$.pipe(
+      map(report => report.annotation.data.options[0].image),
+      switchMap(url => this.http.get(url, {responseType: 'arraybuffer'})),
+      map(res => Buffer.from(res.data, 'binary')),
+      switchMap(data => this.wpClient.createMedia(data)),
+      map(res => res['id'])
     )
 
+    const author$: Observable<number> = this.wpClient.getAppUser().pipe(map(data => data.id));
+    const post$: Observable<any> = combineLatest([report$, author$, mediaId$]).pipe(
+      map(([report, author, media]) => this.buildPostFromReport(report, author, media)),
+      switchMap(postDto => this.wpClient.publishPost(postDto))
+      )   
 
-    return post$
+    return post$.pipe(catchError(err => {
+      console.log(err);
+      return err;
+    }))
 
   }
 
@@ -39,7 +50,8 @@ export class AppService {
     report: any, 
     // tags: number[], 
     // categories: number[], 
-    author: number): CreatePostDto{
+    author: number,
+    media: number): CreatePostDto{
     const status = PostStatus.publish;
     const comment_status = CommentStatus.open;
     const format = PostFormat.standard;
@@ -57,11 +69,12 @@ export class AppService {
       meta,
       comment_status,
       status,
+      featured_media: media
       // categories,
       // tags
     }
 
-    console.log('post: ', post)
+    console.log('POST OBJ: ', post)
 
     return post;
   }
