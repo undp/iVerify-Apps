@@ -20,13 +20,17 @@ export class WpClientService{
         );
     }
 
+    getPost(postId: number){
+        return this.http.get(this.config.endpoints.posts + '/' + postId).pipe(map(res => res.data));
+    }
+
     createTag(tag: CreateTagDto): Observable<any>{
         return this.http.post(this.config.endpoints.tags, tag, this.auth).pipe(
             map(res => res.data)
         );
     }
 
-    listTags(){
+    listTags(): Observable<any>{
         return this.http.get(this.config.endpoints.tags).pipe(map(res => res.data));
     }
 
@@ -42,10 +46,23 @@ export class WpClientService{
         );
     }
 
-    createMedia(media: CreateMediaDto){
-        return this.http.post(this.config.endpoints.media, media, this.auth).pipe(
-            map(res => res.data)
-        )
+    createMedia(image: any){
+        const headers = {
+            'Content-Disposition': 'attachment; filename="image.jpg"',
+            'Mime-Type': 'image/jpeg',
+            'Content-Type': 'multipart/image',
+            'Cache-Control': 'no-cache'
+        }
+        return this.http.post(this.config.endpoints.media, image, {...this.auth, ...{headers}}).pipe(
+            map(res => res.data),
+        catchError(err => {
+            console.log('ERROR: ', err);
+            return err;
+        }))
+    }
+
+    editMedia(mediaId: number, media: any){
+        return this.http.put(this.config.endpoints.media + '/' + mediaId, media, this.auth)
     }
 
     getAppUser(){
