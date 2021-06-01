@@ -15,13 +15,8 @@ export class WpClientService{
     private readonly auth = {auth: this.config.authParams};
 
     publishPost(post: CreatePostDto): Observable<any>{
-        console.log('endpoint: ', this.config.endpoints.posts)
         return this.http.post(this.config.endpoints.posts, post, this.auth).pipe(
-            map(res => res.data),
-            catchError(err => {
-                console.log(err);
-                return err;
-            })
+            map(res => res.data)
         );
     }
 
