@@ -24,16 +24,14 @@ export class AppService {
     //   map(report => report.categories),
     //   switchMap(categories => iif(() => !!categories && categories.length, this.categoriesIds(categories), of(null)))
     // )
-    const author$: Observable<number> = this.wpClient.getAppUser().pipe(map(user => user['id']), tap(author => console.log('author: ', author)));
+    const author$: Observable<number> = this.wpClient.getAppUser();
     const post$: Observable<any> = combineLatest([report$, author$]).pipe(
       map(([report, author]) => this.buildPostFromReport(report, author)),
       switchMap(postDto => this.wpClient.publishPost(postDto))
     )
 
-    // return this.wpClient.publishPost({title: 'test'}).pipe(catchError(err => err))
 
     return post$
-    // return this.wpClient.listTags();
 
   }
 
