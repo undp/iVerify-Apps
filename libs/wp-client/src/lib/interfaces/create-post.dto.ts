@@ -35,10 +35,10 @@ export interface CreatePostDto{
     slug?: string
     status?: PostStatus
     password?: string
-    title?: Object
-    content?: Object
-    autor?: number
-    excerpt?: Object
+    title?: string
+    content?: string
+    author?: number
+    excerpt?: string
     comment_status?: CommentStatus
     ping_status?: PingStatus
     format?: PostFormat
@@ -47,4 +47,5 @@ export interface CreatePostDto{
     template?: string
     categories?: number[]
     tags?: number[]
+    featured_media?: number
 }

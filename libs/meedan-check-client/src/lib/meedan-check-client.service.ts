@@ -21,6 +21,6 @@ export class MeedanCheckClientService {
       }
     }`
     const headers = this.config.headers;
-    return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(map(res => res.data));
+    return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(map(res => res.data.data.project_media));
   }
 }
