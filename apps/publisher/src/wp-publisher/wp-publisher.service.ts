@@ -4,8 +4,8 @@ import { CommentStatus, CreatePostDto, PostFormat, PostStatus } from "libs/wp-cl
 import { CreateTagDto } from "libs/wp-client/src/lib/interfaces/create-tag.dto";
 import { WpClientService } from "libs/wp-client/src/lib/wp-client.service";
 import { combineLatest, from, iif, Observable, of } from "rxjs";
-import { concatMap, map, scan, switchMap } from "rxjs/operators";
-import { SharedService } from "./shared.service";
+import { catchError, concatMap, map, scan, switchMap } from "rxjs/operators";
+import { SharedService } from "../shared/shared.service";
 
 @Injectable()
 export class WpPublisherService{
@@ -23,7 +23,7 @@ export class WpPublisherService{
         switchMap(url => this.http.get(url, {responseType: 'arraybuffer'})),
         map(res => Buffer.from(res.data, 'binary')),
         switchMap(data => this.wpClient.createMedia(data)),
-        map(res => res['id'])
+        map(res => res['id']),
       )
   
     private author$: Observable<number> = this.wpClient.getAppUser().pipe(map(data => data.id));
