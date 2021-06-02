@@ -5,16 +5,18 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import {MeedanCheckClientModule} from '@iverify/meedan-check-client';
 import {WpClientModule} from '@iverify/wp-client';
-import { SharedService } from './services/shared.service';
+import { SharedModule } from '../shared/shared.module';
+import { WpPublisherModule } from '../wp-publisher/wp-publisher.module';
 
 
 @Module({
   imports: [
-    HttpModule,
-    MeedanCheckClientModule,
-    WpClientModule
+    SharedModule,
+    WpPublisherModule
   ],
   controllers: [AppController],
-  providers: [AppService, SharedService],
+  providers: [
+    AppService, 
+  ],
 })
 export class AppModule {}

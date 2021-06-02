@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
+import { take } from 'rxjs/operators';
 
 import { AppService } from './app.service';
 
@@ -7,8 +8,13 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post('meedan-reports')
-  publishMeedanReports(@Body() body){
+  async publishMeedanReports(@Body() body){
     const id = body['id'];
-    return this.appService.publishReportById(id);    
+    this.appService.publishReportById(id).pipe(take(1)).subscribe()
+    try{
+      return await this.appService.publishReportById(id).toPromise();
+    }catch(e){
+
+    }
   }
 }

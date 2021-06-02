@@ -1,12 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { MeedanCheckClientService } from "libs/meedan-check-client/src/lib/meedan-check-client.service";
 import { Observable, Subject } from "rxjs";
-import { switchMap } from "rxjs/operators";
+import { shareReplay, switchMap, take } from "rxjs/operators";
 
 @Injectable()
 export class SharedService{
     private _reportId: Subject<string> = new Subject<string>();
-    report$: Observable<any> = this._reportId.pipe(switchMap(id => this.checkClient.getReport(id)))
+    private reportId$: Observable<string> = this._reportId.asObservable().pipe(take(1));
+    report$: Observable<any> = this.reportId$.pipe(
+        switchMap(id => this.checkClient.getReport(id)),   
+        shareReplay(1)     
+        )
     
     constructor(private checkClient: MeedanCheckClientService){}
     
