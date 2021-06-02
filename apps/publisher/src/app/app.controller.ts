@@ -14,7 +14,7 @@ export class AppController {
     try{
       return await this.appService.publishReportById(id).toPromise();
     }catch(e){
-
+      
     }
   }
 }
