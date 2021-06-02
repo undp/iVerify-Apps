@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpException, Post } from '@nestjs/common';
 import { take } from 'rxjs/operators';
 
 import { AppService } from './app.service';
@@ -10,11 +10,7 @@ export class AppController {
   @Post('meedan-reports')
   async publishMeedanReports(@Body() body){
     const id = body['id'];
-    this.appService.publishReportById(id).pipe(take(1)).subscribe()
-    try{
-      return await this.appService.publishReportById(id).toPromise();
-    }catch(e){
-      
-    }
+    this.appService.publishReportById(id).pipe(take(1)).subscribe();
+    return await this.appService.publishReportById(id).toPromise();
   }
 }
