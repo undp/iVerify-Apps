@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import {MeedanCheckClientModule} from '@iverify/meedan-check-client';
 import {WpClientModule} from '@iverify/wp-client';
+import { SharedService } from './services/shared.service';
 
 
 @Module({
@@ -14,6 +15,6 @@ import {WpClientModule} from '@iverify/wp-client';
     WpClientModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SharedService],
 })
 export class AppModule {}
