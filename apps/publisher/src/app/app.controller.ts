@@ -9,8 +9,13 @@ export class AppController {
 
   @Post('meedan-reports')
   async publishMeedanReports(@Body() body){
-    const id = body['id'];
-    this.appService.publishReportById(id).pipe(take(1)).subscribe();
-    return await this.appService.publishReportById(id).toPromise();
+    const event = body['event'];
+    const id = body.data.project_media.id;
+    if(event === 'published_report'){
+      this.appService.publishReportById(id).pipe(take(1)).subscribe();
+      return await this.appService.publishReportById(id).toPromise();
+    }else{
+      return null;
+    }
   }
 }
