@@ -11,7 +11,7 @@ export class AppController {
   async publishMeedanReports(@Body() body){
     const event = body['event'];
     const id = body.data.project_media.id;
-    if(event === 'published_report'){
+    if(event === 'publish_report'){
       this.appService.publishReportById(id).pipe(take(1)).subscribe();
       return await this.appService.publishReportById(id).toPromise();
     }else{
