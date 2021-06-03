@@ -158,6 +158,16 @@
       "sourceRoot": "apps/api/src",
       "projectType": "application",
       "architect": {
+        "deploy": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "nx build api",
+              "docker build -f ./apps/api/Dockerfile . -t api"
+            ],
+            "parallel": false
+          }
+        },
         "build": {
           "builder": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
@@ -165,7 +175,8 @@
             "outputPath": "dist/apps/api",
             "main": "apps/api/src/main.ts",
             "tsConfig": "apps/api/tsconfig.app.json",
-            "assets": ["apps/api/src/assets"]
+            "assets": ["apps/api/src/assets"],
+            "generatePackageJson": true
           },
           "configurations": {
             "production": {
@@ -221,6 +232,16 @@
       "sourceRoot": "apps/publisher/src",
       "projectType": "application",
       "architect": {
+        "deploy": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "nx build publisher",
+              "docker build -f ./apps/publisher/Dockerfile . -t publisher"
+            ],
+            "parallel": false
+          }
+        },
         "build": {
           "builder": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
@@ -228,7 +249,8 @@
             "outputPath": "dist/apps/publisher",
             "main": "apps/publisher/src/main.ts",
             "tsConfig": "apps/publisher/tsconfig.app.json",
-            "assets": ["apps/publisher/src/assets"]
+            "assets": ["apps/publisher/src/assets"],
+            "generatePackageJson": true
           },
           "configurations": {
             "production": {
