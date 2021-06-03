@@ -11,6 +11,7 @@ export class SharedService{
         switchMap(id => this.checkClient.getReport(id)),   
         shareReplay(1)     
         )
+    private sub = this.report$.subscribe();
     
     constructor(private checkClient: MeedanCheckClientService){}
     
