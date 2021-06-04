@@ -48,6 +48,7 @@
     "@nestjs/swagger": "^4.8.0",
     "@nrwl/angular": "12.3.4",
     "bcryptjs": "^2.4.3",
+    "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "mongoose": "^5.12.12",
     "passport": "^0.4.1",

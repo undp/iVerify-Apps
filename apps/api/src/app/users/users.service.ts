@@ -8,6 +8,7 @@ import { User } from './user.model';
 import { PaginationQueryDto } from './dto/paginationQuery.dto';
 import { DatabaseService } from '../services/database.service';
 import { userMessages } from '../../constant/messages';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Injectable()
 export class UsersService {
@@ -32,13 +33,14 @@ export class UsersService {
         return await this.userModel.findOne(options).select('+password').exec();
     }
 
-    async findById(ID: number): Promise<User> {
-        return await this.databaseService.findOne(this.userModel, {_id: ID});
+    async findById(ID: string): Promise<User> {
+        return await this.databaseService.findById(this.userModel, ID);
     }
 
-    async registerUser(user: CreateUserDto) {
+    async registerUser(user: CreateUserDto, userId: string) {
         
         user.password = await this.encryptPassword(user.password);
+        user['createdBy'] = userId;
         let userData = await  this.databaseService.create(this.userModel,user);
         if(userData) {
             delete userData.password;
@@ -48,16 +50,17 @@ export class UsersService {
         }
     }
     
-    async update(ID: number, newValue: User): Promise<User> {
-        const user = await this.userModel.findById(ID).exec();
+    async update(ID: string, newValue: UpdateUserDto, userId: string) {
+        const user = await this.databaseService.findById(this.userModel,ID);
         if (!user._id) {
             throw new NotFoundException(userMessages.userNotFound)
         } else {
-            return await this.userModel.findByIdAndUpdate(ID, newValue).exec();
+            newValue['updatedBy'] = userId
+            return await this.databaseService.findByIdAndUpdate(this.userModel, ID, newValue);
         }
     }
     
-    async deleteUser(ID: number): Promise<any> {
+    async deleteUser(ID: string): Promise<any> {
         return await this.databaseService.findByIdAndRemove(this.userModel, ID);
     }
 
