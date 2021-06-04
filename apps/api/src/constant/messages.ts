@@ -19,5 +19,8 @@ export const dbServiceMessages = {
     deleteError : "Error in deleting record",
     canNotDelete: "ERROR! You cannot delete this record",
     invalidRecordForDelete: "No valid record found to delete",
-    pageDataError: "Error in getting page data"
+    pageDataError: "Error in getting page data",
+    invalidId: "Invalid Id used",
+    invalidUpdateId: "Invalid Id used for update",
+    invalidDeleteId: "Invalid Id used for delete"
 }

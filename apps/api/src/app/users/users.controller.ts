@@ -1,4 +1,4 @@
-import { Controller, UseGuards, HttpStatus, Response, Get, Post, Body, BadRequestException, Query, NotFoundException } from '@nestjs/common';
+import { Controller, UseGuards, HttpStatus, Response, Get, Post, Body, BadRequestException, Query, NotFoundException, Put, Delete, BadGatewayException, Injectable, Scope, Inject } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/createUser.dto';
@@ -6,12 +6,20 @@ import { InfoLogger } from '../logger/info-logger.service';
 import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
 import { PaginationQueryDto } from './dto/paginationQuery.dto';
 import { userMessages } from '../../constant/messages';
+import { GetUserDto } from './dto/getUser.dto';
+import { UpdateUserDto } from './dto/updateUser.dto';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
+
 
 @ApiTags('users')
 @ApiBearerAuth()
 @Controller('users')
+@Injectable({ scope: Scope.REQUEST })
 export class UsersController {
-    constructor(private readonly usersService: UsersService, private rstLogger: InfoLogger) {
+    constructor(private readonly usersService: UsersService,
+        private rstLogger: InfoLogger,
+        @Inject(REQUEST) private readonly request: Request) {
         this.rstLogger.setContext('UserController');
     }
 
@@ -19,7 +27,8 @@ export class UsersController {
     //@UseGuards(JWTTokenAuthGuard)
     public async register(@Body() createUserDto: CreateUserDto) {
         let result: any;
-        result = await this.usersService.registerUser(createUserDto);
+        const userId = this.request.user && this.request.user['id'] ? this.request.user['id'] : null;
+        result = await this.usersService.registerUser(createUserDto, userId);
         if (!result) {
             this.rstLogger.error('User creation Failed');
             throw new BadRequestException();
@@ -33,5 +42,38 @@ export class UsersController {
         const result = await this.usersService.findAll(paginationQuery);
         if (!result) throw new NotFoundException(userMessages.userNotFound);
         return { data: result };
+    }
+
+
+    @Get('UserId')
+    @UseGuards(JWTTokenAuthGuard)
+    async getUser(@Query() getUser: GetUserDto) {
+        const user = await this.usersService.findById(getUser.userId);
+        if (!user) throw new NotFoundException(userMessages.userNotFound);
+        return { data: user };
+    }
+
+    @Put()
+    @UseGuards(JWTTokenAuthGuard)
+    async editUser(
+        @Query() user: GetUserDto,
+        @Body() editUserDto: UpdateUserDto
+    ) {
+        const userId = this.request.user['id'];
+        //if (userId && (userId == user.userId)) {
+        const editedUser = await this.usersService.update(user.userId, editUserDto, userId);
+        if (!editedUser) throw new BadGatewayException(userMessages.userUpdateFail);
+        return { message: userMessages.userUpdateSucess, data: editedUser };
+        /*} else {
+            throw new BadRequestException();
+        }*/
+    }
+
+    @Delete()
+    @UseGuards(JWTTokenAuthGuard)
+    async deleteUser(@Query() user: GetUserDto) {
+        const deletedUser = await this.usersService.deleteUser(user.userId);
+        if (!deletedUser) throw new BadGatewayException(userMessages.userDeleteFail);
+        return { message: userMessages.userDeleteSucess }
     }
 }

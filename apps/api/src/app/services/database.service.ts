@@ -2,6 +2,7 @@ import { Injectable, BadRequestException,NotFoundException, ConflictException } 
 import { InfoLogger } from '../logger/info-logger.service';
 import { dbServiceMessages } from '../../constant/messages';
 import { PaginationQueryDto } from '../users/dto/paginationQuery.dto';
+import { isValidObjectId } from 'mongoose';
 
 
 @Injectable()
@@ -25,25 +26,34 @@ export class DatabaseService {
         return await model.findOne(options).exec();
     }
 
-    async findByIdAndUpdate(model, ID: number, dto, relation = null) {
+    async findById(model, ID) {
+        if(!isValidObjectId(ID)) throw new BadRequestException(dbServiceMessages.invalidId)
+        return await model.findById(ID).exec();
+    }
+
+    async findByIdAndUpdate(model, ID: string, dto, relation = null) {
         try {
+            if(!isValidObjectId(ID)) throw new BadRequestException(dbServiceMessages.invalidUpdateId)
             const updateData = await model.findByIdAndUpdate(ID, dto);
             if (updateData) {
-                return await model.findOne({ id: ID }).exec();
+                return await model.findById(ID).exec();
             } else {
                 return false;
             }
         } catch (e) {
+            this.infoLogger.error("Error in update service: ", e);
             throw new BadRequestException(dbServiceMessages.updateError)
         }
     }
 
-    async findByIdAndRemove(model, ID: number) {
-        const findObj = await model.findOne({ id: ID }).exec();
+    async findByIdAndRemove(model, ID: string) {
+        if(!isValidObjectId(ID)) throw new BadRequestException(dbServiceMessages.invalidDeleteId)
+        const findObj = await model.findById(ID).exec();
         if (findObj) {
             try {
                 return await model.findByIdAndRemove(ID);
             } catch (e) {
+                this.infoLogger.error("Error in delete service: ", e);
                 throw new BadRequestException(dbServiceMessages.deleteError);
             }
         } else {
@@ -59,8 +69,6 @@ export class DatabaseService {
 
     public async paginate(model, paginationQuery: PaginationQueryDto) {
         const { limit, offset } = paginationQuery;
-        console.log(limit)
-        console.log(offset)
         try {
             return await model.find()
                 .skip(Number(offset))
