@@ -9,9 +9,10 @@ import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
 import { DatabaseService } from './services/database.service';
 import { AuthModule } from './auth/auth.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
-  imports: [MongooseModule.forRoot(environment.MongoDBConnection), AuthModule, UsersModule],
+  imports: [MongooseModule.forRoot(environment.MongoDBConnection), AuthModule, UsersModule, RolesModule],
   controllers: [AppController, UsersController],
   providers: [AppService, UsersService, DatabaseService],
 })

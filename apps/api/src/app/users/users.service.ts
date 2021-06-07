@@ -20,8 +20,8 @@ export class UsersService {
         this.infoLogger.setContext('UserServices');
     }
 
-    public async findAll(paginationQuery: PaginationQueryDto,): Promise<User[]> {    
-        return await this.databaseService.paginate(this.userModel,paginationQuery)
+    public async findAll(paginationQuery: PaginationQueryDto): Promise<User[]> {    
+        return await this.databaseService.paginate(this.userModel,paginationQuery, 'roles')
     }
 
     async findOne(options: object): Promise<User> {
@@ -34,13 +34,15 @@ export class UsersService {
     }
 
     async findById(ID: string): Promise<User> {
-        return await this.databaseService.findById(this.userModel, ID);
+        return await this.databaseService.findById(this.userModel, ID, 'roles');
     }
 
     async registerUser(user: CreateUserDto, userId: string) {
         
         user.password = await this.encryptPassword(user.password);
         user['createdBy'] = userId;
+        user['roles'] = user.roleId;
+        delete user.roleId;
         let userData = await  this.databaseService.create(this.userModel,user);
         if(userData) {
             delete userData.password;
