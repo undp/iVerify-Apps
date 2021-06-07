@@ -26,12 +26,14 @@ export class DatabaseService {
         return await model.findOne(options).exec();
     }
 
-    async findById(model, ID) {
+    async findById(model, ID, relationField='') {
         if(!isValidObjectId(ID)) throw new BadRequestException(dbServiceMessages.invalidId)
-        return await model.findById(ID).exec();
+        if(relationField)
+            return await model.findById(ID).populate(relationField).exec();
+        else return await model.findById(ID).exec();    
     }
 
-    async findByIdAndUpdate(model, ID: string, dto, relation = null) {
+    async findByIdAndUpdate(model, ID: string, dto) {
         try {
             if(!isValidObjectId(ID)) throw new BadRequestException(dbServiceMessages.invalidUpdateId)
             const updateData = await model.findByIdAndUpdate(ID, dto);
@@ -67,10 +69,11 @@ export class DatabaseService {
     }
 
 
-    public async paginate(model, paginationQuery: PaginationQueryDto) {
+    public async paginate(model, paginationQuery: PaginationQueryDto, relationField='') {
         const { limit, offset } = paginationQuery;
         try {
             return await model.find()
+                .populate(relationField)
                 .skip(Number(offset))
                 .limit(Number(limit))
                 .exec();

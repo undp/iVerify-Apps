@@ -24,3 +24,15 @@ export const dbServiceMessages = {
     invalidUpdateId: "Invalid Id used for update",
     invalidDeleteId: "Invalid Id used for delete"
 }
+
+
+export const roleMessages = {
+    roleCreateFail: "Role creation failed",
+    roleCreateSucess: "Role created successfully",
+    roleNotFound: "Role not found",
+    roleUpdateFail: "Role update failed",
+    roleUpdateSuccess: "Role updated successfully",
+    roleDeleteFail: "Role delete failed",
+    roleDeleteSucess: "Role deleted successfully",
+    duplicateRole: "Role Already exists"
+}

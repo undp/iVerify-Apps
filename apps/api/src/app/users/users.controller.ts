@@ -10,6 +10,7 @@ import { GetUserDto } from './dto/getUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+import { RolesGuard } from '../guards/roles.guard';
 
 
 @ApiTags('users')
@@ -37,7 +38,7 @@ export class UsersController {
     }
 
     @Get()
-    @UseGuards(JWTTokenAuthGuard)
+    @UseGuards(JWTTokenAuthGuard, RolesGuard)
     public async getUsers(@Query() paginationQuery: PaginationQueryDto) {
         const result = await this.usersService.findAll(paginationQuery);
         if (!result) throw new NotFoundException(userMessages.userNotFound);
@@ -46,7 +47,7 @@ export class UsersController {
 
 
     @Get('UserId')
-    @UseGuards(JWTTokenAuthGuard)
+    @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async getUser(@Query() getUser: GetUserDto) {
         const user = await this.usersService.findById(getUser.userId);
         if (!user) throw new NotFoundException(userMessages.userNotFound);
@@ -54,7 +55,7 @@ export class UsersController {
     }
 
     @Put()
-    @UseGuards(JWTTokenAuthGuard)
+    @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async editUser(
         @Query() user: GetUserDto,
         @Body() editUserDto: UpdateUserDto
@@ -70,7 +71,7 @@ export class UsersController {
     }
 
     @Delete()
-    @UseGuards(JWTTokenAuthGuard)
+    @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async deleteUser(@Query() user: GetUserDto) {
         const deletedUser = await this.usersService.deleteUser(user.userId);
         if (!deletedUser) throw new BadGatewayException(userMessages.userDeleteFail);

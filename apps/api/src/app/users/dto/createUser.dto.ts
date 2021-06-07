@@ -1,5 +1,7 @@
+import { Type } from '@nestjs/common';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Schema as mongooseSchema } from 'mongoose';
 
 
 export class CreateUserDto {
@@ -29,4 +31,9 @@ export class CreateUserDto {
     @ApiProperty()
     @IsNotEmpty()
     password: string;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    roleId: mongooseSchema.Types.ObjectId;
 }
+
