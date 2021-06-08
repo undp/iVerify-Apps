@@ -8,7 +8,8 @@ export class CheckClientConfig{
     readonly headers = {
         'Content-Type': 'application/json', 
         'X-Check-Token': `${this.checkApiToken}`,
-        'X-Check-Team': `${this.checkApiTeam}`
+        'X-Check-Team': `${this.checkApiTeam}`,
+        'Cache-Control': 'no-cache'
     };
 
 }
