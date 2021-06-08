@@ -10,11 +10,11 @@ export class WpPublisherHelper{
     }
 
     extractTags(report: any): string[]{
-      return ['Covid-19', 'Elections']
-      // return report.tags.edges.reduce((acc, val) => {
-      //     acc = [...acc, val.node.tag_text]
-      //     return acc;
-      // }, []);
+      // return ['Covid-19', 'Elections']
+      return report.tags.edges.reduce((acc, val) => {
+          acc = [...acc, val.node.tag_text]
+          return acc;
+      }, []);
 
     }
 
@@ -57,8 +57,8 @@ export class WpPublisherHelper{
     extractTask(report: any, label){
       const edges = report.tasks.edges;
       if(!edges.length) return '';
-      const node =  report.tasks.edges.find(node => node.node.label === label);
-      const res = node && node.first_response_value ? node.first_response_value : '';
+      const node =  edges.find(node => node.node.label === label);
+      const res = node && node.node.first_response_value ? node.node.first_response_value : '';
       return res;
     }
 
