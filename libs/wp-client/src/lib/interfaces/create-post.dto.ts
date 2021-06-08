@@ -29,6 +29,20 @@ export enum PostFormat{
     audio = 'audio'
 }
 
+export interface PostFields{
+    claim: string
+    rating_justification: string
+    evidence_and_references: string
+    check_id: number
+    factchecking_status: string
+}
+
+export enum TasksLabels{
+    claim = 'Claim',
+    rating_justification = 'Rating Justification',
+    evidences_and_references = 'Evidences and References'
+}
+
 export interface CreatePostDto{
     date?: string
     date_gmt?: string
@@ -42,10 +56,10 @@ export interface CreatePostDto{
     comment_status?: CommentStatus
     ping_status?: PingStatus
     format?: PostFormat
-    meta?: Object
     sticky?: boolean
     template?: string
     categories?: number[]
     tags?: number[]
     featured_media?: number
+    fields?: PostFields
 }
