@@ -1,4 +1,4 @@
-import { HttpService, Injectable } from "@nestjs/common";
+import { HttpException, HttpService, Injectable } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { WpConfig } from "./config";
@@ -16,33 +16,55 @@ export class WpClientService{
 
     publishPost(post: CreatePostDto): Observable<any>{
         return this.http.post(this.config.endpoints.posts, post, this.auth).pipe(
-            map(res => res.data)
+            map(res => res.data),
+            catchError(err => {
+                throw new HttpException(err.message, 500);
+              })
         );
     }
 
     getPost(postId: number){
-        return this.http.get(this.config.endpoints.posts + '/' + postId).pipe(map(res => res.data));
+        return this.http.get(this.config.endpoints.posts + '/' + postId).pipe(
+            map(res => res.data),
+            catchError(err => {
+                throw new HttpException(err.message, 500);
+              })
+        );
     }
 
     createTag(tag: CreateTagDto): Observable<any>{
         return this.http.post(this.config.endpoints.tags, tag, this.auth).pipe(
-            map(res => res.data)
+            map(res => res.data),
+            catchError(err => {
+                throw new HttpException(err.message, 500);
+              })
         );
     }
 
     listTags(): Observable<any>{
-        return this.http.get(this.config.endpoints.tags).pipe(map(res => res.data));
+        return this.http.get(this.config.endpoints.tags).pipe(
+            map(res => res.data),
+            catchError(err => {
+                throw new HttpException(err.message, 500);
+              })
+            );
     }
 
     createCategory(category: CreateCategoryDto): Observable<any>{
         return this.http.post(this.config.endpoints.categories, category, this.auth).pipe(
-            map(res => res.data)
+            map(res => res.data),
+            catchError(err => {
+                throw new HttpException(err.message, 500);
+              })
         );
     }
 
     listCategories(): Observable<any>{
         return this.http.get(this.config.endpoints.categories, this.auth).pipe(
-            map(res => res.data)
+            map(res => res.data),
+            catchError(err => {
+                throw new HttpException(err.message, 500);
+              })
         );
     }
 
@@ -55,10 +77,10 @@ export class WpClientService{
         }
         return this.http.post(this.config.endpoints.media, image, {...this.auth, ...{headers}}).pipe(
             map(res => res.data),
-        catchError(err => {
-            console.log('ERROR: ', err);
-            return err;
-        }))
+            catchError(err => {
+                throw new HttpException(err.message, 500);
+              })
+        )
     }
 
     editMedia(mediaId: number, media: any){
@@ -67,7 +89,10 @@ export class WpClientService{
 
     getAppUser(){
         return this.http.get(this.config.endpoints.currentUser, this.auth).pipe(
-            map(res => res.data)
+            map(res => res.data),
+            catchError(err => {
+                throw new HttpException(err.message, 500);
+              })
         )
     }
 

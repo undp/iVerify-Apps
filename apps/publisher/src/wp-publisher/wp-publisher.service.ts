@@ -1,74 +1,65 @@
-import { HttpService, Injectable } from "@nestjs/common";
+import { HttpException, HttpService, Injectable } from "@nestjs/common";
 import { CreateCategoryDto } from "libs/wp-client/src/lib/interfaces/create-category.dto";
 import { CommentStatus, CreatePostDto, PostFormat, PostStatus } from "libs/wp-client/src/lib/interfaces/create-post.dto";
 import { CreateTagDto } from "libs/wp-client/src/lib/interfaces/create-tag.dto";
 import { WpClientService } from "libs/wp-client/src/lib/wp-client.service";
 import { combineLatest, from, iif, Observable, of } from "rxjs";
-import { catchError, concatMap, map, scan, switchMap } from "rxjs/operators";
+import { catchError, concatMap, map, scan, switchMap, tap } from "rxjs/operators";
 import { SharedService } from "../shared/shared.service";
+import { WpPublisherHelper } from "./wp-publisher-helper.service";
 
 @Injectable()
 export class WpPublisherService{
     private report$: Observable<any> = this.shared.report$;
-    // const tagsIds$: Observable<number[]> = report$.pipe(
-    //   map(report => report.tags),
-    //   switchMap(tags => iif(() => !!tags && tags.length, this.tagsIds(tags), of(null)))
-    // )
-    // const categoriesIds$: Observable<number[]> = report$.pipe(
-    //   map(report => report.categories),
-    //   switchMap(categories => iif(() => !!categories && categories.length, this.categoriesIds(categories), of(null)))
-    // )
+
+    categoriesIds$: Observable<number[]> = this.report$.pipe(
+      map(report => this.helper.extractFactcheckingStatus(report)),
+      switchMap(category => this.categoriesIds([category])),
+      catchError(err => {
+        throw new HttpException(err.message, 500);
+      })
+    )
+    
+    tagsIds$: Observable<number[]> = this.report$.pipe(
+      map(report => this.helper.extractTags(report)),
+      switchMap(tags => iif(() => !!tags && !!tags.length, this.tagsIds(tags), of(null))),
+      catchError(err => {
+        throw new HttpException(err.message, 500);
+      })
+    )
+    
     private mediaId$: Observable<number> = this.report$.pipe(
-        map(report => report.annotation.data.options[0].image),
+        map(report => this.helper.extractMedia(report)),
         switchMap(url => this.http.get(url, {responseType: 'arraybuffer'})),
         map(res => Buffer.from(res.data, 'binary')),
         switchMap(data => this.wpClient.createMedia(data)),
         map(res => res['id']),
+        catchError(err => {
+          throw new HttpException(err.message, 500);
+        })
       )
   
-    private author$: Observable<number> = this.wpClient.getAppUser().pipe(map(data => data.id));
+    private author$: Observable<number> = this.wpClient.getAppUser().pipe(
+      map(user => user.id),
+      catchError(err => {
+        throw new HttpException(err.message, 500);
+      })
+    );
     
-    post$: Observable<any> = combineLatest([this.report$, this.author$, this.mediaId$]).pipe(
-        map(([report, author, media]) => this.buildPostFromReport(report, author, media)),
-        switchMap(postDto => this.wpClient.publishPost(postDto))
-        ) 
+    post$: Observable<any> = combineLatest([this.report$, this.author$, this.mediaId$, this.tagsIds$, this.categoriesIds$]).pipe(
+        map(([report, author, media, tags, categories]) => this.helper.buildPostFromReport(report, author, media, tags, categories)),
+        switchMap(postDto => this.wpClient.publishPost(postDto)),
+        catchError(err => {
+          throw new HttpException(err.message, 500);
+        })
+      ) 
 
     constructor(
         private http: HttpService,
         private shared: SharedService,
-        private wpClient: WpClientService
+        private wpClient: WpClientService,
+        private helper: WpPublisherHelper
     ){}
-
-    private buildPostFromReport(
-        report: any, 
-        // tags: number[], 
-        // categories: number[], 
-        author: number,
-        media: number): CreatePostDto{
-        const status = PostStatus.publish;
-        const comment_status = CommentStatus.open;
-        const format = PostFormat.standard;
-        const title = report.title;
-        const content = report.description;
-        const meta = {
-          check_report_id: report.annotation.id
-        }
-    
-        const post: CreatePostDto = {
-          format,
-          author,
-          title,
-          content,
-          meta,
-          comment_status,
-          status,
-          featured_media: media
-          // categories,
-          // tags
-        }
-
-        return post;
-      }
 
       private tagsIds(tags: string[]): Observable<number[]>{
         const wpTags$: Observable<any> = this.wpClient.listTags();
@@ -84,7 +75,10 @@ export class WpPublisherService{
           scan((acc, val) => [...acc, ...val], [])
         )
         const tagsIds$: Observable<number[]> = combineLatest([existingTagsIds$, newTagsIds$]).pipe(
-          map(([existingIds, newIds]) => [...existingIds, ...newIds])
+          map(([existingIds, newIds]) => [...existingIds, ...newIds]),
+          catchError(err => {
+            throw new HttpException(err.message, 500);
+          })
         )
     
         return tagsIds$;
