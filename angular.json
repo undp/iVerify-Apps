@@ -379,6 +379,27 @@
           }
         }
       }
+    },
+    "crowdtangle-client": {
+      "root": "libs/crowdtangle-client",
+      "sourceRoot": "libs/crowdtangle-client/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/crowdtangle-client/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/crowdtangle-client"],
+          "options": {
+            "jestConfig": "libs/crowdtangle-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }
