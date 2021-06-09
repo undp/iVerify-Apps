@@ -17,7 +17,8 @@
     "paths": {
       "@iverify/api-interfaces": ["libs/api-interfaces/src/index.ts"],
       "@iverify/meedan-check-client": ["libs/meedan-check-client/src/index.ts"],
-      "@iverify/wp-client": ["libs/wp-client/src/index.ts"]
+      "@iverify/wp-client": ["libs/wp-client/src/index.ts"],
+      "@iverify/crowdtangle-client": ["libs/crowdtangle-client/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
