@@ -329,6 +329,56 @@
           }
         }
       }
+    },
+    "triage": {
+      "root": "apps/triage",
+      "sourceRoot": "apps/triage/src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/triage",
+            "main": "apps/triage/src/main.ts",
+            "tsConfig": "apps/triage/tsconfig.app.json",
+            "assets": ["apps/triage/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/triage/src/environments/environment.ts",
+                  "with": "apps/triage/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "triage:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/triage/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/triage"],
+          "options": {
+            "jestConfig": "apps/triage/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }

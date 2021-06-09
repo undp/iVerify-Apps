@@ -40,6 +40,9 @@
     },
     "wp-client": {
       "tags": []
+    },
+    "triage": {
+      "tags": []
     }
   }
 }
