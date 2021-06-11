@@ -6,6 +6,6 @@ import { CheckClientConfig } from './config';
   controllers: [],
   providers: [MeedanCheckClientService, CheckClientConfig],
   imports: [HttpModule],
-  exports: [MeedanCheckClientService, ],
+  exports: [MeedanCheckClientService],
 })
 export class MeedanCheckClientModule {}

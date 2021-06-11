@@ -7,5 +7,6 @@ module.exports = {
     '<rootDir>/libs/wp-client',
     '<rootDir>/apps/triage',
     '<rootDir>/libs/crowdtangle-client',
+    '<rootDir>/libs/ml-service-client',
   ],
 };
