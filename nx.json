@@ -46,6 +46,9 @@
     },
     "crowdtangle-client": {
       "tags": []
+    },
+    "ml-service-client": {
+      "tags": []
     }
   }
 }

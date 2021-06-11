@@ -400,6 +400,27 @@
           }
         }
       }
+    },
+    "ml-service-client": {
+      "root": "libs/ml-service-client",
+      "sourceRoot": "libs/ml-service-client/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ml-service-client/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ml-service-client"],
+          "options": {
+            "jestConfig": "libs/ml-service-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }
