@@ -25,7 +25,7 @@ export class MeedanCheckClientService {
     );
   }
 
-  createItem(url: string, toxicityScores: ToxicityScores){
+  createItem(url: string, toxicityScores: ToxicityScores): Observable<any>{
     const folderId: number = +this.config.uploadFolderId;
     const set_tasks_responses: string = this.helper.buildTasksResponses(toxicityScores);
     const mutation: string = this.helper.buildCreateItemMutation(url, folderId, set_tasks_responses);
