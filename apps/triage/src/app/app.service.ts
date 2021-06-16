@@ -17,7 +17,9 @@ export class AppService {
   posts$: Observable<any> = this.listsIds$.pipe(
     switchMap(listsIds => from(listsIds)),
     concatMap(listId => this.ctClient.getPosts(listId.toString())),
+    tap(posts => console.log('posts: ', posts)),
     scan((acc, val) => [...acc, ...val], []),
+    tap(res => console.log('res: ', res)),
     catchError(err => {
       throw new HttpException(err.message, 500);
     })
@@ -30,6 +32,8 @@ export class AppService {
       return combineLatest([of(post) as Observable<Object>, toxicScores$])
     }),
     map(([post, toxicScores]) => {
+      console.log('Post id: ', post['id'])
+      console.log('Toxic score: ', toxicScores)
       return {...post, toxicScores}
     }),
     scan((acc, val) => {
@@ -57,7 +61,7 @@ export class AppService {
   private isToxic(post: any): Boolean{
     const toxicScores = post.toxicScores;
     return Object.keys(toxicScores).reduce((acc, val) => {
-      if(toxicScores[val] > 0.01) acc = true;
+      if(toxicScores[val] > 0.1) acc = true;
       return acc;
     }, false)
   }
