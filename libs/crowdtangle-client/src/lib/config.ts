@@ -9,6 +9,6 @@ export class CrowdtangleClientConfig{
         lists: `${this.apiBase}/lists`
     }
 
-    readonly apiKey = process.env.CT_API_KEY 
+    readonly apiKey = process.env.CT_API_KEY;
     
 }
