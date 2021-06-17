@@ -12,6 +12,6 @@ export class AppService {
   publishReportById(id: string){
     this.shared.updateReportId(id);
     return this.wpPublsher.post$;
-  }
+  } 
     
 }
