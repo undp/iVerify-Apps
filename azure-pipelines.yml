@@ -18,5 +18,6 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    npm install
     npx nx affected --target=deploy
   displayName: 'npm install and build'
