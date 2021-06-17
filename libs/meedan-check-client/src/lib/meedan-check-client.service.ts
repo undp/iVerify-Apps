@@ -28,10 +28,10 @@ export class MeedanCheckClientService {
   createItem(url: string, toxicityScores: ToxicityScores): Observable<any>{
     const folderId: number = +this.config.uploadFolderId;
     const set_tasks_responses: string = this.helper.buildTasksResponses(toxicityScores);
-    const mutation: string = this.helper.buildCreateItemMutation(url, folderId, set_tasks_responses);
+    const query: string = this.helper.buildCreateItemMutation(url, folderId, set_tasks_responses);
     const headers = this.config.headers;
-    return this.http.post(this.config.checkApiUrl, {mutation}, {headers}).pipe(
-      map(res => res.data.data.project_media),
+    return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
+      map(res => res.data.data),
       catchError(err => {
         throw new HttpException(err.message, 500);
       })

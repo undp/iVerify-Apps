@@ -1,8 +1,10 @@
 import { HttpException, HttpService, Injectable } from '@nestjs/common';
 import { CrowdtangleClientService } from 'libs/crowdtangle-client/src/lib/crowdtangle-client.service';
+import { MeedanCheckClientService, ToxicityScores } from '@iverify/meedan-check-client';
 import { MlServiceClientService } from 'libs/ml-service-client/src/lib/ml-service-client.service';
 import { combineLatest, from, Observable, of } from 'rxjs';
-import { catchError, concatMap, map, scan, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, scan, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
+import { TriageConfig } from './config';
 
 @Injectable()
 export class AppService {
@@ -34,21 +36,27 @@ export class AppService {
     map(([post, toxicScores]) => {
       console.log('Post id: ', post['id'])
       console.log('Toxic score: ', toxicScores)
-      return {...post, toxicScores}
+      return {post, toxicScores}
+    }),
+    filter(data => !!this.isToxic(data.toxicScores)),
+    concatMap(data => {
+      return this.checkClient.createItem(data.post['postUrl'], data.toxicScores);
     }),
     scan((acc, val) => {
-      if(this.isToxic(val)){
-        return [...acc, val]
-      } else {
-        return [...acc]
-      }
+      console.log('checkItem: ', val)
+      return [...acc, val]
     }, []),
     catchError(err => {
       throw new HttpException(err.message, 500);
     })
   )
 
-  constructor(private ctClient: CrowdtangleClientService, private mlClient: MlServiceClientService){}
+  constructor(
+    private ctClient: CrowdtangleClientService, 
+    private mlClient: MlServiceClientService,
+    private checkClient: MeedanCheckClientService,
+    private config: TriageConfig
+    ){}
   analyze() {
     return this.analyzedPosts$;
   }
@@ -58,10 +66,9 @@ export class AppService {
     return this.mlClient.analyze([message])
   }
 
-  private isToxic(post: any): Boolean{
-    const toxicScores = post.toxicScores;
+  private isToxic(toxicScores: ToxicityScores): Boolean{
     return Object.keys(toxicScores).reduce((acc, val) => {
-      if(toxicScores[val] > 0.1) acc = true;
+      if(toxicScores[val] > this.config.toxicTreshold) acc = true;
       return acc;
     }, false)
   }
