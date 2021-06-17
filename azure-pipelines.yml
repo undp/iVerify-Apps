@@ -19,5 +19,5 @@ steps:
 
 - script: |
     npm install
-    npx nx build --target=deploy
+    npx nx run publisher --target=deploy
   displayName: 'npm install and build'
