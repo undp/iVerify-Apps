@@ -38,12 +38,12 @@ export class CheckClientHelperService{
     }
     
     buildCreateItemMutation(url: string, folderId: number, set_tasks_responses: string): string{
-        return `mutation create {
+        const mutation = `mutation create{
             createProjectMedia(input: {
               project_id: ${folderId},
               url: "${url}",
               clientMutationId: "1",
-              set_tasks_responses: "${set_tasks_responses}"
+              set_tasks_responses: ${JSON.stringify(set_tasks_responses)}
             }) {
               project_media {
                 title
@@ -52,18 +52,20 @@ export class CheckClientHelperService{
               }
             }
           }`
+        console.log('mutation: ', mutation)
+        return mutation;
 
     }
 
     buildTasksResponses(toxicityScores: ToxicityScores){
-        return `{
-            \"toxic_score\": ${toxicityScores.toxicity}, 
-            \"severely_toxic_score\": ${toxicityScores.severe_toxicity}, 
-            \"obscene_score\": ${toxicityScores.obscene}, 
-            \"attack_on_identity_score\": ${toxicityScores.identity_attack}, 
-            \"insult_score\": ${toxicityScores.insult}, 
-            \"threat_score\": ${toxicityScores.threat}, 
-            \"sexually_explicit_score\": ${toxicityScores.sexual_explicit}
-        }`
+        return JSON.stringify({
+          toxic_score: toxicityScores.toxicity, 
+          severely_toxic_score: toxicityScores.severe_toxicity, 
+          obscene_score: toxicityScores.obscene, 
+          attack_on_identity_score: toxicityScores.identity_attack, 
+          insult_score: toxicityScores.insult, 
+          threat_score: toxicityScores.threat, 
+          sexually_explicit_score: toxicityScores.sexual_explicit
+        })
     }
 }
