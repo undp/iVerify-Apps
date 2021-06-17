@@ -2,6 +2,8 @@
 # Build a general Node.js project with npm.
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+# npm install
+# npm run build
 
 trigger:
 - master
@@ -16,6 +18,5 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    npm install
-    npm run build
+    npx nx affected --target=deploy
   displayName: 'npm install and build'
