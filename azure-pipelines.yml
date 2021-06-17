@@ -19,5 +19,5 @@ steps:
 
 - script: |
     npm install
-    npx nx affected --target=deploy
+    npx nx affected --target=deploy --base=master~1 --head=master --with-deps
   displayName: 'npm install and build'
