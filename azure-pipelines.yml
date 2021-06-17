@@ -6,7 +6,7 @@
 # npm run build
 
 trigger:
-- main
+- master
 
 pool:
   vmImage: ubuntu-latest
@@ -19,5 +19,5 @@ steps:
 
 - script: |
     npm install
-    npx nx affected --target=deploy
+    npx nx build --target=deploy
   displayName: 'npm install and build'
