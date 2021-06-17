@@ -6,7 +6,7 @@
 # npm run build
 
 trigger:
-- master
+- main
 
 pool:
   vmImage: ubuntu-latest
