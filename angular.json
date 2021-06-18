@@ -335,6 +335,16 @@
       "sourceRoot": "apps/triage/src",
       "projectType": "application",
       "architect": {
+        "deploy": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "nx build triage",
+              "docker build -f ./apps/triage/Dockerfile . -t triage"
+            ],
+            "parallel": false
+          }
+        },
         "build": {
           "builder": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
@@ -342,7 +352,8 @@
             "outputPath": "dist/apps/triage",
             "main": "apps/triage/src/main.ts",
             "tsConfig": "apps/triage/tsconfig.app.json",
-            "assets": ["apps/triage/src/assets"]
+            "assets": ["apps/triage/src/assets"],
+            "generatePackageJson": true
           },
           "configurations": {
             "production": {
