@@ -52,7 +52,6 @@ export class CheckClientHelperService{
               }
             }
           }`
-        console.log('mutation: ', mutation)
         return mutation;
 
     }
