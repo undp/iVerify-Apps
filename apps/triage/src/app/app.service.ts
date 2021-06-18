@@ -19,9 +19,7 @@ export class AppService {
   posts$: Observable<any> = this.listsIds$.pipe(
     switchMap(listsIds => from(listsIds)),
     concatMap(listId => this.ctClient.getPosts(listId.toString())),
-    tap(posts => console.log('posts: ', posts)),
     scan((acc, val) => [...acc, ...val], []),
-    tap(res => console.log('res: ', res)),
     catchError(err => {
       throw new HttpException(err.message, 500);
     })
@@ -39,6 +37,7 @@ export class AppService {
       return {post, toxicScores}
     }),
     filter(data => !!this.isToxic(data.toxicScores)),
+    tap(data => console.log('data to load on meedan: ', data)),
     concatMap(data => {
       return this.checkClient.createItem(data.post['postUrl'], data.toxicScores);
     }),
@@ -46,6 +45,7 @@ export class AppService {
       console.log('checkItem: ', val)
       return [...acc, val]
     }, []),
+    tap(result => console.log('reult...: ', result)),
     catchError(err => {
       throw new HttpException(err.message, 500);
     })

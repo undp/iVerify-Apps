@@ -31,9 +31,11 @@ export class MeedanCheckClientService {
     const query: string = this.helper.buildCreateItemMutation(url, folderId, set_tasks_responses);
     const headers = this.config.headers;
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
-      map(res => res.data.data),
+      map(res => res.data),
+      tap(response => console.log('response: ', response)),
       catchError(err => {
-        throw new HttpException(err.message, 500);
+        return of({data: err.message})
+        // throw new HttpException(err.message, 500);
       })
     );
   }
