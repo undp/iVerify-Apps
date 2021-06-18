@@ -34,7 +34,7 @@ export class MeedanCheckClientService {
       map(res => res.data),
       tap(response => console.log('response: ', response)),
       catchError(err => {
-        return of({data: err.message})
+        return of({error: err.message, url})
         // throw new HttpException(err.message, 500);
       })
     );
