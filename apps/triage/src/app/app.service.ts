@@ -2,12 +2,15 @@ import { HttpException, HttpService, Injectable } from '@nestjs/common';
 import { CrowdtangleClientService } from 'libs/crowdtangle-client/src/lib/crowdtangle-client.service';
 import { MeedanCheckClientService, ToxicityScores } from '@iverify/meedan-check-client';
 import { MlServiceClientService } from 'libs/ml-service-client/src/lib/ml-service-client.service';
-import { combineLatest, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, Observable, of } from 'rxjs';
 import { catchError, concatMap, filter, map, scan, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 import { TriageConfig } from './config';
 
 @Injectable()
 export class AppService {
+  offset = new BehaviorSubject<{offset: number, iterations: number}>({offset: 0, iterations: 0});
+  offset$ = this.offset.asObservable();
+  
   listsIds$: Observable<any> = this.ctClient.getLists().pipe(
     map(lists => lists.filter(list => list.type === 'SAVED_SEARCH')),
     map(lists => lists.map(list => list.id)),
@@ -18,8 +21,27 @@ export class AppService {
 
   posts$: Observable<any> = this.listsIds$.pipe(
     switchMap(listsIds => from(listsIds)),
-    concatMap(listId => this.ctClient.getPosts(listId.toString())),
+    concatMap(listId => combineLatest([of(listId), this.offset$])),
+    map(([listId, offset]) => ({listId, offset})),
+    tap(data => {
+      console.log('listid: ', data.listId);
+      console.log('offset: ', data.offset.offset);
+      console.log('iteration: ', data.offset.iterations)
+    }),
+    concatMap(data => this.ctClient.getPosts(data.listId.toString(), data.offset.offset)),
+    withLatestFrom(this.offset$),
+    map(([res, offset]) => ({res, offset})),
+    tap(data => {
+      if(!!data.res.pagination && !!data.res.pagination.nextPage) {
+        const iterations = data.offset.iterations + 1;
+        const offset = 10 * iterations;
+        this.offset.next({offset, iterations})
+      }
+      else this.offset.complete();
+    }),
+    map(data => data.res.posts),
     scan((acc, val) => [...acc, ...val], []),
+    tap(data => console.log('posts lenght: ', data.length)),
     catchError(err => {
       throw new HttpException(err.message, 500);
     })
@@ -37,15 +59,13 @@ export class AppService {
       return {post, toxicScores}
     }),
     filter(data => !!this.isToxic(data.toxicScores)),
-    tap(data => console.log('data to load on meedan: ', data)),
     concatMap(data => {
       return this.checkClient.createItem(data.post['postUrl'], data.toxicScores);
     }),
     scan((acc, val) => {
-      console.log('checkItem: ', val)
       return [...acc, val]
     }, []),
-    tap(result => console.log('reult...: ', result)),
+    tap(result => console.log('result length...: ', result.length)),
     catchError(err => {
       throw new HttpException(err.message, 500);
     })
