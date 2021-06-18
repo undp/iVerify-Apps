@@ -19,5 +19,5 @@ steps:
 
 - script: |
     npm install
-    npx nx run publisher --target=deploy
+    npx nx run-many --target=deploy --projects=publisher,api --parallel
   displayName: 'npm install and build'
