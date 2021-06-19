@@ -7,7 +7,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  testEndpoint(){
-    return this.appService.analyze()
+  async testEndpoint(){
+    return await this.appService.analyze()
   }
 }
