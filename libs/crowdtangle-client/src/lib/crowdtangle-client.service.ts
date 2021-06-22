@@ -1,6 +1,6 @@
 import { HttpException, HttpService, Injectable, Logger } from "@nestjs/common";
 import { CrowdtangleClientConfig } from "./config";
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, retry, tap } from 'rxjs/operators';
 
 @Injectable()
 export class CrowdtangleClientService{
@@ -12,6 +12,7 @@ export class CrowdtangleClientService{
         const params = {token: this.config.apiKey};
         return this.http.get(`${this.config.endpoints.lists}`, {params}).pipe(
             map(res => res.data.result.lists),
+            retry(3),
             catchError(err => {
                 this.logger.error(`Error fetching CrowdTangle lists: `, err.message);
                 throw new HttpException(err.message, 500);
@@ -23,6 +24,7 @@ export class CrowdtangleClientService{
         const params = {token: this.config.apiKey, count, offset, startDate, sortBy: 'date', endDate, listIds};
         return this.http.get(`${this.config.endpoints.posts}`, {params}).pipe(           
             map(res => res.data.result),
+            retry(3),
             catchError(err => {
                 this.logger.error(`Error fetching posts: `, err.message);
                 throw new HttpException(err.message, 500);
