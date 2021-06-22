@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get } from '@nestjs/common';
 
 import { AppService } from './app.service';
 
@@ -7,7 +7,9 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  async testEndpoint(){
-    return await this.appService.analyze()
+  async testEndpoint(@Body() body){
+    const startDate = body['startDate'];
+    const endDate = body['endDate']
+    return await this.appService.analyze(startDate, endDate)
   }
 }
