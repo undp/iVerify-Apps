@@ -57,7 +57,9 @@ export class AppService {
       this.logger.log(`Received ${res.posts.length} posts. Analyzing...`)
       let postsCount = 0;
       for(const post of res['posts']){
-        const text = post.message ? post.message : post.description ? post.description: '';
+        const postMessage = post.message ? post.message : '';
+        const postDescription = post.description ? post.description : '';
+        const text = `${postMessage}. ${postDescription}`;
         const toxicScores = await this.mlClient.analyze([text]).toPromise();
         const isToxic = this.isToxic(toxicScores);
         if(isToxic) posts.push({...post, toxicScores});
