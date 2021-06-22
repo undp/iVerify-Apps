@@ -61,7 +61,7 @@ export class AppService {
         const postDescription = post.description ? post.description : '';
         const text = `${postMessage}. ${postDescription}`;
         const toxicScores = await this.mlClient.analyze([text]).toPromise();
-        const isToxic = this.isToxic(toxicScores);
+        const isToxic = this.isToxic(toxicScores, post.postUrl, text.length);
         if(isToxic) posts.push({...post, toxicScores});
         postsCount++;
       }
@@ -81,9 +81,9 @@ export class AppService {
     }
   }
 
-  private isToxic(toxicScores: ToxicityScores): Boolean{
+  private isToxic(toxicScores: ToxicityScores, postUrl: string, textLength: number): Boolean{
     if(!toxicScores) {
-      this.logger.warn('Invalid toxicScores...')
+      this.logger.warn(`Invalid toxicScores for post ${postUrl} with text length ${textLength}, toxicScores: ${toxicScores}. Flagging post as non-toxic.`)
       return false
     }
     return Object.keys(toxicScores).reduce((acc, val) => {
