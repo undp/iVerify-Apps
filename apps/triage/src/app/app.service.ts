@@ -23,7 +23,7 @@ export class AppService {
       const listsIds = savedSearches.map(list => list.id);
       let toxicPosts = [];
       for(const listId of listsIds){
-        const pagination = {count: 100, offset: 0, iterations: 0};
+        const pagination = {count: 50, offset: 0, iterations: 0};
         const toxicPostsByList = await this.getToxicPostsByList(listId.toString(), pagination, startDate, endDate, []);
         toxicPosts = [...toxicPosts, ...toxicPostsByList]
       } 
@@ -47,11 +47,12 @@ export class AppService {
 
   private async getToxicPostsByList(listId: string, pagination: any, startDate: string, endDate: string, posts: any[]){
     try{
-      this.logger.log(`Fething posts with params: listId - ${listId}, 
-      count - ${pagination.count}, 
-      offset - ${pagination.offset}, 
-      startDate - ${startDate},
-      endDate - ${endDate}`)
+      this.logger.log(`Fething posts with params: 
+        listId - ${listId}, 
+        count - ${pagination.count}, 
+        offset - ${pagination.offset}, 
+        startDate - ${startDate},
+        endDate - ${endDate}`);
       const res = await this.ctClient.getPosts(listId, pagination.count, pagination.offset, startDate, endDate).toPromise();
       this.logger.log(`Received ${res.posts.length} posts. Analyzing...`)
       let postsCount = 0;
@@ -62,8 +63,8 @@ export class AppService {
         if(isToxic) posts.push({...post, toxicScores});
         postsCount++;
       }
-      const totalPostsAnalyzed = pagination.iteration * pagination.count + postsCount;
-      this.logger.log(`Analyzed ${totalPostsAnalyzed}, toxic so far: ${posts.length}`);
+      const totalPostsAnalyzed = pagination.iterations * pagination.count + postsCount;
+      this.logger.log(`Analyzed ${totalPostsAnalyzed} posts, toxic so far: ${posts.length}`);
       if(res['pagination'] && res.pagination['nextPage']){
         const iterations = pagination.iterations + 1;
         const offset = pagination.count * iterations;
