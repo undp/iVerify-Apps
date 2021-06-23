@@ -11,5 +11,6 @@ export class CheckClientConfig{
         'X-Check-Team': `${this.checkApiTeam}`,
         'Cache-Control': 'no-cache'
     };
+    readonly uploadFolderId = process.env.CHECK_FOLDER_ID;
 
 }

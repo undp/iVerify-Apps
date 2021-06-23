@@ -40,6 +40,15 @@
     },
     "wp-client": {
       "tags": []
+    },
+    "triage": {
+      "tags": []
+    },
+    "crowdtangle-client": {
+      "tags": []
+    },
+    "ml-service-client": {
+      "tags": []
     }
   }
 }

@@ -14,3 +14,9 @@ services:
             - '3333:3333'
         env_file: 
             - .env
+    triage:
+        image: triage
+        ports:
+            - '3335:3335'
+        env_file: 
+            - .env

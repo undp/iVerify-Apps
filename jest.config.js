@@ -5,5 +5,8 @@ module.exports = {
     '<rootDir>/apps/publisher',
     '<rootDir>/libs/meedan-check-client',
     '<rootDir>/libs/wp-client',
+    '<rootDir>/apps/triage',
+    '<rootDir>/libs/crowdtangle-client',
+    '<rootDir>/libs/ml-service-client',
   ],
 };
