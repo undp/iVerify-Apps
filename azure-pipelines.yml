@@ -19,6 +19,6 @@ steps:
 
 - script: |
     npm install
-    npx nx run-many --target=deploy --projects=publisher,api --parallel
-    docker-compose up
-  displayName: 'npm install and build'
+    npx nx run-many --target=deploy --projects=publisher,api,triage --parallel
+    docker-compose up -d
+  displayName: 'npm install and build, build and run docker containers'
