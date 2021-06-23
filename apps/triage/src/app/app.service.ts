@@ -23,7 +23,7 @@ export class AppService {
       const listsIds = savedSearches.map(list => list.id);
       let toxicPosts = [];
       for(const listId of listsIds){
-        const pagination = {count: 50, offset: 0, iterations: 0};
+        const pagination = {count: 100, offset: 0, iterations: 0};
         const toxicPostsByList = await this.getToxicPostsByList(listId.toString(), pagination, startDate, endDate, []);
         toxicPosts = [...toxicPosts, ...toxicPostsByList]
       } 
