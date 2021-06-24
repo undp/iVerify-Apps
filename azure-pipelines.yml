@@ -25,4 +25,4 @@ steps:
 - task: KubernetesManifest@0
   inputs:
     action: 'deploy'
-    kubernetesServiceConnection: 'Production-Python-undphq10aks001-default-1624539796417'
+    kubernetesServiceConnection: 'Production-JS-undphq10aks001-default-1624549054528'
