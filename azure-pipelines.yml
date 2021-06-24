@@ -22,3 +22,7 @@ steps:
     npx nx run-many --target=deploy --projects=publisher,api,triage --parallel
     docker-compose up -d
   displayName: 'npm install and build, build and run docker containers'
+- task: KubernetesManifest@0
+  inputs:
+    action: 'deploy'
+    kubernetesServiceConnection: 'Production-Python-undphq10aks001-default-1624539796417'
