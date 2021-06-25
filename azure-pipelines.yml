@@ -1,4 +1,5 @@
 # Node.js
+
 # Build a general Node.js project with npm.
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
@@ -29,3 +30,10 @@ steps:
     command: 
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
+- task: KubernetesManifest@0
+  inputs:
+    action: 'deploy'
+    kubernetesServiceConnection: 'Production-JS-undphq10aks001-default-1624549054528'
+    namespace: 'namaspace-ml-service'
+    manifests: 'deployment.yaml'
+    containers: 'ml-service'
