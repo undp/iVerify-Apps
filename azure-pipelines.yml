@@ -1,5 +1,5 @@
 variables:
-  - ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
+  - ${{ if eq(variables['Build.SourceBranchName'], 'docker-depoyment') }}: 
     - name: azureContainerRegistryName
       value: iverify
     - name: k8s_service_connection
@@ -15,31 +15,51 @@ steps:
       command: login
       containerRegistry: $(azureContainerRegistryName)
   - task: Docker@2
-    displayName: Build and Push
+    displayName: Build and Push iverify
     inputs:
       command: buildAndPush
       repository: $(dockerImage)-js
-      buildContext: $(Build.Repository.LocalPath)/apps/publisher
+      Dockerfile: apps/iverify/Dockerfile
+      tags: |
+        $(dockerImage)-iverify-$(Build.SourceVersion)
+  - task: Docker@2
+    displayName: Build and Push publisher
+    inputs:
+      command: buildAndPush
+      repository: $(dockerImage)-js
+      Dockerfile: apps/publisher/Dockerfile-prod
       tags: |
         $(dockerImage)-publisher-$(Build.SourceVersion)
   - task: Docker@2
-    displayName: Build and Push
+    displayName: Build and Push triage
     inputs:
       command: buildAndPush
       repository: $(dockerImage)-js
-      buildContext: $(Build.Repository.LocalPath)/apps/triage
+      Dockerfile: apps/triage/Dockerfile-prod
       tags: |
         $(dockerImage)-triage-$(Build.SourceVersion)
   - task: Docker@2
-    displayName: Build and Push
+    displayName: Build and Push API
     inputs:
       command: buildAndPush
       repository: $(dockerImage)-js
-      buildContext: $(Build.Repository.LocalPath)/apps/api
+      Dockerfile: apps/api/Dockerfile-prod
       tags: |
         $(dockerImage)-api-$(Build.SourceVersion)
   - task: HelmDeploy@0
-    displayName: Helm deploy
+    displayName: Helm deploy iverify
+    inputs:
+      connectionType: 'Kubernetes Service Connection'
+      kubernetesServiceEndpoint: $(k8s_service_connection)
+      namespace: $(dockerImage)-js
+      command: upgrade
+      arguments: -i --create-namespace --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-iverify-$(Build.SourceVersion)
+      chartType: 'FilePath'
+      releaseName: iverify
+      chartPath: deploy/app 
+      valueFile: $(value_file_url)/iverify-values.yaml
+  - task: HelmDeploy@0
+    displayName: Helm deploy publisher
     inputs:
       connectionType: 'Kubernetes Service Connection'
       kubernetesServiceEndpoint: $(k8s_service_connection)
@@ -51,7 +71,7 @@ steps:
       chartPath: deploy/app 
       valueFile: $(value_file_url)/publisher-values.yaml
   - task: HelmDeploy@0
-    displayName: Helm deploy
+    displayName: Helm deploy triage
     inputs:
       connectionType: 'Kubernetes Service Connection'
       kubernetesServiceEndpoint: $(k8s_service_connection)
@@ -63,7 +83,7 @@ steps:
       chartPath: deploy/app 
       valueFile: $(value_file_url)/triage-values.yaml
   - task: HelmDeploy@0
-    displayName: Helm deploy
+    displayName: Helm deploy api
     inputs:
       connectionType: 'Kubernetes Service Connection'
       kubernetesServiceEndpoint: $(k8s_service_connection)
