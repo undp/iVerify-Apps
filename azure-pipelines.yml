@@ -1,5 +1,6 @@
 variables:
   - ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
+    - group: iverify
     - name: azureContainerRegistryName
       value: iverify
     - name: k8s_service_connection
@@ -14,63 +15,96 @@ steps:
     inputs:
       command: login
       containerRegistry: $(azureContainerRegistryName)
+  #- task: Docker@2
+  #  displayName: Build and Push iverify
+  #  inputs:
+  #    command: buildAndPush
+  #    repository: $(dockerImage)-js
+  #    Dockerfile: apps/iverify/Dockerfile
+  #    buildContext: $(Build.Repository.LocalPath)
+  #    tags: |
+  #      $(dockerImage)-iverify-$(Build.SourceVersion)
   - task: Docker@2
-    displayName: Build and Push
+    displayName: Build and Push publisher
     inputs:
       command: buildAndPush
       repository: $(dockerImage)-js
-      buildContext: $(Build.Repository.LocalPath)/apps/publisher
+      Dockerfile: apps/publisher/Dockerfile-prod
+      buildContext: $(Build.Repository.LocalPath)
       tags: |
         $(dockerImage)-publisher-$(Build.SourceVersion)
   - task: Docker@2
-    displayName: Build and Push
+    displayName: Build and Push triage
     inputs:
       command: buildAndPush
       repository: $(dockerImage)-js
-      buildContext: $(Build.Repository.LocalPath)/apps/triage
+      Dockerfile: apps/triage/Dockerfile-prod
+      buildContext: $(Build.Repository.LocalPath)
       tags: |
         $(dockerImage)-triage-$(Build.SourceVersion)
-  - task: Docker@2
-    displayName: Build and Push
+  #- task: Docker@2
+  #  displayName: Build and Push API
+  #  inputs:
+  #    command: buildAndPush
+  #    repository: $(dockerImage)-js
+  #    Dockerfile: apps/api/Dockerfile-prod
+  #    buildContext: $(Build.Repository.LocalPath)
+  #    tags: |
+  #      $(dockerImage)-api-$(Build.SourceVersion)
+  #- task: HelmDeploy@0
+  #  displayName: Helm deploy iverify
+  #  inputs:
+  #    connectionType: 'Kubernetes Service Connection'
+  #    kubernetesServiceEndpoint: $(k8s_service_connection)
+  #    namespace: $(dockerImage)-js
+  #    command: upgrade
+  #    arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-iverify-$(Build.SourceVersion)
+  #    chartType: 'FilePath'
+  #    releaseName: iverify
+  #    chartPath: deploy/app 
+  #    valueFile: $(value_file_url)/iverify-values.yaml
+  - task: Kubernetes@1
+    displayName: Kube - Create iverify secret
     inputs:
-      command: buildAndPush
-      repository: $(dockerImage)-js
-      buildContext: $(Build.Repository.LocalPath)/apps/api
-      tags: |
-        $(dockerImage)-api-$(Build.SourceVersion)
+      connectionType: 'Kubernetes Service Connection'
+      kubernetesServiceEndpoint: $(k8s_service_connection)
+      namespace: $(dockerImage)-js
+      secretType: 'generic'
+      secretArguments: '--from-literal=CT_API_KEY=$(CT_API_KEY) --from-literal=CHECK_API_TOKEN=$(CHECK_API_TOKEN) --from-literal=WP_PASSWORD="$(WP_PASSWORD)""'
+      secretName: 'iverify'
   - task: HelmDeploy@0
-    displayName: Helm deploy
+    displayName: Helm deploy publisher
     inputs:
       connectionType: 'Kubernetes Service Connection'
       kubernetesServiceEndpoint: $(k8s_service_connection)
       namespace: $(dockerImage)-js
       command: upgrade
-      arguments: -i --create-namespace --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-publisher-$(Build.SourceVersion)
+      arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-publisher-$(Build.SourceVersion)
       chartType: 'FilePath'
       releaseName: publisher
       chartPath: deploy/app 
       valueFile: $(value_file_url)/publisher-values.yaml
   - task: HelmDeploy@0
-    displayName: Helm deploy
+    displayName: Helm deploy triage
     inputs:
       connectionType: 'Kubernetes Service Connection'
       kubernetesServiceEndpoint: $(k8s_service_connection)
       namespace: $(dockerImage)-js
       command: upgrade
-      arguments: -i --create-namespace --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-triage-$(Build.SourceVersion)
+      arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-triage-$(Build.SourceVersion)
       chartType: 'FilePath'
       releaseName: triage
       chartPath: deploy/app 
       valueFile: $(value_file_url)/triage-values.yaml
-  - task: HelmDeploy@0
-    displayName: Helm deploy
-    inputs:
-      connectionType: 'Kubernetes Service Connection'
-      kubernetesServiceEndpoint: $(k8s_service_connection)
-      namespace: $(dockerImage)-js
-      command: upgrade
-      arguments: -i --create-namespace --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-api-$(Build.SourceVersion)
-      chartType: 'FilePath'
-      releaseName: api
-      chartPath: deploy/app 
-      valueFile: $(value_file_url)/api-values.yaml
+  #- task: HelmDeploy@0
+  #  displayName: Helm deploy api
+  #  inputs:
+  #    connectionType: 'Kubernetes Service Connection'
+  #    kubernetesServiceEndpoint: $(k8s_service_connection)
+  #    namespace: $(dockerImage)-js
+  #    command: upgrade
+  #    arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-api-$(Build.SourceVersion)
+  #    chartType: 'FilePath'
+  #    releaseName: api
+  #    chartPath: deploy/app 
+  #    valueFile: $(value_file_url)/api-values.yaml

@@ -23,3 +23,19 @@ resources:
 
 app:
   containerPort: 3335
+
+env:
+  CHECK_API_URL: https://check-api.checkmedia.org/api/graphql
+  CHECK_API_TEAM: undp
+  CHECK_FOLDER_ID: "11058"
+  CT_API_URL: https://api.crowdtangle.com 
+  ML_SERVICE_API_BASE:  http://ml-service.iverify-python.svc.cluster.local
+  DETOXIFY_TRESHOLD: "0.6" 
+
+secret: 
+  - name: CT_API_KEY
+    secret_name: iverify
+    secret_key: CT_API_KEY
+  - name: CHECK_API_TOKEN
+    secret_name: iverify
+    secret_key: CHECK_API_TOKEN
