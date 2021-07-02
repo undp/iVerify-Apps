@@ -57,7 +57,7 @@ steps:
       kubernetesServiceEndpoint: $(k8s_service_connection)
       namespace: $(dockerImage)-js
       command: upgrade
-      arguments: -i --create-namespace --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-iverify-$(Build.SourceVersion)
+      arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-iverify-$(Build.SourceVersion)
       chartType: 'FilePath'
       releaseName: iverify
       chartPath: deploy/app 
@@ -69,7 +69,7 @@ steps:
       kubernetesServiceEndpoint: $(k8s_service_connection)
       namespace: $(dockerImage)-js
       command: upgrade
-      arguments: -i --create-namespace --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-publisher-$(Build.SourceVersion)
+      arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-publisher-$(Build.SourceVersion)
       chartType: 'FilePath'
       releaseName: publisher
       chartPath: deploy/app 
@@ -81,7 +81,7 @@ steps:
       kubernetesServiceEndpoint: $(k8s_service_connection)
       namespace: $(dockerImage)-js
       command: upgrade
-      arguments: -i --create-namespace --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-triage-$(Build.SourceVersion)
+      arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-triage-$(Build.SourceVersion)
       chartType: 'FilePath'
       releaseName: triage
       chartPath: deploy/app 
@@ -93,7 +93,7 @@ steps:
       kubernetesServiceEndpoint: $(k8s_service_connection)
       namespace: $(dockerImage)-js
       command: upgrade
-      arguments: -i --create-namespace --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-api-$(Build.SourceVersion)
+      arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-api-$(Build.SourceVersion)
       chartType: 'FilePath'
       releaseName: api
       chartPath: deploy/app 
