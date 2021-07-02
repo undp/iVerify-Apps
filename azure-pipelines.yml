@@ -1,32 +1,76 @@
-# Node.js
-
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-# npm install
-# npm run build
-
-trigger:
-- master
-
-pool:
-  vmImage: ubuntu-latest
-
+variables:
+  - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+    - name: azureContainerRegistryName
+      value: iverify
+    - name: k8s_service_connection
+      value: iverify-js
+    - name: dockerImage
+      value: iverify
+    - name: value_file_url
+      value: deploy/prod
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '12.x'
-  displayName: 'Install Node.js'
-
-- script: |
-    npm install
-    npx nx run-many --target=deploy --projects=publisher,api,triage --parallel
-    docker-compose up -d
-  displayName: 'npm install and build, build and run docker containers'
-- task: Kubernetes@1
-  inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'Production-JS-undphq10aks001-default-1624549054528'
-    command: 
-    secretType: 'dockerRegistry'
-    containerRegistryType: 'Azure Container Registry'
+  - task: Docker@2
+    displayName: Login to ACR
+    inputs:
+      command: login
+      containerRegistry: $(azureContainerRegistryName)
+  - task: Docker@2
+    displayName: Build and Push
+    inputs:
+      command: buildAndPush
+      repository: $(dockerImage)-js
+      buildContext: apps/publisher
+      tags: |
+        $(dockerImage)-publisher-$(Build.SourceVersion)
+  - task: Docker@2
+    displayName: Build and Push
+    inputs:
+      command: buildAndPush
+      repository: $(dockerImage)-js
+      buildContext: apps/triage
+      tags: |
+        $(dockerImage)-triage-$(Build.SourceVersion)
+  - task: Docker@2
+    displayName: Build and Push
+    inputs:
+      command: buildAndPush
+      repository: $(dockerImage)-js
+      buildContext: apps/api
+      tags: |
+        $(dockerImage)-api-$(Build.SourceVersion)
+  - task: HelmDeploy@0
+    displayName: Helm deploy
+    inputs:
+      connectionType: 'Kubernetes Service Connection'
+      kubernetesServiceEndpoint: $(k8s_service_connection)
+      namespace: $(dockerImage)-js
+      command: upgrade
+      arguments: -i --create-namespace --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-publisher-$(Build.SourceVersion)
+      chartType: 'FilePath'
+      releaseName: publisher
+      chartPath: deploy/app 
+      valueFile: $(value_file_url)/publisher-values.yaml
+  - task: HelmDeploy@0
+    displayName: Helm deploy
+    inputs:
+      connectionType: 'Kubernetes Service Connection'
+      kubernetesServiceEndpoint: $(k8s_service_connection)
+      namespace: $(dockerImage)-js
+      command: upgrade
+      arguments: -i --create-namespace --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-triage-$(Build.SourceVersion)
+      chartType: 'FilePath'
+      releaseName: triage
+      chartPath: deploy/app 
+      valueFile: $(value_file_url)/triage-values.yaml
+  - task: HelmDeploy@0
+    displayName: Helm deploy
+    inputs:
+      connectionType: 'Kubernetes Service Connection'
+      kubernetesServiceEndpoint: $(k8s_service_connection)
+      namespace: $(dockerImage)-js
+      command: upgrade
+      arguments: -i --create-namespace --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-api-$(Build.SourceVersion)
+      chartType: 'FilePath'
+      releaseName: api
+      chartPath: deploy/app 
+      valueFile: $(value_file_url)/api-values.yaml
