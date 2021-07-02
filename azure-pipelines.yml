@@ -1,5 +1,5 @@
 variables:
-  - ${{ if eq(variables['Build.SourceBranchName'], 'docker-depoyment') }}: 
+  - ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
     - group: iverify
     - name: azureContainerRegistryName
       value: iverify
