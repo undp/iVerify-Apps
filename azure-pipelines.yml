@@ -20,6 +20,7 @@ steps:
       command: buildAndPush
       repository: $(dockerImage)-js
       Dockerfile: apps/iverify/Dockerfile
+      buildContext: $(Build.Repository.LocalPath)
       tags: |
         $(dockerImage)-iverify-$(Build.SourceVersion)
   - task: Docker@2
@@ -28,6 +29,7 @@ steps:
       command: buildAndPush
       repository: $(dockerImage)-js
       Dockerfile: apps/publisher/Dockerfile-prod
+      buildContext: $(Build.Repository.LocalPath)
       tags: |
         $(dockerImage)-publisher-$(Build.SourceVersion)
   - task: Docker@2
@@ -36,6 +38,7 @@ steps:
       command: buildAndPush
       repository: $(dockerImage)-js
       Dockerfile: apps/triage/Dockerfile-prod
+      buildContext: $(Build.Repository.LocalPath)
       tags: |
         $(dockerImage)-triage-$(Build.SourceVersion)
   - task: Docker@2
@@ -44,6 +47,7 @@ steps:
       command: buildAndPush
       repository: $(dockerImage)-js
       Dockerfile: apps/api/Dockerfile-prod
+      buildContext: $(Build.Repository.LocalPath)
       tags: |
         $(dockerImage)-api-$(Build.SourceVersion)
   - task: HelmDeploy@0
