@@ -19,7 +19,7 @@ steps:
     inputs:
       command: buildAndPush
       repository: $(dockerImage)-js
-      buildContext: ./apps/publisher
+      buildContext: $(Build.Repository.LocalPath)/apps/publisher
       tags: |
         $(dockerImage)-publisher-$(Build.SourceVersion)
   - task: Docker@2
@@ -27,7 +27,7 @@ steps:
     inputs:
       command: buildAndPush
       repository: $(dockerImage)-js
-      buildContext: ./apps/triage
+      buildContext: $(Build.Repository.LocalPath)/apps/triage
       tags: |
         $(dockerImage)-triage-$(Build.SourceVersion)
   - task: Docker@2
@@ -35,7 +35,7 @@ steps:
     inputs:
       command: buildAndPush
       repository: $(dockerImage)-js
-      buildContext: ./apps/api
+      buildContext: $(Build.Repository.LocalPath)/apps/api
       tags: |
         $(dockerImage)-api-$(Build.SourceVersion)
   - task: HelmDeploy@0
