@@ -1,0 +1,14 @@
+{{- if .Values.extraVolumeMounts.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "app.name" . }}
+  labels: {{- include "app.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.extraVolumeMounts.size | quote }}
+  {{ include "app.storageClass" . }}
+{{- end }}

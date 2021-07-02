@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.name" . }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+    app: {{ include "app.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+      app: {{ include "app.name" . }}
+  template:
+    metadata:
+      labels:
+        {{- include "app.selectorLabels" . | nindent 8 }}
+        app: {{ include "app.name" . }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "app.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- template "app.command" . }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          {{- if .Values.env }}
+          env:
+            {{- if .Values.env }}
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.secret }}
+            {{- range $key, $value := .Values.secret }}
+            - name: {{ .name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.secret_name }}
+                  key: {{ $value.secret_key | quote }}
+            {{- end }} 
+            {{- end }} 
+          {{- end }}         
+          ports:
+            - name: http
+              containerPort: {{ .Values.app.containerPort }}
+              protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            httpGet:
+              path: {{ .Values.livenessProbe.path }}
+              port:  {{ .Values.app.containerPort }} 
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            httpGet:
+              path: {{ .Values.readinessProbe.path }}
+              port: {{ .Values.app.containerPort }} 
+          {{- end }}
+          {{- if or .Values.extraVolumeMounts.enabled .Values.sharedStorage.enabled }}
+          volumeMounts:
+            {{- if .Values.extraVolumeMounts.enabled }}
+            - name: data-directory
+              mountPath: {{ .Values.extraVolumeMounts.mountPath }}
+            {{- end }}
+            {{- if .Values.sharedStorage.enabled }}
+            {{- range .Values.sharedStorage.mountPaths }}
+            - name: shared-storage
+              mountPath: {{ . }}
+              subPath: {{ $.Release.Name }}{{ . }}
+            {{- end }}
+            {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- if or .Values.extraVolumeMounts.enabled .Values.sharedStorage.enabled }}
+      volumes:
+      {{- if .Values.extraVolumeMounts.enabled }}
+        - name: data-directory
+          persistentVolumeClaim:
+            claimName: {{ template "app.name" . }}
+      {{- end }}
+      {{- if .Values.sharedStorage.enabled }}
+        - name: shared-storage
+          persistentVolumeClaim:
+            claimName: {{ .Values.sharedStorage.existingPvc }}
+      {{- end }}
+    {{- end }}
