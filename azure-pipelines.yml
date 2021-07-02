@@ -1,5 +1,6 @@
 variables:
   - ${{ if eq(variables['Build.SourceBranchName'], 'docker-depoyment') }}: 
+    - group: iverify
     - name: azureContainerRegistryName
       value: iverify
     - name: k8s_service_connection
@@ -14,15 +15,15 @@ steps:
     inputs:
       command: login
       containerRegistry: $(azureContainerRegistryName)
-  - task: Docker@2
-    displayName: Build and Push iverify
-    inputs:
-      command: buildAndPush
-      repository: $(dockerImage)-js
-      Dockerfile: apps/iverify/Dockerfile
-      buildContext: $(Build.Repository.LocalPath)
-      tags: |
-        $(dockerImage)-iverify-$(Build.SourceVersion)
+  #- task: Docker@2
+  #  displayName: Build and Push iverify
+  #  inputs:
+  #    command: buildAndPush
+  #    repository: $(dockerImage)-js
+  #    Dockerfile: apps/iverify/Dockerfile
+  #    buildContext: $(Build.Repository.LocalPath)
+  #    tags: |
+  #      $(dockerImage)-iverify-$(Build.SourceVersion)
   - task: Docker@2
     displayName: Build and Push publisher
     inputs:
@@ -41,27 +42,36 @@ steps:
       buildContext: $(Build.Repository.LocalPath)
       tags: |
         $(dockerImage)-triage-$(Build.SourceVersion)
-  - task: Docker@2
-    displayName: Build and Push API
-    inputs:
-      command: buildAndPush
-      repository: $(dockerImage)-js
-      Dockerfile: apps/api/Dockerfile-prod
-      buildContext: $(Build.Repository.LocalPath)
-      tags: |
-        $(dockerImage)-api-$(Build.SourceVersion)
-  - task: HelmDeploy@0
-    displayName: Helm deploy iverify
+  #- task: Docker@2
+  #  displayName: Build and Push API
+  #  inputs:
+  #    command: buildAndPush
+  #    repository: $(dockerImage)-js
+  #    Dockerfile: apps/api/Dockerfile-prod
+  #    buildContext: $(Build.Repository.LocalPath)
+  #    tags: |
+  #      $(dockerImage)-api-$(Build.SourceVersion)
+  #- task: HelmDeploy@0
+  #  displayName: Helm deploy iverify
+  #  inputs:
+  #    connectionType: 'Kubernetes Service Connection'
+  #    kubernetesServiceEndpoint: $(k8s_service_connection)
+  #    namespace: $(dockerImage)-js
+  #    command: upgrade
+  #    arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-iverify-$(Build.SourceVersion)
+  #    chartType: 'FilePath'
+  #    releaseName: iverify
+  #    chartPath: deploy/app 
+  #    valueFile: $(value_file_url)/iverify-values.yaml
+  - task: Kubernetes@1
+    displayName: Kube - Create iverify secret
     inputs:
       connectionType: 'Kubernetes Service Connection'
       kubernetesServiceEndpoint: $(k8s_service_connection)
       namespace: $(dockerImage)-js
-      command: upgrade
-      arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-iverify-$(Build.SourceVersion)
-      chartType: 'FilePath'
-      releaseName: iverify
-      chartPath: deploy/app 
-      valueFile: $(value_file_url)/iverify-values.yaml
+      secretType: 'generic'
+      secretArguments: '--from-literal=CT_API_KEY=$(CT_API_KEY) --from-literal=CHECK_API_TOKEN=$(CHECK_API_TOKEN) --from-literal=WP_PASSWORD="$(WP_PASSWORD)""'
+      secretName: 'mysqldbpassword'
   - task: HelmDeploy@0
     displayName: Helm deploy publisher
     inputs:
@@ -86,15 +96,15 @@ steps:
       releaseName: triage
       chartPath: deploy/app 
       valueFile: $(value_file_url)/triage-values.yaml
-  - task: HelmDeploy@0
-    displayName: Helm deploy api
-    inputs:
-      connectionType: 'Kubernetes Service Connection'
-      kubernetesServiceEndpoint: $(k8s_service_connection)
-      namespace: $(dockerImage)-js
-      command: upgrade
-      arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-api-$(Build.SourceVersion)
-      chartType: 'FilePath'
-      releaseName: api
-      chartPath: deploy/app 
-      valueFile: $(value_file_url)/api-values.yaml
+  #- task: HelmDeploy@0
+  #  displayName: Helm deploy api
+  #  inputs:
+  #    connectionType: 'Kubernetes Service Connection'
+  #    kubernetesServiceEndpoint: $(k8s_service_connection)
+  #    namespace: $(dockerImage)-js
+  #    command: upgrade
+  #    arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-api-$(Build.SourceVersion)
+  #    chartType: 'FilePath'
+  #    releaseName: api
+  #    chartPath: deploy/app 
+  #    valueFile: $(value_file_url)/api-values.yaml
