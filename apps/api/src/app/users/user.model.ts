@@ -1,37 +1,62 @@
-import { SchemaFactory, Schema, Prop } from '@nestjs/mongoose';
-import { Document, Mongoose, Types , Schema as mongooseSchema} from 'mongoose';
+
 import { Roles } from '../roles/roles.model';
 
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-@Schema({timestamps: true})
-export class User extends Document {
-    @Prop({ require: true})
-    firstName: string;
+@Entity()
+export class User{
+    @PrimaryGeneratedColumn()
+    id: number
 
-    @Prop({ default: null})
-    lastName: string;
+    @Column()
+    firstName: string
 
-    @Prop({ unique: true })
-    email: string;
+    @Column()
+    lastName: string
 
-    @Prop({ default: null})
-    phone: string;
+    @Column()
+    email: string
 
-    @Prop({ default: null})
-    address: string;
+    @Column()
+    password: string
 
-    @Prop({ require: true, select: false })
-    public password: string;
+    @Column()
+    createdBy: string
 
-    @Prop({ default: null})
-    createdBy: string;
-  
-    @Prop({ default: null})
-    updatedBy: string;
-
-    @Prop({ type: mongooseSchema.Types.ObjectId, ref: Roles.name})
-    roles : mongooseSchema.Types.ObjectId;
+    @JoinTable()
+    @ManyToMany(type => Roles, (roles) => roles.users, {cascade: true})
+    roles: Roles[]
 
 }
+// @Schema({timestamps: true})
+// export class User extends Document {
+//     @Prop({ require: true})
+//     firstName: string;
 
-export const UserSchema = SchemaFactory.createForClass(User);
+//     @Prop({ default: null})
+//     lastName: string;
+
+//     @Prop({ unique: true })
+//     email: string;
+
+//     @Prop({ default: null})
+//     phone: string;
+
+//     @Prop({ default: null})
+//     address: string;
+
+//     @Prop({ require: true, select: false })
+//     public password: string;
+
+//     @Prop({ default: null})
+//     createdBy: string;
+  
+//     @Prop({ default: null})
+//     updatedBy: string;
+
+//     @Prop({ type: mongooseSchema.Types.ObjectId, ref: Roles.name})
+//     roles : mongooseSchema.Types.ObjectId;
+
+// }
+
+// export const UserSchema = SchemaFactory.createForClass(User);

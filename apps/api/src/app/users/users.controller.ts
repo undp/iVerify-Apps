@@ -4,13 +4,13 @@ import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/createUser.dto';
 import { InfoLogger } from '../logger/info-logger.service';
 import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
-import { PaginationQueryDto } from './dto/paginationQuery.dto';
 import { userMessages } from '../../constant/messages';
 import { GetUserDto } from './dto/getUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { RolesGuard } from '../guards/roles.guard';
+import { PaginationQueryDto } from '../common/pagination-query.dto';
 
 
 @ApiTags('users')
@@ -25,7 +25,7 @@ export class UsersController {
     }
 
     @Post()
-    //@UseGuards(JWTTokenAuthGuard)
+    @UseGuards(JWTTokenAuthGuard)
     public async register(@Body() createUserDto: CreateUserDto) {
         let result: any;
         const userId = this.request.user && this.request.user['id'] ? this.request.user['id'] : null;
@@ -49,7 +49,7 @@ export class UsersController {
     @Get('UserId')
     @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async getUser(@Query() getUser: GetUserDto) {
-        const user = await this.usersService.findById(getUser.userId);
+        const user = await this.usersService.findOne(getUser.userId);
         if (!user) throw new NotFoundException(userMessages.userNotFound);
         return { data: user };
     }
@@ -60,14 +60,10 @@ export class UsersController {
         @Query() user: GetUserDto,
         @Body() editUserDto: UpdateUserDto
     ) {
-        const userId = this.request.user['id'];
-        //if (userId && (userId == user.userId)) {
-        const editedUser = await this.usersService.update(user.userId, editUserDto, userId);
+        // const userId = this.request.user['id'];
+        const editedUser = await this.usersService.update(user.userId, editUserDto);
         if (!editedUser) throw new BadGatewayException(userMessages.userUpdateFail);
         return { message: userMessages.userUpdateSucess, data: editedUser };
-        /*} else {
-            throw new BadRequestException();
-        }*/
     }
 
     @Delete()

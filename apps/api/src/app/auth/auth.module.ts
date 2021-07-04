@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
@@ -12,12 +12,34 @@ import { JwtStrategy } from './passport/JWTStrategy';
 import { JwtRefreshStrategy } from './passport/RefreshStrategy'
 import { RefreshTokenAuthGuard } from '../guards/RefreshToken-auth.guard';
 import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
+import { UsersService } from '../users/users.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../users/user.model';
+import { Roles } from '../roles/roles.model';
 
 
 @Module({
-  imports: [UsersModule],
+  imports: [
+    TypeOrmModule.forFeature([User, Roles]),
+    UsersModule, 
+    PassportModule.register({defaultStrategy: 'bearer'}),
+  ],
   controllers: [AuthController],
-  providers: [RefreshTokenAuthGuard, JWTTokenAuthGuard, AuthService, JwtStrategy, LocalStrategy, JwtRefreshStrategy],
-  exports: [RefreshTokenAuthGuard, AuthService, JwtStrategy, LocalStrategy, JwtRefreshStrategy],
+  providers: [
+    UsersService,
+    RefreshTokenAuthGuard, 
+    JWTTokenAuthGuard, 
+    AuthService, 
+    JwtStrategy, 
+    LocalStrategy, 
+    JwtRefreshStrategy,
+  ],
+  exports: [
+    RefreshTokenAuthGuard, 
+    AuthService, 
+    JwtStrategy, 
+    LocalStrategy, 
+    JwtRefreshStrategy
+  ],
 })
 export class AuthModule { }
