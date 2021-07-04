@@ -1,36 +1,34 @@
 version: '3.8'
 services:
     db: 
-        image: mysql
+        image: mysql:8.0
+        command: --default-authentication-plugin=mysql_native_password
         restart: always
         ports:
-            - "3306:3306"
+            - 3306:3306
         environment:
-            MYSQL_DATABASE: 'db'
-            # So you don't have to use root, but you can if you like
-            MYSQL_USER: 'user'
-            # You can use whatever password you like
-            MYSQL_PASSWORD: 'password'
-            # Password for root access
-            MYSQL_ROOT_PASSWORD: 'password'
+            MYSQL_DATABASE: db
+            MYSQL_USER: test
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
 
-    publisher:
-        image: publisher
-        environment: 
-            - apiPath=http://api:3333
-        ports:
-            - '3334:3334'
-        env_file: 
-            - .env
-    api:
-        image: api
-        ports:
-            - '3333:3333'
-        env_file: 
-            - .env
-    triage:
-        image: triage
-        ports:
-            - '3335:3335'
-        env_file: 
-            - .env
+    # publisher:
+    #     image: publisher
+    #     environment: 
+    #         - apiPath=http://api:3333
+    #     ports:
+    #         - '3334:3334'
+    #     env_file: 
+    #         - .env
+    # api:
+    #     image: api
+    #     ports:
+    #         - '3333:3333'
+    #     env_file: 
+    #         - .env
+    # triage:
+    #     image: triage
+    #     ports:
+    #         - '3335:3335'
+    #     env_file: 
+    #         - .env

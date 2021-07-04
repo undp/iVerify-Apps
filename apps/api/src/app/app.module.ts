@@ -21,8 +21,8 @@ import { Roles } from './roles/roles.model';
       type: 'mysql',
       host: 'localhost',
       port: 3306,
-      username: 'user',
-      password: 'password',
+      username: 'test',
+      password: 'test',
       database: 'db',
       autoLoadEntities: true,
       synchronize: true

@@ -1,5 +1,5 @@
 
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../users/user.model';
 
 @Entity()
@@ -22,7 +22,7 @@ export class Roles{
     @Column()
     updatedBy: string
 
-    @Column()
+    @JoinTable()
     @ManyToMany(type => User, user => user.roles)
     users: User[]
 }
