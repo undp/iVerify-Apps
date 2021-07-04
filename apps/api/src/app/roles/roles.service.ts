@@ -1,61 +1,66 @@
-import { Injectable, NotFoundException, ConflictException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateRoleDto } from "./dto/createRole.dto";
 import { InfoLogger } from "../logger/info-logger.service";
 import { EditRoleDto } from './dto/editRole.dto';
-import { DatabaseService } from '../services/database.service';
 import { Roles } from './roles.model';
 import { roleMessages } from '../../constant/messages';
-import { Model } from "mongoose";
-import { InjectModel } from "@nestjs/mongoose";
-import { PaginationQueryDto } from "../users/dto/paginationQuery.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { PaginationQueryDto } from "../common/pagination-query.dto";
 
 
 @Injectable()
 export class RolesService {
   constructor(
-    @InjectModel('Roles') private readonly roleModel: Model<Roles>,
+    @InjectRepository(Roles)
+    private readonly rolesRepository: Repository<Roles>,
     private infoLogger: InfoLogger,
-    private readonly databaseService: DatabaseService,
   ) {
     this.infoLogger.setContext("RolesServices");
   }
 
   async createRole(createRoleDto: CreateRoleDto, userId: number): Promise<Roles> {
-    const userRole = await this.databaseService.findOne(this.roleModel, { name: createRoleDto.name });
-    if (userRole) {
-      throw new ConflictException(roleMessages.duplicateRole);
-    } else {
-      createRoleDto.resource = JSON.stringify(createRoleDto.resource);
-      createRoleDto['createdBy'] = userId;
-      createRoleDto['updatedBy'] = userId;
-      return await this.databaseService.create(this.roleModel, createRoleDto);
-    }
+    createRoleDto.resource = JSON.stringify(createRoleDto.resource);
+    createRoleDto['createdBy'] = userId;
+    createRoleDto['updatedBy'] = userId;
+    const role = await this.rolesRepository.create(createRoleDto);
+    return this.rolesRepository.save(role);
   }
 
   async getRoles(paginationDto: PaginationQueryDto) {
-    return await this.databaseService.paginate(this.roleModel,paginationDto)
+    const { limit, offset } = paginationDto;
+    return await this.rolesRepository.find({
+        skip: offset,
+        take: limit
+    });
   }
 
-  async findOne(options: object): Promise<Roles> {
-    return await this.databaseService.findOne(this.roleModel, options);
+  async findOne(name: string): Promise<Roles> {
+    const role: Roles = await this.rolesRepository.findOne({name});
+    if(!role) throw new NotFoundException(`Role with name ${name} not found`);
+    return role;
   }
 
-  async findByRoleId(ID: string): Promise<Roles> {
-    return await this.databaseService.findById(this.roleModel, ID);
+  async findByRoleId(id: string): Promise<Roles> {
+    const role: Roles = await this.rolesRepository.findOne(id);
+    if(!role) throw new NotFoundException(`Role with id ${id} not found`);
+    return role;
   }
 
-  async updateRole(ID: string, newValue: EditRoleDto, userId: number): Promise<Roles> {
-    const role = await this.databaseService.findById(this.roleModel, ID);
-    if (!role) {
-      throw new NotFoundException(roleMessages.roleNotFound);
-    } else {
-      newValue['updatedBy'] = userId;
-      newValue.resource = newValue.resource ? JSON.stringify(newValue.resource) : role.resource;
-      return await this.databaseService.findByIdAndUpdate(this.roleModel, ID, newValue);
-    }
+  async updateRole(id: string, newValue: EditRoleDto, userId: number): Promise<Roles> {
+    newValue['updatedBy'] = userId;
+    newValue.resource = newValue.resource ? JSON.stringify(newValue.resource) : null;
+    if(!newValue.resource) delete newValue.resource;
+    const role: Roles = await this.rolesRepository.preload({
+      id: +id,
+      ...newValue
+    })
+    if (!role) throw new NotFoundException(roleMessages.roleNotFound);
+    return this.rolesRepository.save(role);    
   }
 
-  async deleteRole(ID: string): Promise<any> {
-    return await this.databaseService.findByIdAndRemove(this.roleModel, ID);
+  async deleteRole(id: string): Promise<any> {
+    const role: Roles = await this.findByRoleId(id);
+    return this.rolesRepository.save(role);
   }
 }

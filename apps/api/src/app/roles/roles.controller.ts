@@ -10,7 +10,7 @@ import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { GetRoleDto } from './dto/getRole.dto';
 import { roleMessages } from '../../constant/messages';
-import { PaginationQueryDto } from '../users/dto/paginationQuery.dto';
+import { PaginationQueryDto } from '../common/pagination-query.dto';
 
 @Controller('roles')
 @ApiTags('roles')
