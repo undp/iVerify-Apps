@@ -67,4 +67,32 @@ export class CheckClientHelperService{
           sexually_explicit_score: toxicityScores.sexual_explicit
         })
     }
+
+    buildTicketsByAgentQuery(startDate: Date, endDate: Date){
+      return '';
+    }
+
+    buildTicketsByTypeQuery(startDate: Date, endDate: Date){
+      return '';
+    }
+
+    buildTicketsByChannelQuery(startDate: Date, endDate: Date){
+      return '';
+    }
+
+    buildTicketsBySourceQuery(startDate: Date, endDate: Date){
+      return '';
+    }
+
+    buildTicketsByTagQuery(startDate: Date, endDate: Date){
+      return '';
+    }
+
+    buildTicketsByStatusQuery(startDate: Date, endDate: Date){
+      return '';
+    }
+
+    buildCreatedVsPublishedQuery(startDate: Date, endDate: Date){
+      return '';
+    }
 }
