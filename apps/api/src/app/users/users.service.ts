@@ -17,7 +17,8 @@ export class UsersService {
         private readonly userRepository: Repository<User>,
         @InjectRepository(Roles)
         private readonly rolesRepository: Repository<Roles>,
-        private infoLogger: InfoLogger) {
+        private infoLogger: InfoLogger
+        ) {
         this.infoLogger.setContext('UserServices');
     }
 
