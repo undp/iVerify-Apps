@@ -3,6 +3,7 @@ import { from, Observable } from "rxjs";
 import { catchError, concatMap, map, reduce, retry } from "rxjs/operators";
 import { CheckClientConfig } from "./config";
 import { CheckClientHelperService } from "./helper.service";
+import { StatusesMap } from "./interfaces/statuses-map";
 
 @Injectable()
 export class CheckStatsService{
@@ -41,21 +42,29 @@ export class CheckStatsService{
             map(res => ({...res.data.data, tag})),
             retry(3),
             catchError(err => {
-                this.logger.error('Error getting tickets by agent: ', err.message)
+                this.logger.error('Error getting tickets by tag: ', err.message)
                 throw new HttpException(err.message, 500);
             })
         );
     };
 
-    getTicketsByStatus(startDate: Date, endDate: Date): Observable<any>{
-        const query: string = this.helper.buildTicketsByStatusQuery(startDate, endDate);
+    getTicketsByStatuses(): Observable<any>{
+        const statuses = StatusesMap.map(i => i.value);
+        return from(statuses).pipe(
+            concatMap(status => this.getTicketsByStatus(status)),
+            reduce((acc, val) => ([...acc, val]), [])
+        )
+    }
+
+    getTicketsByStatus(status: string): Observable<any>{
+        const query: string = this.helper.buildTicketsByStatusQuery(status);
         const headers = this.config.headers;
         return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
-            map(res => res.data.data),
+            map(res => ({...res.data.data, status})),
             retry(3),
             catchError(err => {
-            this.logger.error('Error getting tickets by agent: ', err.message)
-            throw new HttpException(err.message, 500);
+                this.logger.error('Error getting tickets by status: ', err.message)
+                throw new HttpException(err.message, 500);
             })
         );
     };

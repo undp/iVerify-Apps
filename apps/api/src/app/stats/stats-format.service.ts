@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { StatusesMap } from "libs/meedan-check-client/src/lib/interfaces/statuses-map";
 import { CountBy } from "./models/count-by.enum";
 import { Stats } from "./models/stats.model";
 
@@ -28,8 +29,28 @@ export class StatsFormatService{
         return this.buildStatsFromCount(startDate, endDate, count, CountBy.tag);
     }
 
-    formatTticketsByStatus(any): Stats[]{
-        return [];
+    formatTticketsByStatus(startDate: Date, endDate: Date, results: any): Stats[]{
+        
+// [
+//   {
+//     "search": {
+//       "number_of_results": 45
+//     },
+//     "status": "undetermined"
+//   },
+//   {
+//     "search": {
+//       "number_of_results": 14
+//     },
+//     "status": "in_progress"
+//   },
+        const count = results.reduce((acc, val) => {
+            const status: string = StatusesMap.find(i => i.value === val.status).label;
+            acc[status] = val.search.number_of_results;
+            return acc;
+        }, {});
+        return this.buildStatsFromCount(startDate, endDate, count, CountBy.status);
+
     }
 
     formatTticketsBySource(startDate: Date, endDate: Date, results: any): Stats[]{
