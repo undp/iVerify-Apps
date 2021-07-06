@@ -104,7 +104,29 @@ export class CheckClientHelperService{
     }
 
     buildTicketsBySourceQuery(startDate: Date, endDate: Date){
-      return '';
+      const searchQuery = JSON.stringify({
+        range: {
+          created_at: {
+            start_time: startDate.toISOString(),
+            end_time: endDate.toISOString()
+          }}
+      });
+
+      return `query {
+        search (query: ${JSON.stringify(searchQuery)}) {
+        number_of_results
+        medias {
+          edges {
+            node {
+              domain
+                source {
+                  name
+                  }
+              }
+            }
+          }
+        }
+      }`
     }
 
     buildTicketsByTagQuery(startDate: Date, endDate: Date){

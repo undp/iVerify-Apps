@@ -12,17 +12,7 @@ export class StatsFormatService{
             else acc[user]++;
             return acc;
         }, {});
-        return Object.keys(count).reduce((acc, val) => {
-            const stat: Partial<Stats> = {
-                startDate,
-                endDate,
-                countBy: CountBy.agent,
-                category: val,
-                count: count[val]
-            }
-            acc.push(stat);
-            return acc;
-        }, [])
+        return this.buildStatsFromCount(startDate, endDate, count, CountBy.agent);
     }
     
     formatTticketsByChannel(any): Stats[]{
@@ -37,8 +27,29 @@ export class StatsFormatService{
         return [];
     }
 
-    formatTticketsBySource(any): Stats[]{
-        return [];
+    formatTticketsBySource(startDate: Date, endDate: Date, results: any): Stats[]{
+        // {
+        //     "node": {
+        //       "domain": "facebook.com",
+        //       "source": null
+        //     }
+        //   },
+        //   {
+        //     "node": {
+        //       "domain": "facebook.com",
+        //       "source": {
+        //         "name": "Diamond TV Zambia"
+        //       }
+        //     }
+        //   },
+        const edges: any[] = results.search.medias.edges;
+        const count = edges.reduce((acc, val) => {
+            const domain: string = val.node.domain;
+            if(!acc[domain]) acc[domain] = 1;
+            else acc[domain]++;
+            return acc;
+        }, {});
+        return this.buildStatsFromCount(startDate, endDate, count, CountBy.source);
     }
 
     formatTticketsByType(any): Stats[]{
@@ -47,6 +58,20 @@ export class StatsFormatService{
 
     formatCreatedVsPublished(any): Stats[]{
         return [];
+    }
+
+    private buildStatsFromCount(startDate: Date, endDate: Date, count: Object, countBy: CountBy){
+        return Object.keys(count).reduce((acc, val) => {
+            const stat: Partial<Stats> = {
+                startDate,
+                endDate,
+                countBy,
+                category: val,
+                count: count[val]
+            }
+            acc.push(stat);
+            return acc;
+        }, [])
     }
 
 }
