@@ -25,7 +25,7 @@ export class AuthController {
     @Post('login')
     @UseGuards(LocalAuthGuard)
     public async login(@Body() login: LoginUserDto) {
-        const userData = await this.usersService.findOne(login.email);
+        const userData = await this.usersService.findByEmail(login.email);
         if (!userData) {
             this.InfoLogger.error(userMessages.userNotFound);
             throw new NotFoundException(userMessages.userNotFound);
