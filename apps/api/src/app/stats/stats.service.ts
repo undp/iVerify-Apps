@@ -35,7 +35,7 @@ export class StatsService{
             ...this.formatService.formatTticketsByStatus(ticketsByStatus),
             ...this.formatService.formatTticketsBySource(startDate, endDate, ticketsBySource),
             ...this.formatService.formatTticketsByType(ticketsByType),
-            ...this.formatService.formatCreatedVsPublished(createdVsPublished)
+            ...this.formatService.formatCreatedVsPublished(startDate, endDate, createdVsPublished)
         ]
         return await this.saveMany(stats);
     }
@@ -68,7 +68,8 @@ export class StatsService{
     }
 
     async getCreatedVsPublished(startDate: Date, endDate: Date){
-        return await this.checkStatsClient.getCreatedVsPublished(startDate, endDate).toPromise();
+        const results = await this.checkStatsClient.getCreatedVsPublished().toPromise();
+        return this.formatService.formatCreatedVsPublished(startDate, endDate, results);
     }
 
     async saveMany(stats: Stats[]){

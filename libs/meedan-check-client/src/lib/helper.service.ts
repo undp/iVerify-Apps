@@ -144,7 +144,14 @@ export class CheckClientHelperService{
       return '';
     }
 
-    buildCreatedVsPublishedQuery(startDate: Date, endDate: Date){
-      return '';
+    buildCreatedVsPublishedQuery(publishedStatus: string){
+      const searchQuery = JSON.stringify({
+        report_status: [publishedStatus]
+      })
+      return `query {
+        search(query: ${JSON.stringify(searchQuery)}) {
+          number_of_results
+        }
+      }`
     }
 }

@@ -47,8 +47,13 @@ export class StatsFormatService{
         return [];
     }
 
-    formatCreatedVsPublished(any): Stats[]{
-        return [];
+    formatCreatedVsPublished(startDate, endDate, results): Stats[]{
+        const count = results.reduce((acc, val) => {
+            const status: string = val.status;
+            acc[status] = val.search.number_of_results;
+            return acc;
+        }, {});
+        return this.buildStatsFromCount(startDate, endDate, count, CountBy.createdVsPublished);
     }
 
     private buildStatsFromCount(startDate: Date, endDate: Date, count: Object, countBy: CountBy){
