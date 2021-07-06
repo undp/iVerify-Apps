@@ -32,7 +32,7 @@ export class StatsService{
             ...this.formatService.formatTticketsByChannel(ticketsByChannel),
             ...this.formatService.formatTticketsByTag(ticketsByTag),
             ...this.formatService.formatTticketsByStatus(ticketsByStatus),
-            ...this.formatService.formatTticketsBySource(ticketsBySource),
+            ...this.formatService.formatTticketsBySource(startDate, endDate, ticketsBySource),
             ...this.formatService.formatTticketsByType(ticketsByType),
             ...this.formatService.formatCreatedVsPublished(createdVsPublished)
         ]
@@ -57,7 +57,8 @@ export class StatsService{
     }
 
     async getTicketsBySource(startDate: Date, endDate: Date){
-        return await this.checkStatsClient.getTicketsBySource(startDate, endDate).toPromise();
+        const results = await this.checkStatsClient.getTicketsBySource(startDate, endDate).toPromise();
+        return this.formatService.formatTticketsBySource(startDate, endDate, results)
     }
 
     async getTicketsByType(startDate: Date, endDate: Date){
