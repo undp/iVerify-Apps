@@ -34,8 +34,8 @@ export class CheckStatsService{
             map(res => res.data.data),
             retry(3),
             catchError(err => {
-            this.logger.error('Error getting tickets by agent: ', err.message)
-            throw new HttpException(err.message, 500);
+                this.logger.error('Error getting tickets by agent: ', err.message)
+                throw new HttpException(err.message, 500);
             })
         );
     };
