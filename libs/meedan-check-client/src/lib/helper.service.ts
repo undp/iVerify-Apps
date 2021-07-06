@@ -140,8 +140,16 @@ export class CheckClientHelperService{
       }`
     }
 
-    buildTicketsByStatusQuery(startDate: Date, endDate: Date){
-      return '';
+    buildTicketsByStatusQuery(status: string){
+      const searchQuery = JSON.stringify({
+        verification_status: [status]
+      });
+
+      return `query {
+        search(query: ${JSON.stringify(searchQuery)}) {
+          number_of_results
+        }
+      }`
     }
 
     buildCreatedVsPublishedQuery(publishedStatus: string){

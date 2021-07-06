@@ -32,7 +32,7 @@ export class StatsService{
             ...this.formatService.formatTticketsByAgent(startDate, endDate, ticketsByAgent),
             ...this.formatService.formatTticketsByChannel(ticketsByChannel),
             ...this.formatService.formatTticketsByTags(startDate, endDate, ticketsByTag),
-            ...this.formatService.formatTticketsByStatus(ticketsByStatus),
+            ...this.formatService.formatTticketsByStatus(startDate, endDate, ticketsByStatus),
             ...this.formatService.formatTticketsBySource(startDate, endDate, ticketsBySource),
             ...this.formatService.formatTticketsByType(ticketsByType),
             ...this.formatService.formatCreatedVsPublished(startDate, endDate, createdVsPublished)
@@ -44,18 +44,10 @@ export class StatsService{
         const results = await this.checkStatsClient.getTicketsByAgent(startDate, endDate).toPromise();
         return this.formatService.formatTticketsByAgent(startDate, endDate, results);
     }
-
-    async getTicketsByChannel(startDate: Date, endDate: Date){
-        return await this.checkStatsClient.getTicketsByChannel(startDate, endDate).toPromise();
-    }
-
+    
     async getTicketsByTags(startDate: Date, endDate: Date, tags: string[]){
         const results = await this.checkStatsClient.getTicketsByTags(tags).toPromise();
         return this.formatService.formatTticketsByTags(startDate, endDate, results);
-    }
-
-    async getTicketsByStatus(startDate: Date, endDate: Date){
-        return await this.checkStatsClient.getTicketsByStatus(startDate, endDate).toPromise();
     }
 
     async getTicketsBySource(startDate: Date, endDate: Date){
@@ -63,14 +55,25 @@ export class StatsService{
         return this.formatService.formatTticketsBySource(startDate, endDate, results)
     }
 
-    async getTicketsByType(startDate: Date, endDate: Date){
-        return await this.checkStatsClient.getTicketsByType(startDate, endDate).toPromise();
-    }
-
     async getCreatedVsPublished(startDate: Date, endDate: Date){
         const results = await this.checkStatsClient.getCreatedVsPublished().toPromise();
         return this.formatService.formatCreatedVsPublished(startDate, endDate, results);
     }
+
+    async getTicketsByChannel(startDate: Date, endDate: Date){
+        return await this.checkStatsClient.getTicketsByChannel(startDate, endDate).toPromise();
+    }
+
+    async getTicketsByStatus(startDate: Date, endDate: Date){
+        const results = await this.checkStatsClient.getTicketsByStatuses().toPromise();
+        return this.formatService.formatTticketsByStatus(startDate, endDate, results);
+    }
+
+
+    async getTicketsByType(startDate: Date, endDate: Date){
+        return await this.checkStatsClient.getTicketsByType(startDate, endDate).toPromise();
+    }
+
 
     async saveMany(stats: Stats[]){
         const results: Stats[] = await Promise.all(
