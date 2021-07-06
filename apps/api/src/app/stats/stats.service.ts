@@ -20,9 +20,10 @@ export class StatsService{
     }
 
     private async fetchAndStore(startDate: Date, endDate: Date){
+        const tags = ['Covid-19', 'Veoter registration']
         const ticketsByAgent: Stats[] = await this.getTicketsByAgent(startDate, endDate);
         const ticketsByChannel: Stats[] = await this.getTicketsByChannel(startDate, endDate);
-        const ticketsByTag: Stats[] = await this.getTicketsByTag(startDate, endDate);
+        const ticketsByTag: Stats[] = await this.getTicketsByTags(startDate, endDate, tags);
         const ticketsByStatus: Stats[] = await this.getTicketsByStatus(startDate, endDate);
         const ticketsBySource: Stats[] = await this.getTicketsBySource(startDate, endDate);
         const ticketsByType: Stats[] = await this.getTicketsByType(startDate, endDate);
@@ -30,7 +31,7 @@ export class StatsService{
         const stats: Stats[] = [
             ...this.formatService.formatTticketsByAgent(startDate, endDate, ticketsByAgent),
             ...this.formatService.formatTticketsByChannel(ticketsByChannel),
-            ...this.formatService.formatTticketsByTag(ticketsByTag),
+            ...this.formatService.formatTticketsByTags(startDate, endDate, ticketsByTag),
             ...this.formatService.formatTticketsByStatus(ticketsByStatus),
             ...this.formatService.formatTticketsBySource(startDate, endDate, ticketsBySource),
             ...this.formatService.formatTticketsByType(ticketsByType),
@@ -48,8 +49,9 @@ export class StatsService{
         return await this.checkStatsClient.getTicketsByChannel(startDate, endDate).toPromise();
     }
 
-    async getTicketsByTag(startDate: Date, endDate: Date){
-        return await this.checkStatsClient.getTicketsByTag(startDate, endDate).toPromise();
+    async getTicketsByTags(startDate: Date, endDate: Date, tags: string[]){
+        const results = await this.checkStatsClient.getTicketsByTags(tags).toPromise();
+        return this.formatService.formatTticketsByTags(startDate, endDate, results);
     }
 
     async getTicketsByStatus(startDate: Date, endDate: Date){

@@ -129,8 +129,15 @@ export class CheckClientHelperService{
       }`
     }
 
-    buildTicketsByTagQuery(startDate: Date, endDate: Date){
-      return '';
+    buildTicketsByTagQuery(tag){
+      const searchQuery = JSON.stringify({
+        tags: [tag]
+      })
+      return `query {
+        search(query: ${JSON.stringify(searchQuery)}) {
+          number_of_results
+        }
+      }`
     }
 
     buildTicketsByStatusQuery(startDate: Date, endDate: Date){

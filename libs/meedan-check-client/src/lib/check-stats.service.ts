@@ -1,6 +1,6 @@
 import { HttpException, HttpService, Injectable, Logger } from "@nestjs/common";
-import { Observable } from "rxjs";
-import { catchError, map, retry } from "rxjs/operators";
+import { from, Observable } from "rxjs";
+import { catchError, concatMap, map, reduce, retry } from "rxjs/operators";
 import { CheckClientConfig } from "./config";
 import { CheckClientHelperService } from "./helper.service";
 
@@ -27,11 +27,18 @@ export class CheckStatsService{
         );          
     }
 
-    getTicketsByTag(startDate: Date, endDate: Date): Observable<any>{
-        const query: string = this.helper.buildTicketsByAgentQuery(startDate, endDate);
+    getTicketsByTags(tags: string[]): Observable<any>{
+        return from(tags).pipe(
+            concatMap(tag => this.getTicketsByTag(tag)),
+            reduce((acc, val) => ([...acc, val]), [])
+        )
+    }
+
+    getTicketsByTag(tag): Observable<any>{
+        const query: string = this.helper.buildTicketsByTagQuery(tag);
         const headers = this.config.headers;
         return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
-            map(res => res.data.data),
+            map(res => ({...res.data.data, tag})),
             retry(3),
             catchError(err => {
                 this.logger.error('Error getting tickets by agent: ', err.message)

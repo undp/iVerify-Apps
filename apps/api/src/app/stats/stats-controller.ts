@@ -20,6 +20,23 @@ export class DateBraket {
   readonly endDate: string;
 }
 
+export class TagsPayload {
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  readonly startDate: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  readonly endDate: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  readonly tags: string[];
+}
+
 @ApiTags('stats')
 @Controller('stats')
 export class StatsController {
@@ -61,11 +78,12 @@ export class StatsController {
     return await this.statsService.getTicketsByStatus(startDate, endDate);
   }
 
-  @Post('tickets-by-tag')
-  async getTicketsByTag(@Body() body: DateBraket) {
+  @Post('tickets-by-tags')
+  async getTicketsByTags(@Body() body: TagsPayload) {
     const startDate = new Date(body['startDate']);
-    const endDate = new Date(body['endDate']) 
-    return await this.statsService.getTicketsByTag(startDate, endDate);
+    const endDate = new Date(body['endDate']);
+    const tags = body.tags;
+    return await this.statsService.getTicketsByTags(startDate, endDate, tags);
   }
 
   @Post('tickets-by-type')
