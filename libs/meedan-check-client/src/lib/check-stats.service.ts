@@ -99,11 +99,19 @@ export class CheckStatsService{
         );
     };
 
-    getCreatedVsPublished(startDate: Date, endDate: Date): Observable<any>{
-        const query: string = this.helper.buildCreatedVsPublishedQuery(startDate, endDate);
+    getCreatedVsPublished(): Observable<any>{
+        return from(['published', 'unpublished']).pipe(
+            concatMap(status => this.getCreatedOrPublished(status)),
+            reduce((acc, val) => ([...acc, val]), [])
+        )
+    }
+
+    getCreatedOrPublished(status: string): Observable<any>{
+        const query: string = this.helper.buildCreatedVsPublishedQuery(status);
+        console.log(query)
         const headers = this.config.headers;
         return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
-            map(res => res.data.data),
+            map(res => ({...res.data.data, status})),
             retry(3),
             catchError(err => {
             this.logger.error('Error getting tickets created vs published: ', err.message)
