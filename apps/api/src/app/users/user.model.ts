@@ -20,7 +20,7 @@ export class User{
     @Column()
     password: string
 
-    @Column()
+    @Column({default: null})
     createdBy: string
 
     @JoinTable()
