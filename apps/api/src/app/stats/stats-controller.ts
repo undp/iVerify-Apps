@@ -40,6 +40,13 @@ export class StatsController {
     return await this.statsService.getTicketsByChannel(startDate, endDate);
   }
 
+  @Post('tickets-by-agent')
+  async getTicketsByAgent(@Body() body: DateBraket) {
+    const startDate = new Date(body['startDate']);
+    const endDate = new Date(body['endDate']) 
+    return await this.statsService.getTicketsByAgent(startDate, endDate);
+  }
+
   @Post('tickets-by-source')
   async getTicketsBySource(@Body() body: DateBraket) {
     const startDate = new Date(body['startDate']);

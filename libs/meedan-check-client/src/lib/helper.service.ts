@@ -78,7 +78,7 @@ export class CheckClientHelperService{
       });
 
       return `query {
-        search (query: ${searchQuery}) {
+        search (query: ${JSON.stringify(searchQuery)}) {
         number_of_results
         medias {
           edges {
@@ -88,16 +88,6 @@ export class CheckClientHelperService{
                   name
                 }
               }
-              last_status
-              created_at
-              last_seen
-              report_type
-              report_status
-              status
-              domain
-              source {
-                name
-                }
               }
             }
           }

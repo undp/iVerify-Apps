@@ -28,7 +28,7 @@ export class StatsService{
         const ticketsByType: Stats[] = await this.getTicketsByType(startDate, endDate);
         const createdVsPublished: Stats[] = await this.getCreatedVsPublished(startDate, endDate);
         const stats: Stats[] = [
-            ...this.formatService.formatTticketsByAgent(ticketsByAgent),
+            ...this.formatService.formatTticketsByAgent(startDate, endDate, ticketsByAgent),
             ...this.formatService.formatTticketsByChannel(ticketsByChannel),
             ...this.formatService.formatTticketsByTag(ticketsByTag),
             ...this.formatService.formatTticketsByStatus(ticketsByStatus),
@@ -40,7 +40,8 @@ export class StatsService{
     }
 
     async getTicketsByAgent(startDate: Date, endDate: Date){
-        return await this.checkStatsClient.getTicketsByAgent(startDate, endDate).toPromise();
+        const results = await this.checkStatsClient.getTicketsByAgent(startDate, endDate).toPromise();
+        return this.formatService.formatTticketsByAgent(startDate, endDate, results);
     }
 
     async getTicketsByChannel(startDate: Date, endDate: Date){
