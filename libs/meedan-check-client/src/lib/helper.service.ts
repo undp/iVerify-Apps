@@ -69,7 +69,40 @@ export class CheckClientHelperService{
     }
 
     buildTicketsByAgentQuery(startDate: Date, endDate: Date){
-      return '';
+      const searchQuery = JSON.stringify({
+        range: {
+          created_at: {
+            start_time: startDate.toISOString(),
+            end_time: endDate.toISOString()
+          }}
+      });
+
+      return `query {
+        search (query: ${searchQuery}) {
+        number_of_results
+        medias {
+          edges {
+            node {
+              account {
+                user{
+                  name
+                }
+              }
+              last_status
+              created_at
+              last_seen
+              report_type
+              report_status
+              status
+              domain
+              source {
+                name
+                }
+              }
+            }
+          }
+        }
+      }`
     }
 
     buildTicketsByTypeQuery(startDate: Date, endDate: Date){
