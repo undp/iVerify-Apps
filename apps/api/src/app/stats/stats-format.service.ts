@@ -19,8 +19,13 @@ export class StatsFormatService{
         return [];
     }
 
-    formatTticketsByTag(any): Stats[]{
-        return [];
+    formatTticketsByTags(startDate: Date, endDate: Date, results): Stats[]{
+        const count = results.reduce((acc, val) => {
+            const tag: string = val.tag;
+            acc[tag] = val.search.number_of_results;
+            return acc;
+        }, {});
+        return this.buildStatsFromCount(startDate, endDate, count, CountBy.tag);
     }
 
     formatTticketsByStatus(any): Stats[]{
@@ -28,20 +33,6 @@ export class StatsFormatService{
     }
 
     formatTticketsBySource(startDate: Date, endDate: Date, results: any): Stats[]{
-        // {
-        //     "node": {
-        //       "domain": "facebook.com",
-        //       "source": null
-        //     }
-        //   },
-        //   {
-        //     "node": {
-        //       "domain": "facebook.com",
-        //       "source": {
-        //         "name": "Diamond TV Zambia"
-        //       }
-        //     }
-        //   },
         const edges: any[] = results.search.medias.edges;
         const count = edges.reduce((acc, val) => {
             const domain: string = val.node.domain;
