@@ -1,13 +1,16 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { HttpException, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm";
+import { Equal, In, LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm";
 import { InfoLogger } from "../logger/info-logger.service";
 import { Stats } from "./models/stats.model";
 import { DateTime, Interval } from 'luxon';
+import { EnumValues } from 'enum-values';
 
 import { StatsFormatService } from "./stats-format.service";
 import { CheckStatsService } from "libs/meedan-check-client/src/lib/check-stats.service";
 import { StatusesMap } from "libs/meedan-check-client/src/lib/interfaces/statuses-map";
+import { CountBy } from "./models/count-by.enum";
+import { format } from "date-fns";
 
 @Injectable()
 export class StatsService{
@@ -45,25 +48,28 @@ export class StatsService{
         }
     }
 
-    private async fetchAndStore(startDate: Date, endDate: Date){
-        const tags = ['Covid-19', 'Veoter registration']
-        const ticketsByAgent: Stats[] = await this.getTicketsByAgent(startDate, endDate);
-        const ticketsByChannel: Stats[] = await this.getTicketsByChannel(startDate, endDate);
-        const ticketsByTag: Stats[] = await this.getTicketsByTags(startDate, endDate, tags);
-        const ticketsByStatus: Stats[] = await this.getTicketsByStatus(startDate, endDate);
-        const ticketsBySource: Stats[] = await this.getTicketsBySource(startDate, endDate);
-        const ticketsByType: Stats[] = await this.getTicketsByType(startDate, endDate);
-        const createdVsPublished: Stats[] = await this.getCreatedVsPublished(startDate, endDate);
-        const stats: Stats[] = [
-            ...this.formatService.formatTticketsByAgent(startDate, endDate, ticketsByAgent),
-            ...this.formatService.formatTticketsByChannel(ticketsByChannel),
-            ...this.formatService.formatTticketsByTags(startDate, endDate, ticketsByTag),
-            ...this.formatService.formatTticketsByStatus(startDate, endDate, ticketsByStatus),
-            ...this.formatService.formatTticketsBySource(startDate, endDate, ticketsBySource),
-            ...this.formatService.formatTticketsByType(ticketsByType),
-            ...this.formatService.formatCreatedVsPublished(startDate, endDate, createdVsPublished)
-        ]
-        return await this.saveMany(stats);
+    async fetchAndStore(startDate: Date, endDate: Date){
+        try{
+            const ticketsByAgent: Stats[] = await this.getTicketsByAgent(startDate, endDate);
+            const ticketsByTag: Stats[] = await this.getTicketsByTags(startDate, endDate);
+            const ticketsByStatus: Stats[] = await this.getTicketsByStatus(startDate, endDate);
+            const ticketsBySource: Stats[] = await this.getTicketsBySource(startDate, endDate);
+            const createdVsPublished: Stats[] = await this.getCreatedVsPublished(startDate, endDate);
+            // const ticketsByChannel: Stats[] = await this.getTicketsByChannel(startDate, endDate);
+            // const ticketsByType: Stats[] = await this.getTicketsByType(startDate, endDate);
+            const stats: Stats[] = [
+                ...ticketsByAgent,
+                ...ticketsByTag,
+                ...ticketsByStatus,
+                ...ticketsBySource,
+                ...createdVsPublished,
+                // ...this.formatService.formatTticketsByChannel(ticketsByChannel),
+                // ...this.formatService.formatTticketsByType(ticketsByType),
+            ]
+            return await this.saveMany(stats);
+        }catch(e){
+            throw new HttpException(e.message, 500);
+        }
     }
 
     async getTicketsByAgent(startDate: Date, endDate: Date){
@@ -113,23 +119,62 @@ export class StatsService{
     }
 
     async getByDate(startDate: Date, endDate: Date){
-        const stats: Stats[] = await this.statsRepository.find({
+        const formattedStart = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}`;
+        const formattedEnd = `${endDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate()}`;
+
+        const aggregationStats: Stats[] = await this.statsRepository.find({
             where: {
-                startDate: MoreThanOrEqual(startDate),
-                endDate: LessThanOrEqual(endDate)
+                startDate: MoreThanOrEqual(formattedStart),
+                endDate: LessThanOrEqual(formattedEnd),
+                countBy: In([
+                    CountBy.agentUnstarted.toString(),
+                    CountBy.agentProcessing.toString(),
+                    CountBy.agentSolved.toString(),
+                    CountBy.source.toString()
+                ])
             }
         });
+        const aggregatedStats = this.aggregate(aggregationStats);
 
-        return this.aggregate(stats);
+        const searchStart = new Date();
+        searchStart.setHours(endDate.getHours() -24);
+        const formattedSearchStart = `${searchStart.getFullYear()}-${searchStart.getMonth() + 1}-${searchStart.getDate()}`;
+
+
+        const latestStats: Stats[] = await this.statsRepository.find({
+            where: {
+                startDate: MoreThanOrEqual(formattedSearchStart),
+                endDate: LessThanOrEqual(formattedEnd),
+                countBy: In([
+                    CountBy.createdVsPublished.toString(),
+                    CountBy.tag.toString(),
+                    CountBy.status.toString()
+                ])
+            }
+        }); 
+
+
+        const latest = this.aggregateByCountBy(latestStats);
+
+        return {
+            range: { startDate, endDate },
+            results: {...aggregatedStats, ...latest}
+        }
+
     }
 
-    private aggregate(stats: Stats[]){
-        const aggregateByCountBy = stats.reduce((acc, val) => {
+    private aggregateByCountBy(stats: Stats[]){
+        return stats.reduce((acc, val) => {
             const obj = {category: val.category, count: val.count};
             if(!acc[val.countBy]) acc[val.countBy] = [obj];
             else acc[val.countBy].push(obj)
             return acc;
         }, {});
+    }
+
+    private aggregate(stats: Stats[]){
+
+        const aggregateByCountBy = this.aggregateByCountBy(stats);
 
         return Object.keys(aggregateByCountBy).reduce((acc, val) => {
             acc[val] = this.aggregateByCategory(aggregateByCountBy[val])

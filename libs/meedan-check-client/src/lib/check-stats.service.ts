@@ -141,7 +141,6 @@ export class CheckStatsService{
     getTicketLastStatus(id: string){
         const query: string = this.helper.buildTicketLastStatusQuery(id);
         const headers = this.config.headers;
-        console.log(query)
         return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
             map(res => res.data.data),
             retry(3),
