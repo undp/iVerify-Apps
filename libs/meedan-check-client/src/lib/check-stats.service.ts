@@ -28,11 +28,21 @@ export class CheckStatsService{
         );          
     }
 
-    getTicketsByTags(tags: string[]): Observable<any>{
-        return from(tags).pipe(
+    getTicketsByTags(): Observable<any>{
+        const team = this.config.checkApiTeam;
+        const headers = this.config.headers;
+        const query = this.helper.buildTeamTagsQuery(team);
+        return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
+            map(res => res.data.data.team.tag_texts.edges.map(node => node.node.text)),
+            retry(3),
+            concatMap(tags => from(tags)),
             concatMap(tag => this.getTicketsByTag(tag)),
-            reduce((acc, val) => ([...acc, val]), [])
-        )
+            reduce((acc, val) => ([...acc, val]), []),
+            catchError(err => {
+            this.logger.error('Error getting tickets by agent: ', err.message)
+            throw new HttpException(err.message, 500);
+            })
+        );
     }
 
     getTicketsByTag(tag): Observable<any>{
@@ -117,7 +127,6 @@ export class CheckStatsService{
 
     getCreatedOrPublished(status: string): Observable<any>{
         const query: string = this.helper.buildCreatedVsPublishedQuery(status);
-        console.log(query)
         const headers = this.config.headers;
         return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
             map(res => ({...res.data.data, status})),
@@ -128,4 +137,18 @@ export class CheckStatsService{
             })
         );
     };
+
+    getTicketLastStatus(id: string){
+        const query: string = this.helper.buildTicketLastStatusQuery(id);
+        const headers = this.config.headers;
+        console.log(query)
+        return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
+            map(res => res.data.data),
+            retry(3),
+            catchError(err => {
+            this.logger.error('Error getting ticket last status: ', err.message)
+            throw new HttpException(err.message, 500);
+            })
+        );
+    }
 }

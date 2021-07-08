@@ -1,9 +1,13 @@
 export enum CountBy{
-    agent = 'agent',
+    agentUnstarted = 'agentUnstarted',
+    agentProcessing = 'agentProsessing',
+    agentSolved = 'agentSolved',
     type = 'type',
     channel = 'channel',
     tag = 'tag',
     status = 'status',
     source = 'source',
-    createdVsPublished = 'createdVsPublished'    
+    createdVsPublished = 'createdVsPublished',   
+    resolutionVelocity = 'resolutionVelocity',
+    responseVelocity = 'resolutionVelocity' 
 }
