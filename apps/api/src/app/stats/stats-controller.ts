@@ -33,6 +33,13 @@ export class ItemChangedDto {
 export class StatsController {
   constructor(private readonly statsService: StatsService) {}
 
+  @Post('stats-by-range')
+  async statsByRange(@Body() body: DateBraket){
+    const startDate = new Date(body['startDate']);
+    const endDate = new Date(body['endDate']) 
+    return await this.statsService.getByDate(startDate, endDate);
+  }
+
   @Post('item-status-changed')
   async itemResolved(@Body() body: ItemChangedDto) {
     const id = body.id;

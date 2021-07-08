@@ -11,9 +11,9 @@ export class StatsFormatService{
         const processingStatuses = StatusesMap.filter(status => !status.default && !status.resolution).map(status => status.value);
         const resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
 
-        const unstarted = edges.filter(val => unstartedStatuses.indexOf(val.node.status) < -1);
-        const processing = edges.filter(val => processingStatuses.indexOf(val.node.status) < -1);
-        const solved = edges.filter(val => resolutionStatuses.indexOf(val.node.status) < -1);
+        const unstarted = edges.filter(val => unstartedStatuses.indexOf(val.node.status) > -1);
+        const processing = edges.filter(val => processingStatuses.indexOf(val.node.status) > -1);
+        const solved = edges.filter(val => resolutionStatuses.indexOf(val.node.status) > -1);
 
         const unstartedCount = unstarted.reduce((acc, val) => {
             const user = val.node.account && val.node.account.user && val.node.account.user.name  ? val.node.account.user.name : 'undefined';
