@@ -3,9 +3,11 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm";
 import { InfoLogger } from "../logger/info-logger.service";
 import { Stats } from "./models/stats.model";
+import { DateTime, Interval } from 'luxon';
 
 import { StatsFormatService } from "./stats-format.service";
 import { CheckStatsService } from "libs/meedan-check-client/src/lib/check-stats.service";
+import { StatusesMap } from "libs/meedan-check-client/src/lib/interfaces/statuses-map";
 
 @Injectable()
 export class StatsService{
@@ -17,6 +19,30 @@ export class StatsService{
         private formatService: StatsFormatService,
         private checkStatsClient: CheckStatsService
         ) {
+    }
+
+    async processItemStatusChanged(id: string, startDate: Date, endDate: Date){
+        const results = await this.checkStatsClient.getTicketLastStatus(id).toPromise();
+        const creationDate = DateTime.fromSeconds(+results.project_media.created_at);
+        const title = results.project_media.title;
+        const node = results.project_media.log.edges.find(node => node.node.event_type === 'update_dynamicannotationfield');
+        const status_changes_obj = JSON.parse(node.node.object_changes_json);
+        const values = status_changes_obj.value.map(val => JSON.parse(val));
+        const resolutionDate =  DateTime.fromSeconds(+node.node.created_at);
+        const initialStates = StatusesMap.filter(status => !status.resolution).map(status => status.value);
+        const resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
+        const defaultStatuses = StatusesMap.filter(status => status.default).map(status => status.value);
+        const activeStatuses = StatusesMap.filter(status => !status.default).map(status => status.value);
+        if(initialStates.indexOf(values[0]) > -1 && resolutionStatuses.indexOf(values[1]) > -1){
+            const resolutionTime = Math.round(Interval.fromDateTimes(creationDate, resolutionDate).length('hours'));
+            const stats: Partial<Stats> = this.formatService.formatResolutionTime(startDate, endDate, title, resolutionTime);
+            await this.saveOne(stats);
+        }
+        if(defaultStatuses.indexOf(values[0]) > -1 && activeStatuses.indexOf(values[1]) > -1){
+            const responseTime = Math.round(Interval.fromDateTimes(creationDate, resolutionDate).length('hours'));
+            const stats: Partial<Stats> = this.formatService.formatResponseTime(startDate, endDate, title, responseTime);
+            await this.saveOne(stats);
+        }
     }
 
     private async fetchAndStore(startDate: Date, endDate: Date){
@@ -45,8 +71,8 @@ export class StatsService{
         return this.formatService.formatTticketsByAgent(startDate, endDate, results);
     }
     
-    async getTicketsByTags(startDate: Date, endDate: Date, tags: string[]){
-        const results = await this.checkStatsClient.getTicketsByTags(tags).toPromise();
+    async getTicketsByTags(startDate: Date, endDate: Date){
+        const results = await this.checkStatsClient.getTicketsByTags().toPromise();
         return this.formatService.formatTticketsByTags(startDate, endDate, results);
     }
 
@@ -60,15 +86,14 @@ export class StatsService{
         return this.formatService.formatCreatedVsPublished(startDate, endDate, results);
     }
 
-    async getTicketsByChannel(startDate: Date, endDate: Date){
-        return await this.checkStatsClient.getTicketsByChannel(startDate, endDate).toPromise();
-    }
-
     async getTicketsByStatus(startDate: Date, endDate: Date){
         const results = await this.checkStatsClient.getTicketsByStatuses().toPromise();
         return this.formatService.formatTticketsByStatus(startDate, endDate, results);
     }
 
+    async getTicketsByChannel(startDate: Date, endDate: Date){
+        return await this.checkStatsClient.getTicketsByChannel(startDate, endDate).toPromise();
+    }
 
     async getTicketsByType(startDate: Date, endDate: Date){
         return await this.checkStatsClient.getTicketsByType(startDate, endDate).toPromise();
@@ -82,7 +107,7 @@ export class StatsService{
         return results; 
     }
 
-    private async saveOne(stat: Stats){
+    private async saveOne(stat: Partial<Stats>){
         const newRecord = await this.statsRepository.create(stat);
         return this.statsRepository.save(newRecord);
     }

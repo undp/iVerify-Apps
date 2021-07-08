@@ -20,21 +20,12 @@ export class DateBraket {
   readonly endDate: string;
 }
 
-export class TagsPayload {
+export class ItemChangedDto {
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  readonly startDate: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  readonly endDate: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  readonly tags: string[];
+  readonly id: string;
 }
 
 @ApiTags('stats')
@@ -42,6 +33,13 @@ export class TagsPayload {
 export class StatsController {
   constructor(private readonly statsService: StatsService) {}
 
+  @Post('item-status-changed')
+  async itemResolved(@Body() body: ItemChangedDto) {
+    const id = body.id;
+    const startDate = new Date();
+    const endDate = new Date();
+    return await this.statsService.processItemStatusChanged(id, startDate, endDate);
+  }
   
   @Post('created-vs-published')
   async createdVsPublished(@Body() body: DateBraket) {
@@ -79,11 +77,10 @@ export class StatsController {
   }
 
   @Post('tickets-by-tags')
-  async getTicketsByTags(@Body() body: TagsPayload) {
+  async getTicketsByTags(@Body() body: DateBraket) {
     const startDate = new Date(body['startDate']);
     const endDate = new Date(body['endDate']);
-    const tags = body.tags;
-    return await this.statsService.getTicketsByTags(startDate, endDate, tags);
+    return await this.statsService.getTicketsByTags(startDate, endDate);
   }
 
   @Post('tickets-by-type')
