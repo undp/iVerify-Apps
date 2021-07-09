@@ -68,12 +68,12 @@ export class CheckClientHelperService{
         })
     }
 
-    buildTicketsByAgentQuery(startDate: Date, endDate: Date){
+    buildTicketsByAgentQuery(startDate: string, endDate: string){
       const searchQuery = JSON.stringify({
         range: {
           created_at: {
-            start_time: startDate.toISOString(),
-            end_time: endDate.toISOString()
+            start_time: startDate,
+            end_time: endDate
           }
         },
         archived: 1
@@ -99,20 +99,20 @@ export class CheckClientHelperService{
       }`
     }
 
-    buildTicketsByTypeQuery(startDate: Date, endDate: Date){
+    buildTicketsByTypeQuery(startDate: string, endDate: string){
       return '';
     }
 
-    buildTicketsByChannelQuery(startDate: Date, endDate: Date){
+    buildTicketsByChannelQuery(startDate: string, endDate: string){
       return '';
     }
 
-    buildTicketsBySourceQuery(startDate: Date, endDate: Date){
+    buildTicketsBySourceQuery(startDate: string, endDate: string){
       const searchQuery = JSON.stringify({
         range: {
           created_at: {
-            start_time: startDate.toISOString(),
-            end_time: endDate.toISOString()
+            start_time: startDate,
+            end_time: endDate
           }
         },
         archived: 1        

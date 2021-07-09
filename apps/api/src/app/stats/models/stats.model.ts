@@ -8,11 +8,8 @@ export class Stats{
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
-    startDate: Date
-
-    @Column()
-    endDate: Date
+    @Column({type: 'date'})
+    day: string
 
     @Column()
     countBy: string // of CountBy enum
