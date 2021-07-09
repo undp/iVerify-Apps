@@ -1,4 +1,4 @@
-import { Body, Controller, HttpException, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Post } from '@nestjs/common';
 import { of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
@@ -7,6 +7,11 @@ import { AppService } from './app.service';
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
+
+  @Get('alive-test')
+  isAlive(){
+    return 'I\'m alive...';
+  }
 
   @Post('test-endpoint')
   async publishMeedanReports(@Body() body){
