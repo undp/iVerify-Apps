@@ -2,12 +2,11 @@ import { AuthRequest, AuthResponse, GrantType } from './auth';
 import { Observable, of } from 'rxjs';
 import { Token, TokenPayload } from './token';
 import { catchError, switchMap } from 'rxjs/operators';
-import { HttpErrorResponse } from '@angular/common/http';
-import { HttpClient } from '@angular/common/http';
+import { HttpErrorResponse , HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Permissions } from '../models/permissions';
 import { Roles } from '../models/roles';
-import { StorageService } from '../storage/storage.service';
+import { StorageService } from '@iverify/core/storage/storage.service';
 import { User } from '../models/user';
 import { environment } from '../environments/environment';
 
@@ -21,8 +20,8 @@ export class AuthService {
   constructor(private http: HttpClient, private storage: StorageService) {}
 
   private readonly uris = {
-    main: 'oauth/token',
-    me: `api/${environment.api.version}/users/me`,
+    main: 'auth/login',
+    me: `users/UserId?userId=:id`,
     roles: `api/${environment.api.version}/roles`,
     permissions: `api/${environment.api.version}/permissions`
   };
@@ -42,21 +41,22 @@ export class AuthService {
   sendRequest(request: AuthRequest = {}): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${environment.api.base}/${this.uris.main}`, {
-        ...request,
-        scope: '*' || request.scope,
-        grant_type:
-          request.grant_type !== GrantType.RefreshToken
-            ? request.username && request.password
-              ? GrantType.Password
-              : GrantType.ClientCredentials
-            : request.grant_type,
-        client_id: request.client_id || environment.authentication.client_id,
-        client_secret:
-          request.client_secret || environment.authentication.client_secret
+        ...request
+        // ,
+        // scope: '*' || request.scope,
+        // grant_type:
+        //   request.grant_type !== GrantType.RefreshToken
+        //     ? request.email && request.password
+        //       ? GrantType.Password
+        //       : GrantType.ClientCredentials
+        //     : request.grant_type,
+        // client_id: request.client_id || environment.authentication.client_id,
+        // client_secret:
+        //   request.client_secret || environment.authentication.client_secret
       })
       .pipe(
         switchMap(loginResponse => {
-          this._token = { ...this.token, ...loginResponse };
+          this._token = { ...this.token };
           this.storage.set(STORAGE_TOKEN_KEY, this._token);
           const payload = this.getTokenPayload(this._token);
           if (payload && payload.iat)
@@ -106,7 +106,7 @@ export class AuthService {
         client_id: environment.authentication.client_id,
         client_secret: environment.authentication.client_secret,
         grant_type: GrantType.RefreshToken,
-        refresh_token: this._token.refresh_token
+        refresh_token: this._token.refreshToken
       });
     return of(null);
   }
@@ -128,7 +128,7 @@ export class AuthService {
   }
 
   hasRefreshToken(token: Token): boolean {
-    if (token && token.refresh_token) return true;
+    if (token && token.refreshToken) return true;
     return false;
   }
 

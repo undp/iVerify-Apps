@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AuthHelpers, AuthService } from '@eview/core/auth';
+import { AuthHelpers, AuthService } from '@iverify/core/auth';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
@@ -20,10 +20,7 @@ import {
   LogoutSuccess,
   SetUserPermissions
 } from '../actions/auth.actions';
-import { EConfigActions, GetConfigSuccess } from '../actions/config.actions';
-import { ClearMapActual } from '../actions/map.actions';
 import { AppState } from '../states/app.state';
-import { StopNotifications } from '../actions/notifications.actions';
 
 @Injectable()
 export class AuthEffects {
@@ -41,15 +38,7 @@ export class AuthEffects {
       return this.authService.sendRequest(payload).pipe(
         switchMap(loginResponse =>
           loginResponse
-            ? this.authService
-                .me()
-                .pipe(
-                  switchMap(user => [
-                    new LoginSuccess(user),
-                    new GetCurrentUserSuccess(user),
-                    new UserLoggedIn()
-                  ])
-                )
+            ? [new LoginSuccess(loginResponse.userData)]
             : [new LoginFailure()]
         ),
         catchError(error => [new LoginFailure()])
@@ -66,8 +55,6 @@ export class AuthEffects {
       return [
         new LogoutSuccess(),
         new ClearUserPermissions(),
-        new ClearMapActual(),
-        new StopNotifications()
       ];
     })
   );
@@ -92,9 +79,6 @@ export class AuthEffects {
       ofType<GetCurrentUserSuccess>(EAuthActions.GetCurrentUserSuccess)
     ),
     this.actions$.pipe(
-      ofType<GetConfigSuccess>(EConfigActions.GetConfigSuccess)
-    ),
-    this.actions$.pipe(
       ofType<GetPermissionsSuccess>(EAuthActions.GetPermissionsSuccess)
     ),
     this.actions$.pipe(ofType<GetRolesSuccess>(EAuthActions.GetRolesSuccess))
@@ -102,14 +86,12 @@ export class AuthEffects {
     switchMap(
       ([
         getCurrentUserSuccess,
-        getConfigSuccess,
         getPermission,
         getRolesSuccess
       ]) => [
         new SetUserPermissions(
           AuthHelpers.User.GetUserPermissions(
             getCurrentUserSuccess.payload,
-            getConfigSuccess.payload,
             getPermission.payload,
             getRolesSuccess.payload
           )

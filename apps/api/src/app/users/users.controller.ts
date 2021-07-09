@@ -47,9 +47,9 @@ export class UsersController {
 
 
     @Get('UserId')
-    @UseGuards(JWTTokenAuthGuard, RolesGuard)
+    @UseGuards(JWTTokenAuthGuard)
     async getUser(@Query() getUser: GetUserDto) {
-        const user = await this.usersService.findOne(getUser.userId);
+        const user = await this.usersService.findByEmail(getUser.userId);
         if (!user) throw new NotFoundException(userMessages.userNotFound);
         return { data: user };
     }

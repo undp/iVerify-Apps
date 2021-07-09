@@ -20,6 +20,7 @@
     "noFallthroughCasesInSwitch": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "moduleResolution": "Node",
     "allowJs": true
   },
   "angularCompilerOptions": {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserService } from '@eview/core/users/user.service';
+import { UserService } from '@iverify/core/users/user.service';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';

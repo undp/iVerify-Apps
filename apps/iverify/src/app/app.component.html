@@ -1,9 +1,11 @@
-<div style="text-align: center">
-  <h1>Welcome to iverify!</h1>
-  <img
-    width="450"
-    src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png"
-    alt="Nx - Smart, Extensible Build Framework"
-  />
-</div>
-<div>Message: {{ hello$ | async | json }}</div>
+<ng-http-loader
+  [backdrop]="ngHttpLoaderConfig.backdrop"
+  [backgroundColor]="ngHttpLoaderConfig.backgroundColor"
+  [debounceDelay]="ngHttpLoaderConfig.debounceDelay"
+  [extraDuration]="ngHttpLoaderConfig.extraDuration"
+  [minDuration]="ngHttpLoaderConfig.minDuration"
+  [filteredUrlPatterns]="ngHttpLoaderConfig.filteredUrlPatterns"
+>
+</ng-http-loader>
+<router-outlet></router-outlet>
+

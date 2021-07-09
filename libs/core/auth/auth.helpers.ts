@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 import { User } from '../models/user';
 import { UserPermissions } from '../models/user-permissions';
 import { map } from 'rxjs/operators';
-import { selectUserPermissions } from '../store/selectors/user-permissions.selector';
+import { selectUserPermissions } from '@iverify/core/store/selectors/user-permissions.selector';
 import { AllowedPriviledge } from './auth';
 import { BaseModel } from '../base/base-model';
 
@@ -27,7 +27,6 @@ const GetRolePermissionsByName = (roles: Roles, name: string): Permission[] => {
 
 const GetUserPermissions = (
   user: User,
-  config: Config,
   permissions: Permissions,
   roles: Roles
 ): UserPermissions => {

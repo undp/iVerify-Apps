@@ -4,12 +4,13 @@ import {
   HttpHandler,
   HttpEvent
 } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
 import { Observable, from } from 'rxjs';
-import { AuthService } from '../auth';
+import { AuthService } from '../../core/auth/auth.service';
 import { environment } from '../environments/environment';
 import { switchMap } from 'rxjs/operators';
-import { Inject } from '@angular/core';
 
+@Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(@Inject(AuthService) private authService: AuthService) {}
 

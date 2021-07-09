@@ -5,6 +5,8 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginGuard } from '@iverify/core/guards/login-guard';
 import { TranslateModule } from '@ngx-translate/core';
+import { CommonModule } from '@angular/common';
+
 
 export const routes: Routes = [
   {
@@ -19,7 +21,8 @@ export const routes: Routes = [
     RouterModule.forChild(routes),
     ReactiveFormsModule,
     TranslateModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    CommonModule
   ],
   declarations: [LoginComponent],
   entryComponents: [LoginComponent]

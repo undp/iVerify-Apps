@@ -8,7 +8,7 @@ import {
 import { Observable, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
-import { AuthService } from '@eview/core/auth';
+import { AuthService } from '@iverify/core/auth';
 import { Injectable } from '@angular/core';
 
 @Injectable()
