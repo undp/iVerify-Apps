@@ -52,6 +52,9 @@
     },
     "libs": {
       "tags": []
+    },
+    "iverify-common": {
+      "tags": []
     }
   }
 }

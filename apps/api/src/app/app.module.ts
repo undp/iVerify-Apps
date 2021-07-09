@@ -18,6 +18,8 @@ import { Stats } from './stats/models/stats.model';
 import { StatsFormatService } from './stats/stats-format.service';
 import { MeedanCheckClientModule } from '@iverify/meedan-check-client';
 import { StatsController } from './stats/stats-controller';
+import { ScheduleModule } from '@nestjs/schedule';
+import { StatsCronService } from './stats/cron.service';
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { StatsController } from './stats/stats-controller';
     StatsModule,
     MeedanCheckClientModule,
     ConfigModule.forRoot(),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -41,6 +44,6 @@ import { StatsController } from './stats/stats-controller';
 
   ],
   controllers: [AppController, UsersController, StatsController],
-  providers: [AppService, UsersService, StatsService, StatsFormatService],
+  providers: [AppService, UsersService, StatsService, StatsFormatService, StatsCronService],
 })
 export class AppModule {}

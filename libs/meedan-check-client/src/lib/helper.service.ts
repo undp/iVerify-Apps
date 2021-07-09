@@ -68,14 +68,17 @@ export class CheckClientHelperService{
         })
     }
 
-    buildTicketsByAgentQuery(startDate: Date, endDate: Date){
+    buildTicketsByAgentQuery(startDate: string, endDate: string){
       const searchQuery = JSON.stringify({
         range: {
           created_at: {
-            start_time: startDate.toISOString(),
-            end_time: endDate.toISOString()
-          }}
+            start_time: startDate,
+            end_time: endDate
+          }
+        },
+        archived: 1
       });
+
 
       return `query {
         search (query: ${JSON.stringify(searchQuery)}) {
@@ -83,6 +86,7 @@ export class CheckClientHelperService{
         medias {
           edges {
             node {
+              status
               account {
                 user{
                   name
@@ -95,21 +99,23 @@ export class CheckClientHelperService{
       }`
     }
 
-    buildTicketsByTypeQuery(startDate: Date, endDate: Date){
+    buildTicketsByTypeQuery(startDate: string, endDate: string){
       return '';
     }
 
-    buildTicketsByChannelQuery(startDate: Date, endDate: Date){
+    buildTicketsByChannelQuery(startDate: string, endDate: string){
       return '';
     }
 
-    buildTicketsBySourceQuery(startDate: Date, endDate: Date){
+    buildTicketsBySourceQuery(startDate: string, endDate: string){
       const searchQuery = JSON.stringify({
         range: {
           created_at: {
-            start_time: startDate.toISOString(),
-            end_time: endDate.toISOString()
-          }}
+            start_time: startDate,
+            end_time: endDate
+          }
+        },
+        archived: 1        
       });
 
       return `query {
@@ -129,9 +135,24 @@ export class CheckClientHelperService{
       }`
     }
 
+    buildTeamTagsQuery(team: string){
+     return `query {
+        team(slug: "${team}") {
+          tag_texts {
+            edges {
+              node {
+                text
+              }
+            }
+          }
+        }
+      }`
+    }
+
     buildTicketsByTagQuery(tag){
       const searchQuery = JSON.stringify({
-        tags: [tag]
+        tags: [tag],
+        archived: 1
       })
       return `query {
         search(query: ${JSON.stringify(searchQuery)}) {
@@ -142,7 +163,8 @@ export class CheckClientHelperService{
 
     buildTicketsByStatusQuery(status: string){
       const searchQuery = JSON.stringify({
-        verification_status: [status]
+        verification_status: [status],
+        archived: 1
       });
 
       return `query {
@@ -154,11 +176,30 @@ export class CheckClientHelperService{
 
     buildCreatedVsPublishedQuery(publishedStatus: string){
       const searchQuery = JSON.stringify({
-        report_status: [publishedStatus]
+        report_status: [publishedStatus],
+        archived: 1
       })
       return `query {
         search(query: ${JSON.stringify(searchQuery)}) {
           number_of_results
+        }
+      }`
+    }
+
+    buildTicketLastStatusQuery(id: string){
+      return `query {
+        project_media(ids: "${id}") {
+          title
+          created_at
+          log(last: 2) {
+            edges {
+              node {
+                event_type
+                object_changes_json
+                created_at
+              }
+            }
+          }
         }
       }`
     }
