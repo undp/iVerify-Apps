@@ -69,7 +69,30 @@ export class CheckClientHelperService{
     }
 
     buildTicketsByAgentQuery(startDate: Date, endDate: Date){
-      return '';
+      const searchQuery = JSON.stringify({
+        range: {
+          created_at: {
+            start_time: startDate.toISOString(),
+            end_time: endDate.toISOString()
+          }}
+      });
+
+      return `query {
+        search (query: ${JSON.stringify(searchQuery)}) {
+        number_of_results
+        medias {
+          edges {
+            node {
+              account {
+                user{
+                  name
+                }
+              }
+              }
+            }
+          }
+        }
+      }`
     }
 
     buildTicketsByTypeQuery(startDate: Date, endDate: Date){
@@ -81,18 +104,62 @@ export class CheckClientHelperService{
     }
 
     buildTicketsBySourceQuery(startDate: Date, endDate: Date){
-      return '';
+      const searchQuery = JSON.stringify({
+        range: {
+          created_at: {
+            start_time: startDate.toISOString(),
+            end_time: endDate.toISOString()
+          }}
+      });
+
+      return `query {
+        search (query: ${JSON.stringify(searchQuery)}) {
+        number_of_results
+        medias {
+          edges {
+            node {
+              domain
+                source {
+                  name
+                  }
+              }
+            }
+          }
+        }
+      }`
     }
 
-    buildTicketsByTagQuery(startDate: Date, endDate: Date){
-      return '';
+    buildTicketsByTagQuery(tag){
+      const searchQuery = JSON.stringify({
+        tags: [tag]
+      })
+      return `query {
+        search(query: ${JSON.stringify(searchQuery)}) {
+          number_of_results
+        }
+      }`
     }
 
-    buildTicketsByStatusQuery(startDate: Date, endDate: Date){
-      return '';
+    buildTicketsByStatusQuery(status: string){
+      const searchQuery = JSON.stringify({
+        verification_status: [status]
+      });
+
+      return `query {
+        search(query: ${JSON.stringify(searchQuery)}) {
+          number_of_results
+        }
+      }`
     }
 
-    buildCreatedVsPublishedQuery(startDate: Date, endDate: Date){
-      return '';
+    buildCreatedVsPublishedQuery(publishedStatus: string){
+      const searchQuery = JSON.stringify({
+        report_status: [publishedStatus]
+      })
+      return `query {
+        search(query: ${JSON.stringify(searchQuery)}) {
+          number_of_results
+        }
+      }`
     }
 }
