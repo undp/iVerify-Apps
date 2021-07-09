@@ -18,6 +18,7 @@ export class WpClientService{
         return this.http.post(this.config.endpoints.posts, post, this.auth).pipe(
             map(res => res.data),
             catchError(err => {
+                console.log('Error publishing post', err)
                 throw new HttpException(err.message, 500);
               })
         );
@@ -27,6 +28,7 @@ export class WpClientService{
         return this.http.get(this.config.endpoints.posts + '/' + postId).pipe(
             map(res => res.data),
             catchError(err => {
+                console.log('Error getting post', err)
                 throw new HttpException(err.message, 500);
               })
         );
@@ -36,6 +38,7 @@ export class WpClientService{
         return this.http.post(this.config.endpoints.tags, tag, this.auth).pipe(
             map(res => res.data),
             catchError(err => {
+                console.log('Error creating tag: ', err)
                 throw new HttpException(err.message, 500);
               })
         );
@@ -45,6 +48,7 @@ export class WpClientService{
         return this.http.get(this.config.endpoints.tags).pipe(
             map(res => res.data),
             catchError(err => {
+                console.log('Error listing tags: ', err)
                 throw new HttpException(err.message, 500);
               })
             );
@@ -54,6 +58,7 @@ export class WpClientService{
         return this.http.post(this.config.endpoints.categories, category, this.auth).pipe(
             map(res => res.data),
             catchError(err => {
+                console.log('Error creating category: ', err)
                 throw new HttpException(err.message, 500);
               })
         );
@@ -63,6 +68,7 @@ export class WpClientService{
         return this.http.get(this.config.endpoints.categories, this.auth).pipe(
             map(res => res.data),
             catchError(err => {
+                console.log('Error listing category: ', err)
                 throw new HttpException(err.message, 500);
               })
         );
@@ -78,6 +84,7 @@ export class WpClientService{
         return this.http.post(this.config.endpoints.media, image, {...this.auth, ...{headers}}).pipe(
             map(res => res.data),
             catchError(err => {
+                console.log('Error creating media: ', err)
                 throw new HttpException(err.message, 500);
               })
         )
@@ -91,6 +98,7 @@ export class WpClientService{
         return this.http.get(this.config.endpoints.currentUser, this.auth).pipe(
             map(res => res.data),
             catchError(err => {
+                console.log('Error getting current user: ', err)
                 throw new HttpException(err.message, 500);
               })
         )
