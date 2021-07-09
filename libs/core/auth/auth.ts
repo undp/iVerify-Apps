@@ -1,5 +1,5 @@
 export interface AuthRequest {
-  username?: string;
+  email?: string;
   password?: string;
   scope?: string;
   grant_type?: GrantType;
@@ -9,10 +9,11 @@ export interface AuthRequest {
 }
 
 export interface AuthResponse {
-  token_type: string;
-  expires_in: number;
-  access_token: string;
-  refresh_token: string;
+  token: {
+    accessToken: string;
+    refreshToken: string
+  },
+  userData: any;  
 }
 
 export enum GrantType {

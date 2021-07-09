@@ -83,7 +83,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   };
 
   loginForm = new FormGroup({
-    username: new FormControl('', [Validators.required, Validators.email]),
+    email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', Validators.required)
   });
 
@@ -93,12 +93,12 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   onLoginClick() {
     this.showPassword = false;
-    const username = this.loginForm.get('username')?.value.trim();
+    const email = this.loginForm.get('email')?.value.trim();
     const password = this.loginForm.get('password')?.value.trim();
-    if (username && password) {
+    if (email && password) {
       this.store.dispatch(
         new Login({
-          username: username,
+          email: email,
           password: password
         })
       );

@@ -1,8 +1,8 @@
 export const environment = {
   production: false,
   api: {
-    // base: 'http://dev-api-eview.unicc.biz',
-    base: 'http://localhost:4199',
+    base: 'http://localhost:8000',
+    // base: 'http://localhost:4199',
     version: 'v3'
   },
   authentication: {

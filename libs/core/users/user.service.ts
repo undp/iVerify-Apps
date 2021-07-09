@@ -36,10 +36,6 @@ export class UserService extends BaseService {
     	return this.http.get<Users>( this.getUrl(this.uris.list), { params: this.getParamsFromObject(options) });
 	}
 	
-	getUsersExtra(data): Observable<any> {
-		return this.http.get<any>(this.getUrl(this.uris.user_extra), { params: data });
-	}
-
   	register(body: UserRegistration = null): Observable<Users> {
     	return this.http.post<Users>( this.getUrl(this.uris.register), body);
   	}
@@ -58,10 +54,6 @@ export class UserService extends BaseService {
 
 	updateUser(body: Users, id: number): Observable<Users> {
 		return this.http.put<Users>( this.getUrl(this.uris.update_user).replace(':id', id.toString()), body);
-	}
-
-	saveUserExtra(data): Observable<any> {
-		return this.http.post<any>(this.getUrl(this.uris.user_extra), data);
 	}
 	
 	deleteUser(id: number): Observable<Users> {
@@ -90,14 +82,6 @@ export class UserService extends BaseService {
 
 	updateContact(body: Contacts, id: number): Observable<Contacts> {
 		return this.http.put<Contacts>( this.getUrl(this.uris.update_contact).replace(':id', id.toString()), body);
-	}
-
-	exportUser(data) {
-		return this.http.post( this.getUrl(this.uris.export_user), data, {responseType: 'blob'});
-	}
-
-	importUser(data) {
-		return this.http.post( this.getUrl(this.uris.import_user), data);
 	}
 
 	getUserActivity(options: ListUserOptions = null, id: number): Observable<any> {

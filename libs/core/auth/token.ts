@@ -1,8 +1,8 @@
 export interface Token {
-  token_type?: string;
-  expires_in?: number;
-  access_token?: string;
-  refresh_token?: string;
+  // token_type?: string;
+  // expires_in?: number;
+  accessToken?: string;
+  refreshToken?: string;
 }
 
 export interface TokenPayload {

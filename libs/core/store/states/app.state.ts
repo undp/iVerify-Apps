@@ -13,7 +13,6 @@ export interface AppState {
   router?: RouterReducerState;
   user: UserState;
   userPermissions: UserPermissionsState;
-  config: ConfigState;
   roles: RolesState;
   permissions: PermissionsState;
   users: UsersState;
@@ -22,7 +21,6 @@ export interface AppState {
 export const initialAppState: AppState = {
   user: initialUserState,
   userPermissions: initialUserPermissionsState,
-  config: initialConfigState,
   roles: initialRolesState,
   permissions: initialPermissionsState,
   users: initialUsersState,
