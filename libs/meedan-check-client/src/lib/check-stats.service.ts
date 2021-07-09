@@ -15,7 +15,7 @@ export class CheckStatsService{
         private helper: CheckClientHelperService
         ){}
 
-    getTicketsByAgent(startDate: Date, endDate: Date): Observable<any>{
+    getTicketsByAgent(startDate: string, endDate: string): Observable<any>{
         const query: string = this.helper.buildTicketsByAgentQuery(startDate, endDate);
         const headers = this.config.headers;
         return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
@@ -79,7 +79,7 @@ export class CheckStatsService{
         );
     };
 
-    getTicketsBySource(startDate: Date, endDate: Date): Observable<any>{
+    getTicketsBySource(startDate: string, endDate: string): Observable<any>{
         const query: string = this.helper.buildTicketsBySourceQuery(startDate, endDate);
         const headers = this.config.headers;
         return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
@@ -92,7 +92,7 @@ export class CheckStatsService{
         );
     };
 
-    getTicketsByType(startDate: Date, endDate: Date): Observable<any>{
+    getTicketsByType(startDate: string, endDate: string): Observable<any>{
         const query: string = this.helper.buildTicketsByTypeQuery(startDate, endDate);
         const headers = this.config.headers;
         return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
@@ -105,7 +105,7 @@ export class CheckStatsService{
         );
     };
 
-    getTicketsByChannel(startDate: Date, endDate: Date): Observable<any>{
+    getTicketsByChannel(startDate: string, endDate: string): Observable<any>{
         const query: string = this.helper.buildTicketsByChannelQuery(startDate, endDate);
         const headers = this.config.headers;
         return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(

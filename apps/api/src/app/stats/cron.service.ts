@@ -10,29 +10,27 @@ export class StatsCronService{
 
     @Timeout(5000)
     async handleTimeout(){
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setHours(new Date().getHours() -48);
-        this.logger.log(`Running initial job with startDate ${startDate} and endDate ${endDate}`)
-        return await this.fetchAndStore(startDate, endDate);
+        const dbIsEmpty = await this.statsService.dbIsEmpty();
+        if(!dbIsEmpty) return;
+        const day = new Date();
+        this.logger.log(`Running initial job for day (UTC) ${day.toUTCString()}`)
+        return await this.fetchAndStore(day, true);
     }
     
-    @Cron(CronExpression.EVERY_HOUR)
+    @Cron(CronExpression.EVERY_DAY_AT_1AM)
     async handleCron(){
-        const endDate = new Date().toISOString();
-        const startDate = new Date();
-        startDate.setHours(new Date().getHours() -24);
-        this.logger.log(`Running cron job with startDate ${startDate} and endDate ${endDate}`)
-        return await this.fetchAndStore(startDate, endDate);
+        const day = new Date();
+        this.logger.log(`Running stats cron job for dat (UTC) ${day.toUTCString()}`)
+        return await this.fetchAndStore(day);
     }
 
-    async fetchAndStore(startDate, endDate){
+    async fetchAndStore(day: Date, allPrevious?: boolean){
         try{            
-            await this.statsService.fetchAndStore(startDate, endDate);
+            await this.statsService.fetchAndStore(day, allPrevious);
             this.logger.log('Sats saved successfully.')
         } catch(e){
             this.logger.error('Stats Cron job error: ', e.message);
-            throw new HttpException(e.message, 500);
+            throw new HttpException(e.message, 500); 
         }
     }
 }

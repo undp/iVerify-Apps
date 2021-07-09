@@ -1,6 +1,6 @@
 import { HttpException, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Equal, In, LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm";
+import { Between, Equal, In, LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm";
 import { InfoLogger } from "../logger/info-logger.service";
 import { Stats } from "./models/stats.model";
 import { DateTime, Interval } from 'luxon';
@@ -24,7 +24,7 @@ export class StatsService{
         ) {
     }
 
-    async processItemStatusChanged(id: string, startDate: Date, endDate: Date){
+    async processItemStatusChanged(id: string, day: string){
         const results = await this.checkStatsClient.getTicketLastStatus(id).toPromise();
         const creationDate = DateTime.fromSeconds(+results.project_media.created_at);
         const title = results.project_media.title;
@@ -38,23 +38,39 @@ export class StatsService{
         const activeStatuses = StatusesMap.filter(status => !status.default).map(status => status.value);
         if(initialStates.indexOf(values[0]) > -1 && resolutionStatuses.indexOf(values[1]) > -1){
             const resolutionTime = Math.round(Interval.fromDateTimes(creationDate, resolutionDate).length('hours'));
-            const stats: Partial<Stats> = this.formatService.formatResolutionTime(startDate, endDate, title, resolutionTime);
+            const stats: Partial<Stats> = this.formatService.formatResolutionTime(day, title, resolutionTime);
             await this.saveOne(stats);
         }
         if(defaultStatuses.indexOf(values[0]) > -1 && activeStatuses.indexOf(values[1]) > -1){
             const responseTime = Math.round(Interval.fromDateTimes(creationDate, resolutionDate).length('hours'));
-            const stats: Partial<Stats> = this.formatService.formatResponseTime(startDate, endDate, title, responseTime);
+            const stats: Partial<Stats> = this.formatService.formatResponseTime(day, title, responseTime);
             await this.saveOne(stats);
         }
     }
 
-    async fetchAndStore(startDate: Date, endDate: Date){
+    async fetchAndStore(day: Date, allPrevius?: boolean){
         try{
+            const endDate = this.formatService.formatDate(day);
+
+            const previousDay = new Date(day.getTime());
+            previousDay.setHours(day.getHours() -24);
+            
+            const previousYear = new Date(day.getTime());
+            previousYear.setFullYear(day.getFullYear() -1);
+            
+
+            const startDate = allPrevius ? this.formatService.formatDate(previousYear) : this.formatService.formatDate(previousDay);
+
+            this.logger.log('Fetching tickes by agent..');
             const ticketsByAgent: Stats[] = await this.getTicketsByAgent(startDate, endDate);
-            const ticketsByTag: Stats[] = await this.getTicketsByTags(startDate, endDate);
-            const ticketsByStatus: Stats[] = await this.getTicketsByStatus(startDate, endDate);
+            this.logger.log('Fetching tickes by tags..');
+            const ticketsByTag: Stats[] = await this.getTicketsByTags(endDate);
+            this.logger.log('Fetching tickes by status..');
+            const ticketsByStatus: Stats[] = await this.getTicketsByStatus(endDate);
+            this.logger.log('Fetching tickes by source..');
             const ticketsBySource: Stats[] = await this.getTicketsBySource(startDate, endDate);
-            const createdVsPublished: Stats[] = await this.getCreatedVsPublished(startDate, endDate);
+            this.logger.log('Fetching tickes by publication..');
+            const createdVsPublished: Stats[] = await this.getCreatedVsPublished(endDate);
             // const ticketsByChannel: Stats[] = await this.getTicketsByChannel(startDate, endDate);
             // const ticketsByType: Stats[] = await this.getTicketsByType(startDate, endDate);
             const stats: Stats[] = [
@@ -66,44 +82,45 @@ export class StatsService{
                 // ...this.formatService.formatTticketsByChannel(ticketsByChannel),
                 // ...this.formatService.formatTticketsByType(ticketsByType),
             ]
+            this.logger.log('Saving to DB...')
             return await this.saveMany(stats);
         }catch(e){
             throw new HttpException(e.message, 500);
         }
     }
 
-    async getTicketsByAgent(startDate: Date, endDate: Date){
+    async getTicketsByAgent(startDate: string, endDate: string){
         const results = await this.checkStatsClient.getTicketsByAgent(startDate, endDate).toPromise();
-        return this.formatService.formatTticketsByAgent(startDate, endDate, results);
+        return this.formatService.formatTticketsByAgent(endDate, results);
     }
     
-    async getTicketsByTags(startDate: Date, endDate: Date){
+    async getTicketsByTags(endDate: string){
         const results = await this.checkStatsClient.getTicketsByTags().toPromise();
-        return this.formatService.formatTticketsByTags(startDate, endDate, results);
+        return this.formatService.formatTticketsByTags(endDate, results);
     }
 
-    async getTicketsBySource(startDate: Date, endDate: Date){
+    async getTicketsBySource(startDate: string, endDate: string){
         const results = await this.checkStatsClient.getTicketsBySource(startDate, endDate).toPromise();
-        return this.formatService.formatTticketsBySource(startDate, endDate, results)
+        return this.formatService.formatTticketsBySource(endDate, results)
     }
 
-    async getCreatedVsPublished(startDate: Date, endDate: Date){
+    async getCreatedVsPublished(endDate: string){
         const results = await this.checkStatsClient.getCreatedVsPublished().toPromise();
-        return this.formatService.formatCreatedVsPublished(startDate, endDate, results);
+        return this.formatService.formatCreatedVsPublished(endDate, results);
     }
 
-    async getTicketsByStatus(startDate: Date, endDate: Date){
+    async getTicketsByStatus(endDate: string){
         const results = await this.checkStatsClient.getTicketsByStatuses().toPromise();
-        return this.formatService.formatTticketsByStatus(startDate, endDate, results);
+        return this.formatService.formatTticketsByStatus(endDate, results);
     }
 
-    async getTicketsByChannel(startDate: Date, endDate: Date){
-        return await this.checkStatsClient.getTicketsByChannel(startDate, endDate).toPromise();
-    }
+    // async getTicketsByChannel(startDate: string, endDate: string){
+    //     return await this.checkStatsClient.getTicketsByChannel(startDate, endDate).toPromise();
+    // }
 
-    async getTicketsByType(startDate: Date, endDate: Date){
-        return await this.checkStatsClient.getTicketsByType(startDate, endDate).toPromise();
-    }
+    // async getTicketsByType(startDate: string, endDate: string){
+    //     return await this.checkStatsClient.getTicketsByType(startDate, endDate).toPromise();
+    // }
 
 
     async saveMany(stats: Stats[]){
@@ -119,13 +136,12 @@ export class StatsService{
     }
 
     async getByDate(startDate: Date, endDate: Date){
-        const formattedStart = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}`;
-        const formattedEnd = `${endDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate()}`;
+        const formattedStart = this.formatService.formatDate(startDate);
+        const formattedEnd = this.formatService.formatDate(endDate);
 
         const aggregationStats: Stats[] = await this.statsRepository.find({
             where: {
-                startDate: MoreThanOrEqual(formattedStart),
-                endDate: LessThanOrEqual(formattedEnd),
+                day: Between(formattedStart, formattedEnd),
                 countBy: In([
                     CountBy.agentUnstarted.toString(),
                     CountBy.agentProcessing.toString(),
@@ -136,15 +152,14 @@ export class StatsService{
         });
         const aggregatedStats = this.aggregate(aggregationStats);
 
-        const searchStart = new Date();
+        const searchStart = new Date(endDate.getTime());
         searchStart.setHours(endDate.getHours() -24);
-        const formattedSearchStart = `${searchStart.getFullYear()}-${searchStart.getMonth() + 1}-${searchStart.getDate()}`;
+        const formattedSearchStart = this.formatService.formatDate(searchStart);
 
 
         const latestStats: Stats[] = await this.statsRepository.find({
             where: {
-                startDate: MoreThanOrEqual(formattedSearchStart),
-                endDate: LessThanOrEqual(formattedEnd),
+                day: Between(formattedSearchStart, formattedEnd),
                 countBy: In([
                     CountBy.createdVsPublished.toString(),
                     CountBy.tag.toString(),
@@ -157,10 +172,15 @@ export class StatsService{
         const latest = this.aggregateByCountBy(latestStats);
 
         return {
-            range: { startDate, endDate },
-            results: {...aggregatedStats, ...latest}
+            range: { startDate: formattedStart, endDate: formattedEnd },
+            results: {...aggregatedStats, ...latest} 
         }
 
+    }
+
+    async dbIsEmpty(){
+        const count = await this.statsRepository.count({});
+        return count === 0;
     }
 
     private aggregateByCountBy(stats: Stats[]){

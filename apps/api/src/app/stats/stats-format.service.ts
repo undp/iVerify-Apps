@@ -5,7 +5,11 @@ import { Stats } from "./models/stats.model";
 
 @Injectable()
 export class StatsFormatService{
-    formatTticketsByAgent(startDate: Date, endDate: Date, results: any): Stats[]{
+    formatDate(date: Date){
+        return `${date.getUTCFullYear()}-${date.getUTCMonth() +1}-${date.getUTCDate()}`
+    }
+
+    formatTticketsByAgent(endDate: string, results: any): Stats[]{
         const edges: any[] = results.search.medias.edges;
         const unstartedStatuses = StatusesMap.filter(status => status.default).map(status => status.value);
         const processingStatuses = StatusesMap.filter(status => !status.default && !status.resolution).map(status => status.value);
@@ -37,9 +41,9 @@ export class StatsFormatService{
         }, {});
 
         return [
-            ...this.buildStatsFromCount(startDate, endDate, unstartedCount, CountBy.agentUnstarted),
-            ...this.buildStatsFromCount(startDate, endDate, processingCount, CountBy.agentProcessing),
-            ...this.buildStatsFromCount(startDate, endDate, solvedCount, CountBy.agentSolved)
+            ...this.buildStatsFromCount(endDate, unstartedCount, CountBy.agentUnstarted),
+            ...this.buildStatsFromCount(endDate, processingCount, CountBy.agentProcessing),
+            ...this.buildStatsFromCount(endDate, solvedCount, CountBy.agentSolved)
         ];
     }
     
@@ -47,16 +51,16 @@ export class StatsFormatService{
         return [];
     }
 
-    formatTticketsByTags(startDate: Date, endDate: Date, results): Stats[]{
+    formatTticketsByTags(endDate: string, results): Stats[]{
         const count = results.reduce((acc, val) => {
             const tag: string = val.tag;
             acc[tag] = val.search.number_of_results;
             return acc;
         }, {});
-        return this.buildStatsFromCount(startDate, endDate, count, CountBy.tag);
+        return this.buildStatsFromCount(endDate, count, CountBy.tag);
     }
 
-    formatTticketsByStatus(startDate: Date, endDate: Date, results: any): Stats[]{
+    formatTticketsByStatus(endDate: string, results: any): Stats[]{
         
 // [
 //   {
@@ -76,11 +80,11 @@ export class StatsFormatService{
             acc[status] = val.search.number_of_results;
             return acc;
         }, {});
-        return this.buildStatsFromCount(startDate, endDate, count, CountBy.status);
+        return this.buildStatsFromCount(endDate, count, CountBy.status);
 
     }
 
-    formatTticketsBySource(startDate: Date, endDate: Date, results: any): Stats[]{
+    formatTticketsBySource(endDate: string, results: any): Stats[]{
         const edges: any[] = results.search.medias.edges;
         const count = edges.reduce((acc, val) => {
             const domain: string = val.node.domain;
@@ -88,47 +92,44 @@ export class StatsFormatService{
             else acc[domain]++;
             return acc;
         }, {});
-        return this.buildStatsFromCount(startDate, endDate, count, CountBy.source);
+        return this.buildStatsFromCount(endDate, count, CountBy.source);
     }
 
     formatTticketsByType(any): Stats[]{
         return [];
     }
 
-    formatCreatedVsPublished(startDate, endDate, results): Stats[]{
+    formatCreatedVsPublished(endDate, results): Stats[]{
         const count = results.reduce((acc, val) => {
             const status: string = val.status;
             acc[status] = val.search.number_of_results;
             return acc;
         }, {});
-        return this.buildStatsFromCount(startDate, endDate, count, CountBy.createdVsPublished);
+        return this.buildStatsFromCount(endDate, count, CountBy.createdVsPublished);
     }
 
-    formatResponseTime(startDate, endDate, title, resolutionTime): Partial<Stats>{
+    formatResponseTime(day, title, resolutionTime): Partial<Stats>{
         return {
-            startDate,
-            endDate,
+            day,
             countBy: CountBy.resolutionVelocity,
             category: title,
             count: resolutionTime
         }
     }
 
-    formatResolutionTime(startDate, endDate, title, resolutionTime): Partial<Stats>{
+    formatResolutionTime(day, title, resolutionTime): Partial<Stats>{
         return {
-            startDate,
-            endDate,
+            day,
             countBy: CountBy.resolutionVelocity,
             category: title,
             count: resolutionTime
         }
     }
 
-    private buildStatsFromCount(startDate: Date, endDate: Date, count: Object, countBy: CountBy){
+    private buildStatsFromCount(day, count: Object, countBy: CountBy){
         return Object.keys(count).reduce((acc, val) => {
             const stat: Partial<Stats> = {
-                startDate,
-                endDate,
+                day,
                 countBy,
                 category: val,
                 count: count[val]
