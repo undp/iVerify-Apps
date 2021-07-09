@@ -8,5 +8,6 @@ module.exports = {
     '<rootDir>/apps/triage',
     '<rootDir>/libs/crowdtangle-client',
     '<rootDir>/libs/ml-service-client',
+    '<rootDir>/libs/iverify-common',
   ],
 };

@@ -67,4 +67,140 @@ export class CheckClientHelperService{
           sexually_explicit_score: toxicityScores.sexual_explicit
         })
     }
+
+    buildTicketsByAgentQuery(startDate: string, endDate: string){
+      const searchQuery = JSON.stringify({
+        range: {
+          created_at: {
+            start_time: startDate,
+            end_time: endDate
+          }
+        },
+        archived: 1
+      });
+
+
+      return `query {
+        search (query: ${JSON.stringify(searchQuery)}) {
+        number_of_results
+        medias {
+          edges {
+            node {
+              status
+              account {
+                user{
+                  name
+                }
+              }
+              }
+            }
+          }
+        }
+      }`
+    }
+
+    buildTicketsByTypeQuery(startDate: string, endDate: string){
+      return '';
+    }
+
+    buildTicketsByChannelQuery(startDate: string, endDate: string){
+      return '';
+    }
+
+    buildTicketsBySourceQuery(startDate: string, endDate: string){
+      const searchQuery = JSON.stringify({
+        range: {
+          created_at: {
+            start_time: startDate,
+            end_time: endDate
+          }
+        },
+        archived: 1        
+      });
+
+      return `query {
+        search (query: ${JSON.stringify(searchQuery)}) {
+        number_of_results
+        medias {
+          edges {
+            node {
+              domain
+                source {
+                  name
+                  }
+              }
+            }
+          }
+        }
+      }`
+    }
+
+    buildTeamTagsQuery(team: string){
+     return `query {
+        team(slug: "${team}") {
+          tag_texts {
+            edges {
+              node {
+                text
+              }
+            }
+          }
+        }
+      }`
+    }
+
+    buildTicketsByTagQuery(tag){
+      const searchQuery = JSON.stringify({
+        tags: [tag],
+        archived: 1
+      })
+      return `query {
+        search(query: ${JSON.stringify(searchQuery)}) {
+          number_of_results
+        }
+      }`
+    }
+
+    buildTicketsByStatusQuery(status: string){
+      const searchQuery = JSON.stringify({
+        verification_status: [status],
+        archived: 1
+      });
+
+      return `query {
+        search(query: ${JSON.stringify(searchQuery)}) {
+          number_of_results
+        }
+      }`
+    }
+
+    buildCreatedVsPublishedQuery(publishedStatus: string){
+      const searchQuery = JSON.stringify({
+        report_status: [publishedStatus],
+        archived: 1
+      })
+      return `query {
+        search(query: ${JSON.stringify(searchQuery)}) {
+          number_of_results
+        }
+      }`
+    }
+
+    buildTicketLastStatusQuery(id: string){
+      return `query {
+        project_media(ids: "${id}") {
+          title
+          created_at
+          log(last: 2) {
+            edges {
+              node {
+                event_type
+                object_changes_json
+                created_at
+              }
+            }
+          }
+        }
+      }`
+    }
 }

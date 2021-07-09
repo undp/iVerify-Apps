@@ -1,27 +1,53 @@
-import { SchemaFactory, Schema, Prop } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 
-@Schema({timestamps: true})
-export class Roles extends Document {
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '../users/user.model';
 
-    @Prop({ require: true})
-    name: string;
+@Entity()
+export class Roles{
+    @PrimaryGeneratedColumn()
+    id: number
 
-    @Prop()
-    description: string;
+    @Column({ unique: true })
+    name: string
 
-    @Prop({ require: true})
-    resource: string;
+    @Column()
+    description: string
 
-    @Prop({ default: null})
-    createdBy: string;
+    @Column()
+    resource: string
+
+    @Column()
+    createdBy: string
+
+    @Column()
+    updatedBy: string
+
+    @JoinTable()
+    @ManyToMany(type => User, user => user.roles)
+    users: User[]
+}
+
+// @Schema({timestamps: true})
+// export class Roles extends Document {
+
+//     @Prop({ require: true})
+//     name: string;
+
+//     @Prop()
+//     description: string;
+
+//     @Prop({ require: true})
+//     resource: string;
+
+//     @Prop({ default: null})
+//     createdBy: string;
   
-    @Prop({ default: null})
-    updatedBy: string;
+//     @Prop({ default: null})
+//     updatedBy: string;
 
     // @OneToMany('User', 'roles')
     // user: User[]
-}
+// }
 
 
-export const RolesSchema = SchemaFactory.createForClass(Roles);
+// export const RolesSchema = SchemaFactory.createForClass(Roles);

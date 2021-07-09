@@ -19,8 +19,10 @@ export class MeedanCheckClientService {
   getReport(id: string): Observable<any> {
     const query: string = this.helper.buildGetReportQuery(id);
     const headers = this.config.headers;
+    console.log(query)
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
       map(res => res.data.data.project_media),
+      tap(res => console.log('item: ', res)),
       retry(3),
       catchError(err => {
         this.logger.error('Error getting report by id: ', err.message)

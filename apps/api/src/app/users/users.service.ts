@@ -1,69 +1,79 @@
-import { Model } from 'mongoose';
-import { Injectable, BadRequestException, BadGatewayException, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
 import { hash, compare } from 'bcryptjs';
 import { InfoLogger } from '../logger/info-logger.service';
 import { User } from './user.model';
-import { PaginationQueryDto } from './dto/paginationQuery.dto';
-import { DatabaseService } from '../services/database.service';
-import { userMessages } from '../../constant/messages';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Roles } from '../roles/roles.model';
+import { PaginationQueryDto } from '../common/pagination-query.dto';
 
 @Injectable()
 export class UsersService {
 
     constructor(
-        @InjectModel('User') private readonly userModel: Model<User>,
-        private readonly databaseService: DatabaseService,
-        private infoLogger: InfoLogger) {
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
+        @InjectRepository(Roles)
+        private readonly rolesRepository: Repository<Roles>,
+        private infoLogger: InfoLogger
+        ) {
         this.infoLogger.setContext('UserServices');
     }
 
     public async findAll(paginationQuery: PaginationQueryDto): Promise<User[]> {    
-        return await this.databaseService.paginate(this.userModel,paginationQuery, 'roles')
+        const { limit, offset } = paginationQuery;
+        return await this.userRepository.find({
+            relations: ['roles'],
+            skip: offset,
+            take: limit
+        });
     }
 
-    async findOne(options: object): Promise<User> {
-        return await this.databaseService.findOne(this.userModel, options);
+    async findOne(id: string): Promise<User> {
+        const user: User = await this.userRepository.findOne(id, {relations: ['roles']});
+        if(!user) throw new NotFoundException(`User with id ${id} not found`);
+        return user;        
     }
 
-
-    async getUserWithPassword(options: object): Promise<User> {
-        return await this.userModel.findOne(options).select('+password').exec();
+    async findByEmail(email: string): Promise<User> {
+        const user: User = await this.userRepository.findOne({email}, {relations: ['roles']});
+        if(!user) throw new NotFoundException(`User with email ${email} not found`);
+        return user;        
     }
 
-    async findById(ID: string): Promise<User> {
-        return await this.databaseService.findById(this.userModel, ID, 'roles');
-    }
+    async registerUser(userDto: CreateUserDto, userId: string) {        
+        userDto.password = await this.encryptPassword(userDto.password);
+        userDto['createdBy'] = userId;
+        const roles: Roles[] = await Promise.all(
+            userDto.roles.map(role => this.preloadRoleByName(role))
+        ) 
 
-    async registerUser(user: CreateUserDto, userId: string) {
-        
-        user.password = await this.encryptPassword(user.password);
-        user['createdBy'] = userId;
-        user['roles'] = user.roleId;
-        delete user.roleId;
-        let userData = await  this.databaseService.create(this.userModel,user);
-        if(userData) {
-            delete userData.password;
-            return userData;
-        } else {
-            throw new BadGatewayException(userMessages.createFail)
-        }
+        const user = await  this.userRepository.create({...userDto, roles});
+        return this.userRepository.save(user);
     }
     
-    async update(ID: string, newValue: UpdateUserDto, userId: string) {
-        const user = await this.databaseService.findById(this.userModel,ID);
-        if (!user._id) {
-            throw new NotFoundException(userMessages.userNotFound)
-        } else {
-            newValue['updatedBy'] = userId
-            return await this.databaseService.findByIdAndUpdate(this.userModel, ID, newValue);
-        }
+    async update(id: string, updateDto: UpdateUserDto) {
+        if(updateDto['password']) updateDto.password = await this.encryptPassword(updateDto.password);
+        const roles: Roles[] = updateDto['roles'] ?
+        await Promise.all(
+            updateDto.roles.map(role => this.preloadRoleByName(role))
+        ) :
+        [];
+
+        const user = await this.userRepository.preload({
+            id: +id,
+            ...updateDto,
+            roles
+        });
+        if(!user) throw new NotFoundException(`User with id ${id} not found`);
+        return this.userRepository.save(user);
     }
     
-    async deleteUser(ID: string): Promise<any> {
-        return await this.databaseService.findByIdAndRemove(this.userModel, ID);
+    async deleteUser(id: string): Promise<any> {
+        const user = await this.findOne(id);
+        return this.userRepository.remove(user);
     }
 
     async encryptPassword(password) {
@@ -72,5 +82,11 @@ export class UsersService {
 
     async comparePassword(passport, comparePassword) {
         return await compare(passport, comparePassword);
+    }
+
+    private async preloadRoleByName(name: string){
+        const existingRole: Roles = await this.rolesRepository.findOne({name});
+        if(existingRole) return existingRole;
+        return this.rolesRepository.create({name})
     }
 }

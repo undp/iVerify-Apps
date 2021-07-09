@@ -4,7 +4,7 @@ COPY ./dist/apps/api .
 ENV PORT=3333
 EXPOSE ${PORT}
 RUN npm install --production
-RUN npm install reflect-metadata tslib rxjs @nestjs/platform-express
+RUN npm install reflect-metadata tslib rxjs @nestjs/platform-express mysql
 CMD node ./main.js
 
 

@@ -1,15 +1,23 @@
 import * as jwt from 'jsonwebtoken';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { InfoLogger } from '../logger/info-logger.service';
 import { environment } from '../../environments/environment'
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../users/user.model';
+import { Repository } from 'typeorm';
+import { Roles } from '../roles/roles.model';
 
 
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly usersService: UsersService,private infoLogger: InfoLogger) {
+    constructor(
+        @Inject(forwardRef(() => UsersService))
+        private readonly usersService: UsersService,
+        private infoLogger: InfoLogger
+        ) {
         this.infoLogger.setContext('AuthServices');
     }
 
@@ -19,7 +27,7 @@ export class AuthService {
             email: user.email,
             firstname: user.firstName,
             lastname: user.lastName,
-            roleId: user.roleId
+            roles: user.roles
         };
         const expiresIn = environment.tokenExpTime;
         const accessToken = jwt.sign(userObj, environment.JWTsecret, { expiresIn });
@@ -41,11 +49,11 @@ export class AuthService {
     }
 
     async validateUser(payload: JwtPayload): Promise<any> {
-        return await this.usersService.findById(payload.id);
+        return await this.usersService.findOne(payload.id);
     }
 
     async validate(email, password): Promise<any> {
-        const user = await this.usersService.getUserWithPassword({ email: email });
+        const user = await this.usersService.findByEmail(email);
         if (user) {
             return await this.usersService.comparePassword(password, user.password);
         } else {
