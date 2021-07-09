@@ -49,6 +49,9 @@
     },
     "ml-service-client": {
       "tags": []
+    },
+    "iverify-common": {
+      "tags": []
     }
   }
 }

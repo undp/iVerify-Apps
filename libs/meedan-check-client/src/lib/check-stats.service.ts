@@ -3,7 +3,7 @@ import { from, Observable } from "rxjs";
 import { catchError, concatMap, map, reduce, retry } from "rxjs/operators";
 import { CheckClientConfig } from "./config";
 import { CheckClientHelperService } from "./helper.service";
-import { StatusesMap } from "./interfaces/statuses-map";
+import { StatusesMap } from "@iverify/iverify-common";
 
 @Injectable()
 export class CheckStatsService{

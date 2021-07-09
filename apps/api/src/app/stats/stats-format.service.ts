@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { StatusesMap } from "libs/meedan-check-client/src/lib/interfaces/statuses-map";
-import { CountBy } from "./models/count-by.enum";
+import { CountBy, StatusesMap } from "@iverify/iverify-common";
 import { Stats } from "./models/stats.model";
 
 @Injectable()

@@ -8,9 +8,7 @@ import { EnumValues } from 'enum-values';
 
 import { StatsFormatService } from "./stats-format.service";
 import { CheckStatsService } from "libs/meedan-check-client/src/lib/check-stats.service";
-import { StatusesMap } from "libs/meedan-check-client/src/lib/interfaces/statuses-map";
-import { CountBy } from "./models/count-by.enum";
-import { format } from "date-fns";
+import { StatsResults, CountBy, StatusesMap } from "@iverify/iverify-common";
 
 @Injectable()
 export class StatsService{
@@ -135,7 +133,7 @@ export class StatsService{
         return this.statsRepository.save(newRecord);
     }
 
-    async getByDate(startDate: Date, endDate: Date){
+    async getByDate(startDate: Date, endDate: Date): Promise<StatsResults>{
         const formattedStart = this.formatService.formatDate(startDate);
         const formattedEnd = this.formatService.formatDate(endDate);
 
@@ -170,6 +168,7 @@ export class StatsService{
 
 
         const latest = this.aggregateByCountBy(latestStats);
+
 
         return {
             range: { startDate: formattedStart, endDate: formattedEnd },

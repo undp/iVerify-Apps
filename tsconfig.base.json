@@ -19,7 +19,8 @@
       "@iverify/meedan-check-client": ["libs/meedan-check-client/src/index.ts"],
       "@iverify/wp-client": ["libs/wp-client/src/index.ts"],
       "@iverify/crowdtangle-client": ["libs/crowdtangle-client/src/index.ts"],
-      "@iverify/ml-service-client": ["libs/ml-service-client/src/index.ts"]
+      "@iverify/ml-service-client": ["libs/ml-service-client/src/index.ts"],
+      "@iverify/iverify-common": ["libs/iverify-common/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
