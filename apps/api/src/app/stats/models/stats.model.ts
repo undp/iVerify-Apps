@@ -1,7 +1,6 @@
 
 
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { CountBy } from './count-by.enum';
 
 @Entity()
 export class Stats{

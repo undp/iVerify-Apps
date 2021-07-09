@@ -432,6 +432,27 @@
           }
         }
       }
+    },
+    "iverify-common": {
+      "root": "libs/iverify-common",
+      "sourceRoot": "libs/iverify-common/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/iverify-common/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/iverify-common"],
+          "options": {
+            "jestConfig": "libs/iverify-common/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }
