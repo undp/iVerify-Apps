@@ -28,8 +28,8 @@ env:
   CHECK_API_URL: https://check-api.checkmedia.org/api/graphql
   CHECK_API_TEAM: undp
   CHECK_FOLDER_ID: "11058"
-  WP_URL: http://iverifytest.local
-  WP_USERNAME: giovanni
+  WP_URL: http://iverifyit.com
+  WP_USERNAME: chiodi
 
 secret: 
   - name: CT_API_KEY
