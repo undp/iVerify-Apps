@@ -70,7 +70,7 @@ steps:
       kubernetesServiceEndpoint: $(k8s_service_connection)
       namespace: $(dockerImage)-js
       secretType: 'generic'
-      secretArguments: '--from-literal=CT_API_KEY=$(CT_API_KEY) --from-literal=CHECK_API_TOKEN=$(CHECK_API_TOKEN) --from-literal=WP_PASSWORD="$(WP_PASSWORD)"'
+      secretArguments: '--from-literal=CT_API_KEY=$(CT_API_KEY) --from-literal=CHECK_API_TOKEN=$(CHECK_API_TOKEN) --from-literal=WP_PASSWORD="$(WP_JS_PASSWORD)"'
       secretName: 'iverify'
   - task: HelmDeploy@0
     displayName: Helm deploy publisher
