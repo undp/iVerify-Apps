@@ -11,8 +11,8 @@ import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-// import { ToastType } from '../../toast/toast.component';
-// import { ToastService } from '../../toast/toast.service';
+import { ToastType } from '../../toast/toast.component';
+import { ToastService } from '../../toast/toast.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 // import { ListUsers 						} from '@eview/core/store/actions/users.actions';
 
@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<AppState>,
     private actions$: Actions,
-    // private toast: ToastService,
+    private toast: ToastService,
     private router: Router,
     // private modalService	: NgbModal
   ) {
@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.subs.add(
       this.actions$.pipe(ofType(EAuthActions.LoginFailure)).subscribe(() => {
-        // this.toast.show(ToastType.Warning, 'TOAST_LOGIN_ERROR');
+        this.toast.show(ToastType.Warning, 'TOAST_LOGIN_ERROR');
         this.loginForm.patchValue({ password: '' });
       })
     );

@@ -20,7 +20,6 @@ import { AuthService } from '@iverify/core/auth';
 import { CORE_PROVIDERS, PlatformLanguageToken, PlatformWindowToken } from './services';
 import { UserLoggedIn } from './store/actions/app.actions';
 import { GetCurrentUser, LogoutSuccess } from './store/actions/auth.actions';
-import { GetConfig } from './store/actions/config.actions';
 import { appEffects } from './store/effects/app.effects';
 import { appReducers } from './store/reducers/app.reducers';
 import { AppState } from './store/states/app.state';
@@ -59,7 +58,6 @@ function initActions(auth: any, store: any) {
       store.dispatch(new GetCurrentUser());
       store.dispatch(new UserLoggedIn());
     }
-    store.dispatch(new GetConfig());
     if (!token) {
       store.dispatch(new LogoutSuccess());
     }

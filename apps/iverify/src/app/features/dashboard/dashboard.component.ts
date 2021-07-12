@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '@iverify/core/environments/environment';
 // import { ConfigHelpers } from '@eview/core/config/config.helpers';
