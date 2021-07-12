@@ -15,6 +15,7 @@ export class WpPublisherService{
     categoriesIds$: Observable<number[]> = this.report$.pipe(
       map(report => this.helper.extractFactcheckingStatus(report)),
       switchMap(category => this.categoriesIds([category])),
+      tap(catIds => console.log('categoriesIds: ', catIds)),
       catchError(err => {
         throw new HttpException(err.message, 500);
       })
@@ -85,9 +86,10 @@ export class WpPublisherService{
       }
     
       private categoriesIds(categories: string[]){
+        categories = categories.map(c => c.toLowerCase());
         const wpCategories$: Observable<any> = this.wpClient.listCategories();
         const existingCategoriesIds$: Observable<number[]> = wpCategories$.pipe(
-          map(wpCategories => wpCategories.filter(category => categories.indexOf(category.name) > -1).map(category => category.id))
+          map(wpCategories => wpCategories.filter(category => categories.indexOf(category.name.toLowerCase()) > -1).map(category => category.id))
           );
         // const newCategories$: Observable<string[]> = wpCategories$.pipe(
         //   map(wpCategories => wpCategories.map(category => category.name as string)),

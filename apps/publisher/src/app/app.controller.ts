@@ -26,9 +26,11 @@ export class AppController {
 
   @Post('publish-webhook')
   async publishWebHook(@Body() body){
-    const event = body['event'];
-    const id = body.data.project_media.id;
-    if(event === 'publish_report'){
+    const parsed = JSON.parse(body)
+    const event = parsed.event;
+    const id = parsed.data.project_media.id;
+    const folderId = parsed.data.project_media.project.dbid;
+    if(event === 'event_project_media' && folderId === process.env.CHECK_FOLDER_ID){
       return this.appService.publishReportById(id).pipe(
         catchError(err => {
           throw new HttpException(err.message, 500);
