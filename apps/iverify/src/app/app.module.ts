@@ -18,7 +18,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppRoutingModule } from './app.routing';
 import { IndexModule } from './features/index/index.module';
 
-
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, `./assets/i18n/`, '.json');
 }
@@ -35,6 +34,7 @@ export function createTranslateLoader(http: HttpClient) {
         }
     })
   ],
+  exports:[],
   providers: [],
   bootstrap: [AppComponent],
 })

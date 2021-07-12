@@ -1,4 +1,3 @@
-import { ConfigState, initialConfigState } from './config.state';
 import { PermissionsState, initialPermissionsState } from './permissions.state';
 import { RolesState, initialRolesState } from './roles.state';
 import {
