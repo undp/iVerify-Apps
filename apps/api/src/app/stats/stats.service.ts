@@ -134,8 +134,14 @@ export class StatsService{
     }
 
     async getByDate(startDate: Date, endDate: Date): Promise<StatsResults>{
-        const formattedStart = this.formatService.formatDate(startDate);
-        const formattedEnd = this.formatService.formatDate(endDate);
+        const start = new Date(startDate.getTime());
+        start.setHours(startDate.getHours() -24);
+
+        const end = new Date(endDate.getTime());
+        end.setHours(endDate.getHours() +24);
+
+        const formattedStart = this.formatService.formatDate(start);
+        const formattedEnd = this.formatService.formatDate(end);
 
         const aggregationStats: Stats[] = await this.statsRepository.find({
             where: {
@@ -150,9 +156,10 @@ export class StatsService{
         });
         const aggregatedStats = this.aggregate(aggregationStats);
 
-        const searchStart = new Date(endDate.getTime());
+        const searchStart = new Date(end.getTime());
         searchStart.setHours(endDate.getHours() -24);
         const formattedSearchStart = this.formatService.formatDate(searchStart);
+        console.log({formattedSearchStart, formattedEnd})
 
 
         const latestStats: Stats[] = await this.statsRepository.find({
@@ -168,6 +175,7 @@ export class StatsService{
 
 
         const latest = this.aggregateByCountBy(latestStats);
+        console.log('latest: ', latest)
 
 
         return {
