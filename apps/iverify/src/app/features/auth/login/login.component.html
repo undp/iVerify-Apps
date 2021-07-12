@@ -4,7 +4,6 @@
 </div>
 <div class="text-center">
   <form class="form-signin" [formGroup]="loginForm">
-    
     <div class="input-group">
       <label for="inputEmail" class="sr-only">{{ 'EMAIL' | translate }}</label>
     <input
@@ -17,6 +16,8 @@
       autofocus
       formControlName="email"
     />
+    </div>
+    <div class="input-group">
       <label for="inputPassword" class="sr-only">{{
         'PASSWORD' | translate
       }}</label>
@@ -53,13 +54,13 @@
     >
       Login
     </button>
-    <button
+    <!-- <button
       class="btn btn-sm btn-link"
       type="button"
       [routerLink]="'/'"
     >
       {{ 'LOGIN_CONTINUE_ANONYMOUS' | translate }}
-    </button>
+    </button> -->
     <!-- <button
       class="btn btn-link"
       type="button"

@@ -27,7 +27,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private store: Store<AppState>,
     private actions$: Actions,
     // private toast: ToastService,
-    private router: Router,
+    private router: Router
     // private modalService	: NgbModal
   ) {
     this.subs = new Subscription();

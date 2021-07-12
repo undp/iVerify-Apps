@@ -30,12 +30,13 @@ export class PrivateSiteGuard implements CanActivate, CanActivateChild {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> {
-    return combineLatest(this.user$).pipe(
-      map(([u]) => {
+    return this.user$.pipe(
+      map(u => {
         if (!u) {
           this.router.navigate(['/login']);
           return false;
         }
+        console.log(u + '====');
         return true;
       })
     );

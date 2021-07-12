@@ -80,7 +80,10 @@
               "apps/iverify/src/favicon.ico",
               "apps/iverify/src/assets"
             ],
-            "styles": ["apps/iverify/src/styles.scss"],
+            "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "apps/iverify/src/styles.scss"
+              ],
             "scripts": []
           },
           "configurations": {

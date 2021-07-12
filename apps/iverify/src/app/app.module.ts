@@ -5,7 +5,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AuthModule } from './features/auth/auth.module';
-import { CoreModule } from '@iverify/core';
+import { CoreModule } from '@iverify/core/core.module';
 import { NgHttpLoaderModule } from 'ng-http-loader';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -16,6 +16,7 @@ import {
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppRoutingModule } from './app.routing';
+import { IndexModule } from './features/index/index.module';
 
 
 export function createTranslateLoader(http: HttpClient) {
@@ -24,7 +25,7 @@ export function createTranslateLoader(http: HttpClient) {
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [CoreModule, NgbModule, FontAwesomeModule, BrowserModule, HttpClientModule, AuthModule, RouterModule, AppRoutingModule,
+  imports: [CoreModule.forRoot([]), IndexModule, NgbModule, FontAwesomeModule, BrowserModule, HttpClientModule, AppRoutingModule, AuthModule, RouterModule, 
   NgHttpLoaderModule.forRoot(),
   TranslateModule.forRoot({
         loader: {
