@@ -29,19 +29,20 @@ export class AppController {
     try{
       const parsed = JSON.parse(body)
       const event = parsed.event;
-      const id = parsed.data.project_media.id;
-      const logEdges = parsed.data.project_media.log.edges;
-      const objectChanges = logEdges.length ? JSON.parse(logEdges[0].node.object_changes_json) : null;
-      const folderId = objectChanges && objectChanges['project_id'] ? objectChanges['project_id'][1] : null
-      if(event === 'update_projectmedia' && folderId && folderId === process.env.CHECK_FOLDER_ID){
-        return this.appService.publishReportById(id).pipe(
-          catchError(err => {
-            throw new HttpException(err.message, 500);
-          })
-        );
-      } else {
-        return null
+      if(event === 'update_projectmedia'){
+        const id = parsed.data.project_media.id;
+        const logEdges = parsed.data.project_media.log.edges;
+        const objectChanges = logEdges.length ? JSON.parse(logEdges[0].node.object_changes_json) : null;
+        const folderId = objectChanges && objectChanges['project_id'] ? objectChanges['project_id'][1] : null
+        if(folderId && folderId === process.env.CHECK_FOLDER_ID){
+          return this.appService.publishReportById(id).pipe(
+            catchError(err => {
+              throw new HttpException(err.message, 500);
+            })
+          );
+        }
       }
+      return null;
     }catch(e){
       throw new HttpException(e.message, 500);
     }
