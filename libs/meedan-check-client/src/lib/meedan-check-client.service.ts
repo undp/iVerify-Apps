@@ -22,7 +22,6 @@ export class MeedanCheckClientService {
     console.log(query)
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
       map(res => res.data.data.project_media),
-      tap(res => console.log('item: ', res)),
       retry(3),
       catchError(err => {
         this.logger.error('Error getting report by id: ', err.message)
@@ -38,7 +37,6 @@ export class MeedanCheckClientService {
     const headers = this.config.headers;
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
       map(res => res.data),
-      tap(response => console.log('response: ', response)),
       retry(3),
       catchError(err => {
         this.logger.error('Error creating item: ', err.message);
