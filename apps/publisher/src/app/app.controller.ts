@@ -26,18 +26,36 @@ export class AppController {
 
   @Post('publish-webhook')
   async publishWebHook(@Body() body){
-    const parsed = JSON.parse(body)
-    const event = parsed.event;
-    const id = parsed.data.project_media.id;
-    const folderId = parsed.data.project_media.project.dbid;
-    if(event === 'event_project_media' && folderId === process.env.CHECK_FOLDER_ID){
-      return this.appService.publishReportById(id).pipe(
-        catchError(err => {
-          throw new HttpException(err.message, 500);
-        })
-      );
-    } else {
-      return null
+    try{
+      const parsed = JSON.parse(body)
+      const event = parsed.event;
+      const id = parsed.data.project_media.id;
+      const logEdges = parsed.data.project_media.log.edges;
+      const objectChanges = logEdges.length ? JSON.parse(logEdges[0].node.object_changes_json) : null;
+      const folderId = objectChanges && objectChanges['project_id'] ? objectChanges['project_id'][1] : null
+      if(event === 'update_projectmedia' && folderId && folderId === process.env.CHECK_FOLDER_ID){
+        return this.appService.publishReportById(id).pipe(
+          catchError(err => {
+            throw new HttpException(err.message, 500);
+          })
+        );
+      } else {
+        return null
+      }
+    }catch(e){
+      throw new HttpException(e.message, 500);
     }
   }
 }
+
+// example log:
+// "log": {
+//   "edges": [
+//     {
+//       "node": {
+//         "event_type": "update_projectmedia",
+//         "object_changes_json": "{\"project_id\":[null,987]}"
+//       }
+//     }
+//   ]
+// }
