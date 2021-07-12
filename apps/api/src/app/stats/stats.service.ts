@@ -164,7 +164,7 @@ export class StatsService{
 
         const latestStats: Stats[] = await this.statsRepository.find({
             where: {
-                day: Between(formattedSearchStart, formattedEnd),
+                day: Between(formattedStart, formattedEnd),
                 countBy: In([
                     CountBy.createdVsPublished.toString(),
                     CountBy.tag.toString(),
@@ -173,9 +173,8 @@ export class StatsService{
             }
         }); 
 
-
         const latest = this.aggregateByCountBy(latestStats);
-        console.log('latest: ', latest)
+        Object.keys(latest).forEach(key => latest[key] = this.aggregateByDate(latest[key]))
 
 
         return {
@@ -190,9 +189,18 @@ export class StatsService{
         return count === 0;
     }
 
+    private aggregateByDate(stats: Stats[]){
+        return stats.reduce((acc, val) => {
+            const obj: Partial<Stats> = {category: val.category, count: val.count};
+            if(!acc[val.day]) acc[val.day] = [obj];
+            else acc[val.day].push(obj)
+            return acc;
+        }, {});
+    }
+
     private aggregateByCountBy(stats: Stats[]){
         return stats.reduce((acc, val) => {
-            const obj = {category: val.category, count: val.count};
+            const obj = {category: val.category, count: val.count, day: val.day};
             if(!acc[val.countBy]) acc[val.countBy] = [obj];
             else acc[val.countBy].push(obj)
             return acc;
