@@ -89,19 +89,19 @@ export class WpPublisherService{
         const existingCategoriesIds$: Observable<number[]> = wpCategories$.pipe(
           map(wpCategories => wpCategories.filter(category => categories.indexOf(category.name) > -1).map(category => category.id))
           );
-        const newCategories$: Observable<string[]> = wpCategories$.pipe(
-          map(wpCategories => wpCategories.map(category => category.name as string)),
-          map(wpCategories => categories.filter(category => wpCategories.indexOf(category) === -1))
-        ) 
-        const newCategoriesIds$: Observable<number[]> = newCategories$.pipe(
-          switchMap(categories => iif(()=> !!categories.length, this.createManyCategories(categories).pipe(map(category => [category.id])), of([]))),
-          scan((acc, val) => [...acc, ...val], [])
-        )
-        const categoriesIds$: Observable<number[]> = combineLatest([existingCategoriesIds$, newCategoriesIds$]).pipe(
-          map(([existingIds, newIds]) => [...existingIds, ...newIds])
-        )
+        // const newCategories$: Observable<string[]> = wpCategories$.pipe(
+        //   map(wpCategories => wpCategories.map(category => category.name as string)),
+        //   map(wpCategories => categories.filter(category => wpCategories.indexOf(category) === -1))
+        // ) 
+        // const newCategoriesIds$: Observable<number[]> = newCategories$.pipe(
+        //   switchMap(categories => iif(()=> !!categories.length, this.createManyCategories(categories).pipe(map(category => [category.id])), of([]))),
+        //   scan((acc, val) => [...acc, ...val], [])
+        // )
+        // const categoriesIds$: Observable<number[]> = combineLatest([existingCategoriesIds$, newCategoriesIds$]).pipe(
+        //   map(([existingIds, newIds]) => [...existingIds, ...newIds])
+        // )
     
-        return categoriesIds$;
+        return existingCategoriesIds$;
       }
     
       private createManyTags(tags: string[]): Observable<any>{

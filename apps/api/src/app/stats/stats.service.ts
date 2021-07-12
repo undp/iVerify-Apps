@@ -134,8 +134,14 @@ export class StatsService{
     }
 
     async getByDate(startDate: Date, endDate: Date): Promise<StatsResults>{
-        const formattedStart = this.formatService.formatDate(startDate);
-        const formattedEnd = this.formatService.formatDate(endDate);
+        const start = new Date(startDate.getTime());
+        start.setHours(startDate.getHours() -24);
+
+        const end = new Date(endDate.getTime());
+        end.setHours(endDate.getHours() +24);
+
+        const formattedStart = this.formatService.formatDate(start);
+        const formattedEnd = this.formatService.formatDate(end);
 
         const aggregationStats: Stats[] = await this.statsRepository.find({
             where: {
@@ -150,14 +156,15 @@ export class StatsService{
         });
         const aggregatedStats = this.aggregate(aggregationStats);
 
-        const searchStart = new Date(endDate.getTime());
+        const searchStart = new Date(end.getTime());
         searchStart.setHours(endDate.getHours() -24);
         const formattedSearchStart = this.formatService.formatDate(searchStart);
+        console.log({formattedSearchStart, formattedEnd})
 
 
         const latestStats: Stats[] = await this.statsRepository.find({
             where: {
-                day: Between(formattedSearchStart, formattedEnd),
+                day: Between(formattedStart, formattedEnd),
                 countBy: In([
                     CountBy.createdVsPublished.toString(),
                     CountBy.tag.toString(),
@@ -166,8 +173,8 @@ export class StatsService{
             }
         }); 
 
-
         const latest = this.aggregateByCountBy(latestStats);
+        Object.keys(latest).forEach(key => latest[key] = this.aggregateByDate(latest[key]))
 
 
         return {
@@ -182,9 +189,18 @@ export class StatsService{
         return count === 0;
     }
 
+    private aggregateByDate(stats: Stats[]){
+        return stats.reduce((acc, val) => {
+            const obj: Partial<Stats> = {category: val.category, count: val.count};
+            if(!acc[val.day]) acc[val.day] = [obj];
+            else acc[val.day].push(obj)
+            return acc;
+        }, {});
+    }
+
     private aggregateByCountBy(stats: Stats[]){
         return stats.reduce((acc, val) => {
-            const obj = {category: val.category, count: val.count};
+            const obj = {category: val.category, count: val.count, day: val.day};
             if(!acc[val.countBy]) acc[val.countBy] = [obj];
             else acc[val.countBy].push(obj)
             return acc;

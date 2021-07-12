@@ -8,20 +8,27 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Post('meedan-reports')
+  @Post('test-endpoint')
   async publishMeedanReports(@Body() body){
     const id = body['id'];
     return this.appService.publishReportById(id).pipe(
       catchError(err => {
+        console.log(err)
         throw new HttpException(err.message, 500);
       })
     );
-    // const event = body['event'];
-    // const id = body.data.project_media.id;
-    // if(event === 'publish_report'){
-    // return this.appService.publishReportById(id);
-    // }else{
-    //   return null;
-    // }
+  }
+
+  @Post('publish-webhook')
+  async publishWebHook(@Body() body){
+    const event = body['event'];
+    const id = body.data.project_media.id;
+    if(event === 'publish_report'){
+      return this.appService.publishReportById(id).pipe(
+        catchError(err => {
+          throw new HttpException(err.message, 500);
+        })
+      );
+    }
   }
 }
