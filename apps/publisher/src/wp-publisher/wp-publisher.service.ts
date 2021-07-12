@@ -15,7 +15,6 @@ export class WpPublisherService{
     categoriesIds$: Observable<number[]> = this.report$.pipe(
       map(report => this.helper.extractFactcheckingStatus(report)),
       switchMap(category => this.categoriesIds([category])),
-      tap(catIds => console.log('categoriesIds: ', catIds)),
       catchError(err => {
         throw new HttpException(err.message, 500);
       })

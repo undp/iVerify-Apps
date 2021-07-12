@@ -31,6 +31,8 @@ export class AppController {
           throw new HttpException(err.message, 500);
         })
       );
+    } else {
+      return null
     }
   }
 }
