@@ -24,7 +24,6 @@ export class AppComponent implements OnInit {
   private store: Store<AppState>,
   private actions$: Actions,
   private router: Router) {
-
   }
 
   ngOnInit() {

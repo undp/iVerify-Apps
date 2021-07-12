@@ -56,7 +56,7 @@ export class AuthService {
       })
       .pipe(
         switchMap(loginResponse => {
-          this._token = { ...this.token };
+          this._token = { ...this.token, ...loginResponse.token};
           this.storage.set(STORAGE_TOKEN_KEY, this._token);
           const payload = this.getTokenPayload(this._token);
           if (payload && payload.iat)
@@ -102,18 +102,20 @@ export class AuthService {
   token(): Observable<any> {
     if (this.isTokenValid(this._token)) return of(this._token);
     if (this.hasRefreshToken(this._token))
-      return this.sendRequest({
-        client_id: environment.authentication.client_id,
-        client_secret: environment.authentication.client_secret,
-        grant_type: GrantType.RefreshToken,
-        refresh_token: this._token.refreshToken
-      });
+      return this.sendRequest(
+        {
+          client_id: environment.authentication.client_id,
+          client_secret: environment.authentication.client_secret,
+          grant_type: GrantType.RefreshToken,
+          refresh_token: this._token.refreshToken
+        }
+      );
     return of(null);
   }
 
   getTokenPayload(token: any): TokenPayload | null {
     try {
-      const [, payload] = token.access_token.split('.');
+      const [, payload] = token.accessToken.split('.');
       return JSON.parse(atob(payload));
     } catch {
       return null;
@@ -124,7 +126,7 @@ export class AuthService {
     const payload = this.getTokenPayload(token);
     if (!payload) return false;
     const now = Math.ceil(new Date().getTime() / 1000) + this.offset;
-    return payload.nbf <= now && now < payload.exp;
+    return now < payload.exp;
   }
 
   hasRefreshToken(token: Token): boolean {

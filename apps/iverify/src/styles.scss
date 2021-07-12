@@ -1,1 +1,252 @@
 /* You can add global styles to this file, and also import other style files */
+* {
+  top: 0;
+}
+@import 'assets/scss/index';
+
+html,
+body {
+  height: 100%;
+  padding-top: constant(safe-area-inset-top); //for iOS 11.2
+  padding-top: env(safe-area-inset-top); //for iOS 11.1
+}
+
+body {
+  display: flex;
+  background-color: #fff;
+  iverify-root {
+    width: 100%;
+  }
+}
+
+
+.bg-dark {
+  background-color: $undp-jtf-bg-color !important;
+}
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 100%;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.33;
+  padding: 10px 16px;
+  &.btn-md {
+    width: 48px;
+    height: 48px;
+    font-size: 16px;
+  }
+  &.btn-xl {
+    width: 64px;
+    height: 64px;
+    font-size: 24px;
+    padding: 10px 21px;
+  }
+  fa-icon {
+    margin: 0;
+  }
+}
+
+.btn {
+  fa-icon {
+    margin-right: 4px;
+  }
+}
+
+// ng2-dragula styles.
+.gu-mirror {
+  position: fixed !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+  opacity: 0.8;
+  -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=80)';
+  filter: alpha(opacity=80);
+  pointer-events: none;
+}
+
+.gu-hide {
+  left: -9999px !important;
+}
+
+.gu-unselectable {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+.gu-transit {
+  opacity: 0.2;
+  -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=20)';
+  filter: alpha(opacity=20);
+}
+
+.color-picker .left {
+  display: none;
+}
+
+.color-picker .type-policy {
+  display: none;
+}
+.icon-picker {
+  left: -170px !important;
+}
+
+#fm-branding-bar > span {
+  display: none;
+}
+
+.font-bold {
+  .nav-tabs .nav-link {
+    font-weight: bold;
+  }
+}
+
+span.switch {
+  background: lightgrey !important;
+}
+
+span.switch-medium {
+  width: 55px !important;
+  small {
+    width: 25px !important;
+    height: 25px !important;
+    margin: 2px 3px;
+  }
+  &.checked small {
+    left: 32px;
+    margin: 2px 0px;
+  }
+}
+
+span.switch-medium.checked {
+  small {
+    left: 27px !important;
+  }
+  background: #ffc107 !important;
+}
+
+/*font roboto bold*/
+.fontRobotoBold {
+  font-family: "Lato-Bold";
+  &.header-text {
+    font-size: 24px;
+  }
+}
+
+/*font roboto medium*/
+.fontRobotoMedium {
+  font-family: "Lato-Light";
+}
+
+/*font roboto regular*/
+.fontRobotoRegular {
+  font-family: "Lato-Regular";
+}
+
+/*font roboto regular*/
+.fontRobotoThin {
+  font-family: "Lato-Thin";
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+li.fm-divider {
+  display: none !important;
+}
+
+.font-size-14 {
+  font-size: 14px;
+}
+
+.font-size-16 {
+  font-size: 16px;
+}
+
+.font-size-12 {
+  font-size: 12px;
+}
+
+.flex-header-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 2.5em;
+  margin-right: 1em;
+  align-items: center;
+  max-width: 100%;  
+}
+
+.custom-input-group-text {
+  display: flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 0.25rem;
+}
+
+.flex-custom-date-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 1em;
+  margin-right: 1em;
+  margin-left: 1em;
+  align-items: center;
+  gap: 1em;
+  min-width: 80%;
+}
+
+.custom-btn-outline-primary.disabled, .custom-btn-outline-primary:disabled {
+  color: #000000 !important;
+  background-color: transparent !important;
+  border: 1px solid #000000;
+}
+
+.custom-btn-outline-primary {
+  color: #000000;
+  border-color: #000000;
+}
+
+.custom-btn-outline-primary:not(:disabled):hover {
+  color: #ffffff;
+  background-color: $undp-jtf-accent-color;
+  border: none;
+}
+
+.nav-tabs .nav-link:hover {
+  border: none !important;
+}
+
+.nav-tabs .nav-link.active {
+  border-bottom: 4.5px solid $undp-jtf-accent-color !important;
+  background-color: #FAFAFA !important;
+}
+
+.custom-tab-header {
+  font-size: 16px;
+  color: $undp-jtf-accent-color !important;
+}
+
+.custom-report-info {
+  font-size: 14px;
+  color: #000000 !important;
+}
+
+.custom-legend {
+  width: 18px;
+  padding-left:1px;
+  height: 18px;
+  opacity: 0.7;
+  margin-right: 5px;
+  float:left;
+}
+

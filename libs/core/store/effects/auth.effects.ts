@@ -63,7 +63,7 @@ export class AuthEffects {
   getCurrentUser: Observable<any> = this.actions$.pipe(
     ofType<GetCurrentUser>(EAuthActions.GetCurrentUser),
     switchMap(() => {
-      return this.authService.me().pipe(
+      return this.authService.token().pipe(
         switchMap(user => [
           user ? new GetCurrentUserSuccess(user) : new GetCurrentUserFailure()
         ]),
