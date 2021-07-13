@@ -35,7 +35,7 @@ export class WpPublisherService{
         switchMap(data => this.wpClient.createMedia(data)),
         map(res => res['id']),
         catchError(err => {
-          throw new HttpException(err.message, 500);
+          throw new HttpException(err.message, 500); 
         })
       )
   
