@@ -30,6 +30,18 @@ export class MeedanCheckClientService {
     );
   }
 
+  getReportWithQuery(query: string): Observable<any> {
+    const headers = this.config.headers;
+    return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
+      map(res => res.data.data.project_media),
+      retry(3),
+      catchError(err => {
+        this.logger.error('Error getting report by id: ', err.message)
+        throw new HttpException(err.message, 500);
+      })
+    );
+  }
+
   createItem(url: string, toxicityScores: ToxicityScores): Observable<any>{
     const folderId: number = +this.config.uploadFolderId;
     const set_tasks_responses: string = this.helper.buildTasksResponses(toxicityScores);
