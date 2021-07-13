@@ -4,7 +4,7 @@ import { CommentStatus, CreatePostDto, PostFormat, PostStatus } from "libs/wp-cl
 import { CreateTagDto } from "libs/wp-client/src/lib/interfaces/create-tag.dto";
 import { WpClientService } from "libs/wp-client/src/lib/wp-client.service";
 import { combineLatest, from, iif, Observable, of } from "rxjs";
-import { catchError, concatMap, filter, map, scan, switchMap, tap } from "rxjs/operators";
+import { catchError, concatMap, filter, map, reduce, scan, switchMap, tap } from "rxjs/operators";
 import { SharedService } from "../shared/shared.service";
 import { WpPublisherHelper } from "./wp-publisher-helper.service";
 
@@ -49,6 +49,7 @@ export class WpPublisherService{
     post$: Observable<any> = combineLatest([this.report$, this.author$, this.mediaId$, this.tagsIds$, this.categoriesIds$]).pipe(
         map(([report, author, media, tags, categories]) => this.helper.buildPostFromReport(report, author, media, tags, categories)),
         filter(post => !!post.title.length),
+        tap(() => console.log('emitting to publish...')),
         switchMap(postDto => this.wpClient.publishPost(postDto)),
         catchError(err => {
           throw new HttpException(err.message, 500);
@@ -73,7 +74,7 @@ export class WpPublisherService{
         ) 
         const newTagsIds$: Observable<number[]> = newTags$.pipe(
           switchMap(tags => iif(()=> !!tags.length, this.createManyTags(tags).pipe(map(tag => [tag.id])), of([]))),
-          scan((acc, val) => [...acc, ...val], [])
+          reduce((acc, val) => [...acc, ...val], [])
         )
         const tagsIds$: Observable<number[]> = combineLatest([existingTagsIds$, newTagsIds$]).pipe(
           map(([existingIds, newIds]) => [...existingIds, ...newIds]),
