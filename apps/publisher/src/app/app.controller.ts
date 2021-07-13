@@ -29,12 +29,19 @@ export class AppController {
     try{
       const parsed = JSON.parse(body)
       const event = parsed.event;
+      console.log('received event: ', event);
       if(event === 'update_projectmedia'){
         const id = parsed.data.project_media.id;
+        console.log('item id: ', id);
         const logEdges = parsed.data.project_media.log.edges;
         const objectChanges = logEdges.length ? JSON.parse(logEdges[0].node.object_changes_json) : null;
-        const folderId = objectChanges && objectChanges['project_id'] ? objectChanges['project_id'][1] : null
-        if(folderId && folderId === process.env.CHECK_FOLDER_ID){
+        console.log('object changes: ', objectChanges);
+        const folderId = objectChanges && objectChanges['project_id'] ? objectChanges['project_id'][1] : null;
+        console.log('folder id: ', folderId);
+        const referenceFolderId = process.env.CHECK_FOLDER_ID;
+        console.log('reference folder id: ', referenceFolderId);
+        if(folderId && folderId === referenceFolderId){
+          console.log('publishing post...');
           return this.appService.publishReportById(id).pipe(
             catchError(err => {
               throw new HttpException(err.message, 500);
