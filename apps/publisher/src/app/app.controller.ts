@@ -33,16 +33,19 @@ export class AppController {
       this.logger.log('body received: ', body);
       const parsed = body;
       const event = parsed.event;
-      const data = parsed.data;
-      Object.keys(parsed).forEach(key => this.logger.log('data key', key))
-      Object.keys(data).forEach(key => this.logger.log('data key', key))
-      const project_media = data.project_media;
-      Object.keys(project_media).forEach(key => this.logger.log('project_media key', key))
       this.logger.log('received event: ', event);
+      const data = parsed.data;
+      this.logger.log('body.data: ', data);
+      this.logger.log('type of data: ', typeof data);
+
+      Object.keys(parsed).forEach(key => this.logger.log('body key', key))
+      // Object.keys(data).forEach(key => this.logger.log('data key', key))
+      const project_media = JSON.parse(data).project_media;
+      Object.keys(project_media).forEach(key => this.logger.log('project_media key', key))
       if(event === 'update_project_media'){
-        const id = parsed.data.project_media.dbid;
+        const id = project_media.dbid;
         this.logger.log('item id: ', id);
-        const logEdges = parsed.data.project_media.log.edges;
+        const logEdges = project_media.log.edges;
         const objectChanges = logEdges.length ? JSON.parse(logEdges[0].node.object_changes_json) : null;
         this.logger.log('object changes: ', objectChanges);
         const folderId = objectChanges && objectChanges['project_id'] ? objectChanges['project_id'][1] : null;
