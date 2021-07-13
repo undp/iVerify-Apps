@@ -36,7 +36,6 @@ export class PrivateSiteGuard implements CanActivate, CanActivateChild {
           this.router.navigate(['/login']);
           return false;
         }
-        console.log(u + '====');
         return true;
       })
     );

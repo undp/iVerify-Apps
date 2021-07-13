@@ -1,12 +1,17 @@
 import { RouterModule, Routes } from '@angular/router';
 
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { IndexComponent } from './index.component';
-import { Component, NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PrivateSiteGuard } from '@iverify/core/guards/private-site.guard';
 import { DashboardComponent } from '../dashboard/dashboard.component';
 import { ToastModule } from '../toast/toast.module';
+import { NgHttpLoaderModule } from 'ng-http-loader';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+
 
 export const routes: Routes = [
   {
@@ -26,11 +31,16 @@ export const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forChild(routes),
+    TranslateModule,
     NgbModule,
     FontAwesomeModule,
-    ToastModule
+    NgHttpLoaderModule,
+    CommonModule,
+    ToastModule,
+    FormsModule
   ],
-  declarations: [IndexComponent],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+  declarations: [IndexComponent, DashboardComponent],
   exports: [IndexComponent]
 })
 export class IndexModule {}

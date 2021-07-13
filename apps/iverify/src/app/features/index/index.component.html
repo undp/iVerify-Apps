@@ -5,7 +5,7 @@
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+  <!-- <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav">
       <li class="nav-item dropdown mr-sm-2">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -18,9 +18,32 @@
         </div>
       </li>
     </ul>
-  </div>
+  </div> -->
+  <div class="nav-user-info" *ngIf="user$ | async">
+          <img
+            id="user-profile-icon"
+            src="/assets/profile.svg"
+          />
+          <!--user profile dropdown-->
+          <div class="pad-left-15" ngbDropdown>
+            <button
+              class="btn btn-link p-0 userProfileText fontRobotoBold"
+              id="user-dropdown"
+              ngbDropdownToggle
+            >
+              {{ (user$ | async).firstName }}
+              <div class="mt-1" style="margin-left: -35px;" ngbDropdownMenu aria-labelledby="user-dropdown">
+                <button ngbDropdownItem (click)="onLogoutClick()">
+                  <fa-icon [icon]="'sign-out-alt'"></fa-icon>
+                  {{ 'LOGOUT' | translate }}
+                </button>
+              </div>
+            </button>
+          </div>         
+        </div>
 </nav>
   <main role="main" class="p-0 bg-main-body main-body">
+   
     <router-outlet></router-outlet>
   </main>
 </div>

@@ -35,7 +35,7 @@ export class LoginGuard implements CanActivate, CanActivateChild {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> {
-    return this.authService.token().pipe(
+    return this.authService.me().pipe(
       catchError(error => {
         return of(null);
       }),

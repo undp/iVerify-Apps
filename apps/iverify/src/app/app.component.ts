@@ -8,7 +8,9 @@ import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Spinkit } from 'ng-http-loader';
+import { ApiServerError, EApiErrorActions } from '@iverify/core/store/actions/error.actions';
 import { ToastService } from './features/toast/toast.service';
+import { ToastType } from './features/toast/toast.component';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -28,7 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private actions$: Actions,
   private router: Router,
   @Inject(ViewContainerRef) private viewContainerRef: ViewContainerRef,
-  toast: ToastService
+  private toast: ToastService
   ) {
     this.subs = new Subscription;
     toast.setViewContainerRef(viewContainerRef);
@@ -42,6 +44,27 @@ export class AppComponent implements OnInit, OnDestroy {
     this.actions$
       .pipe(ofType(EAuthActions.LogoutSuccess))
       .subscribe(() =>  this.router.navigate(['/login']));
+
+    this.actions$
+      .pipe(ofType(EApiErrorActions.ApiServerError))
+      .subscribe((error: ApiServerError) => {
+        const err = error.payload;
+        let errorMsg = '';
+        if (err && err.error) {
+          const error = err.error;
+          if (err.status === 422 || err.status === 403 || err.status === 409 || err.status === 500) {
+            errorMsg = (error.errors) ? error.errors[0].message : '';
+          } else if (err.status !== 401) {
+            errorMsg = err.message;
+          }
+          if (err.status !== 403) {
+            this.toast.show(
+              ToastType.Warning,
+              err.status === 0 ? 'TOAST_GENERIC_ERROR' : errorMsg
+          );
+        }
+      }
+    });
   }
 
   ngOnDestroy() {

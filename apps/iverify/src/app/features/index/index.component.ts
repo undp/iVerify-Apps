@@ -7,7 +7,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { User } from '@iverify/core/models/user';
 import { UserPermissions } from '@iverify/core/models/user-permissions';
 import { Logout } from '@iverify/core/store/actions/auth.actions';
-
 import { selectUserPermissions } from '@iverify/core/store/selectors/user-permissions.selector';
 import { selectUser } from '@iverify/core/store/selectors/user.selector';
 import { AppState } from '@iverify/core/store/states/app.state';
@@ -39,6 +38,8 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
 
   Permission = Permission;
   pageInfo:any = { logo : { header: false, sidebar: true }};
+  protected fromdate: Date;
+  protected todate: Date;
   
   constructor(
     store: Store<AppState>,
