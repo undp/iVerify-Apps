@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { SharedService } from '../shared/shared.service';
 import { WpPublisherService } from '../wp-publisher/wp-publisher.service';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class AppService {
   constructor(
     private shared: SharedService,
