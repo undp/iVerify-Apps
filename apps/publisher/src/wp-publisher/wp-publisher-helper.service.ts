@@ -26,10 +26,10 @@ export class WpPublisherHelper{
         media: number,
         tags: number[],
         categories: number[]): CreatePostDto{
+        
         const status = PostStatus.publish;
         const comment_status = CommentStatus.open;
         const format = PostFormat.standard;
-        const title = report.title;
         const content = report.description;
         const check_id = report.dbid;
         const factchecking_status = this.extractFactcheckingStatus(report);
@@ -42,7 +42,7 @@ export class WpPublisherHelper{
         const post: CreatePostDto = {
           format,
           author,
-          title,
+          title: claim,
           comment_status,
           status,
           featured_media: media,
