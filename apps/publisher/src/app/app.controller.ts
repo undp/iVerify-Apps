@@ -34,6 +34,7 @@ export class AppController {
       const parsed = body;
       const event = parsed.event;
       const data = parsed.data;
+      Object.keys(parsed).forEach(key => this.logger.log('data key', key))
       Object.keys(data).forEach(key => this.logger.log('data key', key))
       const project_media = data.project_media;
       Object.keys(project_media).forEach(key => this.logger.log('project_media key', key))
