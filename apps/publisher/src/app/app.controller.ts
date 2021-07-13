@@ -1,11 +1,14 @@
-import { Body, Controller, Get, HttpException, Post } from '@nestjs/common';
-import { of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { Body, Controller, Get, HttpException, Logger, Post } from '@nestjs/common';
+import { catchError } from 'rxjs/operators';
 
 import { AppService } from './app.service';
 
+
+
 @Controller()
 export class AppController {
+  private readonly logger = new Logger('PublisherAppService');
+  
   constructor(private readonly appService: AppService) {}
 
   @Get('alive-test')
@@ -18,7 +21,7 @@ export class AppController {
     const id = body['id'];
     return this.appService.publishReportById(id).pipe(
       catchError(err => {
-        console.log(err)
+        this.logger.error(err)
         throw new HttpException(err.message, 500);
       })
     );
@@ -29,21 +32,22 @@ export class AppController {
     try{
       const parsed = JSON.parse(body)
       const event = parsed.event;
-      console.log('received event: ', event);
+      this.logger.log('received event: ', event);
       if(event === 'update_projectmedia'){
         const id = parsed.data.project_media.id;
-        console.log('item id: ', id);
+        this.logger.log('item id: ', id);
         const logEdges = parsed.data.project_media.log.edges;
         const objectChanges = logEdges.length ? JSON.parse(logEdges[0].node.object_changes_json) : null;
-        console.log('object changes: ', objectChanges);
+        this.logger.log('object changes: ', objectChanges);
         const folderId = objectChanges && objectChanges['project_id'] ? objectChanges['project_id'][1] : null;
-        console.log('folder id: ', folderId);
+        this.logger.log('folder id: ', folderId);
         const referenceFolderId = process.env.CHECK_FOLDER_ID;
-        console.log('reference folder id: ', referenceFolderId);
+        this.logger.log('reference folder id: ', referenceFolderId);
         if(folderId && folderId === referenceFolderId){
-          console.log('publishing post...');
+          this.logger.log('publishing post...');
           return this.appService.publishReportById(id).pipe(
             catchError(err => {
+              this.logger.error(err);
               throw new HttpException(err.message, 500);
             })
           );
@@ -51,6 +55,7 @@ export class AppController {
       }
       return null;
     }catch(e){
+      this.logger.error(e);
       throw new HttpException(e.message, 500);
     }
   }
