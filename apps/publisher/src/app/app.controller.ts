@@ -33,9 +33,13 @@ export class AppController {
       this.logger.log('body received: ', body);
       const parsed = body;
       const event = parsed.event;
+      const data = parsed.data;
+      Object.keys(data).forEach(key => this.logger.log('data key', key))
+      const project_media = data.project_media;
+      Object.keys(project_media).forEach(key => this.logger.log('project_media key', key))
       this.logger.log('received event: ', event);
       if(event === 'update_project_media'){
-        const id = parsed.data.project_media.id;
+        const id = parsed.data.project_media.dbid;
         this.logger.log('item id: ', id);
         const logEdges = parsed.data.project_media.log.edges;
         const objectChanges = logEdges.length ? JSON.parse(logEdges[0].node.object_changes_json) : null;
