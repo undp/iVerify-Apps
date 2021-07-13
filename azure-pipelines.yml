@@ -33,15 +33,16 @@ steps:
       buildContext: $(Build.Repository.LocalPath)
       tags: |
         $(dockerImage)-publisher-$(Build.SourceVersion)
-  - task: Docker@2
-    displayName: Build and Push triage
-    inputs:
-      command: buildAndPush
-      repository: $(dockerImage)-js
-      Dockerfile: apps/triage/Dockerfile-prod
-      buildContext: $(Build.Repository.LocalPath)
-      tags: |
-        $(dockerImage)-triage-$(Build.SourceVersion)
+  # - task: Docker@2
+  #   displayName: Build and Push triage
+  #   inputs:
+  #     command: buildAndPush
+  #     repository: $(dockerImage)-js
+  #     Dockerfile: apps/triage/Dockerfile-prod
+  #     buildContext: $(Build.Repository.LocalPath)
+  #     tags: |
+  #       $(dockerImage)-triage-$(Build.SourceVersion)
+
   #- task: Docker@2
   #  displayName: Build and Push API
   #  inputs:
@@ -84,18 +85,19 @@ steps:
       releaseName: publisher
       chartPath: deploy/app 
       valueFile: $(value_file_url)/publisher-values.yaml
-  - task: HelmDeploy@0
-    displayName: Helm deploy triage
-    inputs:
-      connectionType: 'Kubernetes Service Connection'
-      kubernetesServiceEndpoint: $(k8s_service_connection)
-      namespace: $(dockerImage)-js
-      command: upgrade
-      arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-triage-$(Build.SourceVersion)
-      chartType: 'FilePath'
-      releaseName: triage
-      chartPath: deploy/app 
-      valueFile: $(value_file_url)/triage-values.yaml
+  # - task: HelmDeploy@0
+  #   displayName: Helm deploy triage
+  #   inputs:
+  #     connectionType: 'Kubernetes Service Connection'
+  #     kubernetesServiceEndpoint: $(k8s_service_connection)
+  #     namespace: $(dockerImage)-js
+  #     command: upgrade
+  #     arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-triage-$(Build.SourceVersion)
+  #     chartType: 'FilePath'
+  #     releaseName: triage
+  #     chartPath: deploy/app 
+  #     valueFile: $(value_file_url)/triage-values.yaml
+  
   #- task: HelmDeploy@0
   #  displayName: Helm deploy api
   #  inputs:
