@@ -27,7 +27,8 @@ export class AppController {
   @Post('publish-webhook')
   async publishWebHook(@Body() body){
     try{
-      const parsed = JSON.parse(body)
+      this.logger.log('body received: ', body);
+      const parsed = body;
       const event = parsed.event;
       console.log('received event: ', event);
       if(event === 'update_projectmedia'){
