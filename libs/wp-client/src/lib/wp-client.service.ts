@@ -34,6 +34,17 @@ export class WpClientService{
         );
     }
 
+    getPostByTitle(title: string){
+        const params = {title};
+        return this.http.get(this.config.endpoints.posts, {params}).pipe( 
+            map(res => res.data),
+            catchError(err => {
+                console.log('Error getting post', err)
+                throw new HttpException(err.message, 500);
+              })
+        );
+    }
+
     createTag(tag: CreateTagDto): Observable<any>{
         return this.http.post(this.config.endpoints.tags, tag, this.auth).pipe(
             map(res => res.data),

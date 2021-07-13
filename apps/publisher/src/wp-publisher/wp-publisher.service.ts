@@ -86,7 +86,7 @@ export class WpPublisherService{
     
         return tagsIds$;
       }
-    
+
       private categoriesIds(categories: string[]){
         categories = categories.map(c => c.toLowerCase());
         const wpCategories$: Observable<any> = this.wpClient.listCategories();

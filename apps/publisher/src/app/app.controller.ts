@@ -1,5 +1,6 @@
 import { MeedanCheckClientService } from '@iverify/meedan-check-client';
 import { Body, Controller, Get, HttpException, Logger, Post } from '@nestjs/common';
+import { WpClientService } from 'libs/wp-client/src/lib/wp-client.service';
 import { catchError } from 'rxjs/operators';
 
 import { AppService } from './app.service';
@@ -10,7 +11,7 @@ import { AppService } from './app.service';
 export class AppController {
   private readonly logger = new Logger('PublisherAppService');
   
-  constructor(private readonly appService: AppService, private checkClient: MeedanCheckClientService) {}
+  constructor(private readonly appService: AppService, private checkClient: MeedanCheckClientService, private wpClient: WpClientService) {}
 
   @Get('alive-test')
   isAlive(){
@@ -26,6 +27,12 @@ export class AppController {
         throw new HttpException(err.message, 500);
       })
     );
+  }
+
+  @Get('post-by-title')
+  async getPostByTitle(){
+    const title = 'vestibulum'
+    return this.wpClient.getPostByTitle(title)
   }
 
   @Post('publish-webhook')

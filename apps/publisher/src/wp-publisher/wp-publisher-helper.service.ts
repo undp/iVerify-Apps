@@ -32,6 +32,7 @@ export class WpPublisherHelper{
         const format = PostFormat.standard;
         const content = report.description;
         const check_id = report.dbid;
+        const title = this.extractTask(report, TasksLabels.card_title);
         const factchecking_status = this.extractFactcheckingStatus(report);
         const claim = this.extractTask(report, TasksLabels.claim);
         const rating_justification = this.extractTask(report, TasksLabels.rating_justification);
@@ -42,7 +43,7 @@ export class WpPublisherHelper{
         const post: CreatePostDto = {
           format,
           author,
-          title: claim,
+          title,
           comment_status,
           status,
           featured_media: media,
