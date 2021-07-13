@@ -38,7 +38,11 @@ export class AppController {
       const data = parsed.object;
       const id = data.id;
       const projectId = data.project_id;
-      if(event === 'update_project_media' && projectId === process.env.CHECK_FOLDER_ID){
+      const referenceFolderId = +process.env.CHECK_FOLDER_ID;
+      this.logger.log('project media id: ', id)
+      this.logger.log('folder id: ', projectId)
+      this.logger.log('reference folder id: ', referenceFolderId.toString())
+      if(event === 'update_project_media' && projectId === referenceFolderId){
         const query = `query {
           project_media(ids: "${id}"){
             log(event_types: "update_projectmedia", last: 1) {
@@ -57,9 +61,8 @@ export class AppController {
         const objectChanges = logEdges.length ? JSON.parse(logEdges[0].node.object_changes_json) : null;
         this.logger.log('object changes: ', objectChanges);
         const folderId = objectChanges && objectChanges['project_id'] ? objectChanges['project_id'][1] : null;
-        this.logger.log('folder id: ', folderId);
-        const referenceFolderId = process.env.CHECK_FOLDER_ID;
-        this.logger.log('reference folder id: ', referenceFolderId);
+        this.logger.log('changed folder id: ', folderId);
+        this.logger.log('reference folder id: ', referenceFolderId.toString());
         if(folderId && folderId === referenceFolderId){
           this.logger.log('publishing post...'); 
           return this.appService.publishReportById(id).pipe(
