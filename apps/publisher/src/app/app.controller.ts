@@ -30,18 +30,18 @@ export class AppController {
   @Post('publish-webhook')
   async publishWebHook(@Body() body){
     try{
-      this.logger.log('body received: ', body);
+      this.logger.log('body received: ', JSON.stringify(body));
       const parsed = body;
       const event = parsed.event;
       this.logger.log('received event: ', event);
       const data = parsed.data;
-      this.logger.log('body.data: ', data);
-      this.logger.log('type of data: ', typeof data);
+      // this.logger.log('body.data: ', data);
+      // this.logger.log('type of data: ', typeof data);
 
-      Object.keys(parsed).forEach(key => this.logger.log('body key', key))
-      Object.keys(data).forEach(key => this.logger.log('data key', key))
+      // Object.keys(parsed).forEach(key => this.logger.log('body key', key))
+      // Object.keys(data).forEach(key => this.logger.log('data key', key))
       const project_media = data.project_media;
-      Object.keys(project_media).forEach(key => this.logger.log('project_media key', key))
+      // Object.keys(project_media).forEach(key => this.logger.log('project_media key', key))
       if(event === 'update_project_media'){
         const id = project_media.dbid;
         this.logger.log('item id: ', id);
