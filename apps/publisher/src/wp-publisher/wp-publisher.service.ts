@@ -1,4 +1,4 @@
-import { HttpException, HttpService, Injectable } from "@nestjs/common";
+import { HttpException, HttpService, Injectable, Scope } from "@nestjs/common";
 import { CreateCategoryDto } from "libs/wp-client/src/lib/interfaces/create-category.dto";
 import { CommentStatus, CreatePostDto, PostFormat, PostStatus } from "libs/wp-client/src/lib/interfaces/create-post.dto";
 import { CreateTagDto } from "libs/wp-client/src/lib/interfaces/create-tag.dto";
@@ -8,7 +8,7 @@ import { catchError, concatMap, filter, map, scan, switchMap, tap } from "rxjs/o
 import { SharedService } from "../shared/shared.service";
 import { WpPublisherHelper } from "./wp-publisher-helper.service";
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class WpPublisherService{
     private report$: Observable<any> = this.shared.report$;
 
