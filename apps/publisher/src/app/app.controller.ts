@@ -61,7 +61,7 @@ export class AppController {
         const referenceFolderId = process.env.CHECK_FOLDER_ID;
         this.logger.log('reference folder id: ', referenceFolderId);
         if(folderId && folderId === referenceFolderId){
-          this.logger.log('publishing post...');
+          this.logger.log('publishing post...'); 
           return this.appService.publishReportById(id).pipe(
             catchError(err => {
               this.logger.error(err);
