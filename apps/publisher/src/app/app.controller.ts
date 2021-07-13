@@ -72,7 +72,7 @@ export class AppController {
       }
       return null;
     }catch(e){
-      this.logger.error(e);
+      this.logger.error(e); 
       throw new HttpException(e.message, 500);
     }
   }
