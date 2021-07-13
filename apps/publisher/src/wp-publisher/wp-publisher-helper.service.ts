@@ -51,6 +51,8 @@ export class WpPublisherHelper{
           categories
         }
 
+        if(!post.featured_media) delete post.featured_media;
+
         return post;
     }
 
