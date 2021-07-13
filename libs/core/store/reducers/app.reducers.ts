@@ -6,6 +6,7 @@ import { routerReducer } from '@ngrx/router-store';
 import { userPermissionsReducers } from './user-permissions.reducers';
 import { userReducers } from './user.reducers';
 import { usersReducers } from './users.reducers';
+import { apiErrorReducer } from './error.reducers';
 
 export const appReducers: ActionReducerMap<AppState, any> = {
   router: routerReducer,
@@ -13,5 +14,6 @@ export const appReducers: ActionReducerMap<AppState, any> = {
   userPermissions: userPermissionsReducers,
   roles: rolesReducers,
   permissions: permissionsReducers,
-  users: usersReducers
+  users: usersReducers,
+  apiError: apiErrorReducer,
 };

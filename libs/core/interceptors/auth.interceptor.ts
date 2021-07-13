@@ -32,7 +32,7 @@ export class AuthInterceptor implements HttpInterceptor {
               req = req.clone({
                 headers: req.headers.set(
                   environment.authentication.token_header,
-                  `${token.token_type} ${token.access_token}`
+                  'Bearer ' + `${token.accessToken}`
                 )
               });
             }

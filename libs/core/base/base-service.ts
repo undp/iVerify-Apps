@@ -14,7 +14,7 @@ export class BaseService {
 
   readonly uris = {};
 
-  getUrl(uri: string, withAPIVersion: boolean = true) {
+  getUrl(uri: string, withAPIVersion: boolean = false) {
     return `${environment.api.base}/${
       withAPIVersion ? `api/${environment.api.version}/` : ''
     }${uri}`;

@@ -1,0 +1,54 @@
+.dropdown-toggle::after {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 0.255em;
+  vertical-align: 0.255em;
+  content: '';
+  border: 0px !important;
+}
+
+.flex-template-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 1.0em;
+  margin-left: 0.3em;
+  margin-right: 1em;
+  align-items: center;
+  max-width: 100%;
+}
+
+.flex-report-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 3.5em;
+  margin-left: 2em;
+  margin-right: 1em;
+  gap: 2em;
+  min-width: 80%;
+}
+
+.flex-custom-date-row {
+  display: flex;
+}
+
+.marg-left-1 {
+  margin-left: 1em;
+}
+
+.label-line-height {
+  line-height: 2.5rem;
+}
+
+.custom-report-duration:nth-last-child(2) {
+  flex-grow: 1;
+  margin-bottom: .5rem;
+}
+
+.informative-text {
+  margin-left: 15px;
+  font-size: 12px;
+  font-family: "fontRobotoThin";
+}

@@ -1,5 +1,5 @@
 export interface Token {
-  // token_type?: string;
+  token_type?: string;
   // expires_in?: number;
   accessToken?: string;
   refreshToken?: string;

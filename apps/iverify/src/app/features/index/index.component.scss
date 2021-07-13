@@ -1,6 +1,33 @@
 @import "../../../assets/scss/index";
 
 
+.nav-user-info {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  margin-left: 1em;
+  div {
+    padding-left: 5px;
+  }
+}
+
+.dropdown-menu {
+    position: absolute;
+    z-index: 1000;
+    min-width: 5rem;
+    padding: .2rem 0;
+    margin: 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: center;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+}
+
+
 // ::ng-deep .modal-lg { 
 //   max-width: 95%;
 //   width: 95%;
@@ -506,9 +533,9 @@
 //   justify-content: space-evenly;
 // }
 
-// .pad-left-15 {
-//   padding-left: 15px;
-// }
+.pad-left-15 {
+  padding-left: 15px;
+}
 
 // .bg-main-body {
 //   background: #fafafa 0% 0% no-repeat padding-box;

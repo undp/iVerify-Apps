@@ -17,15 +17,15 @@ import { UsersEffects } from './users.effects';
 export class AppEffects {
   constructor(private actions$: Actions) {}
 
-  @Effect()
-  userLoggedIn: Observable<any> = this.actions$.pipe(
-    ofType<UserLoggedIn>(EAppActions.UserLoggedIn),
-    switchMap(payload => [
-      new GetPermissions(),
-      new GetRoles(),
-      new ListUsers()
-    ])
-  );
+  // @Effect()
+  // userLoggedIn: Observable<any> = this.actions$.pipe(
+  //   ofType<UserLoggedIn>(EAppActions.UserLoggedIn),
+  //   switchMap(payload => [
+  //     new GetPermissions(),
+  //     new GetRoles(),
+  //     new ListUsers()
+  //   ])
+  // );
 }
 
 export const appEffects = [

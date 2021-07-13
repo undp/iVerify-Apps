@@ -1,8 +1,46 @@
   <div class="card">
     <div class="card-header">
-        <h1>Iverify Zambia</h1>
+      <h3>Iverify Zambia</h3>
+      <div class="flex-custom-date-wrapper">
+        <div class="flex-custom-date-row">
+          <div>
+            <label class="fontRobotoRegular font-report-text label-line-height">{{
+          'FROM_DATE' | translate
+          }}</label>
+          </div>
+          <input class="marg-left-1 form-control" ngbDatepicker #fromDate="ngbDatepicker" [(ngModel)]="fromdate" />
+          <div>
+            <button class="btn btn-outline-secondary"
+              style="border-top-right-radius: 4px !important; border-bottom-right-radius: 4px;"
+              (click)="fromDate.toggle()" type="button">
+              <fa-icon [icon]="'calendar-alt'"></fa-icon>
+            </button>
+          </div>
+        </div>
+        <div class="flex-custom-date-row">
+          <div>
+            <label class="fontRobotoRegular font-report-text label-line-height">{{
+          'TO_DATE' | translate
+          }}</label>
+          </div>
+          <input class="marg-left-1 form-control" ngbDatepicker #toDate="ngbDatepicker" [(ngModel)]="todate" />
+          <div>
+            <button class="btn btn-outline-secondary"
+              style="border-top-right-radius: 4px !important; border-bottom-right-radius: 4px;"
+              (click)="toDate.toggle()" type="button">
+              <fa-icon [icon]="'calendar-alt'"></fa-icon>
+            </button>
+          </div>
+        </div>
+        <div>
+          <button [disabled]="!(fromDate && todate)" [ngClass]="{'btn-outline-secondary': !(fromDate && todate)}" class="btn marg-right-2 pad-0 btn-round-border btn-outline-primary" (click)="getStatistics()">
+            {{ 'APPLY' | translate }}
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
 
+    <div class="card-body">
+      {{statData|json}}
     </div>
   </div>

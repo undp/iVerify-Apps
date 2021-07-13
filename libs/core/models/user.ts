@@ -7,17 +7,11 @@ import {
 export interface User extends BaseModel {
   id: number;
   email: string;
-  realname: string;
-  logins: number;
-  failed_attempts: number;
-  last_login: Date;
-  last_attempt: Date;
-  created: Date;
-  updated: Date;
-  role: string;
-  language: string;
-  contacts: any[];
-  gravatar: string;
+  firstName: string;
+  lastName: string;
+  createdBy: Date;
+  role: any;
+  data?:any;
 }
 
 export interface UserRegistration {

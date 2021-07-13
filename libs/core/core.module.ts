@@ -24,6 +24,7 @@ import { appEffects } from './store/effects/app.effects';
 import { appReducers } from './store/reducers/app.reducers';
 import { AppState } from './store/states/app.state';
 import { storageMetaReducer } from './storage.metareducer';
+import { ApiErrorInterceptor } from './interceptors/error.interceptor';
 
 /**
  * DEBUGGING
@@ -49,7 +50,13 @@ export const BASE_PROVIDERS: any[] = [
     deps: [AuthService, Store],
     multi: true
   },
-  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }     
+  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: ApiErrorInterceptor,
+    deps: [Store],
+    multi: true
+  }
 ];
 
 function initActions(auth: any, store: any) {

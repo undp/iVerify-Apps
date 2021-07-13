@@ -30,7 +30,8 @@ export class AuthService {
   private offset: number = 0;
 
   init(): { token: Token } {
-    this._token = this.storage.get(STORAGE_TOKEN_KEY);
+    const tokenData = this.storage.get(STORAGE_TOKEN_KEY);
+    this._token = tokenData?.token;
     if (!this.isTokenValid(this._token)) {
       this.storage.remove(STORAGE_TOKEN_KEY);
       this._token = null as any;
@@ -57,7 +58,7 @@ export class AuthService {
       .pipe(
         switchMap(loginResponse => {
           this._token = { ...this.token, ...loginResponse.token};
-          this.storage.set(STORAGE_TOKEN_KEY, this._token);
+          this.storage.set(STORAGE_TOKEN_KEY, loginResponse);
           const payload = this.getTokenPayload(this._token);
           if (payload && payload.iat)
             this.offset = Math.ceil(new Date().getTime() / 1000) - payload.iat;
@@ -72,6 +73,9 @@ export class AuthService {
   }
 
   me(): Observable<User> {
+    const tokenData = this.storage.get(STORAGE_TOKEN_KEY);
+    let userId = (tokenData) ? tokenData['userData'].email : '';
+    this.uris.me = this.uris.me.replace(':id', userId);
     return this.http.get<any>(`${environment.api.base}/${this.uris.me}`).pipe(
       catchError(err => {
         return this.cacheHandler(err, 'user');
