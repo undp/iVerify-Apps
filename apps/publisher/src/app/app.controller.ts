@@ -34,7 +34,7 @@ export class AppController {
       const parsed = body;
       const event = parsed.event;
       this.logger.log('received event: ', event);
-      if(event === 'update_projectmedia'){
+      if(event === 'update_project_media'){
         const id = parsed.data.project_media.id;
         this.logger.log('item id: ', id);
         const logEdges = parsed.data.project_media.log.edges;
