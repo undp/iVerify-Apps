@@ -59,9 +59,9 @@ export class AppController {
         const project_media = await this.checkClient.getReportWithQuery(query).toPromise();
         const logEdges = project_media.log.edges;
         const objectChanges = logEdges.length ? JSON.parse(logEdges[0].node.object_changes_json) : null;
-        this.logger.log('object changes: ', objectChanges);
+        this.logger.log('object changes: ', JSON.stringify(objectChanges));
         const folderId = objectChanges && objectChanges['project_id'] ? objectChanges['project_id'][1] : null;
-        this.logger.log('changed folder id: ', folderId);
+        this.logger.log(`changed folder id: ${folderId}`);
         this.logger.log('reference folder id: ', referenceFolderId.toString());
         if(folderId && folderId === referenceFolderId){
           this.logger.log('publishing post...'); 
