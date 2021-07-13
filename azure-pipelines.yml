@@ -33,15 +33,15 @@ steps:
       buildContext: $(Build.Repository.LocalPath)
       tags: |
         $(dockerImage)-publisher-$(Build.SourceVersion)
-  - task: Docker@2
-    displayName: Build and Push triage
-    inputs:
-      command: buildAndPush
-      repository: $(dockerImage)-js
-      Dockerfile: apps/triage/Dockerfile-prod
-      buildContext: $(Build.Repository.LocalPath)
-      tags: |
-        $(dockerImage)-triage-$(Build.SourceVersion)
+  # - task: Docker@2
+  #   displayName: Build and Push triage
+  #   inputs:
+  #     command: buildAndPush
+  #     repository: $(dockerImage)-js
+  #     Dockerfile: apps/triage/Dockerfile-prod
+  #     buildContext: $(Build.Repository.LocalPath)
+  #     tags: |
+  #       $(dockerImage)-triage-$(Build.SourceVersion)
   #- task: Docker@2
   #  displayName: Build and Push API
   #  inputs:
