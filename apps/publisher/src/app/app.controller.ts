@@ -38,7 +38,7 @@ export class AppController {
       const data = parsed.object;
       const id = data.id;
       const projectId = data.project_id;
-      const referenceFolderId = +process.env.CHECK_FOLDER_ID;
+      const referenceFolderId = +process.env.WP_PUBLISHED_FOLDER;
       this.logger.log('project media id: ', id)
       this.logger.log('folder id: ', projectId)
       this.logger.log('reference folder id: ', referenceFolderId.toString())
