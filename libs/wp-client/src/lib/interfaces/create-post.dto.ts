@@ -40,7 +40,7 @@ export interface PostFields{
 export enum TasksLabels{
     claim = 'Claim',
     rating_justification = 'Rating Justification',
-    evidences_and_references = 'Evidences and References',
+    evidences_and_references = 'Evidence and References',
     card_title = 'Card Title'
 }
 
