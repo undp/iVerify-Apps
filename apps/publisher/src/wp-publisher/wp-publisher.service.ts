@@ -4,7 +4,7 @@ import { CommentStatus, CreatePostDto, PostFormat, PostStatus } from "libs/wp-cl
 import { CreateTagDto } from "libs/wp-client/src/lib/interfaces/create-tag.dto";
 import { WpClientService } from "libs/wp-client/src/lib/wp-client.service";
 import { combineLatest, from, iif, Observable, of, zip } from "rxjs";
-import { catchError, concatMap, filter, map, reduce, scan, switchMap, tap } from "rxjs/operators";
+import { catchError, concatMap, filter, map, reduce, scan, switchMap, take, tap } from "rxjs/operators";
 import { SharedService } from "../shared/shared.service";
 import { WpPublisherHelper } from "./wp-publisher-helper.service";
 
@@ -47,9 +47,10 @@ export class WpPublisherService{
       })
     );
     
-    post$: Observable<any> = zip([this.report$, this.author$, this.mediaId$, this.tagsIds$, this.categoriesIds$]).pipe(
+    post$: Observable<any> = combineLatest([this.report$, this.author$, this.mediaId$, this.tagsIds$, this.categoriesIds$]).pipe(
         map(([report, author, media, tags, categories]) => this.helper.buildPostFromReport(report, author, media, tags, categories)),
         filter(post => !!post.title.length),
+        take(1),
         tap(() => console.log('emitting to publish...')),
         switchMap(postDto => this.wpClient.publishPost(postDto)),
         catchError(err => {
