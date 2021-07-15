@@ -12,9 +12,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin-top: 1.0em;
   margin-left: 0.3em;
-  margin-right: 1em;
   align-items: center;
   max-width: 100%;
 }
@@ -51,4 +49,26 @@
   margin-left: 15px;
   font-size: 12px;
   font-family: "fontRobotoThin";
+}
+
+.flex-gap {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+.flex-gap > div {
+  margin: 15px;
+}
+
+.published {
+  width: 5em;
+  color: #7E9E0A;
+  right: 11px;
+  position: absolute;
+  text-align: center;
+}
+
+.custom-report-info {
+  font-size: 1em;
+  margin: 2em;
 }

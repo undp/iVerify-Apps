@@ -7,10 +7,12 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PrivateSiteGuard } from '@iverify/core/guards/private-site.guard';
 import { DashboardComponent } from '../dashboard/dashboard.component';
+import { ChartComponent } from '../charts/charts.component';
 import { ToastModule } from '../toast/toast.module';
 import { NgHttpLoaderModule } from 'ng-http-loader';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 
 export const routes: Routes = [
@@ -34,13 +36,14 @@ export const routes: Routes = [
     TranslateModule,
     NgbModule,
     FontAwesomeModule,
-    NgHttpLoaderModule,
+    NgHttpLoaderModule.forRoot(),
     CommonModule,
     ToastModule,
-    FormsModule
+    FormsModule,
+    NgxChartsModule
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-  declarations: [IndexComponent, DashboardComponent],
+  declarations: [IndexComponent, DashboardComponent, ChartComponent],
   exports: [IndexComponent]
 })
 export class IndexModule {}
