@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
-
+import * as moment from 'moment';
 @Component({
   selector: 'iverify-dashboard',
   templateUrl: 'dashboard.component.html',
@@ -17,9 +17,19 @@ import { DashboardService } from '@iverify/core/domain/dashboad.service';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   subs: Subscription;
-  fromdate: Date;
-  todate: Date;
+  fromdate: Date = DashboardHelpers.GetFirstLastDayMonth().firstDay;
+  todate: Date = DashboardHelpers.GetFirstLastDayMonth().lastDay;
   statData: any;
+  agentsSourceData: any;
+  ticketsByChannel: Object;
+  ticketsByType: any;
+  ticketsByTag: Object;
+  ticketsByStatus: Object;
+  ticketsByCurrentStatus: any;
+  ticketsByAgents: any;
+  totalPublished: any;
+  ticketsByWeek: any;
+  
   
   constructor(
     private store: Store<AppState>,
@@ -42,13 +52,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
       endDate: DashboardHelpers.FormatDate(this.todate)
     }
     this.subs.add(
-      this.dashboardService.list(options).subscribe((results) => {
-        this.statData = results;
+      this.dashboardService.list(options).subscribe((res) => {
+        console.log(res.results);
+        this.statData = res;
+        this.agentsSourceData = DashboardHelpers.SortStatistics(res.results);
+        this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.agentsSourceData['source']);
+        this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['tag']);
+        this.ticketsByType = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['status']);
+        this.ticketsByCurrentStatus = DashboardHelpers.GetTicketsByCurrentStatus(this.ticketsByType);
+        this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.agentsSourceData);
+        this.totalPublished = (this.agentsSourceData['createdVsPublished'])? this.agentsSourceData['createdVsPublished'][0][1] : null;
+      })
+    );
 
+
+    // Fetch statistics data by current week
+    // options.startDate = DashboardHelpers.FormatDate(moment().startOf('week').toDate()),
+    // options.endDate = DashboardHelpers.FormatDate(moment().endOf('week').toDate())
+
+    this.subs.add(
+      this.dashboardService.list(options).subscribe((res) => {
+        this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(res.results);
+        console.log('this.ticketsByWeek');
+        console.log(JSON.stringify(this.ticketsByWeek));
       })
     );
 
   }
+
+
 
   ngOnDestroy() {
 

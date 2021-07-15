@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from './app.component';
@@ -24,7 +25,7 @@ export function createTranslateLoader(http: HttpClient) {
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [CoreModule.forRoot([]), NgbModule, IndexModule, FontAwesomeModule, BrowserModule, HttpClientModule, AppRoutingModule, AuthModule, RouterModule, 
+  imports: [CoreModule.forRoot([]), 
   NgHttpLoaderModule.forRoot(),
   TranslateModule.forRoot({
         loader: {
@@ -32,7 +33,8 @@ export function createTranslateLoader(http: HttpClient) {
           useFactory: createTranslateLoader,
           deps: [HttpClient]
         }
-    })
+  }),
+  BrowserAnimationsModule, NgbModule, IndexModule, FontAwesomeModule, BrowserModule, HttpClientModule, AppRoutingModule, AuthModule, RouterModule
   ],
   exports:[],
   providers: [],

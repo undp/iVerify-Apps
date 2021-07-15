@@ -61,6 +61,7 @@
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "@nrwl/angular": "12.3.4",
+    "@swimlane/ngx-charts": "^18.0.1",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^5.0.2",
     "class-transformer": "^0.4.0",

@@ -84,7 +84,8 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "apps/iverify/src/styles.scss"
               ],
-            "scripts": []
+            "scripts": [
+            ]
           },
           "configurations": {
             "production": {

@@ -1,0 +1,64 @@
+<ngx-charts-bar-horizontal
+  *ngIf="chartType === ChartTypeEnum.BAR"
+  [view]="view"
+  [scheme]="colorScheme[0]"
+  [results]="data"
+  [gradient]="gradient"
+  [xAxis]="showXAxis"
+  [yAxis]="showYAxis"
+  [legend]="false"
+  [showXAxisLabel]="showXAxisLabel"
+  [showYAxisLabel]=""
+  [xAxisLabel]="xAxisLabel"
+  [yAxisLabel]="yAxisLabel"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+>
+</ngx-charts-bar-horizontal>
+<ngx-charts-pie-chart
+  *ngIf="chartType === ChartTypeEnum.PIE"
+  [view]="[300, 200]"
+  [scheme]="colorScheme[1]"
+  [results]="data"
+  [legend]="false"
+  [labels]="true"
+  [doughnut]="true"
+  [legendPosition] = ""
+  [legendTitle]="''"
+  [labelFormatting]="pieChartLabel.bind(this, data)">
+</ngx-charts-pie-chart>
+<ngx-charts-bar-horizontal-normalized
+  *ngIf="chartType === ChartTypeEnum.STACKED"
+  [view]="view"
+  [scheme]="colorScheme[2]"
+  [results]="data"
+  [gradient]="gradient"
+  [xAxis]="showXAxis"
+  [yAxis]="showYAxis"
+  [legend]="false"
+  [showXAxisLabel]="showXAxisLabel"
+  [showYAxisLabel]=""
+  [xAxisLabel]="xAxisLabel"
+  [yAxisLabel]="yAxisLabel"
+  (select)="onSelect($event)">
+</ngx-charts-bar-horizontal-normalized>
+
+<ngx-charts-line-chart
+*ngIf="chartType === ChartTypeEnum.LINE"
+  [view]="[300, 200]"
+  [scheme]="colorScheme[2]"
+  [legend]="false"
+  [showXAxisLabel]="true"
+  [showYAxisLabel]="false"
+  [xAxis]="true"
+  [yAxis]="true"
+  [xAxisLabel]=""
+  [yAxisLabel]="'Statuses'"
+  [timeline]="true"
+  [results]="multi"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+  >
+</ngx-charts-line-chart>

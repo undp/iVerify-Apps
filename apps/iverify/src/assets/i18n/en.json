@@ -299,5 +299,12 @@
   "PHONE_VALIDATION_MSG": "Invalid Phone number format (e.g. type +260211000000).",
   "PHONE_LENGTH_VALIDATION_MSG": "Invalid Phone number format. Min. 7 digits required",
   "FILTER_LOADING": "Loading new filters..",
-  "SELECT_PAGE": "Page size"
+  "SELECT_PAGE": "Page size",
+  "TICKETS_COMPLETED": "completed",
+  "ALL_TICKETS_BY_TYPE": "All tickets type",
+  "ALL_TICKETS_BY_CHANNEL": "All tickets channel",
+  "ALL_TICKETS_BY_TAG": "All tickets tag",
+  "TICKETS_BY_AGENT": "tickets by agents",
+  "CURRENT_STATUS": "Tickets by agents",
+  "STATUS_BY_WEEK": "Status by week"
 }
