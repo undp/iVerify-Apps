@@ -28,12 +28,12 @@
   [legendTitle]="''"
   [labelFormatting]="pieChartLabel.bind(this, data)">
 </ngx-charts-pie-chart>
-<ngx-charts-bar-horizontal-normalized
+<ngx-charts-bar-horizontal-stacked
   *ngIf="chartType === ChartTypeEnum.STACKED"
   [view]="view"
   [scheme]="colorScheme[2]"
   [results]="data"
-  [gradient]="gradient"
+  [gradient]="false"
   [xAxis]="showXAxis"
   [yAxis]="showYAxis"
   [legend]="false"
@@ -42,17 +42,18 @@
   [xAxisLabel]="xAxisLabel"
   [yAxisLabel]="yAxisLabel"
   (select)="onSelect($event)">
-</ngx-charts-bar-horizontal-normalized>
+</ngx-charts-bar-horizontal-stacked>
 
 <ngx-charts-line-chart
   *ngIf="chartType === ChartTypeEnum.LINE"
   [view]="[300, 200]"
   [scheme]="colorScheme[2]"
   [legend]="false"
-  [showXAxisLabel]="true"
-  [showYAxisLabel]="false"
+  [showXAxisLabel]="false"
+  [showYAxisLabel]="true"
   [xAxis]="true"
   [yAxis]="true"
+  [curve]="curve"
   [xAxisLabel]=""
   [yAxisLabel]="'Statuses'"
   [timeline]="true"
@@ -67,7 +68,7 @@
   [view]="[600,150]"
   [scheme]="colorScheme[3]"
   [results]="data"
-  [xAxis]="showXAxis"
+  [xAxis]="true"
   [yAxis]="true"
   [legend]="false"
   [showXAxisLabel]="true"
