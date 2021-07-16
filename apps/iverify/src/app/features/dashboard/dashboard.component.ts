@@ -105,12 +105,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.agentsSourceData['source']);
         this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['tag']);
         this.ticketsByType = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['status']);
-        this.ticketsByCurrentStatus = DashboardHelpers.GetTicketsByCurrentStatus(this.ticketsByType);
+        this.ticketsByCurrentStatus = DashboardHelpers.GetTicketsByCurrentStatus(this.agentsSourceData);
         this.ticketsByCurrentStatus[1].value = 25;
         this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.agentsSourceData);
         this.totalPublished = (this.agentsSourceData['createdVsPublished'])? this.agentsSourceData['createdVsPublished'][0][1] : null;
-        console.log('this.ticketsByWeek');
-        console.log(this.ticketsByCurrentStatus);
       })
     );
 

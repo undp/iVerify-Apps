@@ -13,6 +13,7 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { BsDatepickerModule, BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 
 
 export const routes: Routes = [
@@ -22,12 +23,12 @@ export const routes: Routes = [
     canActivate: [PrivateSiteGuard],
     children: [
       {
-        path: 'map',
+        path: 'index',
         component: DashboardComponent
       }
     ]
   },
-  { path: '', redirectTo: '/dashboard/map', pathMatch: 'full' }
+  { path: '', redirectTo: '/dashboard/index', pathMatch: 'full' }
 ];
 
 @NgModule({
@@ -37,11 +38,13 @@ export const routes: Routes = [
     NgbModule,
     FontAwesomeModule,
     NgHttpLoaderModule.forRoot(),
+    BsDatepickerModule.forRoot(),
     CommonModule,
     ToastModule,
     FormsModule,
     NgxChartsModule
   ],
+  providers: [BsDatepickerConfig],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   declarations: [IndexComponent, DashboardComponent, ChartComponent],
   exports: [IndexComponent]

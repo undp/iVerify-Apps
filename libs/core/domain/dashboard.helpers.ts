@@ -1,13 +1,8 @@
 import * as moment from 'moment';
 import { isEmpty, orderBy } from 'lodash';
-import { TicketCatResFormat } from '../models/dashboard';
+import { TicketsByType, TicketCatResFormat, statusFormatPieChart, statusFormat } from '../models/dashboard';
 
 const showItems = 5;
-
-interface statusFormat {
-    name: string,
-    value: number;
-  }
 
 const FormatDate = (date: Date, format: string = 'YYYY-MM-DD') => {
   return moment(date).format(format);
@@ -44,7 +39,8 @@ const GetTicketsByChannel = (res: any) => {
 const GetTicketsByTag = (res: any[]) => {
   let processedData: any = [];
   if (!isEmpty(res)) {
-    const sortData = orderBy(res[0][1], ['count'], ['desc']);    
+    let sortData = orderBy(res[0][1], ['count'], ['desc']);    
+    sortData = sortData.filter(item => item.category !== 'Unstarted' && item.category !== 'In Progress');
     sortData.forEach((value: TicketCatResFormat, index: number) => {
       if (!isEmpty(value.category) && index < showItems) {
         const category = {
@@ -58,21 +54,32 @@ const GetTicketsByTag = (res: any[]) => {
   return processedData;
 };
 
-const GetTicketsByCurrentStatus = (res: any[]) => {
-    let processedData: any = [];
+const GetTicketsByCurrentStatus = (res: any) => {
+    let processedData: statusFormatPieChart[] = [];
     if (!isEmpty(res)) {
-      const currentStatuses = res.filter(item => (item.name === 'Unstarted' || item.name === 'In Progress'));
-      processedData = currentStatuses.map((item) => {
-          let newItem = {
-            name: '',
-            value: '',
-            label: ''
-          };
-          newItem['name'] = item.name;
-          newItem['value'] = item.value;
-          newItem['label'] = (item.name === 'Unstarted') ? 'Waiting' : 'Started';
-          return newItem;
-      });
+      const statuses = res.status;
+      const latestDateIndex = statuses.length - 1;
+      let sortData = orderBy(statuses[latestDateIndex][1], ['count'], ['desc']); 
+      if (sortData.length > 0 ) {
+        const currentStatuses = sortData.filter(item => (item.category === 'Unstarted' || item.category === 'In Progress'));
+        processedData = currentStatuses.map((item) => {
+            let newItem = {
+              name: item.category,
+              value: item.count,
+              label: (item.category === 'Unstarted') ? 'Waiting' : 'Started'
+            };              
+            return newItem;
+        });
+      }
+
+      const publishedItems = res.createdVsPublished;
+      const latestDatePubInd = publishedItems.length - 1;
+      let newItem = {
+        name: publishedItems[latestDatePubInd][1][0].category,
+        value: publishedItems[latestDatePubInd][1][0].count,
+        label: 'Completed'
+      };
+      processedData.push(newItem);
     }
     return processedData;
 };
@@ -80,7 +87,7 @@ const GetTicketsByCurrentStatus = (res: any[]) => {
 const GetTicketsByAgents = (res: any) => {
 
   let processedData: any = [], responseItems: any = [];
-  const iteratorArray = ['agentUnstarted', 'agentSolved', 'agentProsessing'];  
+  const iteratorArray = [TicketsByType.agentUnstarted, TicketsByType.agentSolved, TicketsByType.agentProcessing];  
   iteratorArray.forEach((val: any)=> {
     if (!isEmpty(res[val])) {
       let temp: any = {};
@@ -92,24 +99,26 @@ const GetTicketsByAgents = (res: any) => {
       responseItems[val] = temp;
     }
   });
-
-  if (!isEmpty(responseItems['agentUnstarted'])) {
-      Object.keys(responseItems['agentUnstarted']).forEach((categoryName: string, index: number) => {
+  const unstarted = responseItems[TicketsByType.agentUnstarted];
+  const progressing = responseItems[TicketsByType.agentProcessing];
+  const solved  = responseItems[TicketsByType.agentSolved];
+  if (!isEmpty(unstarted)) {
+      Object.keys(unstarted).forEach((categoryName: string, index: number) => {
         if (index < showItems) {
           let agentData: any = {};
             agentData['name'] = categoryName;
             agentData['series'] = [
               {
                 "name": "Unstarted",
-                "value": (responseItems['agentUnstarted'] && responseItems['agentUnstarted'][categoryName]) ? responseItems['agentUnstarted'][categoryName] : 0
+                "value": (unstarted && unstarted[categoryName]) ? unstarted[categoryName] : 0
               },
               {
                 "name": "Started",
-                "value": (responseItems['agentProsessing'] && responseItems['agentProsessing'][categoryName]) ? responseItems['agentProsessing'][categoryName] : 0
+                "value": (progressing && progressing[categoryName]) ? progressing[categoryName] : 0
               },
               {
                 "name": "Solved",
-                "value": (responseItems['agentSolved'] && responseItems['agentSolved'][categoryName]) ? responseItems['agentSolved'][categoryName] : 0
+                "value": (solved && solved[categoryName]) ? solved[categoryName] : 0
               }
             ];
             processedData.push(agentData);
@@ -121,8 +130,8 @@ const GetTicketsByAgents = (res: any) => {
 }
 
 const GetTicketsByWeek = (res: any) => {
-  const statuses = res['status'];
-  const published = res['createdVsPublished'];
+  const statuses = res[TicketsByType.status];
+  const published = res[TicketsByType.createdVsPublished];
   let unstartedStatuses: statusFormat[] = [], publishedStatuses:statusFormat[] = [], inprogressStatuses: statusFormat[] = [];
   if (!isEmpty(statuses)) {
 

@@ -1,6 +1,21 @@
 
 import { BaseModel, BaseModelArray } from '../base/base-model';
 
+
+export enum TicketsByType {
+  agentUnstarted = 'agentUnstarted',
+  agentProcessing = 'agentProsessing',
+  agentSolved = 'agentSolved',
+  type = 'type',
+  channel = 'channel',
+  tag = 'tag',
+  status = 'status',
+  source = 'source',
+  createdVsPublished = 'createdVsPublished', 
+  resolutionVelocity = 'resolutionVelocity',
+  responseVelocity = 'resolutionVelocity' 
+}
+
 export interface Tickets extends BaseModelArray<any> {
   range: {
     startDate: string,
@@ -17,6 +32,15 @@ export enum ChartTypeEnum {
   BUBBLE = 5
 }
 
+export interface statusFormat {
+    name: string,
+    value: number;
+}
+export interface statusFormatPieChart {
+    name: string,
+    value: number;
+    label: string;
+}
 
 export interface TicketCatResFormat {
   category: string;
