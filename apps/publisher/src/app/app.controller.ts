@@ -35,6 +35,33 @@ export class AppController {
     return this.wpClient.getPostByTitle(title)
   }
 
+  @Post('publish-report-webhook')
+  async punlishReportWebhook(@Body() body){
+    try{
+      const parsed = body;
+      const event = parsed.event;
+      this.logger.log('received event: ', event);
+      const data = parsed.data;
+      const id = data.project_media.dbid;
+      const projectId = data.project_media_project_id;
+      const referenceFolderId = +process.env.WP_PUBLISHED_FOLDER;
+      this.logger.log('project media id: ', id)
+      this.logger.log('folder id: ', projectId)
+      this.logger.log('reference folder id: ', referenceFolderId.toString())
+      if(event === 'publish_report' && referenceFolderId === projectId.toString()){
+        return this.appService.publishReportById(id).pipe(
+          catchError(err => {
+            this.logger.error(err);
+            throw new HttpException(err.message, 500);
+          })
+        );
+      }
+      return null;
+    }catch(e){
+      return new HttpException(e.message, 500)
+    }
+  }
+
   @Post('publish-webhook')
   async publishWebHook(@Body() body){
     try{

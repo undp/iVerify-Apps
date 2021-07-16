@@ -36,6 +36,16 @@ export class CheckClientHelperService{
         }
       }` 
     }
+
+    buildGetMeedanReportQuery(id: string){
+      return `query {
+       project_media(ids: "${id}"){
+         annotation(annotation_type: "report_design") {
+           data
+         }
+       }
+     }` 
+   }
     
     buildCreateItemMutation(url: string, folderId: number, set_tasks_responses: string): string{
         const mutation = `mutation create{
