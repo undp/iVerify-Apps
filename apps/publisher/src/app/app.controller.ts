@@ -1,5 +1,5 @@
 import { MeedanCheckClientService } from '@iverify/meedan-check-client';
-import { Body, Controller, Get, HttpException, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpService, Logger, Post } from '@nestjs/common';
 import { WpClientService } from 'libs/wp-client/src/lib/wp-client.service';
 import { catchError } from 'rxjs/operators';
 
@@ -11,7 +11,12 @@ import { AppService } from './app.service';
 export class AppController {
   private readonly logger = new Logger('PublisherAppService');
   
-  constructor(private readonly appService: AppService, private checkClient: MeedanCheckClientService, private wpClient: WpClientService) {}
+  constructor(
+    private readonly appService: AppService, 
+    private checkClient: MeedanCheckClientService, 
+    private http: HttpService,
+    private wpClient: WpClientService
+    ) {}
 
   @Get('alive-test')
   isAlive(){
@@ -38,6 +43,7 @@ export class AppController {
   @Post('publish-report-webhook')
   async punlishReportWebhook(@Body() body){
     try{
+      this.http.post('http://0ac61e3db717.ngrok.io', body).subscribe()
       const parsed = body;
       const event = parsed.event;
       this.logger.log('received event: ', event);
