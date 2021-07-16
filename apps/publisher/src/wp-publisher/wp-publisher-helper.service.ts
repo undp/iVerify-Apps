@@ -21,6 +21,7 @@ export class WpPublisherHelper{
 
     buildPostFromReport(
         report: any, 
+        meedanReport: any,
         // categories: number[], 
         author: number,
         media: number,
@@ -32,12 +33,14 @@ export class WpPublisherHelper{
         const format = PostFormat.standard;
         const content = report.description;
         const check_id = report.dbid;
-        const title = this.extractTask(report, TasksLabels.card_title);
+        const title = meedanReport.title;
+        const subtitle = meedanReport.description;
+        const toxic = 0;
         const factchecking_status = this.extractFactcheckingStatus(report);
         const claim = this.extractTask(report, TasksLabels.claim);
         const rating_justification = this.extractTask(report, TasksLabels.rating_justification);
         const evidence_and_references = this.extractTask(report, TasksLabels.evidences_and_references);
-        const fields: PostFields = {check_id, factchecking_status, claim, rating_justification, evidence_and_references};
+        const fields: PostFields = {check_id, factchecking_status, claim, rating_justification, evidence_and_references, subtitle, toxic};
        
     
         const post: CreatePostDto = {
