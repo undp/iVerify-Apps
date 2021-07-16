@@ -48,7 +48,7 @@ export class AppController {
       this.logger.log('project media id: ', id)
       this.logger.log('folder id: ', projectId)
       this.logger.log('reference folder id: ', referenceFolderId.toString())
-      if(event === 'publish_report' && referenceFolderId === projectId.toString()){
+      if(event === 'publish_report' && referenceFolderId === projectId){
         return this.appService.publishReportById(id).pipe(
           catchError(err => {
             this.logger.error(err);
