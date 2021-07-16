@@ -11,6 +11,7 @@ import { WpPublisherHelper } from "./wp-publisher-helper.service";
 @Injectable({ scope: Scope.REQUEST })
 export class WpPublisherService{
     private report$: Observable<any> = this.shared.report$;
+    private meedanReport$: Observable<any> = this.shared.meedanReport$;
 
     categoriesIds$: Observable<number[]> = this.report$.pipe(
       map(report => this.helper.extractFactcheckingStatus(report)),
@@ -28,8 +29,8 @@ export class WpPublisherService{
       })
     )
     
-    private mediaId$: Observable<number> = this.report$.pipe(
-        map(report => this.helper.extractMedia(report)),
+    private mediaId$: Observable<number> = this.meedanReport$.pipe(
+        map(report => report.image),
         switchMap(url => this.http.get(url, {responseType: 'arraybuffer'})),
         map(res => Buffer.from(res.data, 'binary')),
         switchMap(data => this.wpClient.createMedia(data)),
@@ -46,8 +47,8 @@ export class WpPublisherService{
       })
     );
     
-    post$: Observable<any> = combineLatest([this.report$, this.author$, this.mediaId$, this.tagsIds$, this.categoriesIds$]).pipe(
-        map(([report, author, media, tags, categories]) => this.helper.buildPostFromReport(report, author, media, tags, categories)),
+    post$: Observable<any> = combineLatest([this.report$, this.meedanReport$, this.author$, this.mediaId$, this.tagsIds$, this.categoriesIds$]).pipe(
+        map(([report, meedanReport, author, media, tags, categories]) => this.helper.buildPostFromReport(report, meedanReport, author, media, tags, categories)),
         filter(post => !!post.title.length),
         take(1),
         tap(() => console.log('emitting to publish...')),

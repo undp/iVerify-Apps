@@ -30,6 +30,20 @@ export class MeedanCheckClientService {
     );
   }
 
+  getMeedanReport(id: string): Observable<any> {
+    const query: string = this.helper.buildGetMeedanReportQuery(id);
+    const headers = this.config.headers;
+    console.log(query)
+    return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
+      map(res => res.data.data.project_media.annotation.data.options),
+      retry(3),
+      catchError(err => {
+        this.logger.error('Error getting meedan report by id: ', err.message)
+        throw new HttpException(err.message, 500);
+      })
+    );
+  }
+
   getReportWithQuery(query: string): Observable<any> {
     const headers = this.config.headers;
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(

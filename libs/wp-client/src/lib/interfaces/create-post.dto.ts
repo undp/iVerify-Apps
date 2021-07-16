@@ -35,6 +35,8 @@ export interface PostFields{
     evidence_and_references: string
     check_id: number
     factchecking_status: string
+    toxic: number
+    subtitle: string
 }
 
 export enum TasksLabels{
