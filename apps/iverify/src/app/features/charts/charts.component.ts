@@ -1,8 +1,5 @@
 import { Component, OnDestroy, OnInit, Input } from '@angular/core';
-import { Router } from '@angular/router';
-import { AppState } from '@iverify/core/store/states/app.state';
-import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
 import { ChartTypeEnum } from '@iverify/core/models/dashboard';
 
@@ -91,7 +88,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   ChartTypeEnum = ChartTypeEnum;
 
   // options
-  showXAxis: boolean = false;
+  showXAxis: boolean = true;
   showYAxis: boolean = true;
   gradient: boolean = false;
   showLegend: boolean = true;
@@ -100,12 +97,12 @@ export class ChartComponent implements OnInit, OnDestroy {
   showYAxisLabel: boolean = true;
   xAxisLabel: string = '';  
   multi = multi;
-  
+  tickIndex: number = 0;
+    
   constructor(
     private dashboardService: DashboardService
   ) {
     this.subs = new Subscription();
-    
   }
 
   ngOnInit() {
@@ -120,6 +117,9 @@ export class ChartComponent implements OnInit, OnDestroy {
     },
     {
       domain: ['#E05548', '#FFA033','#7E9E0A']
+    },
+    {
+      domain: ['#7E9E0A']
     }
   ];
 
@@ -133,6 +133,18 @@ export class ChartComponent implements OnInit, OnDestroy {
 
   onDeactivate(data: any): void {
     // console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+  }
+
+  xticksFormatting(val: any) {
+    let tickVal = '';
+    if (val === 1) {
+      tickVal = `Quickest ${val} h`;
+    } else if (val === 4) {
+      tickVal = `Average ${val} h`;
+    } else if (val === 15) {
+      tickVal = `Longest ${val} h`;
+    }
+     return tickVal;
   }
 
   ngOnDestroy() {

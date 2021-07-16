@@ -74,5 +74,18 @@
           <iverify-charts [chartType]="4" [data]="ticketsByAgents"></iverify-charts>
         </div>
       </div>
+      <div class="row m-3 p-4">
+        <div class="col-sm-12 col-md-3 col-lg-3">
+          <select class="custom-select" [(ngModel)]="selectedTimeType"
+          (change)="getAllTicketsData()">
+          <option selected [ngValue]="1">{{'RESPONSE_TIME'|translate}}</option>
+          <option [ngValue]="2">{{'RESOLVE_TIME'|translate}}</option>          
+        </select>
+        </div>
+        <div  class="col-sm-12 col-md-8 col-lg-8">
+          <h5 class="text-uppercase">{{((selectedTimeType === 1) ? 'RESPONSE_TIME': 'RESOLVE_TIME')|translate}}</h5>
+          <iverify-charts [chartType]="5" [data]="bubbleData" [responseType]="selectedTimeType"></iverify-charts>
+          </div>
+      </div>
     </div>
   </div>

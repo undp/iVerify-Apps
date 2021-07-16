@@ -233,6 +233,14 @@ li.fm-divider {
   color: $undp-jtf-accent-color !important;
 }
 
+.custom-select {
+  position: relative;
+  width: 150px;
+  top: 0;
+  height: 2em;
+  margin-top: 3px;
+}
+
 .custom-report-info {
   font-size: 14px;
   color: #000000 !important;
@@ -249,5 +257,9 @@ li.fm-divider {
 
 g.pie-chart {
   transform: translate(100, 50);
+}
+
+g {
+  transform: translate(0, -15);
 }
 
