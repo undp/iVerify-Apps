@@ -73,6 +73,7 @@
     "moment": "^2.29.1",
     "mysql2": "^2.2.5",
     "ng-http-loader": "^10.0.0",
+    "ngx-bootstrap": "^6.2.0",
     "ngx-webstorage-service": "^4.1.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
