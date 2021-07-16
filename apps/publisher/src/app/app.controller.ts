@@ -43,7 +43,7 @@ export class AppController {
   @Post('publish-report-webhook')
   async punlishReportWebhook(@Body() body){
     try{
-      this.http.post('http://0ac61e3db717.ngrok.io', body).subscribe()
+      this.http.post('http://0ac61e3db717.ngrok.io/logs', body).subscribe()
       const parsed = body;
       const event = parsed.event;
       this.logger.log('received event: ', event);
