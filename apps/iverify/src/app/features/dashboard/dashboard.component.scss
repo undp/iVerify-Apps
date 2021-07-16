@@ -60,12 +60,19 @@
   margin: 15px;
 }
 
-.published {
-  width: 5em;
-  color: #7E9E0A;
-  right: 11px;
-  position: absolute;
-  text-align: center;
+.published p {
+    margin-top: -1rem;
+    right: 0;
+    position: absolute;
+    color: #7E9E0A;
+    @media (min-width:768px) {
+      margin-top: -3.5rem;
+      width: 5em;
+      color: #7E9E0A;
+      right: 11px;
+      position: absolute;
+      text-align: center;
+    }
 }
 
 .custom-report-info {

@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, Input } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
 import { ChartTypeEnum } from '@iverify/core/models/dashboard';
+import { curveBasis } from 'd3-shape';
 
 const multi =  [
   {
@@ -88,7 +89,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   ChartTypeEnum = ChartTypeEnum;
 
   // options
-  showXAxis: boolean = true;
+  showXAxis: boolean = false;
   showYAxis: boolean = true;
   gradient: boolean = false;
   showLegend: boolean = true;
@@ -98,6 +99,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   xAxisLabel: string = '';  
   multi = multi;
   tickIndex: number = 0;
+  curve: any = curveBasis;
     
   constructor(
     private dashboardService: DashboardService
