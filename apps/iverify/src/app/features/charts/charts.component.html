@@ -45,7 +45,7 @@
 </ngx-charts-bar-horizontal-normalized>
 
 <ngx-charts-line-chart
-*ngIf="chartType === ChartTypeEnum.LINE"
+  *ngIf="chartType === ChartTypeEnum.LINE"
   [view]="[300, 200]"
   [scheme]="colorScheme[2]"
   [legend]="false"
@@ -62,3 +62,26 @@
   (deactivate)="onDeactivate($event)"
   >
 </ngx-charts-line-chart>
+<ngx-charts-bubble-chart
+  *ngIf="chartType === ChartTypeEnum.BUBBLE"
+  [view]="[600,150]"
+  [scheme]="colorScheme[3]"
+  [results]="data"
+  [xAxis]="showXAxis"
+  [yAxis]="true"
+  [legend]="false"
+  [showXAxisLabel]="true"
+  [showYAxisLabel]="false"
+  [yScaleMin]="1"
+  [yScaleMax]="1"
+  [xScaleMin]="1"
+  [xScaleMax]="16"
+  [showGridLines]="true"
+  [minRadius]="10"
+  [maxRadius]="10"
+  [xAxisTicks]="[1, 4, 15]"
+  [xAxisTickFormatting]="xticksFormatting"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)">
+</ngx-charts-bubble-chart>

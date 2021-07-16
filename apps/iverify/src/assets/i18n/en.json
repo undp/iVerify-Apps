@@ -305,6 +305,8 @@
   "ALL_TICKETS_BY_CHANNEL": "All tickets channel",
   "ALL_TICKETS_BY_TAG": "All tickets tag",
   "TICKETS_BY_AGENT": "tickets by agents",
-  "CURRENT_STATUS": "Tickets by agents",
-  "STATUS_BY_WEEK": "Status by week"
+  "CURRENT_STATUS": "Current status",
+  "STATUS_BY_WEEK": "Status by week",
+  "RESPONSE_TIME": "Response time",
+  "RESOLVE_TIME": "Resolve time"
 }

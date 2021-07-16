@@ -5,10 +5,55 @@ import { DashboardHelpers } from '@iverify/core/domain/dashboard.helpers';
 import { AppState } from '@iverify/core/store/states/app.state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
-import * as moment from 'moment';
+
+export const bubbleData =  [
+  {
+    name: 'Response',
+    series: [
+      {
+        name: '1.2',
+        x: 1.2,
+        y: 0,
+        r: 10
+      },
+      {
+        name: '2.3',
+        x: 2.3,
+        y: 0,
+        r: 10
+      },
+      {
+        name: '2.9',
+        x: 2.9,
+        y: 0,
+        r: 10
+      },
+      {
+        name: '4.3',
+        x: 4.3,
+        y: 0,
+        r: 10
+      },
+      {
+        name: '7.9',
+        x: 7.9,
+        y: 0,
+        r: 10
+      },
+      {
+        name: '15.8',
+        x: 15.8,
+        y: 0,
+        r: 10
+      }
+    ]
+  }
+  
+];
+
 @Component({
   selector: 'iverify-dashboard',
   templateUrl: 'dashboard.component.html',
@@ -29,7 +74,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ticketsByAgents: any;
   totalPublished: any;
   ticketsByWeek: any;
-  
+  selectedTimeType: number = 1;
+  bubbleData = bubbleData;  
   
   constructor(
     private store: Store<AppState>,
@@ -80,6 +126,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   }
 
+  getAllTicketsData() {
+
+  }
 
 
   ngOnDestroy() {

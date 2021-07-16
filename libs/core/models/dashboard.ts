@@ -13,7 +13,8 @@ export enum ChartTypeEnum {
   BAR = 1,
   LINE = 2,
   PIE = 3,
-  STACKED = 4
+  STACKED = 4,
+  BUBBLE = 5
 }
 
 
