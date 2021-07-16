@@ -43,12 +43,8 @@ export class AppController {
       this.logger.log('received event: ', event);
       const data = parsed.data;
       const id = data.project_media.dbid;
-      const projectId = data.project_media_project_id;
-      const referenceFolderId = +process.env.WP_PUBLISHED_FOLDER;
       this.logger.log('project media id: ', id)
-      this.logger.log('folder id: ', projectId)
-      this.logger.log('reference folder id: ', referenceFolderId.toString())
-      if(event === 'publish_report' && referenceFolderId === projectId){
+      if(event === 'publish_report'){
         return this.appService.publishReportById(id).pipe(
           catchError(err => {
             this.logger.error(err);
@@ -62,57 +58,57 @@ export class AppController {
     }
   }
 
-  @Post('publish-webhook')
-  async publishWebHook(@Body() body){
-    try{
-      // this.logger.log('body received: ', JSON.stringify(body));
-      const parsed = body;
-      const event = parsed.event;
-      this.logger.log('received event: ', event);
-      const data = parsed.object;
-      const id = data.id;
-      const projectId = data.project_id;
-      const referenceFolderId = +process.env.WP_PUBLISHED_FOLDER;
-      this.logger.log('project media id: ', id)
-      this.logger.log('folder id: ', projectId)
-      this.logger.log('reference folder id: ', referenceFolderId.toString())
-      if(event === 'update_project_media' && projectId === referenceFolderId){
-        const query = `query {
-          project_media(ids: "${id}"){
-            log(event_types: "update_projectmedia", last: 1) {
-              edges {
-                node {
-                  id
-                  object_changes_json
-                }
-              }
-            }
+//   @Post('publish-webhook')
+//   async publishWebHook(@Body() body){
+//     try{
+//       this.logger.log('body received: ', JSON.stringify(body));
+//       const parsed = body;
+//       const event = parsed.event;
+//       this.logger.log('received event: ', event);
+//       const data = parsed.object;
+//       const id = data.id;
+//       const projectId = data.project_id;
+//       const referenceFolderId = +process.env.WP_PUBLISHED_FOLDER;
+//       this.logger.log('project media id: ', id)
+//       this.logger.log('folder id: ', projectId)
+//       this.logger.log('reference folder id: ', referenceFolderId.toString())
+//       if(event === 'update_project_media' && projectId === referenceFolderId){
+//         const query = `query {
+//           project_media(ids: "${id}"){
+//             log(event_types: "update_projectmedia", last: 1) {
+//               edges {
+//                 node {
+//                   id
+//                   object_changes_json
+//                 }
+//               }
+//             }
             
-          }
-        }`
-        const project_media = await this.checkClient.getReportWithQuery(query).toPromise();
-        const logEdges = project_media.log.edges;
-        const objectChanges = logEdges.length ? JSON.parse(logEdges[0].node.object_changes_json) : null;
-        this.logger.log('object changes: ', JSON.stringify(objectChanges));
-        const folderId = objectChanges && objectChanges['project_id'] ? objectChanges['project_id'][1] : null;
-        this.logger.log(`changed folder id: ${folderId}`);
-        this.logger.log('reference folder id: ', referenceFolderId.toString());
-        if(folderId && folderId === referenceFolderId){
-          this.logger.log('publishing post...'); 
-          return this.appService.publishReportById(id).pipe(
-            catchError(err => {
-              this.logger.error(err);
-              throw new HttpException(err.message, 500);
-            })
-          );
-        }
-      }
-      return null;
-    }catch(e){
-      this.logger.error(e); 
-      throw new HttpException(e.message, 500);
-    }
-  }
+//           }
+//         }`
+//         const project_media = await this.checkClient.getReportWithQuery(query).toPromise();
+//         const logEdges = project_media.log.edges;
+//         const objectChanges = logEdges.length ? JSON.parse(logEdges[0].node.object_changes_json) : null;
+//         this.logger.log('object changes: ', JSON.stringify(objectChanges));
+//         const folderId = objectChanges && objectChanges['project_id'] ? objectChanges['project_id'][1] : null;
+//         this.logger.log(`changed folder id: ${folderId}`);
+//         this.logger.log('reference folder id: ', referenceFolderId.toString());
+//         if(folderId && folderId === referenceFolderId){
+//           this.logger.log('publishing post...');
+//           return this.appService.publishReportById(id).pipe(
+//             catchError(err => {
+//               this.logger.error(err);
+//               throw new HttpException(err.message, 500);
+//             })
+//           );
+//         }
+//       }
+//       return null;
+//     }catch(e){
+//       this.logger.error(e);
+//       throw new HttpException(e.message, 500);
+//     }
+//   }
 }
 
 // example log:
