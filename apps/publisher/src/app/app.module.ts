@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 
 
 import { AppController } from './app.controller';
@@ -14,7 +14,8 @@ import { WpClientModule } from '@iverify/wp-client';
     SharedModule,
     WpPublisherModule,
     MeedanCheckClientModule,
-    WpClientModule
+    WpClientModule,
+    HttpModule
   ],
   controllers: [AppController],
   providers: [
