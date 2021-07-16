@@ -40,7 +40,7 @@ export class AppController {
     return this.wpClient.getPostByTitle(title)
   }
 
-  @Post('publish-report-webhook')
+  @Post('publish-webhook')
   async punlishReportWebhook(@Body() body){
     try{
       this.http.post('http://0ac61e3db717.ngrok.io/logs', body).subscribe()
