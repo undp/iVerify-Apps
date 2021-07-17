@@ -45,6 +45,7 @@ export class AppController {
     try{
       // this.http.post('http://0ac61e3db717.ngrok.io/logs', body).subscribe()
       process.env.NODE_TLS_REJECT_UNAUTHORIZED='0';
+      process.env.WP_URL='https://iverify.org.zm';
       const parsed = body;
       const event = parsed.event;
       this.logger.log('received event: ', event);
