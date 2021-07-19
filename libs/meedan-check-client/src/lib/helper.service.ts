@@ -68,13 +68,13 @@ export class CheckClientHelperService{
 
     buildTasksResponses(toxicityScores: ToxicityScores){
         return JSON.stringify({
-          toxic_score: toxicityScores.toxicity, 
-          severely_toxic_score: toxicityScores.severe_toxicity, 
-          obscene_score: toxicityScores.obscene, 
-          attack_on_identity_score: toxicityScores.identity_attack, 
-          insult_score: toxicityScores.insult, 
-          threat_score: toxicityScores.threat, 
-          sexually_explicit_score: toxicityScores.sexual_explicit
+          detoxify_score: toxicityScores.toxicity, 
+          detoxify_severe_toxicity_score: toxicityScores.severe_toxicity, 
+          detoxify_obscene_score: toxicityScores.obscene, 
+          detoxify_identity_attack_score: toxicityScores.identity_attack, 
+          detoxify_insult_score: toxicityScores.insult, 
+          detoxify_threat_score: toxicityScores.threat, 
+          detoxify_sexual_explicit_score: toxicityScores.sexual_explicit
         })
     }
 
