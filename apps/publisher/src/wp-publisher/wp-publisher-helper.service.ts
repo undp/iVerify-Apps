@@ -77,12 +77,13 @@ export class WpPublisherHelper{
     formatEvidence(evidence: string){
       let blocksArr = evidence.split('DESCRIPTION');
       blocksArr.shift();
-      return blocksArr.reduce((acc, val) => {
+      const lis = blocksArr.reduce((acc, val) => {
         const linkArr = val.split('LINK');
-        const html = `<a href=${linkArr[1]}>${linkArr[0]}</a>`
+        const html = `<li><a href=${linkArr[1]}>${linkArr[0]}</a><li>`
         acc = acc + html;
         return acc;
-      }, '')
+      }, '');
+      return `<ul>${lis}</ul>`
     }
 }
 
