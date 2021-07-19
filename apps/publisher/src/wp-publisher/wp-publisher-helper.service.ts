@@ -81,7 +81,7 @@ export class WpPublisherHelper{
         if(val.length){
           const linkArr = val.split('LINK');
           if(linkArr.length){
-            const html = `<li><a href=${linkArr[1]}>${linkArr[0]}</a><li>`
+            const html = `<li><a href=${linkArr[1]}>${linkArr[0]}</a></li>`
             acc = acc + html;
           }
         }
