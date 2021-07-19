@@ -35,7 +35,7 @@ export class WpPublisherHelper{
         const title = meedanReport.title;
         const subtitle = meedanReport.description;
         const toxicField = this.extractTask(report, TasksLabels.toxic);
-        const toxic = toxicField && +toxicField >= +process.env.DETOXIFY_TRESHOLD ? 1 : 0;
+        const toxic = toxicField && process.env.DETOXIFY_TRESHOLD && +toxicField >= +process.env.DETOXIFY_TRESHOLD ? 1 : 0;
         const factchecking_status = this.extractFactcheckingStatus(report);
         const claim = this.extractTask(report, TasksLabels.claim);
         const rating_justification = this.extractTask(report, TasksLabels.rating_justification);
