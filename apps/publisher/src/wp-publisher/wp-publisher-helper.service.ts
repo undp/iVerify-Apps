@@ -78,9 +78,13 @@ export class WpPublisherHelper{
       let blocksArr = evidence.split('DESCRIPTION');
       blocksArr.shift();
       const lis = blocksArr.reduce((acc, val) => {
-        const linkArr = val.split('LINK');
-        const html = `<li><a href=${linkArr[1]}>${linkArr[0]}</a><li>`
-        acc = acc + html;
+        if(val.length){
+          const linkArr = val.split('LINK');
+          if(linkArr.length){
+            const html = `<li><a href=${linkArr[1]}>${linkArr[0]}</a><li>`
+            acc = acc + html;
+          }
+        }
         return acc;
       }, '');
       return `<ul>${lis}</ul>`
