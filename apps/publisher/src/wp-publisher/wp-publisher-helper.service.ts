@@ -39,7 +39,8 @@ export class WpPublisherHelper{
         const factchecking_status = this.extractFactcheckingStatus(report);
         const claim = this.extractTask(report, TasksLabels.claim);
         const rating_justification = this.extractTask(report, TasksLabels.rating_justification);
-        const evidence_and_references = this.extractTask(report, TasksLabels.evidences_and_references);
+        const evidence = this.extractTask(report, TasksLabels.evidences_and_references);
+        const evidence_and_references = this.formatEvidence(evidence);
         const fields: PostFields = {check_id, factchecking_status, claim, rating_justification, evidence_and_references, subtitle, toxic};
        
     
@@ -72,7 +73,19 @@ export class WpPublisherHelper{
       const field = report.annotation.data.fields.find(field => field.field_name === 'verification_status_status');
       return field.formatted_value;
     }
+
+    formatEvidence(evidence: string){
+      let blocksArr = evidence.split('DESCRIPTION');
+      blocksArr.shift();
+      return blocksArr.reduce((acc, val) => {
+        const linkArr = val.split('LINK');
+        const html = `<a href=${linkArr[1]}>${linkArr[0]}</a>`
+        acc = acc + html;
+        return acc;
+      }, '')
+    }
 }
+
 
 
 
