@@ -43,7 +43,8 @@ export enum TasksLabels{
     claim = 'Claim',
     rating_justification = 'Rating Justification',
     evidences_and_references = 'Evidence and References',
-    card_title = 'Card Title'
+    card_title = 'Card Title',
+    toxic = 'Toxic Score'
 }
 
 export interface CreatePostDto{
