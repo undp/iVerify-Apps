@@ -31,11 +31,11 @@ export class WpPublisherHelper{
         const status = PostStatus.publish;
         const comment_status = CommentStatus.open;
         const format = PostFormat.standard;
-        const content = report.description;
         const check_id = report.dbid;
         const title = meedanReport.title;
         const subtitle = meedanReport.description;
-        const toxic = 0;
+        const toxicField = this.extractTask(report, TasksLabels.toxic);
+        const toxic = toxicField && +toxicField >= +process.env.DETOXIFY_TRESHOLD ? 1 : 0;
         const factchecking_status = this.extractFactcheckingStatus(report);
         const claim = this.extractTask(report, TasksLabels.claim);
         const rating_justification = this.extractTask(report, TasksLabels.rating_justification);
@@ -81,7 +81,7 @@ export class WpPublisherHelper{
         if(val.length){
           const linkArr = val.split('LINK');
           if(linkArr.length){
-            const html = `<li><a href=${linkArr[1]}>${linkArr[0]}</a></li>`
+            const html = `<li><a href=${linkArr[1]} target="_blank" rel="noopener noreferrer">${linkArr[0]}</a></li>`
             acc = acc + html;
           }
         }
