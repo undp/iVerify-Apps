@@ -1,13 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { environment } from '@iverify/core/environments/environment';
 import { DashboardHelpers } from '@iverify/core/domain/dashboard.helpers';
 import { AppState } from '@iverify/core/store/states/app.state';
-import { Actions, ofType } from '@ngrx/effects';
+import { Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
+import * as moment from 'moment';
+import { FormGroup, FormControl } from '@angular/forms';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 export const bubbleData =  [
   {
@@ -62,8 +64,8 @@ export const bubbleData =  [
 export class DashboardComponent implements OnInit, OnDestroy {
 
   subs: Subscription;
-  fromdate: Date = DashboardHelpers.GetFirstLastDayMonth().firstDay;
-  todate: Date = DashboardHelpers.GetFirstLastDayMonth().lastDay;
+  // fromdate: Date = DashboardHelpers.GetFirstLastDayMonth().firstDay;
+  // todate: Date = DashboardHelpers.GetFirstLastDayMonth().lastDay;
   statData: any;
   agentsSourceData: any;
   ticketsByChannel: Object;
@@ -75,27 +77,37 @@ export class DashboardComponent implements OnInit, OnDestroy {
   totalPublished: any;
   ticketsByWeek: any;
   selectedTimeType: number = 1;
+  breakpoint: number;
   bubbleData = bubbleData;  
+  range = new FormGroup({
+    start: new FormControl(DashboardHelpers.GetFirstLastDayMonth().firstDay),
+    end: new FormControl(DashboardHelpers.GetFirstLastDayMonth().lastDay)
+  });
   
   constructor(
-    private store: Store<AppState>,
-    private actions$: Actions,
+    // private store: Store<AppState>,
+    // private actions$: Actions,
     // private toast: ToastService,
     private router: Router,
     // private modalService	: NgbModal,
     private dashboardService: DashboardService
   ) {
     this.subs = new Subscription();
+    this.breakpoint = (window.innerWidth <= 400) ? 1 : 3;
   }
 
   ngOnInit() {
     this.getStatistics();
   }
 
+  onResize(event: any) {
+    this.breakpoint = (event.target.innerWidth <= 400) ? 1 : 6;
+  }
+
   getStatistics() {
     let options = {
-      startDate: DashboardHelpers.FormatDate(this.fromdate),
-      endDate: DashboardHelpers.FormatDate(this.todate)
+      startDate: DashboardHelpers.FormatDate(this.range.get('start')?.value),
+      endDate: DashboardHelpers.FormatDate(this.range.get('end')?.value)
     }
     this.subs.add(
       this.dashboardService.list(options).subscribe((res) => {
@@ -114,14 +126,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
     // Fetch statistics data by current week
-    // options.startDate = DashboardHelpers.FormatDate(moment().startOf('week').toDate()),
-    // options.endDate = DashboardHelpers.FormatDate(moment().endOf('week').toDate())
+    options.startDate = DashboardHelpers.FormatDate(moment().startOf('week').toDate());
+    options.endDate = DashboardHelpers.FormatDate(moment().endOf('week').toDate());
 
     this.subs.add(
       this.dashboardService.list(options).subscribe((res) => {
-        this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(res.results);
-        console.log('this.ticketsByWeek');
-        console.log(JSON.stringify(this.ticketsByWeek));
+        this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(res.results);        
       })
     );
 

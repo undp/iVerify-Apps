@@ -112,7 +112,7 @@ export class ChartComponent implements OnInit, OnDestroy {
 
   colorScheme = [
     {
-      domain: ['#AAAAAA']
+      domain: ['#D3D3D3']
     },
     {
       domain: ['#E05548', '#FFA033']
