@@ -1,64 +1,69 @@
-.dropdown-toggle::after {
-  display: inline-block;
-  width: 0;
-  height: 0;
-  margin-left: 0.255em;
-  vertical-align: 0.255em;
-  content: '';
-  border: 0px !important;
-}
 
-.flex-template-wrapper {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-left: 0.3em;
-  align-items: center;
-  max-width: 100%;
+.mat-header {
+    background: none;
+    color: red;
 }
+// .dropdown-toggle::after {
+//   display: inline-block;
+//   width: 0;
+//   height: 0;
+//   margin-left: 0.255em;
+//   vertical-align: 0.255em;
+//   content: '';
+//   border: 0px !important;
+// }
 
-.flex-report-wrapper {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-top: 3.5em;
-  margin-left: 2em;
-  margin-right: 1em;
-  gap: 2em;
-  min-width: 80%;
-}
+// .flex-template-wrapper {
+//   display: flex;
+//   flex-direction: row;
+//   flex-wrap: wrap;
+//   margin-left: 0.3em;
+//   align-items: center;
+//   max-width: 100%;
+// }
 
-.flex-custom-date-row {
-  display: flex;
-}
+// .flex-report-wrapper {
+//   display: flex;
+//   flex-direction: row;
+//   flex-wrap: wrap;
+//   margin-top: 3.5em;
+//   margin-left: 2em;
+//   margin-right: 1em;
+//   gap: 2em;
+//   min-width: 80%;
+// }
 
-.marg-left-1 {
-  margin-left: 1em;
-}
+// .flex-custom-date-row {
+//   display: flex;
+// }
 
-.label-line-height {
-  line-height: 2.5rem;
-}
+// .marg-left-1 {
+//   margin-left: 1em;
+// }
 
-.custom-report-duration:nth-last-child(2) {
-  flex-grow: 1;
-  margin-bottom: .5rem;
-}
+// .label-line-height {
+//   line-height: 2.5rem;
+// }
 
-.informative-text {
-  margin-left: 15px;
-  font-size: 12px;
-  font-family: "fontRobotoThin";
-}
+// .custom-report-duration:nth-last-child(2) {
+//   flex-grow: 1;
+//   margin-bottom: .5rem;
+// }
 
-.flex-gap {
-  display: inline-flex;
-  flex-wrap: wrap;
-}
+// .informative-text {
+//   margin-left: 15px;
+//   font-size: 12px;
+//   font-family: "fontRobotoThin";
+// }
 
-.flex-gap > div {
-  margin: 15px;
-}
+// .flex-gap {
+//   display: inline-flex;
+//   flex-wrap: wrap;
+// }
+
+// .flex-gap > div {
+//   margin: 15px;
+// }
 
 .published p {
     margin-top: -1rem;

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectorRef} from '@angular/core';
 import { ActivationStart, Router, RouterOutlet } from '@angular/router';
 import { BaseComponent, environment } from '@iverify/core';
 import { AuthHelpers } from '@iverify/core/auth';
@@ -16,6 +16,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SpinnerVisibilityService } from 'ng-http-loader';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 @Component({
   selector: 'iverify-index',
@@ -40,6 +41,7 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   pageInfo:any = { logo : { header: false, sidebar: true }};
   protected fromdate: Date;
   protected todate: Date;
+  viewportMobileQuery: MediaQueryList;
   
   constructor(
     store: Store<AppState>,
@@ -47,7 +49,9 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
     private router: Router,
     private translate: TranslateService,
     private modalService: NgbModal,
-    private spinner: SpinnerVisibilityService
+    private spinner: SpinnerVisibilityService,
+    private changeDetectionRef: ChangeDetectorRef,
+    private media: MediaMatcher
   ) {
     super();
     this.store = store
@@ -56,7 +60,12 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
     this.userPermissions$ = this.store.select(
       selectUserPermissions
     );  
+    this.viewportMobileQuery = media.matchMedia('(max-width: 600px)');
+    this._viewportQueryListener = () => changeDetectionRef.detectChanges();
+    this.viewportMobileQuery.addEventListener('change', this._viewportQueryListener);
   }
+
+  private _viewportQueryListener: () => void;
   
 
   ngOnInit() {
@@ -71,6 +80,7 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.viewportMobileQuery.removeEventListener('change', this._viewportQueryListener);
     this.subs.unsubscribe();
   }
 

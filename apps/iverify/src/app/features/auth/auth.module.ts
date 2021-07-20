@@ -6,6 +6,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LoginGuard } from '@iverify/core/guards/login-guard';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 
 export const routes: Routes = [
@@ -22,7 +25,10 @@ export const routes: Routes = [
     ReactiveFormsModule,
     TranslateModule,
     FontAwesomeModule,
-    CommonModule
+    CommonModule,
+    MatInputModule,
+    MatButtonModule,
+    MatButtonToggleModule
   ],
   declarations: [LoginComponent],
   entryComponents: [LoginComponent]

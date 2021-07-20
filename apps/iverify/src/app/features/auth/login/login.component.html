@@ -1,9 +1,50 @@
+	
+
 <div class="bg"><div class="overlay"></div></div>
 <div class="row">
   <div class="img-fluid" style="width:15rem;margin:0rem auto;">
   <img src="assets/iVerify Wordmark Logo.png" style="width:100%;">
 </div>
-<div class="text-center">
+<div class="row">
+<form class="form-signin" [formGroup]="loginForm">
+<mat-form-field appearance="fill" >
+        <mat-label>{{ 'EMAIL' | translate }}</mat-label>
+        <input matInput type="email" 
+                id="inputEmail"
+                
+                (keydown.enter)="onLoginClick()"
+                [placeholder]="'EMAIL' | translate"
+                required
+                autofocus
+                formControlName="email">
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'PASSWORD' | translate }}</mat-label>
+        <input matInput
+        [type]="showPassword ? 'text' : 'password'"
+        (keydown.enter)="onLoginClick()"
+        id="inputPassword"
+        [placeholder]="'PASSWORD' | translate"
+        required
+        formControlName="password"
+        style="margin-bottom: 10px; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;"
+        >
+        <fa-icon
+        [icon]="showPassword ? 'eye-slash' : 'eye'"
+        (click)="showPassword = !showPassword"
+        class="input-icon-right"
+      ></fa-icon>
+      </mat-form-field>
+      <div class="">
+      <button mat-raised-button
+      (click)="onLoginClick()"
+      [disabled]="loginForm.invalid"
+      >{{'LOGIN'|translate}}</button>
+      </div>
+</form>
+</div>
+
+<!-- <div class="text-center">
   <form class="form-signin" [formGroup]="loginForm">
     <div class="input-group">
       <label for="inputEmail" class="sr-only">{{ 'EMAIL' | translate }}</label>
@@ -38,13 +79,6 @@
         class="input-icon-right"
       ></fa-icon>
     </div>
-    <!-- <button
-      class="btn btn-sm btn-link mb-4"
-      type="button"
-      (click)="onForgotPasswordClick()"
-    >
-      Forgot password?
-    </button> -->
     <button
       class="btn btn-lg btn-block"
       type="button"
@@ -55,22 +89,8 @@
     >
       Login
     </button>
-    <!-- <button
-      class="btn btn-sm btn-link"
-      type="button"
-      [routerLink]="'/'"
-    >
-      {{ 'LOGIN_CONTINUE_ANONYMOUS' | translate }}
-    </button> -->
-    <!-- <button
-      class="btn btn-link"
-      type="button"
-      (click)="onRegisterClick(useraddedit)"
-    >
-      {{ 'SIGNUP_TEXT' | translate}}
-    </button> -->
   </form>
-</div>
+</div> -->
 
 
 

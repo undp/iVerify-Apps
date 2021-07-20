@@ -1,6 +1,46 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'assets/scss/index';
 
+@import "~@angular/material/theming";
+
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$angular-material-v1-primary: mat-palette($mat-blue-grey, 600, 400, 800);
+$angular-material-v1-accent: mat-palette($mat-teal, 800, 900, 500);
+$angular-material-v1-warn: mat-palette($mat-red, 900, 500, A700);
+
+// Create the theme object (a Sass map containing all of the palettes).
+// If you prefer a dark theme, switch to mat-dark-theme and it will switch over to your darker hues
+$angular-material-v1-theme: mat-light-theme(
+  $angular-material-v1-primary,
+  $angular-material-v1-accent,
+  $angular-material-v1-warn
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($angular-material-v1-theme);
+
+$custom-typography: mat-typography-config(
+  $font-family: "Roboto, sans-serif"
+);
+
+// Override typography for all Angular Material, including mat-base-typography and all components.
+@include angular-material-typography($custom-typography);
+
+// Override the typography in the core CSS.
+@include mat-core($custom-typography);
+
+
 html,
 body {
   height: 100%;
@@ -9,14 +49,13 @@ body {
 }
 
 body {
-  font-family: Raleway /* Replace with your custom font */, sans-serif !important;
+  font-family: 'Roboto', sans-serif;
   display: flex;
   background-color: #fff;
   iverify-root {
     width: 100%;
   }
 }
-
 
 .bg-dark {
   background-color: $undp-jtf-bg-color !important;
@@ -126,27 +165,20 @@ span.switch-medium.checked {
   background: #ffc107 !important;
 }
 
-/*font roboto bold*/
-.fontRobotoBold {
-  font-family: "Lato-Bold";
+.fontRalewayRegular {
+  font-family: 'Raleway-Regular',sans-serif;
+  
+}
+
+.fontRalewayBold {
+  font-family: 'Raleway-Bold', sans-serif;
   &.header-text {
     font-size: 24px;
   }
 }
 
-/*font roboto medium*/
-.fontRobotoMedium {
-  font-family: "Lato-Light";
-}
-
-/*font roboto regular*/
 .fontRobotoRegular {
-  font-family: "Lato-Regular";
-}
-
-/*font roboto regular*/
-.fontRobotoThin {
-  font-family: "Lato-Thin";
+  font-family: "Roboto-Regular";
 }
 
 .cursor-pointer {
@@ -256,11 +288,16 @@ li.fm-divider {
   float:left;
 }
 
-g.pie-chart {
-  transform: translate(100, 50);
-}
-
-g {
-  transform: translate(0, -15);
+.mat-grid-tile .mat-grid-tile-header, .mat-grid-tile .mat-grid-tile-footer {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    color: $undp-jtf-text-color !important; 
+    background: none !important; 
+    overflow: hidden;
+    padding: 0px 50px;
+    position: absolute;
+    left: 0;
+    right: 0;
 }
 
