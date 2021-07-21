@@ -66,13 +66,14 @@ export class WpPublisherService{
     ){}
 
       private tagsIds(tags: string[]): Observable<number[]>{
+        const tagsLowCase = tags.map(tag => tag.toLocaleLowerCase());
         const wpTags$: Observable<any> = this.wpClient.listTags();
         const existingTagsIds$: Observable<number[]> = wpTags$.pipe(
-          map(wpTags => wpTags.filter(tag => tags.indexOf(tag.name) > -1).map(tag => tag.id))
+          map(wpTags => wpTags.filter(tag => tagsLowCase.indexOf(tag.name.toLowerCase()) > -1).map(tag => tag.id)),
           );
         const newTags$: Observable<string[]> = wpTags$.pipe(
-          map(wpTags => wpTags.map(tag => tag.name as string)),
-          map(wpTags => tags.filter(tag => wpTags.indexOf(tag) === -1))
+          map(wpTags => wpTags.map(tag => tag.name.toLowerCase() as string)),
+          map(wpTags => tags.filter(tag => wpTags.indexOf(tag.toLowerCase()) === -1))
         ) 
         const newTagsIds$: Observable<number[]> = newTags$.pipe(
           switchMap(tags => iif(()=> !!tags.length, this.createManyTags(tags).pipe(map(tag => [tag.id])), of([]))),
