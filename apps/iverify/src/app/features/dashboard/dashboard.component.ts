@@ -111,7 +111,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
     this.subs.add(
       this.dashboardService.list(options).subscribe((res) => {
-        console.log(res.results);
+        // console.log(res.results);
         this.statData = res;
         this.agentsSourceData = DashboardHelpers.SortStatistics(res.results);
         this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.agentsSourceData['source']);

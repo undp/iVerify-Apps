@@ -31,7 +31,7 @@ $angular-material-v1-theme: mat-light-theme(
 @include angular-material-theme($angular-material-v1-theme);
 
 $custom-typography: mat-typography-config(
-  $font-family: "Roboto, sans-serif"
+  $font-family: '"Roboto-Regular", sans-serif;'
 );
 
 // Override typography for all Angular Material, including mat-base-typography and all components.
@@ -166,12 +166,19 @@ span.switch-medium.checked {
 }
 
 .fontRalewayRegular {
-  font-family: 'Raleway-Regular',sans-serif;
+  font-family: 'Raleway-Regular', sans-serif;
   
 }
 
+.fontRalewayLight {
+  font-family: 'Roboto-Light' , sans-serif;
+  &.header-text {
+    font-size: 24px;
+  }
+}
+
 .fontRalewayBold {
-  font-family: 'Raleway-Bold', sans-serif;
+  font-family: 'Roboto-Bold' , sans-serif;
   &.header-text {
     font-size: 24px;
   }
