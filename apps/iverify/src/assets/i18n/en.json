@@ -308,5 +308,6 @@
   "CURRENT_STATUS": "Current status",
   "STATUS_BY_WEEK": "Status by week",
   "RESPONSE_TIME": "Response time",
-  "RESOLVE_TIME": "Resolve time"
+  "RESOLVE_TIME": "Resolve time",
+  "DATE_TEXT": "Enter a date range"
 }

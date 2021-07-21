@@ -29,7 +29,9 @@
 
 .example-spacer {
   flex: 1 1 auto;
+  padding: auto;
 }
+
 
 
 // ::ng-deep .modal-lg { 
@@ -61,12 +63,12 @@
 //     align-items: center;
 //     margin: 5px 0px;
 //   }
-//   .header-tagline {
-//     font-family: "Lato-Bold";
-//     font-size: 16px;
-//     font-weight: 700;
-//     padding: 10px 25px;
-//   }
+  .mat-toolbar {
+    font-family: 'Raleway', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 10px 25px;
+  }
 //   .form-control {
 //     padding: 0.75rem 1rem;
 //     border-width: 0;

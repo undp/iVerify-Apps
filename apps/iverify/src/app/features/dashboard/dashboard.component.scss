@@ -1,8 +1,5 @@
 
-.mat-header {
-    background: none;
-    color: red;
-}
+
 // .dropdown-toggle::after {
 //   display: inline-block;
 //   width: 0;
@@ -65,17 +62,21 @@
 //   margin: 15px;
 // }
 
-.published p {
-    margin-top: -1rem;
+// .mat-grid-tile-header {
+//   font-family: 'Raleway', sans-serif;
+// }
+
+.published {
+    margin-top: 1rem;
     right: 0;
-    position: absolute;
     color: #7E9E0A;
+    width: 65px;
     @media (min-width:768px) {
-      margin-top: -3.5rem;
+      margin-top: 0.5rem;
       width: 5em;
       color: #7E9E0A;
       right: 11px;
-      position: absolute;
+      position: relative;
       text-align: center;
     }
 }
