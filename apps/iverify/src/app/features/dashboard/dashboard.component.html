@@ -1,172 +1,138 @@
 <div class="row">
   <div class="d-inline-flex justify-content-between">
     <mat-form-field appearance="fill">
-      <mat-label>{{'DATE_TEXT'|translate}}</mat-label>
-      <mat-date-range-input  [formGroup]="range" [rangePicker]="picker" >
-        <input matStartDate formControlName="start" placeholder="Start date">
-        <input matEndDate formControlName="end" (dateChange)="getStatistics()" placeholder="End date">
+      <mat-label>{{ 'DATE_TEXT' | translate }}</mat-label>
+      <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+        <input matStartDate formControlName="start" placeholder="Start date" />
+        <input
+          matEndDate
+          formControlName="end"
+          (dateChange)="getStatisticsByDates()"
+          placeholder="End date"
+        />
       </mat-date-range-input>
-      <mat-datepicker-toggle  matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-date-range-picker #picker></mat-date-range-picker>
-      <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
-      <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker>
+        <mat-date-range-picker-actions>
+          <button mat-button matDateRangePickerCancel>Cancel</button>
+          <button mat-raised-button color="primary" matDateRangePickerApply>
+            Apply
+          </button>
+        </mat-date-range-picker-actions>
+      </mat-date-range-picker>
+      <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')"
+        >Invalid start date</mat-error
+      >
+      <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')"
+        >Invalid end date</mat-error
+      >
     </mat-form-field>
     <div class="published">
-      <p *ngIf="totalPublished">{{totalPublished[0].count}} {{'TICKETS_COMPLETED'|translate}}</p>
+      <p *ngIf="totalPublished">
+        {{ totalPublished[0].count }} {{ 'TICKETS_COMPLETED' | translate }}
+      </p>
     </div>
   </div>
-  
 </div>
-<mat-grid-list [cols]="breakpoint" rowHeight="2:1" *ngIf="(statData && (statData.results | json) !== ({} | json))" (window:resize)="onResize($event)">
+<mat-grid-list
+  [cols]="breakpoint"
+  rowHeight="2:1"
+  *ngIf="statData && (statData.results | json) !== ({} | json)"
+  (window:resize)="onResize($event)"
+>
   <mat-grid-tile>
     <mat-grid-tile-header>
-    <p class="fontRalewayLight text-uppercase">{{'ALL_TICKETS_BY_TYPE'|translate}}</p>
+      <p class="fontRalewayRegular text-uppercase">
+        {{ 'ALL_TICKETS_BY_TYPE' | translate }}
+      </p>
     </mat-grid-tile-header>
-          <iverify-charts [chartType]="1" [data]="ticketsByType"></iverify-charts>
+    <iverify-charts [chartType]="1" [data]="ticketsByType"></iverify-charts>
   </mat-grid-tile>
   <mat-grid-tile>
     <mat-grid-tile-header>
-      <p class="fontRalewayLight text-uppercase">{{'ALL_TICKETS_BY_TAG'|translate}}</p>
+      <p class="fontRalewayRegular text-uppercase">
+        {{ 'ALL_TICKETS_BY_TAG' | translate }}
+      </p>
     </mat-grid-tile-header>
-          <iverify-charts [chartType]="1" [data]="ticketsByTag"></iverify-charts>
+    <iverify-charts [chartType]="1" [data]="ticketsByTag"></iverify-charts>
   </mat-grid-tile>
   <mat-grid-tile>
     <mat-grid-tile-header>
-      <p class="fontRalewayLight text-uppercase">{{'ALL_TICKETS_BY_CHANNEL'|translate}}</p>
+      <p class="fontRalewayRegular text-uppercase">
+        {{ 'ALL_TICKETS_BY_CHANNEL' | translate }}
+      </p>
     </mat-grid-tile-header>
-          <iverify-charts [chartType]="1" [data]="ticketsByChannel"></iverify-charts>
+    <iverify-charts [chartType]="1" [data]="ticketsByChannel"></iverify-charts>
   </mat-grid-tile>
   <mat-grid-tile>
     <mat-grid-tile-header>
-      <p class="fontRalewayLight text-uppercase">{{'CURRENT_STATUS'|translate}}</p>
+      <p class="fontRalewayRegular text-uppercase">
+        {{ 'CURRENT_STATUS' | translate }}
+      </p>
     </mat-grid-tile-header>
-    <div style="margin-top: 3rem;">
-          <iverify-charts [chartType]="3" [data]="ticketsByCurrentStatus"></iverify-charts>
+    <div style="margin-top: 3rem">
+      <iverify-charts
+        [chartType]="3"
+        [data]="ticketsByCurrentStatus"
+      ></iverify-charts>
     </div>
   </mat-grid-tile>
   <mat-grid-tile>
     <mat-grid-tile-header>
-      <p class="fontRalewayLight text-uppercase">{{'STATUS_BY_WEEK'|translate}}</p>
+      <p class="fontRalewayRegular text-uppercase">
+        {{ 'STATUS_BY_WEEK' | translate }}
+      </p>
     </mat-grid-tile-header>
-        <div style="margin-top: 5rem;"><iverify-charts  [chartType]="2" [data]="ticketsByWeek"></iverify-charts></div>
+    <div style="margin-top: 5rem">
+      <iverify-charts [chartType]="2" [data]="ticketsByWeek"></iverify-charts>
+    </div>
   </mat-grid-tile>
   <mat-grid-tile>
     <mat-grid-tile-header>
-      <p class="fontRalewayLight text-uppercase">{{'TICKETS_BY_AGENT'|translate}}</p>
+      <p class="fontRalewayRegular text-uppercase">
+        {{ 'TICKETS_BY_AGENT' | translate }}
+      </p>
     </mat-grid-tile-header>
-          <iverify-charts [chartType]="4" [data]="ticketsByAgents"></iverify-charts>
+    <iverify-charts [chartType]="4" [data]="ticketsByAgents"></iverify-charts>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="breakpoint" rowspan="1">
     <mat-grid-tile-header>
       <mat-form-field appearance="fill">
         <mat-label>Response Velocity</mat-label>
-        <mat-select (change)="getAllTicketsData()" [(ngModel)]="selectedTimeType">
+        <mat-select
+          (change)="getAllTicketsData()"
+          [(ngModel)]="selectedTimeType"
+        >
           <mat-option [value]="1">
-            {{'RESPONSE_TIME'|translate}}
+            {{ 'RESPONSE_TIME' | translate }}
           </mat-option>
           <mat-option [value]="2">
-            {{'RESOLVE_TIME'|translate}}
+            {{ 'RESOLVE_TIME' | translate }}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      
-      <!-- <select class="custom-select" [(ngModel)]="selectedTimeType"
-          (change)="getAllTicketsData()">
-          <option selected [ngValue]="1">{{'RESPONSE_TIME'|translate}}</option>
-          <option [ngValue]="2">{{'RESOLVE_TIME'|translate}}</option>          
-        </select> -->
-        <p class="fontRalewayLight text-uppercase text-center" style="margin: 0 auto;">{{((selectedTimeType === 1) ? 'RESPONSE_TIME': 'RESOLVE_TIME')|translate}}</p>
+      <p
+        class="fontRalewayRegular text-uppercase text-center"
+        style="margin: 0 auto"
+      >
+        {{
+          (selectedTimeType === 1 ? 'RESPONSE_TIME' : 'RESOLVE_TIME')
+            | translate
+        }}
+      </p>
     </mat-grid-tile-header>
-          <iverify-charts [chartType]="5" [data]="bubbleData" [responseType]="selectedTimeType"></iverify-charts>
+    <iverify-charts
+      [chartType]="5"
+      [data]="bubbleData"
+      [responseType]="selectedTimeType"
+    ></iverify-charts>
   </mat-grid-tile>
 </mat-grid-list>
-  <div class="">
-    
-      <!-- <div class="flex-custom-date-wrapper">
-        <div class="flex-custom-date-row col-sm-12 col-md-4">
-          <div>
-            <label class="font-report-text label-line-height">{{
-          'FROM_DATE' | translate
-          }}</label>
-          </div>
-          <input class="marg-left-1 form-control" ngbDatepicker #fromDate="ngbDatepicker" [(ngModel)]="fromdate" />
-          <div>
-            <button class="btn btn-outline-secondary"
-              style="border-top-right-radius: 4px !important; border-bottom-right-radius: 4px;"
-              (click)="fromDate.toggle()" type="button">
-              <fa-icon [icon]="'calendar-alt'"></fa-icon>
-            </button>
-          </div>
-        </div>
-        <div class="flex-custom-date-row col-sm-12 col-md-4">
-          <div>
-            <label class="font-report-text label-line-height">{{
-          'TO_DATE' | translate
-          }}</label>
-          </div>
-          <input class="marg-left-1 form-control" ngbDatepicker #toDate="ngbDatepicker" [(ngModel)]="todate" />
-          <div>
-            <button class="btn btn-outline-secondary"
-              style="border-top-right-radius: 4px !important; border-bottom-right-radius: 4px;"
-              (click)="toDate.toggle()" type="button">
-              <fa-icon [icon]="'calendar-alt'"></fa-icon>
-            </button>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-2">
-          <button [disabled]="!(fromDate && todate)" [ngClass]="{'btn-outline-secondary': !(fromDate && todate)}" class="btn marg-right-2 pad-0 btn-round-border btn-outline-primary" (click)="getStatistics()">
-            {{ 'APPLY' | translate }}
-          </button>
-        </div>
-        <div class="col-sm-6 col-md-2 col-lg-2 published">
-          <p *ngIf="totalPublished">{{totalPublished[0].count}} {{'TICKETS_COMPLETED'|translate}}</p>
-        </div>
-      </div>
-    </div> -->
-    <p class="custom-report-info marg-left-1"  *ngIf="(statData && (statData.results | json) === ({} | json))">
-        {{ 'NO_RECORDS' | translate }}
-      </p>
-    <!-- <div class="" *ngIf="(statData && (statData.results | json) !== ({} | json))">
-      <div class="row mt-3 p-4">
-        <div class="col-sm-12 col-md-4 col-lg-4">
-          <p class="fontRalewayLight text-uppercase">{{'ALL_TICKETS_BY_TYPE'|translate}}</p>
-          <iverify-charts [chartType]="1" [data]="ticketsByType"></iverify-charts>
-        </div>
-        <div class="col-sm-12 col-md-4 col-lg-4">
-          <p class="fontRalewayLight text-uppercase">{{'ALL_TICKETS_BY_TAG'|translate}}</p>
-          <iverify-charts [chartType]="1" [data]="ticketsByTag"></iverify-charts>
-        </div>
-        <div class="col-sm-12 col-md-4 col-lg-4">
-          <p class="fontRalewayLight text-uppercase">{{'ALL_TICKETS_BY_CHANNEL'|translate}}</p>
-          <iverify-charts [chartType]="1" [data]="ticketsByChannel"></iverify-charts>
-        </div>
-      </div>
-      <div class="row mt-3 p-4">
-        <div class="col-sm-12 col-md-4 col-lg-4">
-          <p class="fontRalewayLight text-uppercase">{{'CURRENT_STATUS'|translate}}</p>
-          <iverify-charts [chartType]="3" [data]="ticketsByCurrentStatus"></iverify-charts>
-        </div>
-        <div class="col-sm-12 col-md-4 col-lg-4">
-          <p class="fontRalewayLight text-uppercase">{{'STATUS_BY_WEEK'|translate}}</p>
-          <iverify-charts [chartType]="2" [data]="ticketsByWeek"></iverify-charts>
-        </div>
-        <div class="col-sm-12 col-md-4 col-lg-4">
-          <p class="fontRalewayLight text-uppercase">{{'TICKETS_BY_AGENT'|translate}}</p>
-          <iverify-charts [chartType]="4" [data]="ticketsByAgents"></iverify-charts>
-        </div>
-      </div>
-      <div class="row mt-3 p-4">
-        <div class="col-sm-12 col-md-3 col-lg-3">
-          <select class="custom-select" [(ngModel)]="selectedTimeType"
-          (change)="getAllTicketsData()">
-          <option selected [ngValue]="1">{{'RESPONSE_TIME'|translate}}</option>
-          <option [ngValue]="2">{{'RESOLVE_TIME'|translate}}</option>          
-        </select>
-        </div>
-        <div  class="col-sm-12 col-md-8 col-lg-8">
-          <p class="fontRalewayLight text-uppercase">{{((selectedTimeType === 1) ? 'RESPONSE_TIME': 'RESOLVE_TIME')|translate}}</p>
-          <iverify-charts [chartType]="5" [data]="bubbleData" [responseType]="selectedTimeType"></iverify-charts>
-          </div>
-      </div>
-    </div> -->
-  </div>
+<div class="">
+  <p
+    class="custom-report-info marg-left-1"
+    *ngIf="statData && (statData.results | json) === ({} | json)"
+  >
+    {{ 'NO_RECORDS' | translate }}
+  </p>
+</div>

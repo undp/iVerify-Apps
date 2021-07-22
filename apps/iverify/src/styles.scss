@@ -61,31 +61,6 @@ body {
   background-color: $undp-jtf-bg-color !important;
 }
 
-.btn-circle {
-  width: 30px;
-  height: 30px;
-  padding: 6px 0px;
-  border-radius: 100%;
-  text-align: center;
-  font-size: 12px;
-  line-height: 1.33;
-  padding: 10px 16px;
-  &.btn-md {
-    width: 48px;
-    height: 48px;
-    font-size: 16px;
-  }
-  &.btn-xl {
-    width: 64px;
-    height: 64px;
-    font-size: 24px;
-    padding: 10px 21px;
-  }
-  fa-icon {
-    margin: 0;
-  }
-}
-
 .btn {
   fa-icon {
     margin-right: 4px;
@@ -240,37 +215,6 @@ li.fm-divider {
   align-items: center;
   gap: 1em;
   min-width: 80%;
-}
-
-.custom-btn-outline-primary.disabled, .custom-btn-outline-primary:disabled {
-  color: #000000 !important;
-  background-color: transparent !important;
-  border: 1px solid #000000;
-}
-
-.custom-btn-outline-primary {
-  color: #000000;
-  border-color: #000000;
-}
-
-.custom-btn-outline-primary:not(:disabled):hover {
-  color: #ffffff;
-  background-color: $undp-jtf-accent-color;
-  border: none;
-}
-
-.nav-tabs .nav-link:hover {
-  border: none !important;
-}
-
-.nav-tabs .nav-link.active {
-  border-bottom: 4.5px solid $undp-jtf-accent-color !important;
-  background-color: #FAFAFA !important;
-}
-
-.custom-tab-header {
-  font-size: 16px;
-  color: $undp-jtf-accent-color !important;
 }
 
 .custom-select {

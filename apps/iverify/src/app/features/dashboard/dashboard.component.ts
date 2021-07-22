@@ -1,17 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DashboardHelpers } from '@iverify/core/domain/dashboard.helpers';
-import { AppState } from '@iverify/core/store/states/app.state';
-import { Actions } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
-import * as moment from 'moment';
 import { FormGroup, FormControl } from '@angular/forms';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { TicketRequest, StatusFormat, StatusFormatPieChart, TicketsByAgentFormat, BubbleChartFormat } from '@iverify/core/models/dashboard';
 
-export const bubbleData =  [
+export const bubbleData : BubbleChartFormat[] =  [
   {
     name: 'Response',
     series: [
@@ -53,7 +48,6 @@ export const bubbleData =  [
       }
     ]
   }
-  
 ];
 
 @Component({
@@ -64,25 +58,23 @@ export const bubbleData =  [
 export class DashboardComponent implements OnInit, OnDestroy {
 
   subs: Subscription;
-  // fromdate: Date = DashboardHelpers.GetFirstLastDayMonth().firstDay;
-  // todate: Date = DashboardHelpers.GetFirstLastDayMonth().lastDay;
   statData: any;
   agentsSourceData: any;
-  ticketsByChannel: Object;
-  ticketsByType: any;
-  ticketsByTag: Object;
-  ticketsByStatus: Object;
-  ticketsByCurrentStatus: any;
-  ticketsByAgents: any;
+  ticketsByChannel: StatusFormat[];
+  ticketsByType: StatusFormat[];
+  ticketsByTag: StatusFormat[];
+  ticketsByCurrentStatus: StatusFormatPieChart[];
+  ticketsByAgents: TicketsByAgentFormat[];
   totalPublished: any;
   ticketsByWeek: any;
   selectedTimeType: number = 1;
   breakpoint: number;
   bubbleData = bubbleData;  
   range = new FormGroup({
-    start: new FormControl(DashboardHelpers.GetFirstLastDayMonth().firstDay),
-    end: new FormControl(DashboardHelpers.GetFirstLastDayMonth().lastDay)
+    start: new FormControl(),
+    end: new FormControl()
   });
+  options: TicketRequest = {startDate: '', endDate: ''};
   
   constructor(
     // private store: Store<AppState>,
@@ -97,6 +89,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    let previousMonday = new Date(DashboardHelpers.GetPreviousWeekFirstDay());
+
+    this.options.startDate =  DashboardHelpers.FormatDate(previousMonday);
+    this.options.endDate =  DashboardHelpers.FormatDate(new Date());
     this.getStatistics();
   }
 
@@ -105,44 +101,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getStatistics() {
-    let options = {
-      startDate: DashboardHelpers.FormatDate(this.range.get('start')?.value),
-      endDate: DashboardHelpers.FormatDate(this.range.get('end')?.value)
-    }
     this.subs.add(
-      this.dashboardService.list(options).subscribe((res) => {
-        // console.log(res.results);
+      this.dashboardService.list(this.options).subscribe((res) => {
         this.statData = res;
-        this.agentsSourceData = DashboardHelpers.SortStatistics(res.results);
+        this.agentsSourceData = DashboardHelpers.SortStatistics(this.statData.results);
         this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.agentsSourceData['source']);
         this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['tag']);
         this.ticketsByType = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['status']);
         this.ticketsByCurrentStatus = DashboardHelpers.GetTicketsByCurrentStatus(this.agentsSourceData);
-        this.ticketsByCurrentStatus[1].value = 25;
+        this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(this.statData.results);  
         this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.agentsSourceData);
         this.totalPublished = (this.agentsSourceData['createdVsPublished'])? this.agentsSourceData['createdVsPublished'][0][1] : null;
+        console.log(this.ticketsByAgents);
       })
     );
+  }
 
-
-    // Fetch statistics data by current week
-    options.startDate = DashboardHelpers.FormatDate(moment().startOf('week').toDate());
-    options.endDate = DashboardHelpers.FormatDate(moment().endOf('week').toDate());
-
-    this.subs.add(
-      this.dashboardService.list(options).subscribe((res) => {
-        this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(res.results);        
-      })
-    );
-
+  getStatisticsByDates() {
+    this.options.startDate = DashboardHelpers.FormatDate(this.range.get('start')?.value);
+    this.options.endDate = DashboardHelpers.FormatDate(this.range.get('end')?.value);
+    this.getStatistics();
   }
 
   getAllTicketsData() {
 
   }
 
-
   ngOnDestroy() {
-
+    this.subs.unsubscribe();
   }
 }
