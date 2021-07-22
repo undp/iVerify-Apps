@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Input } from '@angular/core';
+import { Component, OnDestroy, Input, OnChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
 import { ChartTypeEnum } from '@iverify/core/models/dashboard';
@@ -78,7 +78,7 @@ const multi =  [
   templateUrl: 'charts.component.html',
   styleUrls: ['charts.component.scss']
 })
-export class ChartComponent implements OnInit, OnDestroy {
+export class ChartComponent implements  OnDestroy, OnChanges {
 
   subs: Subscription;
 
@@ -100,16 +100,6 @@ export class ChartComponent implements OnInit, OnDestroy {
   multi = multi;
   tickIndex: number = 0;
   curve: any = curveBasis;
-    
-  constructor(
-    private dashboardService: DashboardService
-  ) {
-    this.subs = new Subscription();
-  }
-
-  ngOnInit() {
-  }
-
   colorScheme = [
     {
       domain: ['#D3D3D3']
@@ -125,8 +115,22 @@ export class ChartComponent implements OnInit, OnDestroy {
     }
   ];
 
+
+  constructor(
+  ) {
+    this.subs = new Subscription();
+  }
+
+  ngOnChanges() {
+    if (this.data.length === 1) {
+      this.view = [300, 35];
+    } else {
+      this.view = [300, 100];
+    }
+  }
+
   onSelect(event: Event) {
-    // console.log(event);
+    console.log('event');
   }
 
   onActivate(data: any): void {

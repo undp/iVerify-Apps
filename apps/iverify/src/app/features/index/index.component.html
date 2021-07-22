@@ -2,7 +2,7 @@
    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
     <mat-icon>menu</mat-icon>
   </button>
-  <span class="">{{'HEADER_TAG_LINE'|translate}}</span>  
+  <span class="fontRalewayBold">{{'HEADER_TAG_LINE'|translate}}</span>  
   <span class="example-spacer"></span>
   <!-- <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
     <mat-icon>favorite</mat-icon>
@@ -19,51 +19,7 @@
   <button mat-menu-item (click)="onLogoutClick()">{{ 'LOGOUT' | translate }}</button>
 </mat-menu>
 </mat-toolbar>
-
 <div class="container-fluid">
-
-
-<!-- <nav class="navbar px-1 navbar-expand-lg navbar-light bg-green justify-content-between">
-  <a class="navbar-brand fontRalewayBold header-text" href="#">{{'HEADER_TAG_LINE'|translate}}</a> -->
-  <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button> -->
-  <!-- <div class="collapse navbar-collapse" id="navbarNavDropdown">
-    <ul class="navbar-nav">
-      <li class="nav-item dropdown mr-sm-2">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Profile
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-    </ul>
-  </div> -->
-  <!-- <div class="nav-user-info" *ngIf="user$ | async">
-          <img
-            id="user-profile-icon"
-            src="/assets/profile.svg"
-          />
-          <div class="pad-left-15" ngbDropdown>
-            <button
-              class="btn btn-link p-0 userProfileText"
-              id="user-dropdown"
-              ngbDropdownToggle
-            >
-              {{ (user$ | async).firstName }}
-              <div class="mt-1" style="margin-left: -35px;" ngbDropdownMenu aria-labelledby="user-dropdown">
-                <button ngbDropdownItem (click)="onLogoutClick()">
-                  <fa-icon [icon]="'sign-out-alt'"></fa-icon>
-                  {{ 'LOGOUT' | translate }}
-                </button>
-              </div>
-            </button>
-          </div>         
-        </div>
-</nav> -->
   <main role="main" class="p-0 bg-main-body main-body">   
     <router-outlet></router-outlet>
   </main>

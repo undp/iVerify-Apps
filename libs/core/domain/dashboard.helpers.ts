@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 import { isEmpty, orderBy } from 'lodash';
-import { TicketsByType, TicketCatResFormat, statusFormatPieChart, statusFormat } from '../models/dashboard';
+import { TicketsByType, TicketCatResFormat, StatusFormatPieChart, StatusFormat } from '../models/dashboard';
 
 const showItems = 5;
 
@@ -55,7 +55,7 @@ const GetTicketsByTag = (res: any[]) => {
 };
 
 const GetTicketsByCurrentStatus = (res: any) => {
-    let processedData: statusFormatPieChart[] = [];
+    let processedData: StatusFormatPieChart[] = [];
     if (!isEmpty(res)) {
       const statuses = res.status;
       const latestDateIndex = statuses.length - 1;
@@ -132,7 +132,7 @@ const GetTicketsByAgents = (res: any) => {
 const GetTicketsByWeek = (res: any) => {
   const statuses = res[TicketsByType.status];
   const published = res[TicketsByType.createdVsPublished];
-  let unstartedStatuses: statusFormat[] = [], publishedStatuses:statusFormat[] = [], inprogressStatuses: statusFormat[] = [];
+  let unstartedStatuses: StatusFormat[] = [], publishedStatuses:StatusFormat[] = [], inprogressStatuses: StatusFormat[] = [];
   if (!isEmpty(statuses)) {
 
     const ticketStatusByDay = Object.keys(statuses);
@@ -144,31 +144,37 @@ const GetTicketsByWeek = (res: any) => {
         if(!isEmpty(statuses[key])) {
           let dayData = statuses[key];
           let unstarted = dayData.filter((item: any) => (item.category === 'Unstarted'));
-          let temp = {
-            name: key,
-            value: unstarted[0].count
+          if (unstarted.length > 0) {
+            let temp = {
+              name: key,
+              value: unstarted[0].count
+            }
+            unstartedStatuses.push(temp);
           }
-          unstartedStatuses.push(temp);
         }
 
         if(!isEmpty(statuses[key])) {
           let dayData = statuses[key];
           let inprogress = dayData.filter((item: any) => (item.category === 'In Progress'));
-          let temp = {
-            name: key,
-            value: inprogress[0].count
+          if (inprogress.length > 0) {
+            let temp = {
+              name: key,
+              value: inprogress[0].count
+            }
+            inprogressStatuses.push(temp);
           }
-          inprogressStatuses.push(temp);
         }
 
         if (!isEmpty(published[key])) {
           let dayData = published[key];
           let publishedCreated = dayData.filter((item: any) => (item.category === 'published'));
-          let temp = {
-            name: key,
-            value: publishedCreated[0].count
+          if (publishedCreated.length > 0) {
+              let temp = {
+                name: key,
+                value: publishedCreated[0].count
+              }
+              publishedStatuses.push(temp);
           }
-          publishedStatuses.push(temp);
         }
       });
       
@@ -196,6 +202,11 @@ const daysInMonth = (month: number, year: number) => {
     return new Date(year, month, 0).getDate();
 }
 
+const GetPreviousWeekFirstDay = ()=> {
+  let today = new Date();
+  return new Date().setDate(today.getDate()-today.getDay()-6);
+}
+
 const GetFirstLastDayMonth = () => {
   const date = new Date();
   return {
@@ -212,5 +223,6 @@ export const DashboardHelpers = {
   GetTicketsByCurrentStatus,
   GetTicketsByAgents,
   GetFirstLastDayMonth,
-  GetTicketsByWeek
+  GetTicketsByWeek,
+  GetPreviousWeekFirstDay
 };
