@@ -16,14 +16,14 @@ steps:
       command: login
       containerRegistry: $(azureContainerRegistryName)
   - task: Docker@2
-   displayName: Build and Push iverify
-   inputs:
-     command: buildAndPush
-     repository: $(dockerImage)-js
-     Dockerfile: apps/iverify/Dockerfile
-     buildContext: $(Build.Repository.LocalPath)
-     tags: |
-       $(dockerImage)-iverify-$(Build.SourceVersion)
+    displayName: Build and Push iverify
+    inputs:
+      command: buildAndPush
+      repository: $(dockerImage)-js
+      Dockerfile: apps/iverify/Dockerfile
+      buildContext: $(Build.Repository.LocalPath)
+      tags: |
+        $(dockerImage)-iverify-$(Build.SourceVersion)
   - task: Docker@2
     displayName: Build and Push publisher
     inputs:
@@ -44,26 +44,26 @@ steps:
         $(dockerImage)-triage-$(Build.SourceVersion)
 
   - task: Docker@2
-   displayName: Build and Push API
-   inputs:
-     command: buildAndPush
-     repository: $(dockerImage)-js
-     Dockerfile: apps/api/Dockerfile-prod
-     buildContext: $(Build.Repository.LocalPath)
-     tags: |
-       $(dockerImage)-api-$(Build.SourceVersion)
+    displayName: Build and Push API
+    inputs:
+      command: buildAndPush
+      repository: $(dockerImage)-js
+      Dockerfile: apps/api/Dockerfile-prod
+      buildContext: $(Build.Repository.LocalPath)
+      tags: |
+        $(dockerImage)-api-$(Build.SourceVersion)
   - task: HelmDeploy@0
-   displayName: Helm deploy iverify
-   inputs:
-     connectionType: 'Kubernetes Service Connection'
-     kubernetesServiceEndpoint: $(k8s_service_connection)
-     namespace: $(dockerImage)-js
-     command: upgrade
-     arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-iverify-$(Build.SourceVersion)
-     chartType: 'FilePath'
-     releaseName: iverify
-     chartPath: deploy/app 
-     valueFile: $(value_file_url)/iverify-values.yaml
+    displayName: Helm deploy iverify
+    inputs:
+      connectionType: 'Kubernetes Service Connection'
+      kubernetesServiceEndpoint: $(k8s_service_connection)
+      namespace: $(dockerImage)-js
+      command: upgrade
+      arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-iverify-$(Build.SourceVersion)
+      chartType: 'FilePath'
+      releaseName: iverify
+      chartPath: deploy/app 
+      valueFile: $(value_file_url)/iverify-values.yaml
   - task: Kubernetes@1
     displayName: Kube - Create iverify secret
     inputs:
@@ -99,14 +99,14 @@ steps:
       valueFile: $(value_file_url)/triage-values.yaml
   
   - task: HelmDeploy@0
-   displayName: Helm deploy api
-   inputs:
-     connectionType: 'Kubernetes Service Connection'
-     kubernetesServiceEndpoint: $(k8s_service_connection)
-     namespace: $(dockerImage)-js
-     command: upgrade
-     arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-api-$(Build.SourceVersion)
-     chartType: 'FilePath'
-     releaseName: api
-     chartPath: deploy/app 
-     valueFile: $(value_file_url)/api-values.yaml
+    displayName: Helm deploy api
+    inputs:
+      connectionType: 'Kubernetes Service Connection'
+      kubernetesServiceEndpoint: $(k8s_service_connection)
+      namespace: $(dockerImage)-js
+      command: upgrade
+      arguments: -i --set image=$(azureContainerRegistryName).azurecr.io/$(dockerImage)-js:$(dockerImage)-api-$(Build.SourceVersion)
+      chartType: 'FilePath'
+      releaseName: api
+      chartPath: deploy/app 
+      valueFile: $(value_file_url)/api-values.yaml
