@@ -307,7 +307,8 @@
   "TICKETS_BY_AGENT": "tickets by agents",
   "CURRENT_STATUS": "Current status",
   "STATUS_BY_WEEK": "Status by week",
-  "RESPONSE_TIME": "Response time",
-  "RESOLVE_TIME": "Resolve time",
-  "DATE_TEXT": "Enter a date range"
+  "RESPONSE_TIME": "Response times",
+  "RESOLVE_TIME": "Resolve times",
+  "DATE_TEXT": "Enter a date range",
+  "RESPONSE_VELOCITY": "Response velocity"
 }

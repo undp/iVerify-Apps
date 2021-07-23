@@ -142,11 +142,17 @@ span.switch-medium.checked {
 
 .fontRalewayRegular {
   font-family: 'Raleway-Regular', sans-serif;
-  
+  &.header-text {
+    font-size: 2rem;
+  }
 }
 
 .fontRalewayLight {
   font-family: 'Roboto-Light' , sans-serif;
+}
+
+.fontRalewayBlack {
+  font-family: "Raleway-Black";
   &.header-text {
     font-size: 24px;
   }
@@ -155,12 +161,16 @@ span.switch-medium.checked {
 .fontRalewayBold {
   font-family: 'Roboto-Bold' , sans-serif;
   &.header-text {
-    font-size: 24px;
+    font-size: 2rem;
   }
 }
 
 .fontRobotoRegular {
   font-family: "Roboto-Regular";
+}
+
+.main-body {
+  margin: 0px 2rem;
 }
 
 .cursor-pointer {
@@ -247,6 +257,7 @@ li.fm-divider {
     background: none !important; 
     overflow: hidden;
     padding: 0px 50px;
+    margin: 15px 0px 0px 0px;
     position: absolute;
     left: 0;
     right: 0;

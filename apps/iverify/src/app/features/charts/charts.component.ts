@@ -1,6 +1,5 @@
 import { Component, OnDestroy, Input, OnChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { DashboardService } from '@iverify/core/domain/dashboad.service';
 import { ChartTypeEnum } from '@iverify/core/models/dashboard';
 import { curveBasis } from 'd3-shape';
 
@@ -87,7 +86,6 @@ export class ChartComponent implements  OnDestroy, OnChanges {
   single: any[];
   view: [number, number] = [300, 100];
   ChartTypeEnum = ChartTypeEnum;
-
   // options
   showXAxis: boolean = false;
   showYAxis: boolean = true;
@@ -156,6 +154,7 @@ export class ChartComponent implements  OnDestroy, OnChanges {
   ngOnDestroy() {
 
   }
+
   pieChartLabel(series: any[], name: string): string {
       const item = series.filter(data => data.name === name);
       if (item.length > 0) {

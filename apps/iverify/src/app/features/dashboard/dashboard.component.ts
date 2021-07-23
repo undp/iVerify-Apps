@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { DashboardHelpers } from '@iverify/core/domain/dashboard.helpers';
 import { Subscription } from 'rxjs';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
@@ -68,20 +67,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   totalPublished: any;
   ticketsByWeek: any;
   selectedTimeType: number = 1;
-  breakpoint: number;
+  breakpoint: number = 3;
   bubbleData = bubbleData;  
   range = new FormGroup({
     start: new FormControl(),
     end: new FormControl()
   });
   options: TicketRequest = {startDate: '', endDate: ''};
+  responseVelocity: string = 'RESPONSE_TIME';
   
   constructor(
-    // private store: Store<AppState>,
-    // private actions$: Actions,
     // private toast: ToastService,
-    private router: Router,
-    // private modalService	: NgbModal,
     private dashboardService: DashboardService
   ) {
     this.subs = new Subscription();
@@ -112,7 +108,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(this.statData.results);  
         this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.agentsSourceData);
         this.totalPublished = (this.agentsSourceData['createdVsPublished'])? this.agentsSourceData['createdVsPublished'][0][1] : null;
-        console.log(this.ticketsByAgents);
       })
     );
   }
@@ -124,7 +119,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getAllTicketsData() {
-
+    this.responseVelocity = (this.selectedTimeType === 1)? 'RESPONSE_TIME' : 'RESOLVE_TIME';
   }
 
   ngOnDestroy() {

@@ -98,9 +98,9 @@
   <mat-grid-tile [colspan]="breakpoint" rowspan="1">
     <mat-grid-tile-header>
       <mat-form-field appearance="fill">
-        <mat-label>Response Velocity</mat-label>
+      <mat-label>{{'RESPONSE_VELOCITY'|translate}}</mat-label>
         <mat-select
-          (change)="getAllTicketsData()"
+          (selectionChange)="getAllTicketsData()"
           [(ngModel)]="selectedTimeType"
         >
           <mat-option [value]="1">
@@ -116,8 +116,7 @@
         style="margin: 0 auto"
       >
         {{
-          (selectedTimeType === 1 ? 'RESPONSE_TIME' : 'RESOLVE_TIME')
-            | translate
+          responseVelocity|translate
         }}
       </p>
     </mat-grid-tile-header>
