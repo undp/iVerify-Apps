@@ -1,26 +1,19 @@
- <mat-toolbar class="fontRalewayRegular header-tagline" color="primary">
-   <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+ <mat-toolbar>
+   <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
     <mat-icon>menu</mat-icon>
-  </button>
-  <span class="fontRalewayBold">{{'HEADER_TAG_LINE'|translate}}</span>  
+  </button> -->
+  <span class="fontRalewayRegular header-text">{{'HEADER_TAG_LINE'|translate}}</span>  
   <span class="example-spacer"></span>
-  <!-- <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-    <mat-icon>favorite</mat-icon>
-  </button>
-  <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-   <mat-icon>share</mat-icon>
- </button> -->
  <button mat-button color="black" [matMenuTriggerFor]="settingsMenu" aria-label="Example icon button with a bookmark icon">
     <mat-icon>account_circle</mat-icon>
   </button>        
- <!-- <button  mat-button  type="button" [matMenuTriggerFor]="settingsMenu">Profile</button> -->
 <mat-menu #settingsMenu>
   <menu mat-menu-item disabled>{{ (user$ | async)?.email }}</menu>
   <button mat-menu-item (click)="onLogoutClick()">{{ 'LOGOUT' | translate }}</button>
 </mat-menu>
 </mat-toolbar>
 <div class="container-fluid">
-  <main role="main" class="p-0 bg-main-body main-body">   
+  <main role="main" class="main-body">   
     <router-outlet></router-outlet>
   </main>
 </div>

@@ -54,7 +54,7 @@ export interface TicketsByAgentFormat {
 interface BubbleChartItem {
   name: string,
   x: number,
-  y: number,
+  y?: number,
   r: number
 }
 
