@@ -47,7 +47,9 @@ export class UsersService {
         userDto.password = await this.encryptPassword(userDto.password);
         userDto['createdBy'] = userId;
         const roles: Roles[] = await Promise.all(
-            userDto.roles.map(role => this.preloadRoleByName(role))
+            userDto.roles.map(role => {
+                return this.preloadRoleByName(role['name']);
+            })
         ) 
 
         const user = await  this.userRepository.create({...userDto, roles});

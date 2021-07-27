@@ -24,9 +24,9 @@ export class RolesController {
     }
 
     @Post()
-    // @UseGuards(JWTTokenAuthGuard, RolesGuard)
+    @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async create(@Body() createRoleDto: CreateRoleDto) {
-        const userId = this.request.user['id'];
+        const userId = this.request.user && this.request.user['id'] ? this.request.user['id'] : null;
         if (userId) {
             const userRoles = await this.rolesService.createRole(createRoleDto, userId);
             if (!userRoles) {
@@ -35,7 +35,7 @@ export class RolesController {
             }
             return { message: roleMessages.roleCreateSucess, data: userRoles, };
         } else {
-            throw new BadRequestException();
+            throw new BadRequestException(this.request.user);
         }
     }
 
