@@ -112,13 +112,15 @@ export class StatsService{
         return this.formatService.formatTticketsByStatus(endDate, results);
     }
 
+    async getTicketsByType(startDate: string, endDate: string){
+        const results = await this.checkStatsClient.getTicketsByType(startDate, endDate).toPromise();
+        return this.formatService.formatTticketsByType(endDate, results);
+    }
+
     // async getTicketsByChannel(startDate: string, endDate: string){
     //     return await this.checkStatsClient.getTicketsByChannel(startDate, endDate).toPromise();
     // }
 
-    // async getTicketsByType(startDate: string, endDate: string){
-    //     return await this.checkStatsClient.getTicketsByType(startDate, endDate).toPromise();
-    // }
 
 
     async saveMany(stats: Stats[]){

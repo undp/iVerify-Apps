@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 
 import { AppService } from './app.service';
 
@@ -12,4 +12,11 @@ export class AppController {
     const endDate = body['endDate']
     return await this.appService.analyze(startDate, endDate)
   }
+
+  // @Post('submit-story')
+  // async submitStory(@Body() body){
+  //   const startDate = body['startDate'];
+  //   const endDate = body['endDate']
+  //   return await this.appService.analyze(startDate, endDate)
+  // }
 }

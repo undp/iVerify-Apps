@@ -33,11 +33,10 @@ import { StatsCronService } from './stats/cron.service';
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'undphq10ds002.mysql.database.azure.com',
-      port: 80,
-      username: 'iverify',
+      port: 3306,
+      username: 'iverify@undphq10ds002',
       password: 'KKZ1pTyNiRbL',
       database: 'iverify',
-      ssl: {encrypt: true},
       insecureAuth: true,
       autoLoadEntities: true,
       synchronize: true
@@ -48,4 +47,4 @@ import { StatsCronService } from './stats/cron.service';
   controllers: [AppController, UsersController, StatsController],
   providers: [AppService, UsersService, StatsService, StatsFormatService, StatsCronService],
 })
-export class AppModule {}
+export class AppModule {} 
