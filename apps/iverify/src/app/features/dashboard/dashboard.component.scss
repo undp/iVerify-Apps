@@ -1,0 +1,24 @@
+.published {
+    margin-top: 1rem;
+    right: 0;
+    color: #7E9E0A;
+    width: 65px;
+    @media (min-width:768px) {
+      margin-top: 0.5rem;
+      width: 5em;
+      right: 11px;
+      position: relative;
+      text-align: center;
+    }
+}
+
+.custom-report-info {
+  font-size: 1em;
+  margin: 2em;
+}
+
+.custom-select-box {
+  position: relative;
+  left: 0;
+  top: 2rem;
+}

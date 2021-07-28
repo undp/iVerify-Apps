@@ -24,7 +24,7 @@ export class RolesController {
     }
 
     @Post()
-    @UseGuards(JWTTokenAuthGuard, RolesGuard)
+    // @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async create(@Body() createRoleDto: CreateRoleDto) {
         const userId = this.request.user['id'];
         if (userId) {

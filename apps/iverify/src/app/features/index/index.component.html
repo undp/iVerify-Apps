@@ -1,0 +1,21 @@
+ <mat-toolbar>
+   <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+    <mat-icon>menu</mat-icon>
+  </button> -->
+  <span class="fontRalewayRegular header-text">{{'HEADER_TAG_LINE'|translate}}</span>  
+  <span class="example-spacer"></span>
+ <button mat-button color="black" [matMenuTriggerFor]="settingsMenu" aria-label="Example icon button with a bookmark icon">
+    <mat-icon>account_circle</mat-icon>
+  </button>        
+<mat-menu #settingsMenu>
+  <menu mat-menu-item disabled>{{ (user$ | async)?.email }}</menu>
+  <button mat-menu-item (click)="onLogoutClick()">{{ 'LOGOUT' | translate }}</button>
+</mat-menu>
+</mat-toolbar>
+<div class="container-fluid">
+  <main role="main" class="main-body">   
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+

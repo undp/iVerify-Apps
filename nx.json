@@ -50,6 +50,9 @@
     "ml-service-client": {
       "tags": []
     },
+    "libs": {
+      "tags": []
+    },
     "iverify-common": {
       "tags": []
     }
