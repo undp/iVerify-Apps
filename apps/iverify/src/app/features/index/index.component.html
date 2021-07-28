@@ -1,21 +1,53 @@
- <mat-toolbar>
-   <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+<mat-toolbar color="primary">
+  <button
+    (click)="snav.toggle()"
+    mat-icon-button
+    class="example-icon"
+    aria-label=""
+  >
     <mat-icon>menu</mat-icon>
-  </button> -->
-  <span class="fontRalewayRegular header-text">{{'HEADER_TAG_LINE'|translate}}</span>  
+  </button>
+  <span class="fontRalewayRegular header-text">{{
+    'HEADER_TAG_LINE' | translate
+  }}</span>
   <span class="example-spacer"></span>
- <button mat-button color="black" [matMenuTriggerFor]="settingsMenu" aria-label="Example icon button with a bookmark icon">
+  <button
+    mat-button
+    color="black"
+    [matMenuTriggerFor]="settingsMenu"
+    aria-label=""
+  >
     <mat-icon>account_circle</mat-icon>
-  </button>        
-<mat-menu #settingsMenu>
-  <menu mat-menu-item disabled>{{ (user$ | async)?.email }}</menu>
-  <button mat-menu-item (click)="onLogoutClick()">{{ 'LOGOUT' | translate }}</button>
-</mat-menu>
+  </button>
+  <mat-menu #settingsMenu>
+    <menu mat-menu-item disabled>{{ (user$ | async)?.email }}</menu>
+    <button mat-menu-item (click)="onLogoutClick()">
+      {{ 'LOGOUT' | translate }}
+    </button>
+  </mat-menu>
 </mat-toolbar>
-<div class="container-fluid">
-  <main role="main" class="main-body">   
-    <router-outlet></router-outlet>
-  </main>
-</div>
-
-
+<mat-sidenav-container
+  class="example-sidenav-container"
+  [style.marginTop.px]="viewportMobileQuery.matches ? 0 : 0"
+>
+  <mat-sidenav #snav [mode]="viewportMobileQuery.matches ? 'over' : 'side'"
+                 [fixedInViewport]="viewportMobileQuery.matches" fixedTopGap="0" (click)="snav.toggle()">
+    <mat-nav-list >
+      <a class="text-capitalize fontRobotoRegular" mat-menu-item [routerLink]="['/dashboard/settings']">
+          <mat-icon>settings</mat-icon>
+          {{'USERS' | translate}}
+      </a>
+      <!-- <a mat-button [routerLink]="['/dashboard/settings']">{{
+        'SETTINGS' | translate
+      }}</a> -->
+      <mat-divider></mat-divider>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div>
+      <main role="main" class="main-body">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

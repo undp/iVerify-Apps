@@ -42,6 +42,7 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   protected fromdate: Date;
   protected todate: Date;
   viewportMobileQuery: MediaQueryList;
+  opened: boolean = false;
   
   constructor(
     store: Store<AppState>,
