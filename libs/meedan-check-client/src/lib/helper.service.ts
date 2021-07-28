@@ -110,7 +110,37 @@ export class CheckClientHelperService{
     }
 
     buildTicketsByTypeQuery(startDate: string, endDate: string){
-      return '';
+      const searchQuery = JSON.stringify({
+        range: {
+          created_at: {
+            start_time: startDate,
+            end_time: endDate
+          }
+        },
+        archived: 1
+      });
+
+      return `query {
+        search (query: ${JSON.stringify(searchQuery)}) {
+        number_of_results
+        medias {
+          edges {
+            node {
+              status
+              tasks {
+                edges {
+                  node {
+                    id
+                    label
+                    first_response_value
+                  }
+                }
+              }
+              }
+            }
+          }
+        }
+      }`;
     }
 
     buildTicketsByChannelQuery(startDate: string, endDate: string){
