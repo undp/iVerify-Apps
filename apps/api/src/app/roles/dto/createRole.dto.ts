@@ -15,5 +15,4 @@ export class CreateRoleDto {
     @ApiProperty()
     @IsNotEmpty()
     resource: any;
-
 }

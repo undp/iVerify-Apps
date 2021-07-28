@@ -84,7 +84,7 @@ export class ChartComponent implements  OnDestroy, OnChanges {
   @Input() data: any;
   @Input() chartType: number;
   single: any[];
-  view: [number, number] = [300, 100];
+  view: [number, number] = [300, 200];
   ChartTypeEnum = ChartTypeEnum;
   // options
   showXAxis: boolean = false;
