@@ -113,7 +113,7 @@ export class StatsFormatService{
             return acc;
         }, {});
 
-        return this.buildStatsFromCount(endDate, solvedCount, CountBy.type),
+        return this.buildStatsFromCount(endDate, solvedCount, CountBy.type)
     }
 
     formatCreatedVsPublished(endDate, results): Stats[]{
