@@ -4,19 +4,23 @@ import { Stats } from "./models/stats.model";
 
 @Injectable()
 export class StatsFormatService{
+    unstartedStatuses = StatusesMap.filter(status => status.default).map(status => status.value);
+    processingStatuses = StatusesMap.filter(status => !status.default && !status.resolution).map(status => status.value);
+    resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
+    
     formatDate(date: Date){
         return `${date.getUTCFullYear()}-${date.getUTCMonth() +1}-${date.getUTCDate()}`
     }
 
     formatTticketsByAgent(endDate: string, results: any): Stats[]{
         const edges: any[] = results.search.medias.edges;
-        const unstartedStatuses = StatusesMap.filter(status => status.default).map(status => status.value);
-        const processingStatuses = StatusesMap.filter(status => !status.default && !status.resolution).map(status => status.value);
-        const resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
+        // const unstartedStatuses = StatusesMap.filter(status => status.default).map(status => status.value);
+        // const processingStatuses = StatusesMap.filter(status => !status.default && !status.resolution).map(status => status.value);
+        // const resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
 
-        const unstarted = edges.filter(val => unstartedStatuses.indexOf(val.node.status) > -1);
-        const processing = edges.filter(val => processingStatuses.indexOf(val.node.status) > -1);
-        const solved = edges.filter(val => resolutionStatuses.indexOf(val.node.status) > -1);
+        const unstarted = edges.filter(val => this.unstartedStatuses.indexOf(val.node.status) > -1);
+        const processing = edges.filter(val => this.processingStatuses.indexOf(val.node.status) > -1);
+        const solved = edges.filter(val => this.resolutionStatuses.indexOf(val.node.status) > -1);
 
         const unstartedCount = unstarted.reduce((acc, val) => {
             const user = val.node.account && val.node.account.user && val.node.account.user.name  ? val.node.account.user.name : 'undefined';
@@ -51,6 +55,7 @@ export class StatsFormatService{
     }
 
     formatTticketsByTags(endDate: string, results): Stats[]{
+        
         const count = results.reduce((acc, val) => {
             const tag: string = val.tag;
             acc[tag] = val.search.number_of_results;
@@ -94,8 +99,21 @@ export class StatsFormatService{
         return this.buildStatsFromCount(endDate, count, CountBy.source);
     }
 
-    formatTticketsByType(any): Stats[]{
-        return [];
+    formatTticketsByType(endDate: string, results: any): Stats[]{
+        const edges: any[] = results.search.medias.edges;
+        const solved = edges.filter(val => this.resolutionStatuses.indexOf(val.node.status) > -1);
+
+
+        const solvedCount = solved.reduce((acc, val) => {
+            const tasksEdges = val.node.tasks.edges;
+            const nodeType = tasksEdges.find(taskNode => taskNode.node.label === 'Type of Violation');
+            const violationType = nodeType ? nodeType.first_response_value : null;
+            if(violationType && !acc[violationType]) acc[violationType] = 1;
+            else acc[violationType]++;
+            return acc;
+        }, {});
+
+        return this.buildStatsFromCount(endDate, solvedCount, CountBy.type)
     }
 
     formatCreatedVsPublished(endDate, results): Stats[]{

@@ -32,6 +32,35 @@
     }
   },
   "projects": {
+    "libs": {
+      "root": "libs",
+      "sourceRoot": "libs",
+      "projectType": "library",
+      "prefix": "iverify",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "testing/test.libs.ts",
+            "tsConfig": "testing/tsconfig.libs.spec.json",
+            "karmaConfig": "testing/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "testing/tsconfig.libs.json",
+              "testing/tsconfig.libs.spec.json",
+              "testing/tsconfig.base.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
     "iverify": {
       "projectType": "application",
       "root": "apps/iverify",
@@ -51,8 +80,15 @@
               "apps/iverify/src/favicon.ico",
               "apps/iverify/src/assets"
             ],
-            "styles": ["apps/iverify/src/styles.scss"],
-            "scripts": []
+            "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+              "apps/iverify/src/fonts.scss",
+              "apps/iverify/src/styles.scss"
+              ],
+            "scripts": [
+         
+            ]
           },
           "configurations": {
             "production": {
@@ -153,6 +189,7 @@
         }
       }
     },
+    
     "api": {
       "root": "apps/api",
       "sourceRoot": "apps/api/src",

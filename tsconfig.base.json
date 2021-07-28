@@ -8,19 +8,26 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
+    "typeRoots": ["node_modules/@types"],
     "target": "es2015",
     "module": "esnext",
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
+    "esModuleInterop": false,
+    "downlevelIteration": true,
+    "strictPropertyInitialization": false,
+    "strictNullChecks": false,
     "paths": {
       "@iverify/api-interfaces": ["libs/api-interfaces/src/index.ts"],
       "@iverify/meedan-check-client": ["libs/meedan-check-client/src/index.ts"],
       "@iverify/wp-client": ["libs/wp-client/src/index.ts"],
       "@iverify/crowdtangle-client": ["libs/crowdtangle-client/src/index.ts"],
       "@iverify/ml-service-client": ["libs/ml-service-client/src/index.ts"],
-      "@iverify/iverify-common": ["libs/iverify-common/src/index.ts"]
+      "@iverify/iverify-common": ["libs/iverify-common/src/index.ts"],
+      "@iverify/*": ["libs/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

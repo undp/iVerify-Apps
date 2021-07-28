@@ -25,7 +25,7 @@ export class UsersController {
     }
 
     @Post()
-    @UseGuards(JWTTokenAuthGuard)
+   // @UseGuards(JWTTokenAuthGuard)
     public async register(@Body() createUserDto: CreateUserDto) {
         let result: any;
         const userId = this.request.user && this.request.user['id'] ? this.request.user['id'] : null;
@@ -47,9 +47,9 @@ export class UsersController {
 
 
     @Get('UserId')
-    @UseGuards(JWTTokenAuthGuard, RolesGuard)
+    @UseGuards(JWTTokenAuthGuard)
     async getUser(@Query() getUser: GetUserDto) {
-        const user = await this.usersService.findOne(getUser.userId);
+        const user = await this.usersService.findByEmail(getUser.userId);
         if (!user) throw new NotFoundException(userMessages.userNotFound);
         return { data: user };
     }

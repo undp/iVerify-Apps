@@ -32,12 +32,11 @@ import { StatsCronService } from './stats/cron.service';
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'undphq10ds002.mysql.database.azure.com',
-      port: 80,
-      username: 'iverify',
-      password: 'KKZ1pTyNiRbL',
-      database: 'iverify',
-      ssl: {encrypt: true},
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       insecureAuth: true,
       autoLoadEntities: true,
       synchronize: true
@@ -48,4 +47,4 @@ import { StatsCronService } from './stats/cron.service';
   controllers: [AppController, UsersController, StatsController],
   providers: [AppService, UsersService, StatsService, StatsFormatService, StatsCronService],
 })
-export class AppModule {}
+export class AppModule {} 
