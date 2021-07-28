@@ -35,12 +35,16 @@ export interface PostFields{
     evidence_and_references: string
     check_id: number
     factchecking_status: string
+    toxic: number
+    subtitle: string
 }
 
 export enum TasksLabels{
     claim = 'Claim',
     rating_justification = 'Rating Justification',
-    evidences_and_references = 'Evidences and References'
+    evidences_and_references = 'Evidence and References',
+    card_title = 'Card Title',
+    toxic = 'Toxic Score'
 }
 
 export interface CreatePostDto{

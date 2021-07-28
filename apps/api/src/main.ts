@@ -10,6 +10,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 
 async function bootstrap() {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({ 
     whitelist: true, 

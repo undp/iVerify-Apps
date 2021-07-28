@@ -32,11 +32,12 @@ import { StatsCronService } from './stats/cron.service';
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'test',
-      password: 'test',
-      database: 'db',
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      insecureAuth: true,
       autoLoadEntities: true,
       synchronize: true
     }),
@@ -46,4 +47,4 @@ import { StatsCronService } from './stats/cron.service';
   controllers: [AppController, UsersController, StatsController],
   providers: [AppService, UsersService, StatsService, StatsFormatService, StatsCronService],
 })
-export class AppModule {}
+export class AppModule {} 

@@ -1,16 +1,17 @@
-import { HttpException, HttpService, Injectable } from "@nestjs/common";
+import { HttpException, HttpService, Injectable, Scope } from "@nestjs/common";
 import { CreateCategoryDto } from "libs/wp-client/src/lib/interfaces/create-category.dto";
 import { CommentStatus, CreatePostDto, PostFormat, PostStatus } from "libs/wp-client/src/lib/interfaces/create-post.dto";
 import { CreateTagDto } from "libs/wp-client/src/lib/interfaces/create-tag.dto";
 import { WpClientService } from "libs/wp-client/src/lib/wp-client.service";
-import { combineLatest, from, iif, Observable, of } from "rxjs";
-import { catchError, concatMap, map, scan, switchMap, tap } from "rxjs/operators";
+import { combineLatest, from, iif, Observable, of, zip } from "rxjs";
+import { catchError, concatMap, filter, map, reduce, scan, switchMap, take, tap } from "rxjs/operators";
 import { SharedService } from "../shared/shared.service";
 import { WpPublisherHelper } from "./wp-publisher-helper.service";
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class WpPublisherService{
     private report$: Observable<any> = this.shared.report$;
+    private meedanReport$: Observable<any> = this.shared.meedanReport$;
 
     categoriesIds$: Observable<number[]> = this.report$.pipe(
       map(report => this.helper.extractFactcheckingStatus(report)),
@@ -28,14 +29,15 @@ export class WpPublisherService{
       })
     )
     
-    private mediaId$: Observable<number> = this.report$.pipe(
-        map(report => this.helper.extractMedia(report)),
+    private mediaId$: Observable<number> = this.meedanReport$.pipe(
+        map(report => report.image),
         switchMap(url => this.http.get(url, {responseType: 'arraybuffer'})),
         map(res => Buffer.from(res.data, 'binary')),
         switchMap(data => this.wpClient.createMedia(data)),
         map(res => res['id']),
         catchError(err => {
-          throw new HttpException(err.message, 500);
+          return of(null)
+          // throw new HttpException(err.message, 500); 
         })
       )
   
@@ -46,8 +48,11 @@ export class WpPublisherService{
       })
     );
     
-    post$: Observable<any> = combineLatest([this.report$, this.author$, this.mediaId$, this.tagsIds$, this.categoriesIds$]).pipe(
-        map(([report, author, media, tags, categories]) => this.helper.buildPostFromReport(report, author, media, tags, categories)),
+    post$: Observable<any> = combineLatest([this.report$, this.meedanReport$, this.author$, this.mediaId$, this.tagsIds$, this.categoriesIds$]).pipe(
+        map(([report, meedanReport, author, media, tags, categories]) => this.helper.buildPostFromReport(report, meedanReport, author, media, tags, categories)),
+        filter(post => !!post.title.length),
+        take(1),
+        tap(() => console.log('emitting to publish...')),
         switchMap(postDto => this.wpClient.publishPost(postDto)),
         catchError(err => {
           throw new HttpException(err.message, 500);
@@ -62,17 +67,18 @@ export class WpPublisherService{
     ){}
 
       private tagsIds(tags: string[]): Observable<number[]>{
+        const tagsLowCase = tags.map(tag => tag.toLocaleLowerCase());
         const wpTags$: Observable<any> = this.wpClient.listTags();
         const existingTagsIds$: Observable<number[]> = wpTags$.pipe(
-          map(wpTags => wpTags.filter(tag => tags.indexOf(tag.name) > -1).map(tag => tag.id))
+          map(wpTags => wpTags.filter(tag => tagsLowCase.indexOf(tag.name.toLowerCase()) > -1).map(tag => tag.id)),
           );
         const newTags$: Observable<string[]> = wpTags$.pipe(
-          map(wpTags => wpTags.map(tag => tag.name as string)),
-          map(wpTags => tags.filter(tag => wpTags.indexOf(tag) === -1))
+          map(wpTags => wpTags.map(tag => tag.name.toLowerCase() as string)),
+          map(wpTags => tags.filter(tag => wpTags.indexOf(tag.toLowerCase()) === -1))
         ) 
         const newTagsIds$: Observable<number[]> = newTags$.pipe(
           switchMap(tags => iif(()=> !!tags.length, this.createManyTags(tags).pipe(map(tag => [tag.id])), of([]))),
-          scan((acc, val) => [...acc, ...val], [])
+          reduce((acc, val) => [...acc, ...val], [])
         )
         const tagsIds$: Observable<number[]> = combineLatest([existingTagsIds$, newTagsIds$]).pipe(
           map(([existingIds, newIds]) => [...existingIds, ...newIds]),
@@ -83,11 +89,12 @@ export class WpPublisherService{
     
         return tagsIds$;
       }
-    
+
       private categoriesIds(categories: string[]){
+        categories = categories.map(c => c.toLowerCase());
         const wpCategories$: Observable<any> = this.wpClient.listCategories();
         const existingCategoriesIds$: Observable<number[]> = wpCategories$.pipe(
-          map(wpCategories => wpCategories.filter(category => categories.indexOf(category.name) > -1).map(category => category.id))
+          map(wpCategories => wpCategories.filter(category => categories.indexOf(category.name.toLowerCase()) > -1).map(category => category.id))
           );
         // const newCategories$: Observable<string[]> = wpCategories$.pipe(
         //   map(wpCategories => wpCategories.map(category => category.name as string)),

@@ -69,14 +69,15 @@ export class StatsService{
             const ticketsBySource: Stats[] = await this.getTicketsBySource(startDate, endDate);
             this.logger.log('Fetching tickes by publication..');
             const createdVsPublished: Stats[] = await this.getCreatedVsPublished(endDate);
+            const ticketsByType: Stats[] = await this.getTicketsByType(startDate, endDate);
             // const ticketsByChannel: Stats[] = await this.getTicketsByChannel(startDate, endDate);
-            // const ticketsByType: Stats[] = await this.getTicketsByType(startDate, endDate);
             const stats: Stats[] = [
                 ...ticketsByAgent,
                 ...ticketsByTag,
                 ...ticketsByStatus,
                 ...ticketsBySource,
                 ...createdVsPublished,
+                ...ticketsByType
                 // ...this.formatService.formatTticketsByChannel(ticketsByChannel),
                 // ...this.formatService.formatTticketsByType(ticketsByType),
             ]
@@ -112,13 +113,15 @@ export class StatsService{
         return this.formatService.formatTticketsByStatus(endDate, results);
     }
 
+    async getTicketsByType(startDate: string, endDate: string){
+        const results = await this.checkStatsClient.getTicketsByType(startDate, endDate).toPromise();
+        return this.formatService.formatTticketsByType(endDate, results);
+    }
+
     // async getTicketsByChannel(startDate: string, endDate: string){
     //     return await this.checkStatsClient.getTicketsByChannel(startDate, endDate).toPromise();
     // }
 
-    // async getTicketsByType(startDate: string, endDate: string){
-    //     return await this.checkStatsClient.getTicketsByType(startDate, endDate).toPromise();
-    // }
 
 
     async saveMany(stats: Stats[]){
@@ -150,7 +153,8 @@ export class StatsService{
                     CountBy.agentUnstarted.toString(),
                     CountBy.agentProcessing.toString(),
                     CountBy.agentSolved.toString(),
-                    CountBy.source.toString()
+                    CountBy.source.toString(),
+                    CountBy.type.toString()
                 ])
             }
         });

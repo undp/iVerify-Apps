@@ -22,7 +22,32 @@ export class MeedanCheckClientService {
     console.log(query)
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
       map(res => res.data.data.project_media),
-      tap(res => console.log('item: ', res)),
+      retry(3),
+      catchError(err => {
+        this.logger.error('Error getting report by id: ', err.message)
+        throw new HttpException(err.message, 500);
+      })
+    );
+  }
+
+  getMeedanReport(id: string): Observable<any> {
+    const query: string = this.helper.buildGetMeedanReportQuery(id);
+    const headers = this.config.headers;
+    console.log(query)
+    return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
+      map(res => res.data.data.project_media.annotation.data.options[0]),
+      retry(3),
+      catchError(err => {
+        this.logger.error('Error getting meedan report by id: ', err.message)
+        throw new HttpException(err.message, 500);
+      })
+    );
+  }
+
+  getReportWithQuery(query: string): Observable<any> {
+    const headers = this.config.headers;
+    return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
+      map(res => res.data.data.project_media),
       retry(3),
       catchError(err => {
         this.logger.error('Error getting report by id: ', err.message)
@@ -38,7 +63,6 @@ export class MeedanCheckClientService {
     const headers = this.config.headers;
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
       map(res => res.data),
-      tap(response => console.log('response: ', response)),
       retry(3),
       catchError(err => {
         this.logger.error('Error creating item: ', err.message);

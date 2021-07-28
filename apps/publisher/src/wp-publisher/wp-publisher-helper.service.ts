@@ -21,22 +21,27 @@ export class WpPublisherHelper{
 
     buildPostFromReport(
         report: any, 
+        meedanReport: any,
         // categories: number[], 
         author: number,
         media: number,
         tags: number[],
         categories: number[]): CreatePostDto{
+        
         const status = PostStatus.publish;
         const comment_status = CommentStatus.open;
         const format = PostFormat.standard;
-        const title = report.title;
-        const content = report.description;
         const check_id = report.dbid;
+        const title = meedanReport.title;
+        const subtitle = meedanReport.description;
+        const toxicField = this.extractTask(report, TasksLabels.toxic);
+        const toxic = toxicField && process.env.DETOXIFY_TRESHOLD && +toxicField >= +process.env.DETOXIFY_TRESHOLD ? 1 : 0;
         const factchecking_status = this.extractFactcheckingStatus(report);
         const claim = this.extractTask(report, TasksLabels.claim);
         const rating_justification = this.extractTask(report, TasksLabels.rating_justification);
-        const evidence_and_references = this.extractTask(report, TasksLabels.evidences_and_references);
-        const fields: PostFields = {check_id, factchecking_status, claim, rating_justification, evidence_and_references};
+        const evidence = this.extractTask(report, TasksLabels.evidences_and_references);
+        const evidence_and_references = this.formatEvidence(evidence);
+        const fields: PostFields = {check_id, factchecking_status, claim, rating_justification, evidence_and_references, subtitle, toxic};
        
     
         const post: CreatePostDto = {
@@ -50,6 +55,8 @@ export class WpPublisherHelper{
           fields,
           categories
         }
+
+        if(!post.featured_media) delete post.featured_media;
 
         return post;
     }
@@ -66,7 +73,24 @@ export class WpPublisherHelper{
       const field = report.annotation.data.fields.find(field => field.field_name === 'verification_status_status');
       return field.formatted_value;
     }
+
+    formatEvidence(evidence: string){
+      let blocksArr = evidence.split('DESCRIPTION');
+      blocksArr.shift();
+      const lis = blocksArr.reduce((acc, val) => {
+        if(val.length){
+          const linkArr = val.split('LINK');
+          if(linkArr.length){
+            const html = `<li><a href=${linkArr[1]} target="_blank" rel="noopener noreferrer">${linkArr[0]}</a></li>`
+            acc = acc + html;
+          }
+        }
+        return acc;
+      }, '');
+      return `<ul>${lis}</ul>`
+    }
 }
+
 
 
 

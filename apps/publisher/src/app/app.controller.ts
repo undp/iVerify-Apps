@@ -1,34 +1,40 @@
-import { Body, Controller, HttpException, Post } from '@nestjs/common';
-import { of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { MeedanCheckClientService } from '@iverify/meedan-check-client';
+import { Body, Controller, Get, HttpException, HttpService, Logger, Post } from '@nestjs/common';
+import { WpClientService } from 'libs/wp-client/src/lib/wp-client.service';
+import { catchError, tap } from 'rxjs/operators';
 
 import { AppService } from './app.service';
 
+
+
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
-  @Post('test-endpoint')
-  async publishMeedanReports(@Body() body){
-    const id = body['id'];
-    return this.appService.publishReportById(id).pipe(
-      catchError(err => {
-        console.log(err)
-        throw new HttpException(err.message, 500);
-      })
-    );
-  }
+  private readonly logger = new Logger('PublisherAppService');
+  
+  constructor(
+    private readonly appService: AppService,
+    ) {}
 
   @Post('publish-webhook')
-  async publishWebHook(@Body() body){
-    const event = body['event'];
-    const id = body.data.project_media.id;
-    if(event === 'publish_report'){
-      return this.appService.publishReportById(id).pipe(
-        catchError(err => {
-          throw new HttpException(err.message, 500);
-        })
-      );
+  async punlishReportWebhook(@Body() body){
+    try{
+      const event = body.event;
+      this.logger.log(`Received event: ${event}`);
+      const data = body.data;
+      const id = data.project_media.dbid;
+      this.logger.log(`project media id: ${id}`)
+      if(event === 'publish_report'){
+        return this.appService.publishReportById(id).pipe(
+          tap(() => this.logger.log('Report published.')),
+          catchError(err => {
+            this.logger.error(err);
+            throw new HttpException(err.message, 500);
+          })
+        );
+      }
+      return null;
+    }catch(e){
+      return new HttpException(e.message, 500)
     }
   }
 }

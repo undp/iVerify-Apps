@@ -1,16 +1,21 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SharedModule } from '../shared/shared.module';
 import { WpPublisherModule } from '../wp-publisher/wp-publisher.module';
+import { MeedanCheckClientModule } from '@iverify/meedan-check-client';
+import { WpClientModule } from '@iverify/wp-client';
 
 
 @Module({
   imports: [
     SharedModule,
-    WpPublisherModule
+    WpPublisherModule,
+    MeedanCheckClientModule,
+    WpClientModule,
+    HttpModule
   ],
   controllers: [AppController],
   providers: [

@@ -36,6 +36,16 @@ export class CheckClientHelperService{
         }
       }` 
     }
+
+    buildGetMeedanReportQuery(id: string){
+      return `query {
+       project_media(ids: "${id}"){
+         annotation(annotation_type: "report_design") {
+           data
+         }
+       }
+     }` 
+   }
     
     buildCreateItemMutation(url: string, folderId: number, set_tasks_responses: string): string{
         const mutation = `mutation create{
@@ -58,13 +68,13 @@ export class CheckClientHelperService{
 
     buildTasksResponses(toxicityScores: ToxicityScores){
         return JSON.stringify({
-          toxic_score: toxicityScores.toxicity, 
-          severely_toxic_score: toxicityScores.severe_toxicity, 
-          obscene_score: toxicityScores.obscene, 
-          attack_on_identity_score: toxicityScores.identity_attack, 
-          insult_score: toxicityScores.insult, 
-          threat_score: toxicityScores.threat, 
-          sexually_explicit_score: toxicityScores.sexual_explicit
+          detoxify_score: toxicityScores.toxicity, 
+          detoxify_severe_toxicity_score: toxicityScores.severe_toxicity, 
+          detoxify_obscene_score: toxicityScores.obscene, 
+          detoxify_identity_attack_score: toxicityScores.identity_attack, 
+          detoxify_insult_score: toxicityScores.insult, 
+          detoxify_threat_score: toxicityScores.threat, 
+          detoxify_sexual_explicit_score: toxicityScores.sexual_explicit
         })
     }
 
@@ -100,7 +110,37 @@ export class CheckClientHelperService{
     }
 
     buildTicketsByTypeQuery(startDate: string, endDate: string){
-      return '';
+      const searchQuery = JSON.stringify({
+        range: {
+          created_at: {
+            start_time: startDate,
+            end_time: endDate
+          }
+        },
+        archived: 1
+      });
+
+      return `query {
+        search (query: ${JSON.stringify(searchQuery)}) {
+        number_of_results
+        medias {
+          edges {
+            node {
+              status
+              tasks {
+                edges {
+                  node {
+                    id
+                    label
+                    first_response_value
+                  }
+                }
+              }
+              }
+            }
+          }
+        }
+      }`;
     }
 
     buildTicketsByChannelQuery(startDate: string, endDate: string){
