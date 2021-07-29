@@ -22,7 +22,7 @@ resources:
      memory: 256Mi
 
 app:
-  containerPort: 3335
+  containerPort: 8000
 
 env:
   DB_USER: iverify@undphq10ds002
