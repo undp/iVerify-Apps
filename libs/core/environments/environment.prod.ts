@@ -1,8 +1,8 @@
 export const environment = {
   production: true,
   api: {
-    base: 'https://api.hrczm.EWER Zambia',
-    version: 'v3'
+    base: 'http://20.86.237.214',
+    // version: 'v3'
   },
   authentication: {
     client_id: 'ushahidiui',
