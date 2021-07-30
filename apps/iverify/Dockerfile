@@ -26,7 +26,7 @@ ENV PATH /workspace/node_modules/.bin:$PATH
 
 COPY . .
 
-RUN ng build iverify 
+RUN ng build iverify --prod
 
 FROM nginx:1.18.0-alpine
 
