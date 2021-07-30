@@ -9,7 +9,9 @@ export interface User extends BaseModel {
   email: string;
   firstName: string;
   lastName: string;
-  createdBy: Date;
+  createdBy: number;
+  phone?:  number,
+  address? : string,
   role: any;
   data?:any;
 }
