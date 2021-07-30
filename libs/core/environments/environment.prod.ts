@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   api: {
     base: 'http://20.86.237.214',
-    // version: 'v3'
+    version: 'v3'
   },
   authentication: {
     client_id: 'ushahidiui',
