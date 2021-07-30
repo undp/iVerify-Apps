@@ -107,8 +107,8 @@
               ],
               "fileReplacements": [
                 {
-                  "replace": "apps/iverify/src/environments/environment.ts",
-                  "with": "apps/iverify/src/environments/environment.prod.ts"
+                  "replace": "libs/core/environments/environment.ts",
+                  "with": "libs/core/environments/environment.prod.ts"
                 }
               ],
               "outputHashing": "all"
