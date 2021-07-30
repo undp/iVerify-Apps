@@ -20,6 +20,8 @@ COPY package.json ./
 COPY package-lock.json ./
 
 RUN npm install
+RUN npm install font-awesome
+
 ENV PATH /workspace/node_modules/.bin:$PATH
 
 COPY . .
