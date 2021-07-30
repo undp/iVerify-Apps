@@ -21,8 +21,8 @@ export class RolesService {
 
   async createRole(createRoleDto: CreateRoleDto, userId: number): Promise<Roles> {
     createRoleDto.resource = JSON.stringify(createRoleDto.resource);
-    createRoleDto['createdBy'] = userId;
-    createRoleDto['updatedBy'] = userId;
+    createRoleDto['createdBy'] = 1;
+    createRoleDto['updatedBy'] = 1;
     const role = await this.rolesRepository.create(createRoleDto);
     return this.rolesRepository.save(role);
   }

@@ -257,7 +257,7 @@ li.fm-divider {
     background: none !important; 
     overflow: hidden;
     padding: 0px 50px;
-    margin-bottom: 5px;
+    margin-top: 20px;
     position: absolute;
     left: 0;
     right: 0;
@@ -265,5 +265,13 @@ li.fm-divider {
 
 .mat-grid-tile-content {
     margin-top: 3rem;
+}
+
+mat-card {
+  height: 200px;
+}
+
+.mat-form-field-type-mat-date-range-input {
+  width: 200px;
 }
 

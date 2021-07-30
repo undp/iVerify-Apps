@@ -26,6 +26,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDividerModule } from '@angular/material/divider';
+import { OverlayModule } from '@angular/cdk/overlay';
+import {MatDialogModule} from '@angular/material/dialog';
 
 export const routes: Routes = [
   {
@@ -72,11 +74,13 @@ export const routes: Routes = [
     MatGridListModule,
     MatSelectModule,
     MatSidenavModule,
-    MatDividerModule
+    MatDividerModule,
+    OverlayModule,
+    MatDialogModule
   ],
   providers: [],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   declarations: [IndexComponent, DashboardComponent, ChartComponent],
-  exports: [IndexComponent]
+  exports: [IndexComponent, ]
 })
 export class IndexModule {}

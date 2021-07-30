@@ -1,7 +1,105 @@
-<p>users works!</p>
-
-<p>users works!</p>
-
-<p>users works!</p>
-
-<p>users works!</p>
+<div class="flex-container">
+  <form class="form-signin" [formGroup]="userForm">
+    <p>
+      <mat-form-field>
+        <mat-label>{{ 'FIRSTNAME' | translate }}</mat-label>
+        <input
+          matInput
+          type="text"
+          id="inputFirstName"
+          [placeholder]="'FIRSTNAME' | translate"
+          required
+          autofocus
+          formControlName="firstName"
+        />
+        <mat-hint>Enter firstName</mat-hint>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <mat-label>{{ 'LASTNAME' | translate }}</mat-label>
+        <input
+          matInput
+          type="text"
+          id="inputLastName"
+          [placeholder]="'LASTNAME' | translate"
+          required
+          autofocus
+          formControlName="lastName"
+        />
+        <mat-hint>Enter lastname</mat-hint>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <mat-label>{{ 'EMAIL' | translate }}</mat-label>
+        <input
+          matInput
+          type="email"
+          id="inputEmail"
+          [placeholder]="'EMAIL' | translate"
+          required
+          autofocus
+          formControlName="email"
+        />
+        <mat-hint>Enter valid email address</mat-hint>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ 'PASSWORD' | translate }}</mat-label>
+        <input
+          matInput
+          type="password"
+          id="inputPassword"
+          [placeholder]="'PASSWORD' | translate"
+          required
+          formControlName="password"
+        />
+        <mat-hint>Enter password 8 chars long</mat-hint>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <mat-label>{{ 'Phone' | translate }}</mat-label>
+        <input
+          matInput
+          type="text"
+          id="inputPhone"
+          [placeholder]="'PHONE' | translate"
+          required
+          autofocus
+          formControlName="phone"
+        />
+        <mat-icon matSuffix>phone</mat-icon>
+        <mat-hint>Enter phone number with country code</mat-hint>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <mat-label>{{ 'ADDRESS' | translate }}</mat-label>
+        <input
+          matInput
+          type="text"
+          size="150"
+          id="inputAddress"
+          [placeholder]="'ADDRESS' | translate"
+          required
+          autofocus
+          formControlName="address"
+        />
+        <mat-hint>Enter complete address</mat-hint>
+      </mat-form-field>
+    </p>
+    <div class="">
+      <button
+        mat-button
+        color="primary"
+        (click)="onUserClick()"
+        [disabled]="userForm.invalid"
+      >
+        {{ 'CREATE' | translate }}
+      </button>
+    </div>
+  </form>
+</div>
