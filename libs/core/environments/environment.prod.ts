@@ -15,7 +15,7 @@ export const environment = {
     debounceDelay: 100,
     extraDuration: 500,
     minDuration: 500,
-    opacity: 0.5,
+    opacity: '0.5',
     spinner: 'skWanderingCubes',
     filteredUrlPatterns: ['open.mapquestapi.com', 'notifications_ex', 'audit', 'comments']
   },
