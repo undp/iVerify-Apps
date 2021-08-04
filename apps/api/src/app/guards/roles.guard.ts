@@ -13,7 +13,7 @@ export class RolesGuard implements CanActivate {
         const reqMethod = this.getRequestMethod(request);
         const reqUrl = this.getRequestUrl(request);
       
-        if (!reqMethod || !reqUrl || !userData._id) throw new BadRequestException();
+        if (!reqMethod || !reqUrl || !userData.id) throw new BadRequestException();
 
         if (userData && userData.roles) {
             const Roledata = userData.roles;
@@ -33,7 +33,7 @@ export class RolesGuard implements CanActivate {
         const resourcesData = await this.parseOne(resources);
         if (!resourcesData) return false;
         const resourcePermission = resourcesData.find(o => o && o.name && o.name.toLowerCase() === resource.toLowerCase());
-        if (!resourcePermission) return false;
+        if (!resourcePermission && resourcePermission.permissions) return false;
         const rolePermission = resourcePermission.permissions;
         return rolePermission.includes(method);
     }
