@@ -66,6 +66,26 @@ export class CheckClientHelperService{
 
     }
 
+    buildCreateItemFromWPMutation(title: string, description: string): string{
+      const folderId = 11193;
+      const mutation = `mutation create{
+          createProjectMedia(input: {
+            project_id: ${folderId},
+            title: "${title}",
+            description: "${description}",
+            clientMutationId: "1"
+          }) {
+            project_media {
+              title
+              dbid
+              id
+            }
+          }
+        }`
+      return mutation;
+
+  }
+
     buildTasksResponses(toxicityScores: ToxicityScores){
         return JSON.stringify({
           detoxify_score: toxicityScores.toxicity, 
