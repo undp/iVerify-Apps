@@ -11,6 +11,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule} from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 export const routes: Routes = [
   {
@@ -34,12 +36,12 @@ export const routes: Routes = [
     ReactiveFormsModule,
     MatInputModule,
     MatIconModule,
-    MatRippleModule
+    MatRippleModule,
+    MatButtonToggleModule,
+    MatButtonModule
   ],
   exports: [
-    MatFormFieldModule,
-    ReactiveFormsModule,
-    MatInputModule
+
   ]
 })
 export class SettingsModule {

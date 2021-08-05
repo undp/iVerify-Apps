@@ -2,7 +2,7 @@
   <form class="form-signin" [formGroup]="userForm">
     <p>
       <mat-form-field>
-        <mat-label>{{ 'FIRSTNAME' | translate }}</mat-label>
+        <mat-label>{{ 'FIRSTNAME' | translate |json}}</mat-label>
         <input
           matInput
           type="text"
@@ -17,7 +17,7 @@
     </p>
     <p>
       <mat-form-field>
-        <mat-label>{{ 'LASTNAME' | translate }}</mat-label>
+        <mat-label>{{ 'LASTNAME' | translate |json}}</mat-label>
         <input
           matInput
           type="text"
@@ -32,7 +32,7 @@
     </p>
     <p>
       <mat-form-field>
-        <mat-label>{{ 'EMAIL' | translate }}</mat-label>
+        <mat-label>{{ 'EMAIL' | translate |json}}</mat-label>
         <input
           matInput
           type="email"
@@ -47,7 +47,7 @@
     </p>
     <p>
       <mat-form-field appearance="fill">
-        <mat-label>{{ 'PASSWORD' | translate }}</mat-label>
+        <mat-label>{{ 'PASSWORD' | translate |json}}</mat-label>
         <input
           matInput
           type="password"
@@ -61,7 +61,7 @@
     </p>
     <p>
       <mat-form-field>
-        <mat-label>{{ 'Phone' | translate }}</mat-label>
+        <mat-label>{{ 'Phone' | translate |json}}</mat-label>
         <input
           matInput
           type="text"
@@ -77,7 +77,7 @@
     </p>
     <p>
       <mat-form-field>
-        <mat-label>{{ 'ADDRESS' | translate }}</mat-label>
+        <mat-label>{{ 'ADDRESS' | translate |json}}</mat-label>
         <input
           matInput
           type="text"
@@ -93,12 +93,19 @@
     </p>
     <div class="">
       <button
-        mat-button
+        mat-raised-button 
+        color="primary"
+        (click)="onNoClick()"
+      >
+        {{ 'CANCEL' | translate}}
+      </button>
+      <button
+        mat-raised-button 
         color="primary"
         (click)="onUserClick()"
         [disabled]="userForm.invalid"
       >
-        {{ 'CREATE' | translate }}
+        {{ 'SUBMIT' | translate}}
       </button>
     </div>
   </form>

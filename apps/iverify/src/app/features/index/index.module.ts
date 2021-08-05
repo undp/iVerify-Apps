@@ -81,6 +81,6 @@ export const routes: Routes = [
   providers: [],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   declarations: [IndexComponent, DashboardComponent, ChartComponent],
-  exports: [IndexComponent, ]
+  exports: [IndexComponent]
 })
 export class IndexModule {}

@@ -15,7 +15,7 @@ export class UserService extends BaseService {
 	readonly uris = {
 		list            	: 'users',
 		user_extra			: 'users/extra',
-		register			: '/users',
+		register			: 'users',
 		add_role			: 'roles',
 		update_role			: 'roles/:id',
 		delete_role			: 'roles/:id',

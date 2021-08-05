@@ -6,6 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { ToastType } from '../../toast/toast.component';
 import { ToastService } from '../../toast/toast.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { RoleItem } from '@iverify/core/models/roles';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class UsersComponent implements OnInit {
   isEditing: boolean = false;
   userForm: FormGroup;
   showPassword: boolean = false;
+  role: RoleItem[];
   
   constructor(
     private userService: UserService, 
@@ -30,16 +32,44 @@ export class UsersComponent implements OnInit {
       toast.setViewContainerRef(viewContainerRef);
   }
 
+  getFormValidationErrors(form: FormGroup) {
+
+  const result: any = [];
+  Object.keys(form.controls).forEach(key => {
+
+    const controlErrors: any = form.get(key).errors;
+    if (controlErrors) {
+      Object.keys(controlErrors).forEach(keyError => {
+        result.push({
+          'control': key,
+          'error': keyError,
+          'value': controlErrors[keyError]
+        });
+      });
+    }
+  });
+
+  return result;
+}
+
   
   ngOnInit(): void {
+    this.role = [
+          {
+            "id": 1,
+            "name": "admin",
+            "description": "string",
+            "resource": [{"name":"users","permissions":["read","write","update","delete"]},{"name":"roles","permissions":["read","write","update","delete"]}]
+          }
+    ];
 
   this.userForm = new FormGroup({
       firstName: new FormControl('', Validators.required),
       lastName: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', Validators.required),
-      roles: new FormControl('', Validators.required),
-      phone: new FormControl('', Validators.pattern('[0-9]*')),
+      // roles: new FormControl('', Validators.required),
+      phone: new FormControl('', [Validators.required, Validators.pattern('[0-9]*')]),
       address: new FormControl('')
     });
 
@@ -77,21 +107,20 @@ export class UsersComponent implements OnInit {
     let errorTemplate  = 'TOAST_CREATE_USER_ERROR';
 		if (!this.isEditing) {
 			const reqBody = this.userForm.value;
+      reqBody.roles = this.role;
 			this.subs.add(
 				this.userService.register(reqBody)
 				.pipe(
 					catchError((err) => {
 						if (err && err.statusText) {
+              this.onNoClick();
 							this.toast.show(ToastType.Danger, err.statusText);
 						}
 						return throwError(err);
 				}))
 				.subscribe(async response => {
-					// if(undefined !== response["error"]){
-					// 	this.toast.show(ToastType.Danger, response["error"]["message"]);
-					// } else {
-					// 	this.toast.show(ToastType.Success, msgTemplate);
-					// }
+          this.onNoClick();
+					this.toast.show(ToastType.Success, msgTemplate);
 				})
 			);
 		} else {
