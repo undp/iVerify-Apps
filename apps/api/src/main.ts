@@ -32,7 +32,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.enableCors();
-  const port = process.env.port || 8000;
+  const port = 8000;
   await app.listen(port, () => {
     console.log('Listening at http://localhost:' + port);
   });

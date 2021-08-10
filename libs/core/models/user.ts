@@ -12,7 +12,7 @@ export interface User extends BaseModel {
   createdBy: number;
   phone?:  number,
   address? : string,
-  role: any;
+  roles: any;
   data?:any;
 }
 
@@ -44,6 +44,7 @@ export interface Contacts {
 }
 
 export interface Users extends BaseModelPagedArray<User> {
+  data?: User[];
   id?: number;
 }
 
@@ -52,3 +53,4 @@ export interface ListUserOptions extends BaseModelPagedRequest {
   q?: string;
   active?: number;
 }
+

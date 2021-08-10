@@ -13,11 +13,12 @@ import { AppState } from '@iverify/core/store/states/app.state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { MediaMatcher } from '@angular/cdk/layout';
 
+
+const ADMIN_ROLE = 'admin';
 @Component({
   selector: 'iverify-index',
   templateUrl: 'index.component.html',
@@ -34,7 +35,7 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   time = { hour: 'Hrs', minute: 'Mins' };
   countryCodes = environment.countryCodes;
   currentLang: string = this.translate.currentLang;
-
+  ADMIN_ROLE = ADMIN_ROLE;
   AuthHelpers = AuthHelpers;
 
   Permission = Permission;

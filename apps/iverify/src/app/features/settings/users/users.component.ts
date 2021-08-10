@@ -36,7 +36,6 @@ export class UsersComponent implements OnInit {
 
   const result: any = [];
   Object.keys(form.controls).forEach(key => {
-
     const controlErrors: any = form.get(key).errors;
     if (controlErrors) {
       Object.keys(controlErrors).forEach(keyError => {
@@ -51,16 +50,15 @@ export class UsersComponent implements OnInit {
 
   return result;
 }
-
   
   ngOnInit(): void {
     this.role = [
-          {
-            "id": 1,
-            "name": "admin",
-            "description": "string",
-            "resource": [{"name":"users","permissions":["read","write","update","delete"]},{"name":"roles","permissions":["read","write","update","delete"]}]
-          }
+      {
+        "id": 1,
+        "name": "admin",
+        "description": "string",
+        "resource": [{"name":"users","permissions":["read"]},{"name":"roles","permissions":["read"]}]
+      }
     ];
 
   this.userForm = new FormGroup({
@@ -71,7 +69,7 @@ export class UsersComponent implements OnInit {
       // roles: new FormControl('', Validators.required),
       phone: new FormControl('', [Validators.required, Validators.pattern('[0-9]*')]),
       address: new FormControl('')
-    });
+  });
 
   }
 
@@ -79,30 +77,7 @@ export class UsersComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  getUsersList() {
-    // this.listOption = {
-    //   offset: this.offset,
-    //   limit: this.limit,
-    //   orderby: 'realname',
-    //   order: OrderSort.Asc,
-    //   active: (this.isApproved) ? 1 : 0
-    // };
-    // this.subs.add(
-    //   this.userService.list(this.listOption).subscribe(data => {
-    //     this.users = data.results;
-    //     if (!this.isApproved) {
-    //       this.users = this.users.filter(item => item.active === false);
-    //     }
-    //     this.total_count = data.total_count;
-    //     if (!this.isApproved) {
-    //       this.updateCount.next(this.total_count);
-    //     }
-    //   })
-    // );
-  }
-
   onUserClick() {
-
     let msgTemplate    = 'TOAST_CREATE_USER';
     let errorTemplate  = 'TOAST_CREATE_USER_ERROR';
 		if (!this.isEditing) {

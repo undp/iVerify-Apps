@@ -2,7 +2,7 @@
   <form class="form-signin" [formGroup]="userForm">
     <p>
       <mat-form-field>
-        <mat-label>{{ 'FIRSTNAME' | translate |json}}</mat-label>
+        <mat-label>{{ 'FIRSTNAME' | translate}}</mat-label>
         <input
           matInput
           type="text"
@@ -17,7 +17,7 @@
     </p>
     <p>
       <mat-form-field>
-        <mat-label>{{ 'LASTNAME' | translate |json}}</mat-label>
+        <mat-label>{{ 'LASTNAME' | translate}}</mat-label>
         <input
           matInput
           type="text"
@@ -32,7 +32,7 @@
     </p>
     <p>
       <mat-form-field>
-        <mat-label>{{ 'EMAIL' | translate |json}}</mat-label>
+        <mat-label>{{ 'EMAIL' | translate}}</mat-label>
         <input
           matInput
           type="email"
@@ -46,14 +46,15 @@
       </mat-form-field>
     </p>
     <p>
-      <mat-form-field appearance="fill">
-        <mat-label>{{ 'PASSWORD' | translate |json}}</mat-label>
+      <mat-form-field>
+        <mat-label>{{ 'PASSWORD' | translate}}</mat-label>
         <input
           matInput
           type="password"
           id="inputPassword"
           [placeholder]="'PASSWORD' | translate"
           required
+          autofocus
           formControlName="password"
         />
         <mat-hint>Enter password 8 chars long</mat-hint>
@@ -61,7 +62,7 @@
     </p>
     <p>
       <mat-form-field>
-        <mat-label>{{ 'Phone' | translate |json}}</mat-label>
+        <mat-label>{{ 'Phone' | translate}}</mat-label>
         <input
           matInput
           type="text"
@@ -77,7 +78,7 @@
     </p>
     <p>
       <mat-form-field>
-        <mat-label>{{ 'ADDRESS' | translate |json}}</mat-label>
+        <mat-label>{{ 'ADDRESS' | translate}}</mat-label>
         <input
           matInput
           type="text"
@@ -91,11 +92,12 @@
         <mat-hint>Enter complete address</mat-hint>
       </mat-form-field>
     </p>
-    <div class="">
+    <div class="d-flex justify-content-around">
       <button
         mat-raised-button 
         color="primary"
         (click)="onNoClick()"
+        class="mr-2"
       >
         {{ 'CANCEL' | translate}}
       </button>

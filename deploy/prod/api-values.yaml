@@ -22,4 +22,15 @@ resources:
      memory: 256Mi
 
 app:
-  containerPort: 3335
+  containerPort: 8000
+
+env:
+  DB_USER: iverify@undphq10ds002
+  DB_PORT: 3306
+  DB_HOST: undphq10ds002.mysql.database.azure.com
+  DB_NAME: iverify
+
+secret: 
+  - name: DB_PASSWORD
+    secret_name: iverify
+    secret_key: DB_PASSWORD

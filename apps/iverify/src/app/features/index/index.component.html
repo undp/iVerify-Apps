@@ -1,5 +1,6 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" *ngIf="(user$ |async) as usr">
   <button
+    [disabled]="!(usr && usr.roles[0].name === ADMIN_ROLE)"
     (click)="snav.toggle()"
     mat-icon-button
     class="example-icon"
@@ -29,18 +30,20 @@
 <mat-sidenav-container
   class="example-sidenav-container"
   [style.marginTop.px]="viewportMobileQuery.matches ? 0 : 0"
+  
 >
   <mat-sidenav #snav [mode]="viewportMobileQuery.matches ? 'over' : 'side'"
                  [fixedInViewport]="viewportMobileQuery.matches" fixedTopGap="0" (click)="snav.toggle()">
-    <mat-nav-list >
+    <mat-nav-list>
       <a class="text-capitalize fontRobotoRegular" mat-menu-item [routerLink]="['/dashboard/settings']">
-          <mat-icon>settings</mat-icon>
+          <mat-icon>people</mat-icon>
           {{'USERS' | translate}}
       </a>
-      <!-- <a mat-button [routerLink]="['/dashboard/settings']">{{
-        'SETTINGS' | translate
-      }}</a> -->
       <mat-divider></mat-divider>
+      <a class="text-capitalize fontRobotoRegular" mat-menu-item [routerLink]="['/dashboard/index']">
+          <mat-icon>arrowback</mat-icon>
+          {{'Back' | translate}}
+      </a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>

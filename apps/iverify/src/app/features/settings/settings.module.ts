@@ -13,6 +13,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule} from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { RoleComponent } from './role/role.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 export const routes: Routes = [
   {
@@ -24,7 +28,8 @@ export const routes: Routes = [
 @NgModule({
   declarations: [
     UsersComponent,
-    UserManagementComponent
+    UserManagementComponent,
+    RoleComponent
   ],
   imports: [
     CommonModule,
@@ -38,7 +43,10 @@ export const routes: Routes = [
     MatIconModule,
     MatRippleModule,
     MatButtonToggleModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSelectModule,
+    MatChipsModule,
+    MatAutocompleteModule
   ],
   exports: [
 

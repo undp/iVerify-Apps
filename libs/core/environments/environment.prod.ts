@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   api: {
-    base: 'https://api.hrczm.EWER Zambia',
+    base: 'http://20.86.237.214',
     version: 'v3'
   },
   authentication: {
@@ -15,7 +15,7 @@ export const environment = {
     debounceDelay: 100,
     extraDuration: 500,
     minDuration: 500,
-    opacity: 0.5,
+    opacity: '0.5',
     spinner: 'skWanderingCubes',
     filteredUrlPatterns: ['open.mapquestapi.com', 'notifications_ex', 'audit', 'comments']
   },

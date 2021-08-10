@@ -25,7 +25,7 @@ export class WpClientService{
     }
 
     getPost(postId: number){
-        return this.http.get(this.config.endpoints.posts + '/' + postId).pipe(
+        return this.http.get(this.config.endpoints.posts + '/' + postId).pipe( 
             map(res => res.data),
             catchError(err => {
                 console.log('Error getting post', err)
