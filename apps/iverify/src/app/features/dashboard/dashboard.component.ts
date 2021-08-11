@@ -96,7 +96,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   onResize(event: any) {
-    this.breakpoint = (event.target.innerWidth <= 400) ? 1 : 6;
+    this.breakpoint = (event.target.innerWidth <= 600) ? 1 : (event.target.innerWidth < 992) ? 2 : 3;
   }
 
   getStatistics() {
