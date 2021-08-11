@@ -22,3 +22,17 @@
   left: 0;
   top: 2rem;
 }
+
+.response-label {
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+  }
+}
+
+.bubble-chart {
+  margin: auto;
+  @media only screen and (min-width: 767px) {
+    width: 50%; 
+    margin: auto;
+  }
+}

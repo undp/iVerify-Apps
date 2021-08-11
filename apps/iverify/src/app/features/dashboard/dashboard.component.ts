@@ -49,6 +49,10 @@ export const bubbleData : BubbleChartFormat[] =  [
   }
 ];
 
+const BubbleChartViewSize: any = {
+  WEB_VIEW_SIZE : [600, 150],
+  MOBILE_VIEW_SIZE : [250, 150]
+}
 @Component({
   selector: 'iverify-dashboard',
   templateUrl: 'dashboard.component.html',
@@ -74,6 +78,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     end: new FormControl()
   });
   options: TicketRequest = {startDate: '', endDate: ''};
+  bubbleChartViewSize: [number, number];
   responseVelocity: string = 'RESPONSE_TIME';
   
   constructor(
@@ -82,6 +87,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) {
     this.subs = new Subscription();
     this.breakpoint = (window.innerWidth <= 400) ? 1 : 3;
+    this.getScreenSizeView(window.innerWidth);    
   }
 
   ngOnInit() {
@@ -97,6 +103,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   onResize(event: any) {
     this.breakpoint = (event.target.innerWidth <= 600) ? 1 : (event.target.innerWidth < 992) ? 2 : 3;
+    this.getScreenSizeView(event.target.innerWidth); 
+  }
+
+  getScreenSizeView(innerWidth: number) {
+    this.bubbleChartViewSize = BubbleChartViewSize.WEB_VIEW_SIZE;
+    if (innerWidth <= 400) {
+      this.bubbleChartViewSize = BubbleChartViewSize.MOBILE_VIEW_SIZE;
+    }
   }
 
   getStatistics() {
