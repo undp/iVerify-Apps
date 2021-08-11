@@ -15,7 +15,7 @@
       <mat-date-range-picker #picker>
         <mat-date-range-picker-actions>
           <button mat-button matDateRangePickerCancel>Cancel</button>
-          <button mat-raised-button color="primary" matDateRangePickerApply>
+          <button mat-raised-button color="primary" (click)="getStatisticsByDates()" matDateRangePickerApply>
             Apply
           </button>
         </mat-date-range-picker-actions>
