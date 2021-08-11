@@ -72,8 +72,8 @@ export class MeedanCheckClientService {
     );
   }
 
-  createItemFromWp(title: string, description: string): Observable<any>{
-    const query: string = this.helper.buildCreateItemFromWPMutation(title, description);
+  createItemFromWp(url: string, content: string): Observable<any>{
+    const query: string = this.helper.buildCreateItemFromWPMutation(url, content);
     const headers = this.config.headers;
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
       map(res => res.data),
