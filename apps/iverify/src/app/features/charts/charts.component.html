@@ -66,7 +66,7 @@
 </ngx-charts-line-chart>
 <ngx-charts-bubble-chart
   *ngIf="chartType === ChartTypeEnum.BUBBLE"
-  [view]="[600,150]"
+  [view]="viewVal"
   [scheme]="colorScheme[3]"
   [results]="data"
   [xAxis]="true"
@@ -79,8 +79,8 @@
   [xScaleMin]="1"
   [xScaleMax]="16"
   [showGridLines]="true"
-  [minRadius]="10"
-  [maxRadius]="10"
+  [minRadius]="5"
+  [maxRadius]="5"
   [xAxisTicks]="[1, 4, 15]"
   [xAxisTickFormatting]="xticksFormatting"
   (select)="onSelect($event)"

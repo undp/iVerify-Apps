@@ -83,6 +83,7 @@ export class ChartComponent implements  OnDestroy, OnChanges {
 
   @Input() data: any;
   @Input() chartType: number;
+  @Input() viewVal: [number, number];
   single: any[];
   view: [number, number] = [300, 200];
   ChartTypeEnum = ChartTypeEnum;
