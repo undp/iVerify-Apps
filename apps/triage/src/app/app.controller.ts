@@ -15,10 +15,10 @@ export class AppController {
 
   @Post('submit-story')
   async submitStory(@Body() body){
-    const {title, description, secret} = body;
+    const {url, content, secret} = body;
     if(secret !== '1v3r1fy') return new HttpException('Not authorized.', 403);
     try{
-      return await this.appService.createItemFromWp(title, description)
+      return await this.appService.createItemFromWp(url, content)
     }catch(e){
       return new HttpException(e.message, 500)
     }

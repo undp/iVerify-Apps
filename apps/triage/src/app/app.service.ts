@@ -92,7 +92,7 @@ export class AppService {
     }, false)
   }
 
-  async createItemFromWp(title: string, description: string){
-    return await this.checkClient.createItemFromWp(title, description);
+  async createItemFromWp(url: string, content: string){
+    return await this.checkClient.createItemFromWp(url, content);
   }
 }
