@@ -86,9 +86,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     let previousMonday = new Date(DashboardHelpers.GetPreviousWeekFirstDay());
-
     this.options.startDate =  DashboardHelpers.FormatDate(previousMonday);
     this.options.endDate =  DashboardHelpers.FormatDate(new Date());
+    this.range.patchValue({
+      start: this.options.startDate,
+      end: this.options.endDate
+    });
     this.getStatistics();
   }
 
