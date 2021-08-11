@@ -17,6 +17,9 @@ import { RoleComponent } from './role/role.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 export const routes: Routes = [
   {
@@ -46,7 +49,10 @@ export const routes: Routes = [
     MatButtonModule,
     MatSelectModule,
     MatChipsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    ScrollingModule,
+    MatDialogModule,
+    MatCheckboxModule
   ],
   exports: [
 

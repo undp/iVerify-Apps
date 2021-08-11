@@ -33,6 +33,7 @@ export class RoleComponent implements OnInit {
   filteredPriviledges: Observable<string[]>;
   defaultPriviledges: string[] = ['read'];
   priviledges: string[] = ["read","write","update","delete"];
+  sectionList: string[] = ['Dashboard','Users'];
 
   @ViewChild('priviledgeInput') priviledgeInput: ElementRef<HTMLInputElement>;
 
@@ -46,27 +47,44 @@ export class RoleComponent implements OnInit {
       toast.setViewContainerRef(viewContainerRef);
   }
 
-  ngOnInit(): void {
+  getFormValidationErrors(form: FormGroup) {
 
-    this.filteredPriviledges = this.priviledgeCtrl.valueChanges.pipe(
-        startWith(null),
-        map((fruit: string | null) => fruit ? this._filter(fruit) : this.priviledges.slice()));
+  const result: any = [];
+  Object.keys(form.controls).forEach(key => {
+    const controlErrors: any = form.get(key).errors;
+    if (controlErrors) {
+      Object.keys(controlErrors).forEach(keyError => {
+        result.push({
+          'control': key,
+          'error': keyError,
+          'value': controlErrors[keyError]
+        });
+      });
+    }
+  });
+  return result;
+}
 
-    this.roleForm = new FormGroup({
-        name: new FormControl('', Validators.required),
-        description: new FormControl('', Validators.required),
-        resource: new FormControl('', Validators.required),
-        priviledges: new FormControl('', Validators.required),
-    });
 
-  }
+ngOnInit(): void {
+  this.roleForm = new FormGroup({
+      name: new FormControl('', Validators.required),
+      description: new FormControl('', Validators.required),
+      resource: new FormControl('', Validators.required)
+  });
+
+  this.filteredPriviledges = this.priviledgeCtrl.valueChanges.pipe(
+      startWith(null),
+      map((item: string | null) => item ? this._filter(item) : this.priviledges.slice()));  
+}
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
   onRoleClick() {
-
+    console.log(this.defaultPriviledges);
+    console.log(this.getFormValidationErrors(this.roleForm));
   }
 
   add(event: MatChipInputEvent): void {
@@ -75,11 +93,11 @@ export class RoleComponent implements OnInit {
       this.defaultPriviledges.push(value);
     }
     event.chipInput!.clear();
-    this.priviledgeCtrl.setValue(null);
+    this.priviledgeCtrl.setValue(value);
   }
 
-  remove(fruit: string): void {
-    const index = this.defaultPriviledges.indexOf(fruit);
+  remove(item: string): void {
+    const index = this.defaultPriviledges.indexOf(item);
 
     if (index >= 0) {
       this.defaultPriviledges.splice(index, 1);
@@ -95,7 +113,7 @@ export class RoleComponent implements OnInit {
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.priviledges.filter(fruit => fruit.toLowerCase().includes(filterValue));
+    return this.priviledges.filter(item => item.toLowerCase().includes(filterValue));
   }
 
 

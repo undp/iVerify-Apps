@@ -30,11 +30,47 @@
         <mat-hint>Enter description</mat-hint>
       </mat-form-field>
     </p>
-   
+    <p>
+      <mat-form-field>
+        <mat-label>{{ 'SECTION' | translate }}</mat-label>
+        <mat-select multiple formControlName="resource">
+          <mat-select-trigger>
+            {{roleForm.controls['resource'].value ? roleForm.controls['resource'].value[0] : ''}}
+            <span *ngIf="roleForm.controls['resource'].value?.length > 1" class="example-additional-selection">
+              (+{{roleForm.controls['resource'].value.length - 1}} {{roleForm.controls['resource'].value?.length === 2 ? 'other' : 'others'}})
+            </span>
+          </mat-select-trigger>
+          <mat-option *ngFor="let sect of sectionList" [value]="sect">{{sect}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </p>
     <p>
       <mat-form-field class="example-chip-list" appearance="fill">
         <mat-label>{{'PRIVILEDGES'| translate}}</mat-label>
-
+          <mat-chip-list #chipList aria-label="Priviledges selection">
+            <mat-chip
+              *ngFor="let item of defaultPriviledges"
+              [selectable]="selectable"
+              [removable]="removable"
+              (removed)="remove(item)">
+              {{item}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input
+              placeholder="New Priviledge..."
+              #priviledgeInput
+              [formControl]="priviledgeCtrl"
+              [matAutocomplete]="auto"
+              [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (matChipInputTokenEnd)="add($event)"
+            >
+          </mat-chip-list>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-option *ngFor="let item of filteredPriviledges | async" [value]="item">
+              {{item}}
+            </mat-option>
+          </mat-autocomplete>
       </mat-form-field>
     </p>
     <div class="d-flex justify-content-around">
@@ -50,7 +86,7 @@
         mat-raised-button 
         color="primary"
         (click)="onRoleClick()"
-        [disabled]="roleForm.invalid"
+        [disabled]="roleForm.invalid || defaultPriviledges.length===0"
       >
         {{ 'SUBMIT' | translate}}
       </button>
