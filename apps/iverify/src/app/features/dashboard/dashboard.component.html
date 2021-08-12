@@ -39,6 +39,7 @@
   rowHeight="2:1"
   *ngIf="statData && (statData.results | json) !== ({} | json)"
   (window:resize)="onResize($event)"
+  [gutterSize]="'15'"
 >
   <mat-grid-tile>
     <mat-grid-tile-header>
@@ -95,38 +96,38 @@
     </mat-grid-tile-header>
     <iverify-charts [chartType]="4" [data]="ticketsByAgents"></iverify-charts>
   </mat-grid-tile>
-  <mat-grid-tile [colspan]="breakpoint" rowspan="1">
-    <mat-grid-tile-header>
-      <mat-form-field appearance="fill">
+</mat-grid-list>
+<div class="row mt-2">
+<mat-form-field appearance="fill" class="response-label">
       <mat-label>{{'RESPONSE_VELOCITY'|translate}}</mat-label>
         <mat-select
           (selectionChange)="getAllTicketsData()"
           [(ngModel)]="selectedTimeType"
         >
-          <mat-option [value]="1">
+          <mat-option [value]="1" >
             {{ 'RESPONSE_TIME' | translate }}
           </mat-option>
           <mat-option [value]="2">
             {{ 'RESOLVE_TIME' | translate }}
           </mat-option>
         </mat-select>
+        
       </mat-form-field>
-      <p
-        class="fontRalewayRegular text-uppercase text-center"
-        style="margin: 0 auto"
-      >
+      <mat-label
+        class="fontRalewayRegular text-uppercase text-center">
         {{
           responseVelocity|translate
         }}
-      </p>
-    </mat-grid-tile-header>
-    <iverify-charts
+      </mat-label>
+    <div class="row mt-3 bubble-chart">
+      <iverify-charts
       [chartType]="5"
+      [viewVal]="bubbleChartViewSize"
       [data]="bubbleData"
       [responseType]="selectedTimeType"
     ></iverify-charts>
-  </mat-grid-tile>
-</mat-grid-list>
+    </div>
+</div>   
 <div class="">
   <p
     class="custom-report-info marg-left-1"
