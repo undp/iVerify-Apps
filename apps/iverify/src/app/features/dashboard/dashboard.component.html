@@ -98,7 +98,7 @@
   </mat-grid-tile>
 </mat-grid-list>
 <div class="row mt-2">
-<mat-form-field appearance="fill">
+<mat-form-field appearance="fill" class="response-label">
       <mat-label>{{'RESPONSE_VELOCITY'|translate}}</mat-label>
         <mat-select
           (selectionChange)="getAllTicketsData()"
@@ -119,7 +119,6 @@
           responseVelocity|translate
         }}
       </mat-label>
-    
     <div class="row mt-3 bubble-chart">
       <iverify-charts
       [chartType]="5"
