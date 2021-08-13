@@ -62,7 +62,7 @@
   "RISK_STATUS": "Risk Status",
   "MGMT_LEVEL_LABEL": "Response  Level",
   "PRIORITY_LABEL": "Set Priority",
-  "CONFIRMATION_MESSAGE": "Are you sure to delete this report?",
+  "CONFIRMATION_MESSAGE": "Are you sure to delete this entry?",
   "LINK_POSTS": "Link/Unlink Posts",
   "CONTACT": "Contact",
   "REPORT": "Report",
@@ -158,5 +158,8 @@
   "ROLE_NAME": "Role",
   "PRIVILEDGE": "Priviledges",
   "SECTION": "Resources",
-  "SETTINGS": "Settings"
+  "SETTINGS": "Settings",
+  "USER_DELETED": "User deleted",
+  "ROLE_DELETED": "Role deleted",
+  "COMFIRMATION": "Confirmation Alert"
 }

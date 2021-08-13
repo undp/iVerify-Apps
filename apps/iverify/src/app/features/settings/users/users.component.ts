@@ -54,6 +54,9 @@ export class UsersComponent implements OnInit {
         address: new FormControl('')
     });
     if(this.data && this.data.id > 0) {
+      this.userForm.controls['phone'].setValidators([]);
+      this.userForm.controls['address'].setValidators([]);
+      this.userForm.controls['password'].setValidators([]);
       this.userForm.patchValue(this.data);
       this.isEditing = true;
     } else {
@@ -71,8 +74,10 @@ export class UsersComponent implements OnInit {
   onUserClick() {
     this.getFormValidationErrors(this.userForm);
 		let reqBody = this.userForm.value;
-    reqBody.roles = Object.assign([], this.userForm.value.roles);
+    let { roles } = this.userForm.value;
+    
 		if (!this.isEditing) {
+      reqBody.roles = [roles];
 			this.subs.add(
 				this.userService.register(reqBody)
 				.pipe(

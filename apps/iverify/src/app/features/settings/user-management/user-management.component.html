@@ -24,7 +24,7 @@
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon>people</mat-icon>
-        {{ 'USERS' | translate }}
+        <p class="tab-section">{{ 'USERS' | translate }}</p>
       </mat-panel-title>
       <mat-panel-description>
         Click to see user list
@@ -55,7 +55,7 @@
         <th mat-header-cell *matHeaderCellDef>{{ 'Action' | translate }}</th>
         <td mat-cell *matCellDef="let element" style="cursor: pointer;">
           <button mat-icon-button (click)="openDialog('user', element)"><mat-icon>edit</mat-icon></button>
-          <button mat-icon-button style="margin-left: 5px;" (click)="deleteUser('user', element.id)"><mat-icon>delete</mat-icon></button>
+          <button mat-icon-button style="margin-left: 5px;" (click)="deleteEntity('user', element.id)"><mat-icon>delete</mat-icon></button>
         </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -72,7 +72,7 @@
   >
     <mat-expansion-panel-header>
       <mat-panel-title>
-        <mat-icon>perm_identity</mat-icon>{{ 'ROLES' | translate }}
+        <mat-icon>perm_identity</mat-icon><p class="tab-section">{{ 'ROLES' | translate }}</p>
       </mat-panel-title>
       <mat-panel-description>
         Click to see role list
@@ -98,6 +98,13 @@
       <ng-container matColumnDef="resource">
         <th mat-header-cell *matHeaderCellDef>{{ 'PERMISSIONS' | translate }}</th>
         <td mat-cell *matCellDef="let element">{{ element.resource }}</td>
+      </ng-container>
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>{{ 'Action' | translate }}</th>
+        <td mat-cell *matCellDef="let element" style="cursor: pointer;">
+          <button mat-icon-button (click)="openDialog('role', element)"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button style="margin-left: 5px;" (click)="deleteEntity('role', element.id)"><mat-icon>delete</mat-icon></button>
+        </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumnsRoles"></tr>
       <tr

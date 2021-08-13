@@ -23,6 +23,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ToastModule } from '../toast/toast.module';
+import { DialogComponent } from './dialog.component';
 
 export const routes: Routes = [
   {
@@ -35,7 +36,8 @@ export const routes: Routes = [
   declarations: [
     UsersComponent,
     UserManagementComponent,
-    RoleComponent
+    RoleComponent,
+    DialogComponent
   ],
   imports: [
     CommonModule,

@@ -63,6 +63,6 @@ export class RolesService {
 
   async deleteRole(id: string): Promise<any> {
     const role: Roles = await this.findByRoleId(id);
-    return this.rolesRepository.save(role);
+    return this.rolesRepository.delete(role);
   }
 }

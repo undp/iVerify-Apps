@@ -7,6 +7,7 @@ import { Users, User		} from '@iverify/core/models/user';
 import { ToastType } from '../../toast/toast.component';
 import { ToastService } from '../../toast/toast.service';
 import { Observable, Subscription, throwError} from 'rxjs';
+import { DialogComponent } from '../dialog.component';
 
 export interface PeriodicElement {
   id: string;
@@ -30,7 +31,7 @@ export class UserManagementComponent implements OnInit {
 
   subs: Subscription;
   displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'action'];
-  displayedColumnsRoles: string[] = ['id', 'name', 'description', 'resource'];
+  displayedColumnsRoles: string[] = ['id', 'name', 'description', 'resource', 'action'];
   dataSource: PeriodicElement[];
   dataSourceRoles: PeriodicElementRoles[];
   clickedRows = new Set<PeriodicElement>();
@@ -67,8 +68,34 @@ export class UserManagementComponent implements OnInit {
     );
   }
 
-  deleteUser(type: string, id: number) {
+  deleteEntity(type: string, id: number) {
+    const confirm = this.dialog.open(DialogComponent, {
+      width: '300px'
+    });
 
+    confirm.afterClosed().subscribe(result => {
+      if (result) {
+        if (type === 'user') {
+          this.subs.add(
+            this.userService.deleteUser(id).subscribe((results) => {
+                this.toast.show(ToastType.Danger, 'USER_DELETED');
+                this.getUserList();
+            })
+          );
+        }
+        if (type === 'role') {
+          this.subs.add(
+            this.userService.deleteRole(id).subscribe((results) => {
+                this.toast.show(ToastType.Danger, 'ROLE_DELETED');
+                this.getRolesList();
+            })
+          );
+        }
+      } else {
+        confirm.close();
+      }
+    });   
+    
   }
 
   openDialog(type: string, element?: any): void {
