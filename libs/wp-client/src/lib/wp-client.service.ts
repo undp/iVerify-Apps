@@ -56,7 +56,10 @@ export class WpClientService{
     }
 
     listTags(): Observable<any>{
-        return this.http.get(this.config.endpoints.tags).pipe(
+        const params = {
+            per_page: 100
+        };
+        return this.http.get(this.config.endpoints.tags, {params}).pipe(
             map(res => res.data),
             catchError(err => {
                 console.log('Error listing tags: ', err)
