@@ -5,13 +5,17 @@ import { Subscription, throwError} from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ToastType } from '../../toast/toast.component';
 import { ToastService } from '../../toast/toast.service';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import { RoleItem } from '@iverify/core/models/roles';
+import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { RoleItem, RoleRequest, Resource} from '@iverify/core/models/roles';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
-import {Observable} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import {Observable, of } from 'rxjs';
+import {map, startWith, filter} from 'rxjs/operators';
+import { User } from '@iverify/core/models/user';
+import { selectUser } from '@iverify/core/store/selectors/user.selector';
+import { AppState } from '@iverify/core/store/states/app.state';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'iverify-role',
@@ -33,11 +37,16 @@ export class RoleComponent implements OnInit {
   filteredPriviledges: Observable<string[]>;
   defaultPriviledges: string[] = ['read'];
   priviledges: string[] = ["read","write","update","delete"];
-  sectionList: string[] = ['Dashboard','Users'];
+  sectionList: string[] = ['dashboard','users'];
+  user: User;
+  user$: Observable<User> = this.store
+    .select(selectUser)
+    .pipe(filter(user => user !== null));
 
   @ViewChild('priviledgeInput') priviledgeInput: ElementRef<HTMLInputElement>;
 
   constructor(
+    private store: Store<AppState>,
     private userService: UserService, 
     private toast: ToastService,
     @Inject(ViewContainerRef) private viewContainerRef: ViewContainerRef,
@@ -47,21 +56,20 @@ export class RoleComponent implements OnInit {
       toast.setViewContainerRef(viewContainerRef);
   }
 
-  getFormValidationErrors(form: FormGroup) {
-
+getFormValidationErrors(form: FormGroup) {
   const result: any = [];
-  Object.keys(form.controls).forEach(key => {
-    const controlErrors: any = form.get(key).errors;
-    if (controlErrors) {
-      Object.keys(controlErrors).forEach(keyError => {
-        result.push({
-          'control': key,
-          'error': keyError,
-          'value': controlErrors[keyError]
+    Object.keys(form.controls).forEach(key => {
+      const controlErrors: any = form.get(key).errors;
+      if (controlErrors) {
+        Object.keys(controlErrors).forEach(keyError => {
+          result.push({
+            'control': key,
+            'error': keyError,
+            'value': controlErrors[keyError]
+          });
         });
-      });
-    }
-  });
+      }
+    });
   return result;
 }
 
@@ -73,18 +81,45 @@ ngOnInit(): void {
       resource: new FormControl('', Validators.required)
   });
 
+  this.user$.subscribe((currentUser) => {
+    this.user = currentUser;
+  });
+
   this.filteredPriviledges = this.priviledgeCtrl.valueChanges.pipe(
       startWith(null),
-      map((item: string | null) => item ? this._filter(item) : this.priviledges.slice()));  
+      map((item: string | null) => item ? this._filter(item) : this.priviledges.filter(item => !this.defaultPriviledges.includes(item))));  
 }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.toast.show(ToastType.Success, 'TOAST_CREATE_ROLE');
+    setTimeout(() => {
+      this.dialogRef.close();
+    }, 1000);
   }
 
   onRoleClick() {
-    console.log(this.defaultPriviledges);
-    console.log(this.getFormValidationErrors(this.roleForm));
+    if (this.roleForm.value && this.roleForm.value.resource) {
+        let resources: Resource[] = [];
+        let resArr = this.roleForm.value.resource;
+        resArr.map((item: any)=> {
+          resources.push({
+            "name": item,
+            "permissions": this.defaultPriviledges
+          });
+        })
+      this.roleForm.value.resource = resources;
+    }
+    let reqBody = this.roleForm.value;
+			this.subs.add(
+				this.userService.addRoles(reqBody)
+				.pipe(
+					catchError((err) => {
+						return throwError(err);
+				}))
+				.subscribe(response => {
+          this.onNoClick();
+				})
+			);
   }
 
   add(event: MatChipInputEvent): void {
@@ -98,7 +133,6 @@ ngOnInit(): void {
 
   remove(item: string): void {
     const index = this.defaultPriviledges.indexOf(item);
-
     if (index >= 0) {
       this.defaultPriviledges.splice(index, 1);
     }
@@ -112,9 +146,8 @@ ngOnInit(): void {
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-
-    return this.priviledges.filter(item => item.toLowerCase().includes(filterValue));
+    let temp = this.priviledges.filter(item => item.toLowerCase().includes(filterValue));
+    return temp.filter(item => !this.defaultPriviledges.includes(item));
   }
-
 
 }

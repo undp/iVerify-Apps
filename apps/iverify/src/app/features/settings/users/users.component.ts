@@ -48,7 +48,6 @@ export class UsersComponent implements OnInit {
       lastName: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', Validators.required),
-      // roles: new FormControl('', Validators.required),
       phone: new FormControl('', [Validators.required, Validators.pattern('[0-9]*')]),
       address: new FormControl('')
   });
@@ -56,12 +55,10 @@ export class UsersComponent implements OnInit {
   }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close('TOAST_CREATE_USER');
   }
 
   onUserClick() {
-    let msgTemplate    = 'TOAST_CREATE_USER';
-    let errorTemplate  = 'TOAST_CREATE_USER_ERROR';
 		if (!this.isEditing) {
 			const reqBody = this.userForm.value;
       reqBody.roles = this.role;
@@ -69,15 +66,10 @@ export class UsersComponent implements OnInit {
 				this.userService.register(reqBody)
 				.pipe(
 					catchError((err) => {
-						if (err && err.statusText) {
-              this.onNoClick();
-							this.toast.show(ToastType.Danger, err.statusText);
-						}
 						return throwError(err);
 				}))
-				.subscribe(async response => {
+				.subscribe(response => {
           this.onNoClick();
-					this.toast.show(ToastType.Success, msgTemplate);
 				})
 			);
 		} else {

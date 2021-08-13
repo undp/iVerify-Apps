@@ -21,18 +21,20 @@ export class RolesService {
 
   async createRole(createRoleDto: CreateRoleDto, userId: number): Promise<Roles> {
     createRoleDto.resource = JSON.stringify(createRoleDto.resource);
-    createRoleDto['createdBy'] = 1;
-    createRoleDto['updatedBy'] = 1;
+    createRoleDto['createdBy'] = userId;
+    createRoleDto['updatedBy'] = userId;
     const role = await this.rolesRepository.create(createRoleDto);
     return this.rolesRepository.save(role);
   }
 
-  async getRoles(paginationDto: PaginationQueryDto) {
+  async getRoles(paginationDto: PaginationQueryDto): Promise<Roles[]> {
     const { limit, offset } = paginationDto;
-    return await this.rolesRepository.find({
-        skip: offset,
-        take: limit
-    });
+    return await this.rolesRepository.find(
+      // {
+      //   skip: offset,
+      //   take: limit
+      // }
+    );
   }
 
   async findOne(name: string): Promise<Roles> {

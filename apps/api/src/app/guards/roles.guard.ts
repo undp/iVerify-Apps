@@ -30,6 +30,8 @@ export class RolesGuard implements CanActivate {
     async roleHasPersmission(roleData, resource: string, method: string): Promise<boolean> {
         const resources = roleData.resource ? roleData.resource : null;
         const resourcesData = await this.parseOne(resources);
+        console.log(method);
+        console.log(resource);
         if (!resourcesData) return false;
         const resourcePermission = resourcesData.find(o => o && o.name && o.name.toLowerCase() === resource.toLowerCase());
         if (!(resourcePermission && resourcePermission.permissions)) return false;

@@ -14,12 +14,15 @@ import { MatRippleModule} from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { RoleComponent } from './role/role.component';
-import {MatSelectModule} from '@angular/material/select';
-import {MatChipsModule} from '@angular/material/chips';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {ScrollingModule} from '@angular/cdk/scrolling';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ToastModule } from '../toast/toast.module';
 
 export const routes: Routes = [
   {
@@ -37,6 +40,7 @@ export const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    ToastModule,
     TranslateModule,
     MatTableModule,
     MatTabsModule,
@@ -52,7 +56,9 @@ export const routes: Routes = [
     MatAutocompleteModule,
     ScrollingModule,
     MatDialogModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatDividerModule,
+    MatExpansionModule
   ],
   exports: [
 

@@ -14,6 +14,13 @@ export interface PeriodicElement {
   lastName: number;
   email: string;
 }
+
+export interface PeriodicElementRoles {
+  id: string;
+  name: number;
+  description: string;
+  resource: string[];
+}
 @Component({
   selector: 'iverify-user-management',
   templateUrl: './user-management.component.html',
@@ -23,8 +30,11 @@ export class UserManagementComponent implements OnInit {
 
   subs: Subscription;
   displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email'];
+  displayedColumnsRoles: string[] = ['id', 'name', 'description', 'resource'];
   dataSource: PeriodicElement[];
+  dataSourceRoles: PeriodicElementRoles[];
   clickedRows = new Set<PeriodicElement>();
+  panelOpenState: boolean = false;
 
   constructor(
     public dialog: MatDialog,
@@ -38,12 +48,21 @@ export class UserManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUserList();
+    this.getRolesList();
   }
 
   getUserList() {
     this.subs.add(
       this.userService.list().subscribe((results) => {
         this.dataSource = Object.assign(results.data);
+      })
+    );
+  }
+
+  getRolesList() {
+    this.subs.add(
+      this.userService.getRoles().subscribe((results) => {
+        this.dataSourceRoles = Object.assign(results.data);
       })
     );
   }
@@ -56,7 +75,8 @@ export class UserManagementComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.getUserList();      
-    })
+      this.getUserList();
+      this.getRolesList();      
+    });
   }
 }
