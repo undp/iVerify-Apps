@@ -55,6 +55,23 @@ export class AppController {
       throw new HttpException(e.message, 500);
     }
   }
+
+  @Post('publish-test-endpoint')
+  async punlishTestEndpoint(@Body() body){
+    try{
+      const id = body.id;
+      this.logger.log(`project media id: ${id}`)
+      return this.appService.publishReportById(id).pipe(
+        tap(() => this.logger.log('Report published.')),
+        catchError(err => {
+          this.logger.error(err);
+          throw new HttpException(err.message, 500);
+        })
+      );      
+    }catch(e){
+      return new HttpException(e.message, 500)
+    }
+  }
 }
 
 // example log:

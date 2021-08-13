@@ -4,7 +4,7 @@ import { CommentStatus, CreatePostDto, PostFormat, PostStatus } from "libs/wp-cl
 import { CreateTagDto } from "libs/wp-client/src/lib/interfaces/create-tag.dto";
 import { WpClientService } from "libs/wp-client/src/lib/wp-client.service";
 import { combineLatest, from, iif, Observable, of, zip } from "rxjs";
-import { catchError, concatMap, filter, map, reduce, scan, switchMap, take, tap } from "rxjs/operators";
+import { catchError, concatMap, filter, map, reduce, scan, shareReplay, switchMap, take, tap } from "rxjs/operators";
 import { SharedService } from "../shared/shared.service";
 import { WpPublisherHelper } from "./wp-publisher-helper.service";
 
@@ -66,14 +66,25 @@ export class WpPublisherService{
     ){}
 
       private tagsIds(tags: string[]): Observable<number[]>{
-        const tagsLowCase = tags.map(tag => tag.toLocaleLowerCase());
-        const wpTags$: Observable<any> = this.wpClient.listTags();
+        const tagsLowCase = tags.map(tag => tag.toLowerCase());
+        console.log('tags: ', tagsLowCase)
+        const wpTags$: Observable<any> = this.wpClient.listTags().pipe(
+          take(1),
+          shareReplay(1)
+          // tap(tags => tags.forEach(tag => console.log('wp tag: ', tag.name.toLowerCase())))
+        );
         const existingTagsIds$: Observable<number[]> = wpTags$.pipe(
-          map(wpTags => wpTags.filter(tag => tagsLowCase.indexOf(tag.name.toLowerCase()) > -1).map(tag => tag.id)),
+          map(wpTags => wpTags.filter(tag => tagsLowCase.indexOf(tag.name.toLowerCase()) > -1).map(tag => {
+            console.log('existing tag name: ', tag.name.toLowerCase())
+            return tag.id
+          })),
           );
         const newTags$: Observable<string[]> = wpTags$.pipe(
           map(wpTags => wpTags.map(tag => tag.name.toLowerCase() as string)),
-          map(wpTags => tags.filter(tag => wpTags.indexOf(tag.toLowerCase()) === -1))
+          tap(wpTags => console.log('wpTags: ', wpTags)),
+          map(wpTags => tags.filter(tag => wpTags.indexOf(tag.toLowerCase()) === -1)),
+          tap(wpTags => console.log('new tags: ', wpTags)),
+
         ) 
         const newTagsIds$: Observable<number[]> = newTags$.pipe(
           switchMap(tags => iif(()=> !!tags.length, this.createManyTags(tags).pipe(map(tag => [tag.id])), of([]))),
