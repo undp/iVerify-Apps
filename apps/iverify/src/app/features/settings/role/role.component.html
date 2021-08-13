@@ -40,7 +40,7 @@
               (+{{roleForm.controls['resource'].value.length - 1}} {{roleForm.controls['resource'].value?.length === 2 ? 'other' : 'others'}})
             </span>
           </mat-select-trigger>
-          <mat-option *ngFor="let sect of sectionList" [value]="sect">{{sect}}</mat-option>
+          <mat-option *ngFor="let sect of sectionList" [value]="sect">{{sect|titlecase}}</mat-option>
         </mat-select>
       </mat-form-field>
     </p>
@@ -86,7 +86,7 @@
         mat-raised-button 
         color="primary"
         (click)="onRoleClick()"
-        [disabled]="roleForm.invalid || defaultPriviledges.length===0"
+        
       >
         {{ 'SUBMIT' | translate}}
       </button>

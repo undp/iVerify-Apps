@@ -6,7 +6,7 @@ import { Users,
 		 UserRegistration, 
 		 Permission, 
 		 Contacts 			} from '../models/user';
-import { Roles, RoleItem 	} from '../models/roles';
+import { Roles, RoleItem, RoleRequest, ListRoleOptions	} from '../models/roles';
 
 @Injectable({
   providedIn: 'root'
@@ -44,17 +44,21 @@ export class UserService extends BaseService {
     	return this.http.put<Roles>( this.getUrl(this.uris.update_role).replace(':id', id.toString()), body);
   	}
 
-  	addRoles(body: RoleItem): Observable<Roles> {
+		getRoles(options: ListRoleOptions = null): Observable<Roles> {
+    	return this.http.get<Roles>( this.getUrl(this.uris.add_role), { params: this.getParamsFromObject(options)});
+  	}
+
+  	addRoles(body: RoleRequest): Observable<Roles> {
     	return this.http.post<Roles>( this.getUrl(this.uris.add_role), body);
   	}
 
-	deleteRole(id: number): Observable<Users> {
-		return this.http.delete<Users>( this.getUrl(this.uris.delete_role).replace(':id', id.toString()));
-	}
+		deleteRole(id: number): Observable<Users> {
+			return this.http.delete<Users>( this.getUrl(this.uris.delete_role).replace(':id', id.toString()));
+		}
 
-	updateUser(body: Users, id: number): Observable<Users> {
-		return this.http.put<Users>( this.getUrl(this.uris.update_user).replace(':id', id.toString()), body);
-	}
+		updateUser(body: Users, id: number): Observable<Users> {
+			return this.http.put<Users>( this.getUrl(this.uris.update_user).replace(':id', id.toString()), body);
+		}
 	
 	deleteUser(id: number): Observable<Users> {
 		return this.http.delete<Users>( this.getUrl(this.uris.delete_user).replace(':id', id.toString()));

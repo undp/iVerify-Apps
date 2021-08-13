@@ -286,6 +286,7 @@
   "USER_ORGANIZATION" : "Organization",
   "USER_POSITION": "Position",
   "TOAST_CREATE_USER": "Your registration request has been successfully submitted. The request will be reviewed and processed as soon as possible",
+  "TOAST_CREATE_ROLE": "The role has been successfully created.",
   "UNAPPROVED": "Pending Registration",
   "APPROVE": " Approve",
   "TOAST_UPDATE_USER": "User details updated successfully",
