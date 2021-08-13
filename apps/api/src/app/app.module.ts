@@ -47,8 +47,4 @@ import { StatsCronService } from './stats/cron.service';
   controllers: [AppController, UsersController, StatsController],
   providers: [AppService, UsersService, StatsService, StatsFormatService, StatsCronService],
 })
-export class AppModule {
-  constructor() {
-    console.log(process.env.DB_HOST);
-  }
-} 
+export class AppModule {} 

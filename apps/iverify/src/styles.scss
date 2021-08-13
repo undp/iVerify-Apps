@@ -249,26 +249,20 @@ li.fm-divider {
   float:left;
 }
 
-.mat-grid-tile .mat-grid-tile-header, .mat-grid-tile .mat-grid-tile-footer {
+.mat-grid-tile-header {
     display: flex;
     align-items: center;
-    height: 48px;
     color: $undp-jtf-text-color !important; 
     background: none !important; 
     overflow: hidden;
     padding: 0px 50px;
-    margin-top: 20px;
     position: absolute;
     left: 0;
     right: 0;
-}
-
-.mat-grid-tile-content {
-    margin-top: 3rem;
-}
-
-mat-card {
-  height: 200px;
+    height: 40px !important;
+    @media (max-width: 767px) {
+      height: 20px !important;
+    }
 }
 
 .mat-button, .mat-raised-button {
@@ -276,5 +270,9 @@ mat-card {
 }
 .mat-form-field-type-mat-date-range-input {
   width: 200px;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-flex {
+    padding: 1.2em .75em 0 .75em !important;
 }
 

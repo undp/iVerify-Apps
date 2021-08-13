@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { TicketRequest, StatusFormat, StatusFormatPieChart, TicketsByAgentFormat, BubbleChartFormat } from '@iverify/core/models/dashboard';
-import { cloneDeep } from 'lodash';
 
 export const bubbleData : BubbleChartFormat[] =  [
   {
@@ -118,7 +117,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.dashboardService.list(this.options).subscribe((res) => {
         this.statData = res;
-        this.agentsSourceData = DashboardHelpers.SortStatistics(cloneDeep(this.statData.results));
+        this.agentsSourceData = DashboardHelpers.SortStatistics(this.statData.results);
         this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.agentsSourceData['source']);
         this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['tag']);
         this.ticketsByType = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['status']);
@@ -126,7 +125,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(this.statData.results);  
         this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.agentsSourceData);
         this.totalPublished = (this.agentsSourceData['createdVsPublished'])? this.agentsSourceData['createdVsPublished'][0][1] : null;
-        console.log(this.ticketsByWeek);
       })
     );
   }
