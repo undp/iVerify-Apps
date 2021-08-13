@@ -47,6 +47,14 @@
     </p>
     <p>
       <mat-form-field>
+        <mat-label>{{ 'ROLES' | translate }}</mat-label>
+        <mat-select formControlName="roles">
+          <mat-option *ngFor="let sect of rolesList" [value]="sect">{{sect.name|titlecase}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
         <mat-label>{{ 'PASSWORD' | translate}}</mat-label>
         <input
           matInput
@@ -96,7 +104,7 @@
       <button
         mat-raised-button 
         color="primary"
-        (click)="onNoClick()"
+        (click)="dialogRef.close();"
         class="mr-2"
       >
         {{ 'CANCEL' | translate}}
@@ -107,7 +115,7 @@
         (click)="onUserClick()"
         [disabled]="userForm.invalid"
       >
-        {{ 'SUBMIT' | translate}}
+        {{ (this.isEditing) ? 'UPDATE' : 'SUBMIT' | translate}}
       </button>
     </div>
   </form>

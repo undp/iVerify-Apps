@@ -23,6 +23,7 @@
     <!-- #enddocregion hide-toggle -->
     <mat-expansion-panel-header>
       <mat-panel-title>
+        <mat-icon>people</mat-icon>
         {{ 'USERS' | translate }}
       </mat-panel-title>
       <mat-panel-description>
@@ -50,10 +51,15 @@
         <th mat-header-cell *matHeaderCellDef>{{ 'EMAIL' | translate }}</th>
         <td mat-cell *matCellDef="let element">{{ element.email }}</td>
       </ng-container>
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>{{ 'Action' | translate }}</th>
+        <td mat-cell *matCellDef="let element" style="cursor: pointer;">
+          <button mat-icon-button (click)="openDialog('user', element)"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button style="margin-left: 5px;" (click)="deleteUser('user', element.id)"><mat-icon>delete</mat-icon></button>
+        </td>
+      </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr
-        (click)="clickedRows.add(row)"
-        [class.demo-row-is-clicked]="clickedRows.has(row)"
         mat-row
         *matRowDef="let row; columns: displayedColumns"
       ></tr>
@@ -66,7 +72,7 @@
   >
     <mat-expansion-panel-header>
       <mat-panel-title>
-        {{ 'ROLES' | translate }}
+        <mat-icon>perm_identity</mat-icon>{{ 'ROLES' | translate }}
       </mat-panel-title>
       <mat-panel-description>
         Click to see role list

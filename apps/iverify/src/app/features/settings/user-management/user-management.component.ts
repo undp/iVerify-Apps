@@ -6,7 +6,7 @@ import { UserService } from '@iverify/core/users/user.service';
 import { Users, User		} from '@iverify/core/models/user';
 import { ToastType } from '../../toast/toast.component';
 import { ToastService } from '../../toast/toast.service';
-import { Subscription, throwError} from 'rxjs';
+import { Observable, Subscription, throwError} from 'rxjs';
 
 export interface PeriodicElement {
   id: string;
@@ -29,7 +29,7 @@ export interface PeriodicElementRoles {
 export class UserManagementComponent implements OnInit {
 
   subs: Subscription;
-  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email'];
+  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'action'];
   displayedColumnsRoles: string[] = ['id', 'name', 'description', 'resource'];
   dataSource: PeriodicElement[];
   dataSourceRoles: PeriodicElementRoles[];
@@ -67,11 +67,15 @@ export class UserManagementComponent implements OnInit {
     );
   }
 
-  openDialog(type: string): void {
+  deleteUser(type: string, id: number) {
+
+  }
+
+  openDialog(type: string, element?: any): void {
     let componentSelected: any = (type === 'user') ? UsersComponent : RoleComponent;
     const dialogRef = this.dialog.open(componentSelected, {
       panelClass: 'user-dialog',
-      data: ''
+      data: element
     });
 
     dialogRef.afterClosed().subscribe(result => {

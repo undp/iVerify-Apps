@@ -91,4 +91,8 @@ export class AppService {
       return acc;
     }, false)
   }
+
+  async createItemFromWp(url: string, content: string){
+    return await this.checkClient.createItemFromWp(url, content);
+  }
 }

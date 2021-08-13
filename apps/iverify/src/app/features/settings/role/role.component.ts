@@ -136,6 +136,7 @@ ngOnInit(): void {
     if (index >= 0) {
       this.defaultPriviledges.splice(index, 1);
     }
+    this.priviledgeCtrl.setValue(null);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {

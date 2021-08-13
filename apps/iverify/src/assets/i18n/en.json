@@ -157,5 +157,6 @@
   "ADD_ROLE": "Add role",
   "ROLE_NAME": "Role",
   "PRIVILEDGE": "Priviledges",
-  "SECTION": "Resources"
+  "SECTION": "Resources",
+  "SETTINGS": "Settings"
 }

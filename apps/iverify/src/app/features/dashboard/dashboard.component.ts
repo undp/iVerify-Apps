@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { TicketRequest, StatusFormat, StatusFormatPieChart, TicketsByAgentFormat, BubbleChartFormat } from '@iverify/core/models/dashboard';
-import { cloneDeep } from 'lodash';
 
 export const bubbleData : BubbleChartFormat[] =  [
   {
@@ -50,6 +49,10 @@ export const bubbleData : BubbleChartFormat[] =  [
   }
 ];
 
+const BubbleChartViewSize: any = {
+  WEB_VIEW_SIZE : [600, 150],
+  MOBILE_VIEW_SIZE : [250, 150]
+}
 @Component({
   selector: 'iverify-dashboard',
   templateUrl: 'dashboard.component.html',
@@ -75,6 +78,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     end: new FormControl()
   });
   options: TicketRequest = {startDate: '', endDate: ''};
+  bubbleChartViewSize: [number, number];
   responseVelocity: string = 'RESPONSE_TIME';
   
   constructor(
@@ -83,29 +87,37 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) {
     this.subs = new Subscription();
     this.breakpoint = (window.innerWidth <= 400) ? 1 : 3;
+    this.getScreenSizeView(window.innerWidth);    
   }
 
   ngOnInit() {
     let previousMonday = new Date(DashboardHelpers.GetPreviousWeekFirstDay());
-
     this.options.startDate =  DashboardHelpers.FormatDate(previousMonday);
     this.options.endDate =  DashboardHelpers.FormatDate(new Date());
     this.range.patchValue({
-        start: this.options.startDate,
-        end: this.options.endDate
-      });
+      start: this.options.startDate,
+      end: this.options.endDate
+    });
     this.getStatistics();
   }
 
   onResize(event: any) {
-    this.breakpoint = (event.target.innerWidth <= 400) ? 1 : 6;
+    this.breakpoint = (event.target.innerWidth <= 600) ? 1 : (event.target.innerWidth < 992) ? 2 : 3;
+    this.getScreenSizeView(event.target.innerWidth); 
+  }
+
+  getScreenSizeView(innerWidth: number) {
+    this.bubbleChartViewSize = BubbleChartViewSize.WEB_VIEW_SIZE;
+    if (innerWidth <= 400) {
+      this.bubbleChartViewSize = BubbleChartViewSize.MOBILE_VIEW_SIZE;
+    }
   }
 
   getStatistics() {
     this.subs.add(
       this.dashboardService.list(this.options).subscribe((res) => {
         this.statData = res;
-        this.agentsSourceData = DashboardHelpers.SortStatistics(cloneDeep(this.statData.results));
+        this.agentsSourceData = DashboardHelpers.SortStatistics(this.statData.results);
         this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.agentsSourceData['source']);
         this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['tag']);
         this.ticketsByType = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['status']);
@@ -113,7 +125,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(this.statData.results);  
         this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.agentsSourceData);
         this.totalPublished = (this.agentsSourceData['createdVsPublished'])? this.agentsSourceData['createdVsPublished'][0][1] : null;
-        console.log(this.ticketsByWeek);
       })
     );
   }

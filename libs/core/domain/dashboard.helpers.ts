@@ -204,7 +204,7 @@ const daysInMonth = (month: number, year: number) => {
 
 const GetPreviousWeekFirstDay = ()=> {
   let today = new Date();
-  return new Date('01-06-2021').setDate(today.getDate()-today.getDay()-6);
+  return new Date().setDate(today.getDate()-today.getDay()-6);
 }
 
 const GetFirstLastDayMonth = () => {

@@ -35,7 +35,6 @@ export function createTranslateLoader(http: HttpClient) {
         }
   }),
   BrowserAnimationsModule, NgbModule, IndexModule, FontAwesomeModule, BrowserModule, HttpClientModule, AppRoutingModule, AuthModule, RouterModule
-  
   ],
   exports:[],
   providers: [],

@@ -20,11 +20,13 @@ COPY package.json ./
 COPY package-lock.json ./
 
 RUN npm install
+RUN npm install font-awesome
+
 ENV PATH /workspace/node_modules/.bin:$PATH
 
 COPY . .
 
-RUN ng build iverify 
+RUN ng build iverify --configuration=production
 
 FROM nginx:1.18.0-alpine
 

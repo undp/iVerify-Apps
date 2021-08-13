@@ -1,6 +1,6 @@
 <mat-toolbar color="primary" *ngIf="(user$ |async) as usr">
   <button
-    [disabled]="!(usr && usr.roles[0].name === ADMIN_ROLE)"
+    [disabled]="!(usr.roles.length !== 0 && usr.roles[0].name === ADMIN_ROLE)"
     (click)="snav.toggle()"
     mat-icon-button
     class="example-icon"
@@ -36,8 +36,8 @@
                  [fixedInViewport]="viewportMobileQuery.matches" fixedTopGap="0" (click)="snav.toggle()">
     <mat-nav-list>
       <a class="text-capitalize fontRobotoRegular" mat-menu-item [routerLink]="['/dashboard/settings']">
-          <mat-icon>people</mat-icon>
-          {{'USERS' | translate}}
+          <mat-icon>settings</mat-icon>
+          {{'SETTINGS' | translate}}
       </a>
       <mat-divider></mat-divider>
       <a class="text-capitalize fontRobotoRegular" mat-menu-item [routerLink]="['/dashboard/index']">

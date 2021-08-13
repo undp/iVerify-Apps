@@ -77,7 +77,7 @@
       <button
         mat-raised-button 
         color="primary"
-        (click)="onNoClick()"
+        (click)="dialogRef.close();"
         class="mr-2"
       >
         {{ 'CANCEL' | translate}}
@@ -86,7 +86,7 @@
         mat-raised-button 
         color="primary"
         (click)="onRoleClick()"
-        
+        [disabled]="(roleForm.invalid || defaultPriviledges.length === 0)"        
       >
         {{ 'SUBMIT' | translate}}
       </button>

@@ -30,7 +30,7 @@ COPY --from=builder /workspace/dist/apps/api .
 ENV PORT=3333
 EXPOSE 3333
 RUN npm install --production
-RUN npm install reflect-metadata tslib rxjs @nestjs/platform-express
+RUN npm install reflect-metadata tslib rxjs @nestjs/platform-express mysql
 
 CMD node ./main.js
 
