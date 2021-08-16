@@ -38,6 +38,7 @@ export class RoleComponent implements OnInit {
   defaultPriviledges: string[] = ['read'];
   priviledges: string[] = ["read","write","update","delete"];
   sectionList: string[] = ['dashboard','users'];
+  selectedSects: string[];
   user: User;
   user$: Observable<User> = this.store
     .select(selectUser)
@@ -85,6 +86,16 @@ ngOnInit(): void {
     this.user = currentUser;
   });
 
+  if (this.data && this.data.id > 0) {
+    this.roleForm.patchValue(this.data);
+    const resources = JSON.parse(this.data.resource);
+    this.defaultPriviledges = (resources[0])? resources[0].permissions: this.defaultPriviledges;
+    this.selectedSects = resources.map( (item: any) => item.name);
+    this.isEditing = true;
+  } else {
+    this.isEditing = false;
+  }
+
   this.filteredPriviledges = this.priviledgeCtrl.valueChanges.pipe(
       startWith(null),
       map((item: string | null) => item ? this._filter(item) : this.priviledges.filter(item => !this.defaultPriviledges.includes(item))));  
@@ -111,7 +122,7 @@ ngOnInit(): void {
     }
     let reqBody = this.roleForm.value;
 			this.subs.add(
-				this.userService.addRoles(reqBody)
+				this.userService.updateRoles(reqBody, this.data.id)
 				.pipe(
 					catchError((err) => {
 						return throwError(err);
