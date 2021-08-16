@@ -13,7 +13,6 @@ export class RolesGuard implements CanActivate {
         const reqMethod = this.getRequestMethod(request);
         const reqUrl = this.getRequestUrl(request);
         if (!reqMethod || !reqUrl || !userData.id) throw new BadRequestException();
-
         if (userData && userData.roles) {
             const Roledata = userData.roles[0];
             const rolePermissionStatus = await this.roleHasPersmission(Roledata, reqUrl, reqMethod);

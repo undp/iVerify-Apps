@@ -35,7 +35,7 @@ export class RolesController {
             }
             return { message: roleMessages.roleCreateSucess, data: userRoles, };
         } else {
-            throw new BadRequestException(this.request.user);
+            throw new BadRequestException();
         }
     }
 

@@ -146,7 +146,7 @@ const GetTicketsByWeek = (res: any) => {
           let unstarted = dayData.filter((item: any) => (item.category === 'Unstarted'));
           if (unstarted.length > 0) {
             let temp = {
-              name: moment(key).format('DD/MM'),
+              name: key,
               value: unstarted[0].count
             }
             unstartedStatuses.push(temp);
@@ -158,7 +158,7 @@ const GetTicketsByWeek = (res: any) => {
           let inprogress = dayData.filter((item: any) => (item.category === 'In Progress'));
           if (inprogress.length > 0) {
             let temp = {
-              name: moment(key).format('DD/MM'),
+              name: key,
               value: inprogress[0].count
             }
             inprogressStatuses.push(temp);
@@ -170,7 +170,7 @@ const GetTicketsByWeek = (res: any) => {
           let publishedCreated = dayData.filter((item: any) => (item.category === 'published'));
           if (publishedCreated.length > 0) {
               let temp = {
-                name: moment(key).format('DD/MM'),
+                name: key,
                 value: publishedCreated[0].count
               }
               publishedStatuses.push(temp);

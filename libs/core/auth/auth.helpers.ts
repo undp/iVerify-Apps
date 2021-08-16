@@ -30,7 +30,7 @@ const GetUserPermissions = (
   roles: Roles
 ): UserPermissions => {
   const permissionsAsVector = GetPermissionsVector(permissions);
-  const { roles: userRoleName } = user;
+  const { role: userRoleName } = user;
   const isAdmin = false;
   const userPermissions = {
     isAdmin,

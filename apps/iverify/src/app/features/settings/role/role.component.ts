@@ -37,7 +37,7 @@ export class RoleComponent implements OnInit {
   filteredPriviledges: Observable<string[]>;
   defaultPriviledges: string[] = ['read'];
   priviledges: string[] = ["read","write","update","delete"];
-  sectionList: string[] = ['dashboard','users'];
+  sectionList: string[] = ['roles','users'];
   selectedSects: string[];
   user: User;
   user$: Observable<User> = this.store

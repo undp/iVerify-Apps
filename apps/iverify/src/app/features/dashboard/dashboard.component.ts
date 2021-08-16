@@ -136,7 +136,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getAllTicketsData() {
-    this.responseVelocity = (this.selectedTimeType === 1)? 'RESPONSE_TIME' : 'RESOLVE_TIME';
+    if (this.selectedTimeType === 1) {
+      this.responseVelocity = 'RESPONSE_TIME';
+    } else {
+      this.responseVelocity = 'RESOLVE_TIME';
+    }
   }
 
   ngOnDestroy() {

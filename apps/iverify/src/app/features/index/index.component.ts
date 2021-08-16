@@ -13,6 +13,7 @@ import { AppState } from '@iverify/core/store/states/app.state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { MediaMatcher } from '@angular/cdk/layout';
@@ -23,8 +24,8 @@ const ADMIN_ROLE = 'admin';
 const USER_ROLE = 'users';
 @Component({
   selector: 'iverify-index',
-  templateUrl: 'index.component.html',
-  styleUrls: ['index.component.scss']
+  templateUrl: './index.component.html',
+  styleUrls: ['./index.component.scss']
 })
 export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
 
@@ -37,7 +38,8 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   time = { hour: 'Hrs', minute: 'Mins' };
   countryCodes = environment.countryCodes;
   currentLang: string = this.translate.currentLang;
-  ADMIN_ROLE = ADMIN_ROLE;
+  isUserAllowedUserMenu: boolean = false;
+
   AuthHelpers = AuthHelpers;
 
   Permission = Permission;
@@ -45,7 +47,6 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   protected fromdate: Date;
   protected todate: Date;
   viewportMobileQuery: MediaQueryList;
-  opened: boolean = false;
   
   constructor(
     store: Store<AppState>,
@@ -58,6 +59,7 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
     private media: MediaMatcher
   ) {
     super();
+
     this.store = store
     this.subs = new Subscription();
     this.user$ = this.store.select(selectUser);
@@ -73,6 +75,7 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   
 
   ngOnInit() {
+    this.isUserAllowed();
     this.subs.add(
       this.router.events.subscribe(e => {
         if (e instanceof ActivationStart) {
@@ -103,21 +106,24 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
 
 
   isUserAllowed() {
-    return this.user$.subscribe((user) => {
+    console.log("===")
+    this.user$.subscribe((user) => {
       if (user) {
       let role = user.roles[0];
-      const resources = JSON.parse(role.resource);
-      if (!isEmpty(resources)) {
-        const roleItem = resources.filter((sect: any) => sect.name === 'users');
-        if (!isEmpty(roleItem)) {
-          const val = roleItem[0].permissions.find((item: string) => item === 'read');
-          return (val !== undefined);
+      if (role) {
+        const resources = JSON.parse(role.resource);
+        if (!isEmpty(resources)) {
+          const roleItem = resources.filter((sect: any) => sect.name === 'users');
+          if (!isEmpty(roleItem)) {
+            const val = roleItem[0].permissions.find((item: string) => item === 'read');
+            this.isUserAllowedUserMenu =  (val !== undefined);            
+          }
         }
       }
     }
-    return false;
     });
   }
+
   onLogoutClick() {
     this.store.dispatch(new Logout());
   }

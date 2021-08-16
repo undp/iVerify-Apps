@@ -7,6 +7,7 @@ import { ToastType } from '../../toast/toast.component';
 import { ToastService } from '../../toast/toast.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { RoleItem } from '@iverify/core/models/roles';
+import { isEmpty } from 'lodash';
 
 
 @Component({
@@ -37,7 +38,9 @@ export class UsersComponent implements OnInit {
     this.subs.add(
       this.userService.getRoles().subscribe((results) => {
         this.rolesList = Object.assign(results.data);
-        this.selectedRole = this.rolesList.filter(item => item.name === this.data.roles[0].name)[0];
+        if (!isEmpty(this.data.roles)) {
+          this.selectedRole = this.rolesList.filter(item => item.name === (this.data && this.data.roles[0].name))[0];
+        }
         console.log(this.selectedRole);
       })
     );
@@ -60,8 +63,6 @@ export class UsersComponent implements OnInit {
       this.userForm.controls['address'].setValidators([]);
       this.userForm.controls['password'].setValidators([]);
       this.userForm.patchValue(this.data);      
-      console.log(this.selectedRole);
-      console.log(this.rolesList);
       this.isEditing = true;
     } else {
       this.isEditing = false;
@@ -94,6 +95,8 @@ export class UsersComponent implements OnInit {
 				})
 			);
 		} else {
+      reqBody.roles = [roles];
+      delete reqBody.password;
 			this.subs.add(
 				this.userService.updateUser(reqBody, this.data.id)
         .pipe(
