@@ -20,7 +20,7 @@ export class UsersComponent implements OnInit {
   isEditing: boolean = false;
   userForm: FormGroup;
   showPassword: boolean = false;
-  role: RoleItem[];
+  selectedRole: RoleItem[];
   rolesList: any[];
   
   constructor(
@@ -37,6 +37,8 @@ export class UsersComponent implements OnInit {
     this.subs.add(
       this.userService.getRoles().subscribe((results) => {
         this.rolesList = Object.assign(results.data);
+        this.selectedRole = this.rolesList.filter(item => item.name === this.data.roles[0].name)[0];
+        console.log(this.selectedRole);
       })
     );
   }
@@ -57,7 +59,9 @@ export class UsersComponent implements OnInit {
       this.userForm.controls['phone'].setValidators([]);
       this.userForm.controls['address'].setValidators([]);
       this.userForm.controls['password'].setValidators([]);
-      this.userForm.patchValue(this.data);
+      this.userForm.patchValue(this.data);      
+      console.log(this.selectedRole);
+      console.log(this.rolesList);
       this.isEditing = true;
     } else {
       this.isEditing = false;

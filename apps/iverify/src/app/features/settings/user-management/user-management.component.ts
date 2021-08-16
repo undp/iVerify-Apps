@@ -4,10 +4,14 @@ import { UsersComponent } from '../users/users.component';
 import { RoleComponent } from '../role/role.component';
 import { UserService } from '@iverify/core/users/user.service';
 import { Users, User		} from '@iverify/core/models/user';
+import { selectUser } from '@iverify/core/store/selectors/user.selector';
 import { ToastType } from '../../toast/toast.component';
 import { ToastService } from '../../toast/toast.service';
 import { Observable, Subscription, throwError} from 'rxjs';
 import { DialogComponent } from '../dialog.component';
+import { AppState } from '@iverify/core/store/states/app.state';
+import { Store } from '@ngrx/store';
+import { isEmpty } from 'lodash';
 
 export interface PeriodicElement {
   id: string;
@@ -36,18 +40,25 @@ export class UserManagementComponent implements OnInit {
   dataSourceRoles: PeriodicElementRoles[];
   clickedRows = new Set<PeriodicElement>();
   panelOpenState: boolean = false;
+  user$: Observable<User>;
+  user: User;
 
   constructor(
+    store: Store<AppState>,
     public dialog: MatDialog,
     private userService: UserService, 
     private toast: ToastService,
     @Inject(ViewContainerRef) private viewContainerRef: ViewContainerRef,
     ) {
       this.subs = new Subscription();
+      this.user$ = store.select(selectUser);
       toast.setViewContainerRef(viewContainerRef);
   }
 
   ngOnInit(): void {
+    this.user$.subscribe((result) => {
+      this.user = result;
+    });
     this.getUserList();
     this.getRolesList();
   }
@@ -96,6 +107,22 @@ export class UserManagementComponent implements OnInit {
       }
     });   
     
+  }
+
+  isUserAllowed(permissionType: string) {
+    if (this.user) {
+      let role = this.user.roles[0];
+      const resources = JSON.parse(role.resource);
+      if (!isEmpty(resources)) {
+        
+        const roleItem = resources.filter((sect: any) => sect.name === 'users');
+        if (!isEmpty(roleItem)) {
+          const val = roleItem[0].permissions.find((item: string) => item === permissionType);
+          return (val !== undefined);
+        }
+      }
+    }
+    return false;
   }
 
   openDialog(type: string, element?: any): void {

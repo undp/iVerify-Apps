@@ -17,7 +17,7 @@ export class UserService extends BaseService {
 		user_extra			: 'users/extra',
 		register			: 'users',
 		add_role			: 'roles',
-		update_role			: 'roles/:id',
+		update_role			: 'roles',
 		delete_role			: 'roles',
 		update_user			: 'users',
 		delete_user			: 'users',
@@ -41,7 +41,7 @@ export class UserService extends BaseService {
 	}
 
 	updateRoles(body: RoleItem, id: number): Observable<Roles> {
-		return this.http.put<Roles>( this.getUrl(this.uris.update_role).replace(':id', id.toString()), body);
+		return this.http.put<Roles>( this.getUrl(this.uris.update_role), body, { params: this.getParamsFromObject({roleId: id})});
 	}
 
 	getRoles(options: ListRoleOptions = null): Observable<Roles> {

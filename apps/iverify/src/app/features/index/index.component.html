@@ -1,6 +1,6 @@
-<mat-toolbar color="primary" *ngIf="(user$ |async) as usr">
+<mat-toolbar color="primary">
   <button
-    [disabled]="!(usr.roles.length !== 0 && usr.roles[0].name === ADMIN_ROLE)"
+    [disabled]="!isUserAllowed()"
     (click)="snav.toggle()"
     mat-icon-button
     class="example-icon"

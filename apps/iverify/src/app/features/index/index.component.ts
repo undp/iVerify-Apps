@@ -16,9 +16,11 @@ import { Observable, Subscription } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { isEmpty } from 'lodash';
 
 
 const ADMIN_ROLE = 'admin';
+const USER_ROLE = 'users';
 @Component({
   selector: 'iverify-index',
   templateUrl: 'index.component.html',
@@ -99,6 +101,23 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
     return AuthHelpers.User.HasUserPermission(this.store, permission);
   }
 
+
+  isUserAllowed() {
+    return this.user$.subscribe((user) => {
+      if (user) {
+      let role = user.roles[0];
+      const resources = JSON.parse(role.resource);
+      if (!isEmpty(resources)) {
+        const roleItem = resources.filter((sect: any) => sect.name === 'users');
+        if (!isEmpty(roleItem)) {
+          const val = roleItem[0].permissions.find((item: string) => item === 'read');
+          return (val !== undefined);
+        }
+      }
+    }
+    return false;
+    });
+  }
   onLogoutClick() {
     this.store.dispatch(new Logout());
   }

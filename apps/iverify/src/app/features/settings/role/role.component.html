@@ -33,13 +33,7 @@
     <p>
       <mat-form-field>
         <mat-label>{{ 'SECTION' | translate }}</mat-label>
-        <mat-select multiple formControlName="resource">
-          <mat-select-trigger>
-            {{roleForm.controls['resource'].value ? roleForm.controls['resource'].value[0] : ''}}
-            <span *ngIf="roleForm.controls['resource'].value?.length > 1" class="example-additional-selection">
-              (+{{roleForm.controls['resource'].value.length - 1}} {{roleForm.controls['resource'].value?.length === 2 ? 'other' : 'others'}})
-            </span>
-          </mat-select-trigger>
+        <mat-select [(ngModel)]="selectedSects" multiple formControlName="resource" style="width: 160px; margin-left: 20px;">
           <mat-option *ngFor="let sect of sectionList" [value]="sect">{{sect|titlecase}}</mat-option>
         </mat-select>
       </mat-form-field>

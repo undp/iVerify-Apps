@@ -13,7 +13,6 @@ export class DialogComponent implements OnInit {
   }
 
   onNoClick(): void {
-    alert();
   }
 
 }
