@@ -97,7 +97,7 @@
       <!-- Symbol Column -->
       <ng-container matColumnDef="resource">
         <th mat-header-cell *matHeaderCellDef>{{ 'PERMISSIONS' | translate }}</th>
-        <td mat-cell *matCellDef="let element">{{ element.resource }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.resource| rolePermissionFormat }}</td>
       </ng-container>
       <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef>{{ 'Action' | translate }}</th>

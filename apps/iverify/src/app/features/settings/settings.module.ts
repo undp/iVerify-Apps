@@ -24,6 +24,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ToastModule } from '../toast/toast.module';
 import { DialogComponent } from './dialog.component';
+import { RolePermissionFormatPipe } from '@iverify/core/pipes/role-permission-format.pipe';
 
 export const routes: Routes = [
   {
@@ -37,7 +38,8 @@ export const routes: Routes = [
     UsersComponent,
     UserManagementComponent,
     RoleComponent,
-    DialogComponent
+    DialogComponent,
+    RolePermissionFormatPipe
   ],
   imports: [
     CommonModule,
@@ -63,7 +65,6 @@ export const routes: Routes = [
     MatExpansionModule
   ],
   exports: [
-
   ]
 })
 export class SettingsModule {
