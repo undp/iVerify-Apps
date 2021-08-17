@@ -1,13 +1,13 @@
 import { Component, OnInit, Inject, ViewContainerRef } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { UsersComponent } from '../users/users.component';
 import { RoleComponent } from '../role/role.component';
 import { UserService } from '@iverify/core/users/user.service';
-import { Users, User		} from '@iverify/core/models/user';
+import { User } from '@iverify/core/models/user';
 import { selectUser } from '@iverify/core/store/selectors/user.selector';
 import { ToastType } from '../../toast/toast.component';
 import { ToastService } from '../../toast/toast.service';
-import { Observable, Subscription, throwError} from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { DialogComponent } from '../dialog.component';
 import { AppState } from '@iverify/core/store/states/app.state';
 import { Store } from '@ngrx/store';
@@ -58,15 +58,16 @@ export class UserManagementComponent implements OnInit {
   ngOnInit(): void {
     this.user$.subscribe((result) => {
       this.user = result;
-    });
-    this.getUserList();
-    this.getRolesList();
+      this.getUserList();
+      this.getRolesList();
+    });    
   }
 
   getUserList() {
     this.subs.add(
       this.userService.list().subscribe((results) => {
         this.dataSource = Object.assign(results.data);
+        this.dataSource = this.dataSource.filter(item => item.email !== this.user.email);
       })
     );
   }
@@ -129,7 +130,7 @@ export class UserManagementComponent implements OnInit {
     let componentSelected: any = (type === 'user') ? UsersComponent : RoleComponent;
     const dialogRef = this.dialog.open(componentSelected, {
       panelClass: 'user-dialog',
-      data: element
+      data: {element: element, roles: this.dataSourceRoles},
     });
 
     dialogRef.afterClosed().subscribe(result => {
