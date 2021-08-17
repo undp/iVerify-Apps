@@ -165,7 +165,6 @@ export class StatsService{
         const formattedSearchStart = this.formatService.formatDate(searchStart);
         console.log({formattedSearchStart, formattedEnd})
 
-
         const latestStats: Stats[] = await this.statsRepository.find({
             where: {
                 day: Between(formattedStart, formattedEnd),

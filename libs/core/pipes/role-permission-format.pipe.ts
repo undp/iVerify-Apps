@@ -11,12 +11,22 @@ export class RolePermissionFormatPipe implements PipeTransform {
 
 
   transform(value: string, ...args: unknown[]): unknown {
-
-    const data = JSON.parse(value);
-    let newdata = data.map((item: any) => {
-      return ' ' + item.name.toUpperCase() + ' : ' + item.permissions;
+    const data = JSON.parse(value); let formattedData: string = '';
+    data.map((item: any) => {
+      let htmlData: string[] = [];
+      item.permissions.map((item: string) => {
+        htmlData.push(item);
+      });
+      formattedData += this.capitalizeFirstLetter(item.name) + ' : ' + htmlData.join() + '</br>';
     });
-    return newdata;
+    return formattedData;
+  }
+
+  capitalizeFirstLetter(textString: string) {
+    if (textString.length > 0) {
+      return textString.charAt(0).toUpperCase() + textString.slice(1);
+    }
+    return textString;
   }
 
 }
