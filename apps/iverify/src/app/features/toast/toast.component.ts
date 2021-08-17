@@ -2,9 +2,9 @@ import { Component, Input, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'eview-toast-component',
+  selector: 'iverify-toast-component',
   template: `
-  <div style="position: fixed; top: 0; right: 0; z-index:2000; height: 50px;">
+  <div style="position: fixed; top: 50; right: 50; z-index:2000; height: 50px;">
     <ngb-alert
       [type]="config.type"
       [dismissible]="config.dismissible"

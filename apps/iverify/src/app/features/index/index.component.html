@@ -1,7 +1,11 @@
- <mat-toolbar>
-   <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+<mat-toolbar color="primary">
+  <button
+    [disabled]="!(isUserAllowedUserMenu)"
+    (click)="snav.toggle()"
+    mat-icon-button
+  >
     <mat-icon>menu</mat-icon>
-  </button> -->
+  </button>
   <span class="fontRalewayRegular header-text">{{'HEADER_TAG_LINE'|translate}}</span>  
   <span class="example-spacer"></span>
  <button mat-button color="black" [matMenuTriggerFor]="settingsMenu" aria-label="Example icon button with a bookmark icon">
@@ -12,10 +16,30 @@
   <button mat-menu-item (click)="onLogoutClick()">{{ 'LOGOUT' | translate }}</button>
 </mat-menu>
 </mat-toolbar>
-<div class="container-fluid">
-  <main role="main" class="main-body">   
-    <router-outlet></router-outlet>
-  </main>
-</div>
-
-
+<mat-sidenav-container
+  class="example-sidenav-container"
+  [style.marginTop.px]="viewportMobileQuery.matches ? 0 : 0"
+  
+>
+  <mat-sidenav #snav [mode]="viewportMobileQuery.matches ? 'over' : 'side'"
+                 [fixedInViewport]="viewportMobileQuery.matches" fixedTopGap="0" (click)="snav.toggle()">
+    <mat-nav-list>
+      <a class="text-capitalize fontRobotoRegular" mat-menu-item [routerLink]="['/dashboard/settings']">
+          <mat-icon>settings</mat-icon>
+          {{'SETTINGS' | translate}}
+      </a>
+      <mat-divider></mat-divider>
+      <a class="text-capitalize fontRobotoRegular" mat-menu-item [routerLink]="['/dashboard/index']">
+          <mat-icon>arrowback</mat-icon>
+          {{'Back' | translate}}
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div>
+      <main role="main" class="main-body">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

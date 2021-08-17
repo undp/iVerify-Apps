@@ -17,11 +17,15 @@ import { map } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { isEmpty } from 'lodash';
 
+
+const ADMIN_ROLE = 'admin';
+const USER_ROLE = 'users';
 @Component({
   selector: 'iverify-index',
-  templateUrl: 'index.component.html',
-  styleUrls: ['index.component.scss']
+  templateUrl: './index.component.html',
+  styleUrls: ['./index.component.scss']
 })
 export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
 
@@ -34,6 +38,7 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   time = { hour: 'Hrs', minute: 'Mins' };
   countryCodes = environment.countryCodes;
   currentLang: string = this.translate.currentLang;
+  isUserAllowedUserMenu: boolean = false;
 
   AuthHelpers = AuthHelpers;
 
@@ -54,6 +59,7 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
     private media: MediaMatcher
   ) {
     super();
+
     this.store = store
     this.subs = new Subscription();
     this.user$ = this.store.select(selectUser);
@@ -69,6 +75,7 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   
 
   ngOnInit() {
+    this.isUserAllowed();
     this.subs.add(
       this.router.events.subscribe(e => {
         if (e instanceof ActivationStart) {
@@ -95,6 +102,26 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
 
   hasUserPermission(permission: Permission) {
     return AuthHelpers.User.HasUserPermission(this.store, permission);
+  }
+
+
+  isUserAllowed() {
+    console.log("===")
+    this.user$.subscribe((user) => {
+      if (user) {
+      let role = user.roles[0];
+      if (role) {
+        const resources = JSON.parse(role.resource);
+        if (!isEmpty(resources)) {
+          const roleItem = resources.filter((sect: any) => sect.name === 'users');
+          if (!isEmpty(roleItem)) {
+            const val = roleItem[0].permissions.find((item: string) => item === 'read');
+            this.isUserAllowedUserMenu =  (val !== undefined);            
+          }
+        }
+      }
+    }
+    });
   }
 
   onLogoutClick() {

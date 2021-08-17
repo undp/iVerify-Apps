@@ -24,6 +24,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatDividerModule } from '@angular/material/divider';
+import { OverlayModule } from '@angular/cdk/overlay';
+import {MatDialogModule} from '@angular/material/dialog';
 
 export const routes: Routes = [
   {
@@ -34,10 +38,14 @@ export const routes: Routes = [
       {
         path: 'index',
         component: DashboardComponent
+      },
+      {
+        path: 'settings',
+        loadChildren: () => import('../settings/settings.module').then(m => m.SettingsModule)
       }
     ]
   },
-  { path: '', redirectTo: '/dashboard/index', pathMatch: 'full' }
+  { path: '',  pathMatch: 'full', redirectTo: '/dashboard/index' }
 ];
 
 @NgModule({
@@ -64,7 +72,11 @@ export const routes: Routes = [
     MatNativeDateModule,
     MatRippleModule,
     MatGridListModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSidenavModule,
+    MatDividerModule,
+    OverlayModule,
+    MatDialogModule
   ],
   providers: [],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
