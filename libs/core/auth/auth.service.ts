@@ -9,6 +9,13 @@ import { Roles } from '../models/roles';
 import { StorageService } from '@iverify/core/storage/storage.service';
 import { User } from '../models/user';
 import { environment } from '../environments/environment';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  CanActivateChild,
+  Router,
+  RouterStateSnapshot
+} from '@angular/router';
 
 const STORAGE_TOKEN_KEY = 'token';
 const APP_STATE_KEY = environment.app_state_key;
@@ -17,7 +24,7 @@ const APP_STATE_KEY = environment.app_state_key;
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private http: HttpClient, private storage: StorageService) {}
+  constructor(private http: HttpClient, private storage: StorageService, private router: Router) {}
 
   private readonly uris = {
     main: 'auth/login',
@@ -105,15 +112,17 @@ export class AuthService {
 
   token(): Observable<any> {
     if (this.isTokenValid(this._token)) return of(this._token);
-    if (this.hasRefreshToken(this._token))
-      return this.sendRequest(
-        {
-          client_id: environment.authentication.client_id,
-          client_secret: environment.authentication.client_secret,
-          grant_type: GrantType.RefreshToken,
-          refresh_token: this._token.refreshToken
-        }
-      );
+    if (this.hasRefreshToken(this._token)) {
+      this.router.navigate(['/']);
+    }
+    // return this.sendRequest(
+    //   {
+    //     client_id: environment.authentication.client_id,
+    //     client_secret: environment.authentication.client_secret,
+    //     grant_type: GrantType.RefreshToken,
+    //     refresh_token: this._token.refreshToken
+    //   }
+    // );
     return of(null);
   }
 

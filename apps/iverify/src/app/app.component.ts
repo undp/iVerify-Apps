@@ -52,11 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
         let errorMsg = '';
         if (err && err.error) {
           const error = err.error;
-          if (err.status === 422 || err.status === 403 || err.status === 409 || err.status === 500) {
-            errorMsg = (error.errors) ? error.errors[0].message : '';
-          } else if (err.status !== 401) {
-            errorMsg = err.message;
-          }
+          errorMsg = error.message;
           if (err.status !== 403) {
             this.toast.show(
               ToastType.Warning,

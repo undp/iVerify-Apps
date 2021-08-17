@@ -12,11 +12,9 @@ export class RolesGuard implements CanActivate {
         const userData = request.user;
         const reqMethod = this.getRequestMethod(request);
         const reqUrl = this.getRequestUrl(request);
-      
         if (!reqMethod || !reqUrl || !userData.id) throw new BadRequestException();
-
         if (userData && userData.roles) {
-            const Roledata = userData.roles;
+            const Roledata = userData.roles[0];
             const rolePermissionStatus = await this.roleHasPersmission(Roledata, reqUrl, reqMethod);
             if (rolePermissionStatus) {
                 return true;
@@ -29,11 +27,11 @@ export class RolesGuard implements CanActivate {
     }
 
     async roleHasPersmission(roleData, resource: string, method: string): Promise<boolean> {
-        const resources = roleData.resource ? roleData.resource : null;
+        const resources = (roleData && roleData.resource) ? roleData.resource : null;
         const resourcesData = await this.parseOne(resources);
         if (!resourcesData) return false;
         const resourcePermission = resourcesData.find(o => o && o.name && o.name.toLowerCase() === resource.toLowerCase());
-        if (!resourcePermission && resourcePermission.permissions) return false;
+        if (!(resourcePermission && resourcePermission.permissions)) return false;
         const rolePermission = resourcePermission.permissions;
         return rolePermission.includes(method);
     }
@@ -47,7 +45,6 @@ export class RolesGuard implements CanActivate {
     getRequestUrl(request) {
         if (request && request.url) {
             let reqUrl = request.url ? request.url.split('/')[1] : '';
-            console.log(reqUrl);
             reqUrl = reqUrl ? reqUrl.split('?')[0] : '';
             return reqUrl ? constant.moduleMapping[reqUrl] : '';
         } else {

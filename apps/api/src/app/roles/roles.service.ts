@@ -27,16 +27,18 @@ export class RolesService {
     return this.rolesRepository.save(role);
   }
 
-  async getRoles(paginationDto: PaginationQueryDto) {
+  async getRoles(paginationDto: PaginationQueryDto): Promise<Roles[]> {
     const { limit, offset } = paginationDto;
-    return await this.rolesRepository.find({
-        skip: offset,
-        take: limit
-    });
+    return await this.rolesRepository.find(
+      // {
+      //   skip: offset,
+      //   take: limit
+      // }
+    );
   }
 
   async findOne(name: string): Promise<Roles> {
-    const role: Roles = await this.rolesRepository.findOne({name});
+    const role: Roles = await this.rolesRepository.findOne({name: name});
     if(!role) throw new NotFoundException(`Role with name ${name} not found`);
     return role;
   }
@@ -61,6 +63,6 @@ export class RolesService {
 
   async deleteRole(id: string): Promise<any> {
     const role: Roles = await this.findByRoleId(id);
-    return this.rolesRepository.save(role);
+    return this.rolesRepository.delete(role);
   }
 }

@@ -97,7 +97,7 @@
     <iverify-charts [chartType]="4" [data]="ticketsByAgents"></iverify-charts>
   </mat-grid-tile>
 </mat-grid-list>
-<div class="row mt-2">
+<div class="row mt-2" *ngIf="!(statData && (statData.results | json) === ({} | json))">
 <mat-form-field appearance="fill" class="response-label">
       <mat-label>{{'RESPONSE_VELOCITY'|translate}}</mat-label>
         <mat-select
@@ -124,7 +124,6 @@
       [chartType]="5"
       [viewVal]="bubbleChartViewSize"
       [data]="bubbleData"
-      [responseType]="selectedTimeType"
     ></iverify-charts>
     </div>
 </div>   
