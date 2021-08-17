@@ -46,7 +46,7 @@
       </mat-form-field>
     </p>
     <p>
-      <mat-form-field appearance="fill">
+      <mat-form-field>
         <mat-label>{{ 'ROLES' | translate }}</mat-label>
         <mat-select [(ngModel)]="selectedRole" id="inputRoles" formControlName="roles">
           <mat-option *ngFor="let sect of rolesList" [value]="sect">{{sect.name|titlecase}}</mat-option>

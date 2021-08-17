@@ -106,7 +106,6 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
 
 
   isUserAllowed() {
-    console.log("===")
     this.user$.subscribe((user) => {
       if (user) {
       let role = user.roles[0];

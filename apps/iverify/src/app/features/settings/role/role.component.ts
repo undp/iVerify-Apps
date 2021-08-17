@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { ToastType } from '../../toast/toast.component';
 import { ToastService } from '../../toast/toast.service';
 import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import { RoleItem, RoleRequest, Resource} from '@iverify/core/models/roles';
+import { RoleItem, Resource} from '@iverify/core/models/roles';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
@@ -36,8 +36,8 @@ export class RoleComponent implements OnInit {
   priviledgeCtrl = new FormControl();
   filteredPriviledges: Observable<string[]>;
   defaultPriviledges: string[] = ['read'];
-  priviledges: string[] = ["read","write","update","delete"];
-  sectionList: string[] = ['roles','users'];
+  priviledges: string[] = ["read","create","update","delete"];
+  sectionList: string[] = ['roles','users', 'dashboard'];
   selectedSects: string[];
   user: User;
   user$: Observable<User> = this.store
@@ -86,9 +86,9 @@ ngOnInit(): void {
     this.user = currentUser;
   });
 
-  if (this.data && this.data.id > 0) {
-    this.roleForm.patchValue(this.data);
-    const resources = JSON.parse(this.data.resource);
+  if (this.data.element && this.data.element.id > 0) {
+    this.roleForm.patchValue(this.data.element);
+    const resources = JSON.parse(this.data.element.resource);
     this.defaultPriviledges = (resources[0])? resources[0].permissions: this.defaultPriviledges;
     this.selectedSects = resources.map( (item: any) => item.name);
     this.isEditing = true;
@@ -121,8 +121,22 @@ ngOnInit(): void {
       this.roleForm.value.resource = resources;
     }
     let reqBody = this.roleForm.value;
-			this.subs.add(
-				this.userService.updateRoles(reqBody, this.data.id)
+    if (!this.isEditing) {
+      this.subs.add(
+				this.userService.addRoles(reqBody)
+				.pipe(
+					catchError((err) => {
+            this.roleForm.reset();
+						return throwError(err);
+				}))
+				.subscribe(response => {
+          this.onNoClick();
+				})
+			);
+
+    } else {
+      this.subs.add(
+				this.userService.updateRoles(reqBody, this.data.element.id)
 				.pipe(
 					catchError((err) => {
 						return throwError(err);
@@ -131,6 +145,7 @@ ngOnInit(): void {
           this.onNoClick();
 				})
 			);
+    }
   }
 
   add(event: MatChipInputEvent): void {
