@@ -34,9 +34,11 @@ export class UsersComponent implements OnInit {
   }
  
   ngOnInit(): void {
-    this.rolesList = this.data.roles;
     if (!isEmpty(this.data.roles)) {
-      this.selectedRole = this.rolesList.filter(item => item.name === (this.data && this.data.element.roles[0].name))[0];
+      this.rolesList = this.data.roles;
+      if (!isEmpty(this.data.element)) {
+        this.selectedRole = this.rolesList.filter(item => item.name === (this.data && this.data.element.roles[0].name))[0];
+      }
     }
     this.userForm = new FormGroup({
         firstName: new FormControl('', Validators.required),
@@ -62,7 +64,7 @@ export class UsersComponent implements OnInit {
     this.toast.show(ToastType.Success, (this.isEditing) ? 'TOAST_UPDATE_USER' : 'TOAST_CREATE_USER');
     setTimeout(() => {
       this.dialogRef.close();
-    }, 1000);
+    }, 500);
   }
 
   onUserClick() {
