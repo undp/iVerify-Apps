@@ -5,10 +5,9 @@ import { Subscription, throwError} from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ToastType } from '../../toast/toast.component';
 import { ToastService } from '../../toast/toast.service';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { RoleItem } from '@iverify/core/models/roles';
 import { isEmpty } from 'lodash';
-
 
 @Component({
   selector: 'iverify-users',
@@ -33,36 +32,26 @@ export class UsersComponent implements OnInit {
       this.subs = new Subscription();
       toast.setViewContainerRef(viewContainerRef);
   }
-
-  getRolesList() {
-    this.subs.add(
-      this.userService.getRoles().subscribe((results) => {
-        this.rolesList = Object.assign(results.data);
-        if (!isEmpty(this.data.roles)) {
-          this.selectedRole = this.rolesList.filter(item => item.name === (this.data && this.data.roles[0].name))[0];
-        }
-        console.log(this.selectedRole);
-      })
-    );
-  }
-
-   
+ 
   ngOnInit(): void {
-    this.getRolesList();
+    this.rolesList = this.data.roles;
+    if (!isEmpty(this.data.roles)) {
+      this.selectedRole = this.rolesList.filter(item => item.name === (this.data && this.data.element.roles[0].name))[0];
+    }
     this.userForm = new FormGroup({
         firstName: new FormControl('', Validators.required),
         lastName: new FormControl('', Validators.required),
         email: new FormControl('', [Validators.required, Validators.email]),
         password: new FormControl('', Validators.required),
         roles: new FormControl('', Validators.required),
-        phone: new FormControl('', [Validators.required, Validators.pattern('[0-9]*')]),
+        phone: new FormControl('', [Validators.required, Validators.pattern('^(0|[1-9][0-9]*)$')]),
         address: new FormControl('')
     });
-    if(this.data && this.data.id > 0) {
+    if(this.data.element && this.data.element.id > 0) {
       this.userForm.controls['phone'].setValidators([]);
       this.userForm.controls['address'].setValidators([]);
       this.userForm.controls['password'].setValidators([]);
-      this.userForm.patchValue(this.data);      
+      this.userForm.patchValue(this.data.element);  
       this.isEditing = true;
     } else {
       this.isEditing = false;
@@ -98,7 +87,7 @@ export class UsersComponent implements OnInit {
       reqBody.roles = [roles];
       delete reqBody.password;
 			this.subs.add(
-				this.userService.updateUser(reqBody, this.data.id)
+				this.userService.updateUser(reqBody, this.data.element.id)
         .pipe(
 					catchError((err) => {
 						return throwError(err);

@@ -61,7 +61,6 @@ export class UsersService {
         const roles: Roles[] = (updateDto['roles']) ?
         await Promise.all(
             updateDto.roles.map((role) => {
-                console.log("role", role);
                 return this.preloadRoleByName(role['name'])
             })
         ) :
@@ -90,9 +89,7 @@ export class UsersService {
     }
 
     private async preloadRoleByName(name: string) {
-        console.log("existingRole", name);
         const existingRole: Roles = await this.rolesRepository.findOne({"name": name});
-        console.log(existingRole);
         if(existingRole) return existingRole;
         return this.rolesRepository.create({name})
     }
