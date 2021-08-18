@@ -121,7 +121,7 @@ export class ChartComponent implements  OnDestroy, OnChanges {
   }
 
   ngOnChanges() {
-    if (this.data.length === 1) {
+    if (this.data && this.data.length === 1) {
       this.view = [300, 35];
     } else {
       this.view = [300, 100];
