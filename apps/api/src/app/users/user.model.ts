@@ -18,6 +18,12 @@ export class User{
     email: string
 
     @Column()
+    phone: string
+
+    @Column()
+    address: string
+
+    @Column()
     password: string
 
     @Column({default: null})

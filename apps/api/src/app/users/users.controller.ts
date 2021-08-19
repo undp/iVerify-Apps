@@ -28,6 +28,7 @@ export class UsersController {
     @UseGuards(JWTTokenAuthGuard)
     public async register(@Body() createUserDto: CreateUserDto) {
         let result: any;
+        console.log(createUserDto);
         const userId = this.request.user && this.request.user['id'] ? this.request.user['id'] : null;
         result = await this.usersService.registerUser(createUserDto, userId);
         if (!result) {
