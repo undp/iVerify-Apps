@@ -46,12 +46,10 @@ export class UsersComponent implements OnInit {
         email: new FormControl('', [Validators.required, Validators.email]),
         password: new FormControl('', Validators.required),
         roles: new FormControl('', Validators.required),
-        phone: new FormControl('', [Validators.required, Validators.pattern('^(0|[1-9][0-9]*)$')]),
+        phone: new FormControl('', [Validators.required, Validators.pattern('^\\+(\\d{3}[- .]?){2}\\d{4}$')]),
         address: new FormControl('')
     });
-    if(this.data.element && this.data.element.id > 0) {
-      this.userForm.controls['phone'].setValidators([]);
-      this.userForm.controls['address'].setValidators([]);
+    if (this.data.element && this.data.element.id > 0) {
       this.userForm.controls['password'].setValidators([]);
       this.userForm.patchValue(this.data.element);  
       this.isEditing = true;
