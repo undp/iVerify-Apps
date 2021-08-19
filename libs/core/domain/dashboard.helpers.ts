@@ -143,10 +143,10 @@ const GetTicketsByWeek = (res: any) => {
 
         if(!isEmpty(statuses[key])) {
           let dayData = statuses[key];
-          let unstarted = dayData.filter((item: any) => (item.category === 'Unstarted'));
+          let unstarted = dayData[1].filter((item: any) => (item.category.toLowerCase() === 'unstarted'));
           if (unstarted.length > 0) {
             let temp = {
-              name: key,
+              name: FormatDate(dayData[0], "MM/DD"),
               value: unstarted[0].count
             }
             unstartedStatuses.push(temp);
@@ -155,10 +155,10 @@ const GetTicketsByWeek = (res: any) => {
 
         if(!isEmpty(statuses[key])) {
           let dayData = statuses[key];
-          let inprogress = dayData.filter((item: any) => (item.category === 'In Progress'));
+          let inprogress = dayData[1].filter((item: any) => (item.category.toLowerCase() === 'in progress'));
           if (inprogress.length > 0) {
             let temp = {
-              name: key,
+              name: FormatDate(dayData[0], "MM/DD"),
               value: inprogress[0].count
             }
             inprogressStatuses.push(temp);
@@ -167,10 +167,10 @@ const GetTicketsByWeek = (res: any) => {
 
         if (!isEmpty(published[key])) {
           let dayData = published[key];
-          let publishedCreated = dayData.filter((item: any) => (item.category === 'published'));
+          let publishedCreated = dayData[1].filter((item: any) => (item.category.toLowerCase() === 'published'));
           if (publishedCreated.length > 0) {
               let temp = {
-                name: key,
+                name: FormatDate(dayData[0], "MM/DD"),
                 value: publishedCreated[0].count
               }
               publishedStatuses.push(temp);
