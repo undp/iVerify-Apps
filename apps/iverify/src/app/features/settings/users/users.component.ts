@@ -34,9 +34,11 @@ export class UsersComponent implements OnInit {
   }
  
   ngOnInit(): void {
-    this.rolesList = this.data.roles;
     if (!isEmpty(this.data.roles)) {
-      this.selectedRole = this.rolesList.filter(item => item.name === (this.data && this.data.element.roles[0].name))[0];
+      this.rolesList = this.data.roles;
+      if (!isEmpty(this.data.element)) {
+        this.selectedRole = this.rolesList.filter(item => item.name === (this.data && this.data.element.roles[0].name))[0];
+      }
     }
     this.userForm = new FormGroup({
         firstName: new FormControl('', Validators.required),
@@ -44,12 +46,10 @@ export class UsersComponent implements OnInit {
         email: new FormControl('', [Validators.required, Validators.email]),
         password: new FormControl('', Validators.required),
         roles: new FormControl('', Validators.required),
-        phone: new FormControl('', [Validators.required, Validators.pattern('^(0|[1-9][0-9]*)$')]),
+        phone: new FormControl('', [Validators.required, Validators.pattern('^\\+(\\d{3}[- .]?){2}\\d{4}$')]),
         address: new FormControl('')
     });
-    if(this.data.element && this.data.element.id > 0) {
-      this.userForm.controls['phone'].setValidators([]);
-      this.userForm.controls['address'].setValidators([]);
+    if (this.data.element && this.data.element.id > 0) {
       this.userForm.controls['password'].setValidators([]);
       this.userForm.patchValue(this.data.element);  
       this.isEditing = true;
@@ -62,7 +62,7 @@ export class UsersComponent implements OnInit {
     this.toast.show(ToastType.Success, (this.isEditing) ? 'TOAST_UPDATE_USER' : 'TOAST_CREATE_USER');
     setTimeout(() => {
       this.dialogRef.close();
-    }, 1000);
+    }, 500);
   }
 
   onUserClick() {
