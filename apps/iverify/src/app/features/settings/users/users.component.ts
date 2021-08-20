@@ -61,7 +61,7 @@ export class UsersComponent implements OnInit {
   onNoClick(): void {
     this.toast.show(ToastType.Success, (this.isEditing) ? 'TOAST_UPDATE_USER' : 'TOAST_CREATE_USER');
     setTimeout(() => {
-      this.dialogRef.close();
+      this.dialogRef.close(true);
     }, 500);
   }
 

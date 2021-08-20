@@ -196,7 +196,7 @@
   "ADD_CHARTS": "Add More charts",
   "REPORT": "Report",
   "SEARCH": "Search...",
-  "INFORMATIVE_TEXT": "If contact type is phone, please type a number including its country code, e.g. +260211000000",
+  "INFORMATIVE_TEXT": "Please type a 10 digit number including its country code, e.g. +2602110000",
   "EXPORT_ALL": "Export All",
   "DELETE_REPORT": "Delete",
   "DOWNLOAD_MSG": "Preparing to download",

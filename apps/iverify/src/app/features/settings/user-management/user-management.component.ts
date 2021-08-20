@@ -134,8 +134,10 @@ export class UserManagementComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.getUserList();
-      this.getRolesList();      
+      if (result) {
+        this.getUserList();
+        this.getRolesList();  
+      }
     });
   }
 }
