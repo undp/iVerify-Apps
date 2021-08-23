@@ -7,3 +7,8 @@
 mat-raised-button {
   margin: 3px 0px 0px 10px;
 }
+
+.cdk-overlay-pane .user-dialog {
+  max-width: 100vw !important;
+  position: static !important;
+}

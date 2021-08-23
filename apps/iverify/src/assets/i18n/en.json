@@ -196,7 +196,7 @@
   "ADD_CHARTS": "Add More charts",
   "REPORT": "Report",
   "SEARCH": "Search...",
-  "INFORMATIVE_TEXT": "Please type a 10 digit number including its country code, e.g. +2602110000",
+  "INFORMATIVE_TEXT": "Please type a 12 digit mobile number including its country code, e.g. +260962110000",
   "EXPORT_ALL": "Export All",
   "DELETE_REPORT": "Delete",
   "DOWNLOAD_MSG": "Preparing to download",

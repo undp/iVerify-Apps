@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { isEmpty, orderBy } from 'lodash';
+import { isEmpty, orderBy, uniqBy } from 'lodash';
 import { TicketsByType, TicketCatResFormat, StatusFormatPieChart, StatusFormat } from '../models/dashboard';
 
 const showItems = 5;
@@ -61,7 +61,8 @@ const GetTicketsByCurrentStatus = (res: any) => {
       const latestDateIndex = statuses.length - 1;
       let sortData = orderBy(statuses[latestDateIndex][1], ['count'], ['desc']); 
       if (sortData.length > 0 ) {
-        const currentStatuses = sortData.filter(item => (item.category === 'Unstarted' || item.category === 'In Progress'));
+        let currentStatuses = sortData.filter(item => (item.category === 'Unstarted' || item.category === 'In Progress'));
+        currentStatuses = uniqBy(currentStatuses, 'category');
         processedData = currentStatuses.map((item) => {
             let newItem = {
               name: item.category,

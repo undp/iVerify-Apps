@@ -67,7 +67,7 @@ export class UserManagementComponent implements OnInit {
     this.subs.add(
       this.userService.list().subscribe((results) => {
         this.dataSource = Object.assign(results.data);
-        this.dataSource = this.dataSource.filter(item => item.email !== this.user.email);
+        
       })
     );
   }
@@ -110,13 +110,12 @@ export class UserManagementComponent implements OnInit {
     
   }
 
-  isUserAllowed(permissionType: string) {
+  isUserAllowed(permissionType: string, type: string) {
     if (this.user) {
       let role = this.user.roles[0];
       const resources = JSON.parse(role.resource);
       if (!isEmpty(resources)) {
-        
-        const roleItem = resources.filter((sect: any) => sect.name === 'users');
+        const roleItem = resources.filter((sect: any) => sect.name === type);
         if (!isEmpty(roleItem)) {
           const val = roleItem[0].permissions.find((item: string) => item === permissionType);
           return (val !== undefined);
