@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, AfterViewInit} from '@angular/core';
 import { DashboardHelpers } from '@iverify/core/domain/dashboard.helpers';
 import { Subscription } from 'rxjs';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
@@ -58,7 +58,7 @@ const BubbleChartViewSize: any = {
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   subs: Subscription;
   statData: any;
@@ -85,9 +85,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     // private toast: ToastService,
     private dashboardService: DashboardService
   ) {
+
     this.subs = new Subscription();
     this.breakpoint = (window.innerWidth <= 400) ? 1 : 3;
     this.getScreenSizeView(window.innerWidth);    
+  }
+
+  ngAfterViewInit() { 
   }
 
   ngOnInit() {

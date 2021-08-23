@@ -81,7 +81,7 @@
           formControlName="phone"
         />
         <mat-icon matSuffix>phone</mat-icon>
-        <mat-hint>Enter phone number with country code</mat-hint>
+        <mat-hint>{{'INFORMATIVE_TEXT'| translate}}</mat-hint>
       </mat-form-field>
     </p>
     <p>
@@ -104,7 +104,7 @@
       <button
         mat-raised-button 
         color="primary"
-        (click)="dialogRef.close();"
+        (click)="dialogRef.close(false);"
         class="mr-2"
       >
         {{ 'CANCEL' | translate}}

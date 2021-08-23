@@ -104,7 +104,7 @@ ngOnInit(): void {
   onNoClick(): void {
     this.toast.show(ToastType.Success, 'TOAST_CREATE_ROLE');
     setTimeout(() => {
-      this.dialogRef.close();
+      this.dialogRef.close(true);
     }, 1000);
   }
 

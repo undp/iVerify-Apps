@@ -46,7 +46,7 @@ export class UsersComponent implements OnInit {
         email: new FormControl('', [Validators.required, Validators.email]),
         password: new FormControl('', Validators.required),
         roles: new FormControl('', Validators.required),
-        phone: new FormControl('', [Validators.required, Validators.pattern('^\\+(\\d{3}[- .]?){2}\\d{4}$')]),
+        phone: new FormControl('', [Validators.required, Validators.pattern('^\\+260(96|76|95|75|97|77)\\d{7}$')]),
         address: new FormControl('')
     });
     if (this.data.element && this.data.element.id > 0) {
@@ -61,7 +61,7 @@ export class UsersComponent implements OnInit {
   onNoClick(): void {
     this.toast.show(ToastType.Success, (this.isEditing) ? 'TOAST_UPDATE_USER' : 'TOAST_CREATE_USER');
     setTimeout(() => {
-      this.dialogRef.close();
+      this.dialogRef.close(true);
     }, 500);
   }
 
