@@ -4,6 +4,7 @@
   [scheme]="colorScheme[0]"
   [results]="data"
   [gradient]="false"
+  [showDataLabel]="true"
   [xAxis]="showXAxis"
   [yAxis]="showYAxis"
   [legend]="false"
@@ -25,6 +26,7 @@
   [labels]="true"
   [doughnut]="true"
   [legendPosition] = ""
+  [showDataLabel]="true"
   [legendTitle]="''"
   [labelFormatting]="pieChartLabel.bind(this, data)">
 </ngx-charts-pie-chart>
@@ -40,6 +42,7 @@
   [gradient]="true"
   [showXAxisLabel]="showXAxisLabel"
   [showYAxisLabel]=""
+  [showDataLabel]="true"
   [xAxisLabel]="xAxisLabel"
   [yAxisLabel]="yAxisLabel"
   (select)="onSelect($event)">
@@ -52,6 +55,7 @@
   [legend]="false"
   [showXAxisLabel]="false"
   [showYAxisLabel]="true"
+  [showDataLabel]="true"
   [xAxis]="true"
   [yAxis]="true"
   [curve]="curve"
@@ -71,6 +75,7 @@
   [results]="data"
   [xAxis]="true"
   [yAxis]="true"
+  [showDataLabel]="true"
   [legend]="false"
   [showXAxisLabel]="true"
   [showYAxisLabel]="false"
