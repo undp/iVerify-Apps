@@ -26,7 +26,8 @@ export class WpPublisherHelper{
         author: number,
         media: number,
         tags: number[],
-        categories: number[]): CreatePostDto{
+        categories: number[],
+        visualCard: string): CreatePostDto{
         
         const status = PostStatus.publish;
         const comment_status = CommentStatus.open;
@@ -41,8 +42,9 @@ export class WpPublisherHelper{
         const rating_justification = this.extractTask(report, TasksLabels.rating_justification);
         const evidence = this.extractTask(report, TasksLabels.evidences_and_references);
         const evidence_and_references = this.formatEvidence(evidence);
+        const _webdados_fb_open_graph_specific_image = visualCard;
         const fields: PostFields = {check_id, factchecking_status, claim, rating_justification, evidence_and_references, subtitle, toxic};
-       
+        console.log('visual card url: ', _webdados_fb_open_graph_specific_image)
     
         const post: CreatePostDto = {
           format,
@@ -53,7 +55,8 @@ export class WpPublisherHelper{
           featured_media: media,
           tags,
           fields,
-          categories
+          categories,
+          _webdados_fb_open_graph_specific_image
         }
 
         if(!post.featured_media) delete post.featured_media;

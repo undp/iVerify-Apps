@@ -37,6 +37,7 @@ export interface PostFields{
     factchecking_status: string
     toxic: number
     subtitle: string
+    _webdados_fb_open_graph_specific_image?: string
 }
 
 export enum TasksLabels{
@@ -65,5 +66,7 @@ export interface CreatePostDto{
     categories?: number[]
     tags?: number[]
     featured_media?: number
-    fields?: PostFields
+    fields?: PostFields,
+    meta?: any
+    _webdados_fb_open_graph_specific_image?: string
 }
