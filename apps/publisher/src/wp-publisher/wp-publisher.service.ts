@@ -46,9 +46,17 @@ export class WpPublisherService{
         throw new HttpException(err.message, 500);
       })
     );
+
+    private visualCard$: Observable<string> = this.meedanReport$.pipe(
+      map(report => report.visual_card_url),
+      catchError(err => {
+        return of(null)
+        // throw new HttpException(err.message, 500); 
+      })
+    )
     
-    post$: Observable<any> = combineLatest([this.report$, this.meedanReport$, this.author$, this.mediaId$, this.tagsIds$, this.categoriesIds$]).pipe(
-        map(([report, meedanReport, author, media, tags, categories]) => this.helper.buildPostFromReport(report, meedanReport, author, media, tags, categories)),
+    post$: Observable<any> = combineLatest([this.report$, this.meedanReport$, this.author$, this.mediaId$, this.tagsIds$, this.categoriesIds$, this.visualCard$]).pipe(
+        map(([report, meedanReport, author, media, tags, categories, visualCard]) => this.helper.buildPostFromReport(report, meedanReport, author, media, tags, categories, visualCard)),
         filter(post => !!post.title.length),
         take(1),
         tap(() => console.log('emitting to publish...')),
