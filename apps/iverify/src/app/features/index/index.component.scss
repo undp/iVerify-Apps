@@ -58,4 +58,22 @@ h1.example-app-name {
   flex: 1 0 auto;
 }
 
+.dashboard-title h1 {
+  color: #ced4da;
+  display: inline;
+  height: 450px;
+  word-spacing: 35px;
+  font-size: 35px;
+  -ms-transform: rotate(270deg); /* IE 9 */
+  transform: rotate(270deg);
+  vertical-align: middle;
+  margin-top: 2rem;
+}
+.hideText {
+  margin-left: 3rem;
+}
 
+.settings {
+  vertical-align: top;
+  margin: 0px 7px;
+}

@@ -1,5 +1,11 @@
+<!--  -->
+<div class="published">
+    <p *ngIf="totalPublished">
+      {{ totalPublished[0].count }} {{ 'TICKETS_COMPLETED' | translate }}
+    </p>
+  </div> 
 <div class="row">
-  <div class="d-inline-flex justify-content-between">
+  <div class="d-inline-flex justify-content-between" style="margin-top: -10px;">
     <mat-form-field appearance="fill">
       <mat-label>{{ 'DATE_TEXT' | translate }}</mat-label>
       <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
@@ -27,13 +33,8 @@
         >Invalid end date</mat-error
       >
     </mat-form-field>
-    <div class="published">
-      <p *ngIf="totalPublished">
-        {{ totalPublished[0].count }} {{ 'TICKETS_COMPLETED' | translate }}
-      </p>
-    </div>
+    
   </div>
-</div>
 <mat-grid-list
   [cols]="breakpoint"
   rowHeight="2:1"
@@ -135,3 +136,6 @@
     {{ 'NO_RECORDS' | translate }}
   </p>
 </div>
+</div>
+
+

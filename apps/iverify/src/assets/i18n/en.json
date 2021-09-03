@@ -319,5 +319,6 @@
   "SETTINGS": "Settings",
   "USER_DELETED": "User deleted",
   "ROLE_DELETED": "Role deleted",
-  "COMFIRMATION": "Alert!"
+  "COMFIRMATION": "Alert!",
+  "DASHBOARD_NAME": "SPEED PROGRESS TICKETS"
 }
