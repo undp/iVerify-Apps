@@ -39,6 +39,7 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   countryCodes = environment.countryCodes;
   currentLang: string = this.translate.currentLang;
   isUserAllowedUserMenu: boolean = false;
+  isDashboardTextHide: boolean = true;
 
   AuthHelpers = AuthHelpers;
 
@@ -80,7 +81,12 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
       this.router.events.subscribe(e => {
         if (e instanceof ActivationStart) {
           window.scroll(0, 0);
-          if (e.snapshot.outlet === 'dashboard') this.outlet.deactivate();
+          if (e.snapshot.outlet === 'dashboard') {
+            this.outlet.deactivate();
+            this.isDashboardTextHide = true;
+          } else {
+            this.isDashboardTextHide = false;
+          }
         }
       })
     );

@@ -1,4 +1,4 @@
-<mat-toolbar color="primary">
+<mat-toolbar>
   <button
     [disabled]="!(isUserAllowedUserMenu)"
     (click)="snav.toggle()"
@@ -6,15 +6,15 @@
   >
     <mat-icon>menu</mat-icon>
   </button>
-  <span class="fontRalewayRegular header-text">{{'HEADER_TAG_LINE'|translate}}</span>  
+  <span class="fontRalewayBold header-text">{{'HEADER_TAG_LINE'|translate}}</span>  
   <span class="example-spacer"></span>
- <button mat-button color="black" [matMenuTriggerFor]="settingsMenu" aria-label="Example icon button with a bookmark icon">
+ <!-- <button mat-button color="black" [matMenuTriggerFor]="settingsMenu" aria-label="Example icon button with a bookmark icon">
     <mat-icon>account_circle</mat-icon>
   </button>        
 <mat-menu #settingsMenu>
   <menu mat-menu-item disabled>{{ (user$ | async)?.email }}</menu>
   <button mat-menu-item (click)="onLogoutClick()">{{ 'LOGOUT' | translate }}</button>
-</mat-menu>
+</mat-menu> -->
 </mat-toolbar>
 <mat-sidenav-container
   class="example-sidenav-container"
@@ -23,10 +23,9 @@
 >
   <mat-sidenav #snav [mode]="viewportMobileQuery.matches ? 'over' : 'side'"
                  [fixedInViewport]="viewportMobileQuery.matches" fixedTopGap="0" (click)="snav.toggle()">
-    <mat-nav-list>
+    <mat-nav-list style="padding: 10px;">
       <a class="text-capitalize fontRobotoRegular" mat-menu-item [routerLink]="['/dashboard/settings']">
-          <mat-icon>settings</mat-icon>
-          {{'SETTINGS' | translate}}
+          <mat-icon>settings</mat-icon><span class="settings">{{'SETTINGS' | translate}}</span>
       </a>
       <mat-divider></mat-divider>
       <a class="text-capitalize fontRobotoRegular" mat-menu-item [routerLink]="['/dashboard/index']">
@@ -36,10 +35,13 @@
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <div>
-      <main role="main" class="main-body">
-        <router-outlet></router-outlet>
-      </main>
-    </div>
+  <div class="dashboard-title" *ngIf="isDashboardTextHide">
+    <h1 style="left:0; position: absolute;">{{'DASHBOARD_NAME'|translate}}</h1>
+  </div>
+  <div  [class.hideText]="isDashboardTextHide">
+    <main role="main" class="main-body">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

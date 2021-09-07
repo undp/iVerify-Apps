@@ -129,7 +129,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(this.statData.results);  
         this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.agentsSourceData);
         this.totalPublished = (this.agentsSourceData['createdVsPublished'])? this.agentsSourceData['createdVsPublished'][0][1] : null;
-        console.log(this.ticketsByWeek);
       })
     );
   }
