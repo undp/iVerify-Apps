@@ -148,7 +148,7 @@ span.switch-medium.checked {
 }
 
 .fontRalewayLight {
-  font-family: 'Roboto-Light' , sans-serif;
+  font-family: 'Raleway-Light' , sans-serif;
 }
 
 .fontRalewayBlack {
@@ -159,7 +159,7 @@ span.switch-medium.checked {
 }
 
 .fontRalewayBold {
-  font-family: 'Roboto-Bold' , sans-serif;
+  font-family: 'Raleway-Bold' , sans-serif;
   &.header-text {
     font-size: 2rem;
   }
@@ -247,6 +247,20 @@ li.fm-divider {
   opacity: 0.7;
   margin-right: 5px;
   float:left;
+}
+
+.mat-grid-tile-content {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    display: flex;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    height: 100%;
+    padding: 0;
+    margin: 0;
 }
 
 .mat-grid-tile-header {
