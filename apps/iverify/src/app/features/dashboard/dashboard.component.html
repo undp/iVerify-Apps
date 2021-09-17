@@ -1,9 +1,8 @@
-<!--  -->
 <div class="published">
     <p *ngIf="totalPublished">
       {{ totalPublished[0].count }} {{ 'TICKETS_COMPLETED' | translate }}
     </p>
-  </div> 
+</div> 
 <div class="row">
   <div class="d-inline-flex justify-content-between" style="margin-top: -10px;">
     <mat-form-field appearance="fill">
@@ -128,14 +127,14 @@
     ></iverify-charts>
     </div>
 </div>   
-<div class="">
+</div>
+<div>
   <p
     class="custom-report-info marg-left-1"
     *ngIf="statData && (statData.results | json) === ({} | json)"
   >
     {{ 'NO_RECORDS' | translate }}
   </p>
-</div>
 </div>
 
 
