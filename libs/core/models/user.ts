@@ -36,7 +36,7 @@ export enum ContactType {
 }
 
 export interface Contacts {
-  id: number;
+  id?: number;
   user_id: number;
   data_source: string,
   type: string;
