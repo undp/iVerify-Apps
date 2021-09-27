@@ -32,14 +32,13 @@
         >Invalid end date</mat-error
       >
     </mat-form-field>
-    
   </div>
 <mat-grid-list
   [cols]="breakpoint"
-  rowHeight="2:1"
+  rowHeight="5:2"
   *ngIf="statData && (statData.results | json) !== ({} | json)"
   (window:resize)="onResize($event)"
-  [gutterSize]="'15'"
+  [gutterSize]="'3px'"
 >
   <mat-grid-tile>
     <mat-grid-tile-header>
