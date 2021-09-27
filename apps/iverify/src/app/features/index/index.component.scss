@@ -76,8 +76,8 @@ h1.example-app-name {
   }
   @media only screen and (min-width: 2048px) {
     font-size: 33px;
-    height: 490px;
-    word-spacing: 80px;
+    height: 545px;
+    word-spacing: 110px;
     margin-top: 12rem;
   }
 }
@@ -91,9 +91,9 @@ h1.example-app-name {
 }
 
 .mat-drawer-content {
-  height: 800px !important;
+  height: 800px;
   overflow: hidden !important;
-  @media only screen and (min-width: 2047px) {
+  @media only screen and (min-width: 2048px) {
     height: 1050px;
   }
 }
