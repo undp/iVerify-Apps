@@ -62,17 +62,23 @@ h1.example-app-name {
   color: #ced4da;
   display: inline;
   height: 450px;
-  word-spacing: 50px;
+  word-spacing: 47px;
   font-size: 33px;
   -ms-transform: rotate(270deg); /* IE 9 */
   transform: rotate(270deg);
   vertical-align: middle;
-  margin-top: 6rem;
+  margin-top: 8rem;
   @media only screen and (max-width: 767px) {
     font-size: 20px;
     height: 320px;
     word-spacing: 50px;
     margin-top: 9rem;
+  }
+  @media only screen and (min-width: 2048px) {
+    font-size: 33px;
+    height: 545px;
+    word-spacing: 110px;
+    margin-top: 12rem;
   }
 }
 .hideText {
@@ -85,6 +91,9 @@ h1.example-app-name {
 }
 
 .mat-drawer-content {
-  height: 600px !important;
+  height: 800px;
   overflow: hidden !important;
+  @media only screen and (min-width: 2048px) {
+    height: 1050px;
+  }
 }
