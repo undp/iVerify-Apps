@@ -10,6 +10,7 @@ import { environment } from '../../environments/environment'
 import { LocalStrategy } from './passport/LocalStrategy';
 import { JwtStrategy } from './passport/JWTStrategy';
 import { JwtRefreshStrategy } from './passport/RefreshStrategy'
+import { SAMLStrategy } from './passport/SAMLStrategy';
 import { RefreshTokenAuthGuard } from '../guards/RefreshToken-auth.guard';
 import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
 import { UsersService } from '../users/users.service';
@@ -33,13 +34,15 @@ import { Roles } from '../roles/roles.model';
     JwtStrategy, 
     LocalStrategy, 
     JwtRefreshStrategy,
+    SAMLStrategy
   ],
   exports: [
     RefreshTokenAuthGuard, 
     AuthService, 
     JwtStrategy, 
     LocalStrategy, 
-    JwtRefreshStrategy
+    JwtRefreshStrategy,
+    SAMLStrategy
   ],
 })
 export class AuthModule { }

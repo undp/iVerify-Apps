@@ -5,9 +5,7 @@ import { Request } from 'express';
 import { jwtConstants } from '../constants';
 import { Injectable, UnauthorizedException, UseFilters } from '@nestjs/common';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
-import { environment } from '../../../environments/environment'
-
-
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -23,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         const user = await this.authService.validateUser(payload);
         if (!user) {
             throw new UnauthorizedException();
-          }
+        }
         return user;
     }
 }

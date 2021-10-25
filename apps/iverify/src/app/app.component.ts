@@ -6,13 +6,12 @@ import { EAuthActions } from '@iverify/core/store/actions/auth.actions';
 import { AppState } from '@iverify/core/store/states/app.state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Spinkit } from 'ng-http-loader';
 import { ApiServerError, EApiErrorActions } from '@iverify/core/store/actions/error.actions';
 import { ToastService } from './features/toast/toast.service';
 import { ToastType } from './features/toast/toast.component';
 import { Subscription } from 'rxjs';
-
 @Component({
   selector: 'iverify-root',
   templateUrl: './app.component.html',
@@ -30,7 +29,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private actions$: Actions,
   private router: Router,
   @Inject(ViewContainerRef) private viewContainerRef: ViewContainerRef,
-  private toast: ToastService
+  private toast: ToastService,
+  private route: ActivatedRoute
   ) {
     this.subs = new Subscription;
     toast.setViewContainerRef(viewContainerRef);

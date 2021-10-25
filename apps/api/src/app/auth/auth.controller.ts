@@ -1,4 +1,4 @@
-import { Controller, UseGuards, HttpStatus, Response, Post, Body, UseFilters, BadRequestException, NotFoundException, BadGatewayException, Inject, forwardRef } from '@nestjs/common';
+import { Controller, UseGuards, HttpStatus, Response, Post, Get, Request, Body, UseFilters, BadRequestException, NotFoundException, BadGatewayException, Inject, forwardRef } from '@nestjs/common';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { AuthService } from './auth.service';
 import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
@@ -6,8 +6,8 @@ import { UsersService } from '../users/users.service';
 import { InfoLogger } from '../logger/info-logger.service';
 import { TokenGenerationDto } from './dto/TokenGeneration.dto';
 import { RefreshTokenAuthGuard } from '../guards/RefreshToken-auth.guard';
-import { LocalStrategy } from './passport/LocalStrategy';
 import { LocalAuthGuard } from '../guards/Local-auth.guard';
+import { SAMLAuthGuard } from '../guards/SAML-auth.guard';
 import { userMessages } from '../../constant/messages';
 
 
@@ -37,6 +37,22 @@ export class AuthController {
         }
     }
 
+    @Get('saml')
+    @UseGuards(SAMLAuthGuard)
+    samlLogin() {
+    
+    }
+
+    @Post('callback')
+    async callback(@Request() req, @Body() body: any) {
+        if (req.isAuthenticated()) {
+            console.log(req);
+            // const token = await this.authService.createToken(userData);
+            // if (!token) throw new BadGatewayException();
+            // this.InfoLogger.log('Token Generated');
+            // return {token, userData};
+        }
+    }
     
     @Post('generateToken')
     @ApiBearerAuth()

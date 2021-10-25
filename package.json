@@ -80,6 +80,7 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "passport-saml": "^3.2.0",
     "postcss": "^8.3.5",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-preset-env": "^6.7.0",
@@ -90,6 +91,7 @@
     "tailwindcss": "^2.2.4",
     "tslib": "^2.0.0",
     "typeorm": "^0.2.34",
+    "wp-auth": "^1.0.5",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
