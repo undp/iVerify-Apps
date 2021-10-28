@@ -6,7 +6,7 @@ definitions:
     name: Check & create repo
     script:
       - REPO=$(aws ecr-public describe-repositories --region us-east-1 --query "repositories[?repositoryName=='${BITBUCKET_REPO_SLUG}'].repositoryName" --output text)
-      - if [[ -z $REPO ]]; then aws ecr-public create-repository --region eu-west-1 --repository-name $BITBUCKET_REPO_SLUG; fi
+      - if [[ -z $REPO ]]; then aws ecr create-repository --region eu-west-1 --repository-name $BITBUCKET_REPO_SLUG; fi
 
   buildPush: &buildPushTag
     name: Build & Push
