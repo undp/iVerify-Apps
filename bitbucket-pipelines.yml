@@ -1,0 +1,46 @@
+image:
+  name: atlassian/pipelines-awscli:1.18.190
+  
+definitions:
+  checkRepo: &checkRepo
+    name: Check & create repo
+    script:
+      - REPO=$(aws ecr-public describe-repositories --region us-east-1 --query "repositories[?repositoryName=='${BITBUCKET_REPO_SLUG}'].repositoryName" --output text)
+      - if [[ -z $REPO ]]; then aws ecr-public create-repository --region us-east-1 --repository-name $BITBUCKET_REPO_SLUG; fi
+
+  buildPush: &buildPushTag
+    name: Build & Push
+    caches:
+      - docker
+    services:
+      - docker
+    script:
+      - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
+      - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $CWH_ECR
+      - docker build -t api-$IMAGE_NAME_TAG -f apps/api/Dockerfile .
+      - docker push api-$IMAGE_NAME_TAG
+      - docker build -t iverify-$IMAGE_NAME_TAG -f apps/iverify/Dockerfile .
+      - docker push iverify-$IMAGE_NAME_TAG
+      - docker build -t triage-$IMAGE_NAME_TAG -f apps/triage/Dockerfile .
+      - docker push triage-$IMAGE_NAME_TAG
+      - docker build -t publisher-$IMAGE_NAME_TAG -f apps/publisher/Dockerfile .
+      - docker push publisher-$IMAGE_NAME_TAG
+
+  build: &build
+    name: Build
+    caches:
+      - docker
+    services:
+      - docker
+    script:
+      - docker build -t test-build .
+
+pipelines:
+  default:
+    - step: *build
+
+  tags:
+    '*':
+      - step: *checkRepo
+      - step: *buildPushTag
