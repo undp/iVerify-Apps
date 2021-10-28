@@ -34,7 +34,10 @@ definitions:
     services:
       - docker
     script:
-      - docker build -t test-build .
+      - docker build -t api -f apps/api/Dockerfile .
+      - docker build -t iverify -f apps/iverify/Dockerfile .
+      - docker build -t triage -f apps/triage/Dockerfile .
+      - docker build -t publisher -f apps/publisher/Dockerfile .
 
 pipelines:
   default:
