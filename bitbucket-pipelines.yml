@@ -18,13 +18,13 @@ definitions:
       - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
       - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
       - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $CWH_ECR
-      - docker build -t api-$IMAGE_NAME_TAG -f apps/api/Dockerfile .
+      - docker build -t api-$IMAGE_NAME_TAG -f apps/api/Dockerfile-prod .
       - docker push api-$IMAGE_NAME_TAG
       - docker build -t iverify-$IMAGE_NAME_TAG -f apps/iverify/Dockerfile .
       - docker push iverify-$IMAGE_NAME_TAG
-      - docker build -t triage-$IMAGE_NAME_TAG -f apps/triage/Dockerfile .
+      - docker build -t triage-$IMAGE_NAME_TAG -f apps/triage/Dockerfile-prod .
       - docker push triage-$IMAGE_NAME_TAG
-      - docker build -t publisher-$IMAGE_NAME_TAG -f apps/publisher/Dockerfile .
+      - docker build -t publisher-$IMAGE_NAME_TAG -f apps/publisher/Dockerfile-prod .
       - docker push publisher-$IMAGE_NAME_TAG
 
   build: &build
@@ -34,10 +34,10 @@ definitions:
     services:
       - docker
     script:
-      - docker build -t api -f apps/api/Dockerfile .
+      - docker build -t api -f apps/api/Dockerfile-prod .
       - docker build -t iverify -f apps/iverify/Dockerfile .
-      - docker build -t triage -f apps/triage/Dockerfile .
-      - docker build -t publisher -f apps/publisher/Dockerfile .
+      - docker build -t triage -f apps/triage/Dockerfile-prod .
+      - docker build -t publisher -f apps/publisher/Dockerfile-prod .
 
 pipelines:
   default:
