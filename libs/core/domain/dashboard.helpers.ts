@@ -39,7 +39,8 @@ const GetTicketsByChannel = (res: any) => {
 const GetTicketsByTag = (res: any[]) => {
   let processedData: any = [];
   if (!isEmpty(res)) {
-    let sortData = orderBy(res[0][1], ['count'], ['desc']);    
+    const len = res.length;
+    let sortData = orderBy(res[len - 1][1], ['count'], ['desc']);    
     sortData = sortData.filter(item => item.category !== 'Unstarted' && item.category !== 'In Progress');
     sortData.forEach((value: TicketCatResFormat, index: number) => {
       if (!isEmpty(value.category) && index < showItems) {
@@ -228,7 +229,7 @@ const GetTicketsByWeek = (res: any, dates: any) => {
     ]
     return finalStatusesByWeek;
   }
-  return null;  
+  return null; 
 }
 
 const daysInMonth = (month: number, year: number) => {
