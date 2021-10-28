@@ -5,7 +5,7 @@ definitions:
   checkRepo: &checkRepo
     name: Check & create repo
     script:
-      - REPO=$(aws ecr-public describe-repositories --region us-east-1 --query "repositories[?repositoryName=='${BITBUCKET_REPO_SLUG}'].repositoryName" --output text)
+      - REPO=$(aws ecr describe-repositories --region us-east-1 --query "repositories[?repositoryName=='${BITBUCKET_REPO_SLUG}'].repositoryName" --output text)
       - if [[ -z $REPO ]]; then aws ecr create-repository --region eu-west-1 --repository-name $BITBUCKET_REPO_SLUG; fi
 
   buildPush: &buildPushTag
@@ -17,7 +17,7 @@ definitions:
     script:
       - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
       - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
-      - aws ecr-public get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR
+      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR
       - docker build -t api-$IMAGE_NAME_TAG -f apps/api/Dockerfile-prod .
       - docker push api-$IMAGE_NAME_TAG
       - docker build -t iverify-$IMAGE_NAME_TAG -f apps/iverify/Dockerfile .
