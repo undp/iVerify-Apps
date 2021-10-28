@@ -3,6 +3,7 @@ import { DashboardHelpers } from '@iverify/core/domain/dashboard.helpers';
 import { Subscription } from 'rxjs';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
 import { FormGroup, FormControl } from '@angular/forms';
+import { isEmpty } from 'lodash';
 import { TicketRequest, StatusFormat, StatusFormatPieChart, TicketsByAgentFormat, BubbleChartFormat } from '@iverify/core/models/dashboard';
 
 export const bubbleData : BubbleChartFormat[] =  [
@@ -80,6 +81,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   options: TicketRequest = {startDate: '', endDate: ''};
   bubbleChartViewSize: [number, number];
   responseVelocity: string = 'RESPONSE_TIME';
+  startDate: any = new Date();
+  endDate: any = new Date();
+  isData: boolean = false;
   
   constructor(
     // private toast: ToastService,
@@ -96,12 +100,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     let previousMonday = new Date(DashboardHelpers.GetPreviousWeekFirstDay());
-    this.options.startDate =  DashboardHelpers.FormatDate(previousMonday);
-    this.options.endDate =  DashboardHelpers.FormatDate(new Date());
-    this.range.patchValue({
-      start: this.options.startDate,
-      end: this.options.endDate
-    });
+    this.startDate =  DashboardHelpers.FormatDate(previousMonday);
+    this.endDate =  DashboardHelpers.FormatDate(new Date());
+    this.options = { startDate: this.startDate, endDate: this.endDate };
     this.getStatistics();
   }
 
@@ -118,15 +119,17 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getStatistics() {
+    this.statData = {};
     this.subs.add(
       this.dashboardService.list(this.options).subscribe((res) => {
         this.statData = res;
+        this.isData = (this.statData && isEmpty(this.statData.results)) ? false : true;
         this.agentsSourceData = DashboardHelpers.SortStatistics(this.statData.results);
         this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.agentsSourceData['source']);
         this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['tag']);
         this.ticketsByType = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['status']);
         this.ticketsByCurrentStatus = DashboardHelpers.GetTicketsByCurrentStatus(this.agentsSourceData);
-        this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(this.statData.results);  
+        this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(this.statData.results, this.options);  
         this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.agentsSourceData);
         this.totalPublished = (this.agentsSourceData['createdVsPublished'])? this.agentsSourceData['createdVsPublished'][0][1] : null;
       })
@@ -134,8 +137,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getStatisticsByDates() {
-    this.options.startDate = DashboardHelpers.FormatDate(this.range.get('start')?.value);
-    this.options.endDate = DashboardHelpers.FormatDate(this.range.get('end')?.value);
+    this.options.startDate = DashboardHelpers.FormatDate(this.startDate);
+    this.options.endDate = DashboardHelpers.FormatDate(this.endDate);
     this.getStatistics();
   }
 

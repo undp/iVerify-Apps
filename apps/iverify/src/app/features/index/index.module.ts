@@ -27,7 +27,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDividerModule } from '@angular/material/divider';
 import { OverlayModule } from '@angular/cdk/overlay';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 
 export const routes: Routes = [
   {
@@ -78,7 +78,7 @@ export const routes: Routes = [
     OverlayModule,
     MatDialogModule
   ],
-  providers: [],
+  providers: [MatDatepickerModule],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   declarations: [IndexComponent, DashboardComponent, ChartComponent],
   exports: [IndexComponent]

@@ -109,7 +109,7 @@ export class CheckClientHelperService{
             end_time: endDate
           }
         },
-        archived: 1
+        archived: 0
       });
 
 
@@ -140,7 +140,7 @@ export class CheckClientHelperService{
             end_time: endDate
           }
         },
-        archived: 1
+        archived: 0
       });
 
       return `query {
@@ -178,7 +178,7 @@ export class CheckClientHelperService{
             end_time: endDate
           }
         },
-        archived: 1        
+        archived: 0    
       });
 
       return `query {
@@ -215,7 +215,7 @@ export class CheckClientHelperService{
     buildTicketsByTagQuery(tag){
       const searchQuery = JSON.stringify({
         tags: [tag],
-        archived: 1
+        archived: 0
       })
       return `query {
         search(query: ${JSON.stringify(searchQuery)}) {
@@ -227,7 +227,7 @@ export class CheckClientHelperService{
     buildTicketsByStatusQuery(status: string){
       const searchQuery = JSON.stringify({
         verification_status: [status],
-        archived: 1
+        archived: 0
       });
 
       return `query {
@@ -240,7 +240,7 @@ export class CheckClientHelperService{
     buildCreatedVsPublishedQuery(publishedStatus: string){
       const searchQuery = JSON.stringify({
         report_status: [publishedStatus],
-        archived: 1
+        archived: 0
       })
       return `query {
         search(query: ${JSON.stringify(searchQuery)}) {

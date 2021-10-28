@@ -18,7 +18,6 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
- // hello$ = this.http.get<Message>('/api/hello');
   ngHttpLoaderConfig = environment.ngHttpLoaderConfig;
   spinkit = Spinkit;
   subs: Subscription;
