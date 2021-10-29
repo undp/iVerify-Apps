@@ -54,6 +54,7 @@ definitions:
       - npm install -g @angular/cli
       - ng build iverify --configuration=production
       - docker build --memory 6g  --memory-swap 9g -t iverify -f .
+      - docker push iverify-$IMAGE_NAME_TAG
 
   build: &build
     name: Build
@@ -63,30 +64,33 @@ definitions:
       - docker
     script:
       #- docker build --memory 5G  --memory-swap 7G -t api -f apps/api/Dockerfile-prod .
-      - docker build --memory 6g  --memory-swap 9g -t iverify -f apps/iverify/Dockerfile .
       - docker build --memory 6g  --memory-swap 9g -t triage -f apps/triage/Dockerfile-prod .
       - docker build --memory 6G  --memory-swap 9G -t publisher -f apps/publisher/Dockerfile-prod .
 
 pipelines:
   default:
     - step: 
+        <<: *checkRepo
+    - step: 
         size: 2x
         services:
           - docker
         <<: *iverifybuild
     - step: 
         size: 2x
-        <<: *build
+        services:
+          - docker
+        <<: *buildPushTag
 
   tags:
     '*':
       - step: 
           *checkRepo
       - step: 
-        size: 2x
-        services:
-          - docker
-        <<: *iverifybuild
+          size: 2x
+          services:
+            - docker
+          <<: *iverifybuild
       - step: 
           size: 2x
           services:
