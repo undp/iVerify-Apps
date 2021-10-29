@@ -1,7 +1,7 @@
 FROM node:lts-alpine
 WORKDIR /app
 
-COPY --from=builder /workspace/dist/apps/triage .
+COPY --from=builder ./dist/apps/triage .
 
 ENV PORT=3335
 EXPOSE 3335
