@@ -44,6 +44,8 @@ definitions:
     services:
       - docker
     script:
+      - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
+      - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
       - npm install npm@latest -g
       - apt-get update 
       - apt-get install -y libgtk2.0-0   libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb
@@ -53,7 +55,9 @@ definitions:
       - export PATH=node_modules/.bin:$PATH
       - npm install -g @angular/cli
       - ng build iverify --configuration=production
-      - docker build --memory 6g  --memory-swap 9g -t iverify-$IMAGE_NAME_TAG .
+      - ls -la ./dist/apps/iverify
+      - ls -la ../../
+      - docker build --memory 6g  --memory-swap 9g -t iverify-$IMAGE_NAME_TAG -f apps/iverify/Dokerfile .
       - docker push iverify-$IMAGE_NAME_TAG
 
   build: &build
