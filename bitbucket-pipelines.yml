@@ -26,14 +26,32 @@ definitions:
       - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
       - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
       - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR
-      - docker build --memory 5G  --memory-swap 7G -t api-$IMAGE_NAME_TAG -f apps/api/Dockerfile-prod .
-      - docker push api-$IMAGE_NAME_TAG
+      #- docker build --memory 5G  --memory-swap 7G -t api-$IMAGE_NAME_TAG -f apps/api/Dockerfile-prod .
+      #- docker push api-$IMAGE_NAME_TAG
       - docker build --memory 5G  --memory-swap 7G -t iverify-$IMAGE_NAME_TAG -f apps/iverify/Dockerfile .
       - docker push iverify-$IMAGE_NAME_TAG
       - docker build --memory 5G  --memory-swap 7G -t triage-$IMAGE_NAME_TAG -f apps/triage/Dockerfile-prod .
       - docker push triage-$IMAGE_NAME_TAG
       - docker build --memory 5G  --memory-swap 7G -t publisher-$IMAGE_NAME_TAG -f apps/publisher/Dockerfile-prod .
       - docker push publisher-$IMAGE_NAME_TAG
+
+  iverifybuild: &iverifybuild
+    name: Build
+    image:
+        name: node:14.17.1 
+    caches:
+      - docker
+    services:
+      - docker
+    script:
+      - npm install npm@latest -g
+      - apt-get update 
+      - apt-get install -y libgtk2.0-0   libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb
+      - cd apps/iverify
+      - npm install
+      - npm install font-awesome
+      - ng build iverify --configuration=production
+      - docker build --memory 6g  --memory-swap 9g -t iverify -f apps/iverify/Dockerfile .
 
   build: &build
     name: Build
@@ -42,10 +60,10 @@ definitions:
     services:
       - docker
     script:
-      - docker build --memory 5G  --memory-swap 7G -t api -f apps/api/Dockerfile-prod .
-      - docker build --memory 5G  --memory-swap 7G -t iverify -f apps/iverify/Dockerfile .
-      - docker build --memory 5G  --memory-swap 7G -t triage -f apps/triage/Dockerfile-prod .
-      - docker build --memory 5G  --memory-swap 7G -t publisher -f apps/publisher/Dockerfile-prod .
+      #- docker build --memory 5G  --memory-swap 7G -t api -f apps/api/Dockerfile-prod .
+      - docker build --memory 6g  --memory-swap 9g -t iverify -f apps/iverify/Dockerfile .
+      - docker build --memory 6g  --memory-swap 9g -t triage -f apps/triage/Dockerfile-prod .
+      - docker build --memory 6G  --memory-swap 9G -t publisher -f apps/publisher/Dockerfile-prod .
 
 pipelines:
   default:
@@ -53,6 +71,9 @@ pipelines:
         size: 2x
         services:
           - docker
+        <<: *iverifybuild
+    - step: 
+        size: 2x
         <<: *build
 
   tags:
@@ -60,7 +81,14 @@ pipelines:
       - step: 
           *checkRepo
       - step: 
+        size: 2x
+        services:
+          - docker
+        <<: *iverifybuild
+      - step: 
           size: 2x
           services:
             - docker
           <<: *buildPushTag
+
+
