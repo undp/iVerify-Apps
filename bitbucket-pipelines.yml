@@ -55,8 +55,10 @@ definitions:
       - npm install -g @angular/cli
       - npm install -g nx
       - ng build iverify --configuration=production
-      - cd ../triage && npm install && nx build triage
-      - cd ../publisher && npm install && nx build publisher
+      - cd ../../
+      - npm install
+      - nx build triage 
+      - nx build publisher
     artifacts: 
       - dist/**
 

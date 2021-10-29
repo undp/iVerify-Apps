@@ -1,7 +1,7 @@
 FROM node:lts-alpine
 WORKDIR /app
 
-COPY --from=builder /workspace/dist/apps/publisher .
+COPY ./dist/apps/publisher .
 
 ENV PORT=3334
 EXPOSE 3334
