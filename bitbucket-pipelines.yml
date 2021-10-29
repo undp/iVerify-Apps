@@ -51,7 +51,7 @@ definitions:
       - npm install
       - npm install font-awesome
       - export PATH=node_modules/.bin:$PATH
-      - ng build iverify --configuration=production
+      - node_modules/.bin/ng build iverify --configuration=production
       - docker build --memory 6g  --memory-swap 9g -t iverify -f apps/iverify/Dockerfile .
 
   build: &build
