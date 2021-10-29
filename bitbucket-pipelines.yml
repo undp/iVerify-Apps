@@ -36,7 +36,7 @@ definitions:
       - docker push publisher-$IMAGE_NAME_TAG
 
   iverifybuild: &iverifybuild
-    name: Build
+    name: Build Iverify
     image:
         name: node:14.17.1 
     caches:
@@ -50,6 +50,7 @@ definitions:
       - cd apps/iverify
       - npm install
       - npm install font-awesome
+      - export PATH=node_modules/.bin:$PATH
       - ng build iverify --configuration=production
       - docker build --memory 6g  --memory-swap 9g -t iverify -f apps/iverify/Dockerfile .
 
