@@ -30,9 +30,9 @@ definitions:
       - docker push api-$IMAGE_NAME_TAG
       - docker build -t iverify-$IMAGE_NAME_TAG -f apps/iverify/Dockerfile  .
       - docker push iverify-$IMAGE_NAME_TAG
-      - docker build --memory 5G  --memory-swap 7G -t triage-$IMAGE_NAME_TAG -f apps/triage/Dockerfile-prod .
+      - docker build -t triage-$IMAGE_NAME_TAG -f apps/triage/Dockerfile-prod .
       - docker push triage-$IMAGE_NAME_TAG
-      - docker build --memory 5G  --memory-swap 7G -t publisher-$IMAGE_NAME_TAG -f apps/publisher/Dockerfile-prod .
+      - docker build -t publisher-$IMAGE_NAME_TAG -f apps/publisher/Dockerfile-prod .
       - docker push publisher-$IMAGE_NAME_TAG
   iverifybuild: &iverifybuild
     name: Build Iverify
@@ -54,8 +54,8 @@ definitions:
       - export PATH=node_modules/.bin:$PATH
       - npm install -g @angular/cli
       - ng build iverify --configuration=production
-      - cd ../triage && nx build triage
-      - cd ../publisher && nx build publisher
+      - cd ../triage && npm install && nx build triage
+      - cd ../publisher && npm install && nx build publisher
     artifacts: 
       - dist/**
 
