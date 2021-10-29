@@ -26,13 +26,14 @@ definitions:
       - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
       - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
       - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR
-      #- docker build --memory 5G  --memory-swap 7G -t api-$IMAGE_NAME_TAG -f apps/api/Dockerfile-prod .
-      #- docker push api-$IMAGE_NAME_TAG
+      - docker build --memory 5G  --memory-swap 7G -t api-$IMAGE_NAME_TAG -f apps/api/Dockerfile-prod .
+      - docker push api-$IMAGE_NAME_TAG
+      - docker build -t iverify-$IMAGE_NAME_TAG -f apps/iverify/Dockerfile  .
+      - docker push iverify-$IMAGE_NAME_TAG
       - docker build --memory 5G  --memory-swap 7G -t triage-$IMAGE_NAME_TAG -f apps/triage/Dockerfile-prod .
       - docker push triage-$IMAGE_NAME_TAG
       - docker build --memory 5G  --memory-swap 7G -t publisher-$IMAGE_NAME_TAG -f apps/publisher/Dockerfile-prod .
       - docker push publisher-$IMAGE_NAME_TAG
-
   iverifybuild: &iverifybuild
     name: Build Iverify
     image:
@@ -53,7 +54,9 @@ definitions:
       - export PATH=node_modules/.bin:$PATH
       - npm install -g @angular/cli
       - ng build iverify --configuration=production
-    artifacts: # defining the artifacts to be passed to each future step.
+      - cd ../triage && nx build triage
+      - cd ../publisher && nx build publisher
+    artifacts: 
       - dist/**
 
   build: &build
@@ -63,9 +66,7 @@ definitions:
     services:
       - docker
     script:
-      #- docker build --memory 5G  --memory-swap 7G -t api -f apps/api/Dockerfile-prod .
-      - docker build --memory 6g  --memory-swap 9g -t triage -f apps/triage/Dockerfile-prod .
-      - docker build --memory 6G  --memory-swap 9G -t publisher -f apps/publisher/Dockerfile-prod .
+
 
 pipelines:
   tags:
@@ -77,12 +78,6 @@ pipelines:
           services:
             - docker
           <<: *iverifybuild
-      - step: 
-          script:
-            - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
-            - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
-            - docker build -t iverify-$IMAGE_NAME_TAG -f apps/iverify/Dockerfile  .
-            - docker push iverify-$IMAGE_NAME_TAG
       - step: 
           size: 2x
           services:
