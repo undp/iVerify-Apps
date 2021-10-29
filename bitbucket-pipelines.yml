@@ -53,8 +53,8 @@ definitions:
       - export PATH=node_modules/.bin:$PATH
       - npm install -g @angular/cli
       - ng build iverify --configuration=production
-      - docker build --memory 6g  --memory-swap 9g -t iverify-$IMAGE_NAME_TAG  .
-      - docker push iverify-$IMAGE_NAME_TAG
+    artifacts: # defining the artifacts to be passed to each future step.
+      - dist/**
 
   build: &build
     name: Build
@@ -77,6 +77,12 @@ pipelines:
           services:
             - docker
           <<: *iverifybuild
+      - step: 
+          script:
+            - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
+            - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
+            - docker build -t iverify-$IMAGE_NAME_TAG -f apps/iverify/Dockerfile  .
+            - docker push iverify-$IMAGE_NAME_TAG
       - step: 
           size: 2x
           services:
