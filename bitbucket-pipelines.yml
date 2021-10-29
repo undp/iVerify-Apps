@@ -53,7 +53,7 @@ definitions:
       - export PATH=node_modules/.bin:$PATH
       - npm install -g @angular/cli
       - ng build iverify --configuration=production
-      - docker build --memory 6g  --memory-swap 9g -t iverify -f apps/iverify/Dockerfile .
+      - docker build --memory 6g  --memory-swap 9g -t iverify -f .
 
   build: &build
     name: Build
