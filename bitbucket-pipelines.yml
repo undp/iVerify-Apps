@@ -28,8 +28,6 @@ definitions:
       - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR
       #- docker build --memory 5G  --memory-swap 7G -t api-$IMAGE_NAME_TAG -f apps/api/Dockerfile-prod .
       #- docker push api-$IMAGE_NAME_TAG
-      - docker build --memory 5G  --memory-swap 7G -t iverify-$IMAGE_NAME_TAG -f apps/iverify/Dockerfile .
-      - docker push iverify-$IMAGE_NAME_TAG
       - docker build --memory 5G  --memory-swap 7G -t triage-$IMAGE_NAME_TAG -f apps/triage/Dockerfile-prod .
       - docker push triage-$IMAGE_NAME_TAG
       - docker build --memory 5G  --memory-swap 7G -t publisher-$IMAGE_NAME_TAG -f apps/publisher/Dockerfile-prod .
@@ -55,8 +53,6 @@ definitions:
       - export PATH=node_modules/.bin:$PATH
       - npm install -g @angular/cli
       - ng build iverify --configuration=production
-      - ls -la ./dist/apps/iverify
-      - ls -la ../../
       - docker build --memory 6g  --memory-swap 9g -t iverify-$IMAGE_NAME_TAG -f apps/iverify/Dokerfile .
       - docker push iverify-$IMAGE_NAME_TAG
 
