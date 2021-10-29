@@ -26,14 +26,14 @@ definitions:
       - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
       - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
       - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR
-      - docker build --memory 5G  --memory-swap 7G -t api-$IMAGE_NAME_TAG -f apps/api/Dockerfile-prod .
-      - docker push api-$IMAGE_NAME_TAG
-      - docker build -t iverify-$IMAGE_NAME_TAG -f apps/iverify/Dockerfile  .
-      - docker push iverify-$IMAGE_NAME_TAG
-      - docker build -t triage-$IMAGE_NAME_TAG -f apps/triage/Dockerfile-prod .
-      - docker push triage-$IMAGE_NAME_TAG
-      - docker build -t publisher-$IMAGE_NAME_TAG -f apps/publisher/Dockerfile-prod .
-      - docker push publisher-$IMAGE_NAME_TAG
+      - docker build --memory 5G  --memory-swap 7G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
+      - docker push $IMAGE_NAME_TAG-api
+      - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
+      - docker push $IMAGE_NAME_TAG-iverify
+      - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/Dockerfile-prod .
+      - docker push $IMAGE_NAME_TAG-triage
+      - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .
+      - docker push publisher-$IMAGE_NAME_TAG-publisher
   iverifybuild: &iverifybuild
     name: Build Iverify
     image:
