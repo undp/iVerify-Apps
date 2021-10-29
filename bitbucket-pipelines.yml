@@ -68,20 +68,6 @@ definitions:
       - docker build --memory 6G  --memory-swap 9G -t publisher -f apps/publisher/Dockerfile-prod .
 
 pipelines:
-  default:
-    - step: 
-        <<: *checkRepo
-    - step: 
-        size: 2x
-        services:
-          - docker
-        <<: *iverifybuild
-    - step: 
-        size: 2x
-        services:
-          - docker
-        <<: *buildPushTag
-
   tags:
     '*':
       - step: 
