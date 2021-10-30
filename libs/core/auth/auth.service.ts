@@ -30,7 +30,8 @@ export class AuthService {
     main: 'auth/login',
     me: `users/UserId?userId=:id`,
     roles: `api/${environment.api.version}/roles`,
-    permissions: `api/${environment.api.version}/permissions`
+    permissions: `api/${environment.api.version}/permissions`,
+    authCallback: 'auth/callback'
   };
 
   private _token: Token = null as any;
@@ -47,20 +48,13 @@ export class AuthService {
   }
 
   sendRequest(request: AuthRequest = {}): Observable<AuthResponse> {
+    let url = this.uris.main;
+    if (request.code) {
+      url = this.uris.authCallback;
+    }
     return this.http
-      .post<AuthResponse>(`${environment.api.base}/${this.uris.main}`, {
+      .post<AuthResponse>(`${environment.api.base}/${url}`, {
         ...request
-        // ,
-        // scope: '*' || request.scope,
-        // grant_type:
-        //   request.grant_type !== GrantType.RefreshToken
-        //     ? request.email && request.password
-        //       ? GrantType.Password
-        //       : GrantType.ClientCredentials
-        //     : request.grant_type,
-        // client_id: request.client_id || environment.authentication.client_id,
-        // client_secret:
-        //   request.client_secret || environment.authentication.client_secret
       })
       .pipe(
         switchMap(loginResponse => {

@@ -4,7 +4,6 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { UserLoggedIn } from '../actions/app.actions';
 import {
   ClearUserPermissions,
   EAuthActions,

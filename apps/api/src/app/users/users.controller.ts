@@ -4,6 +4,7 @@ import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/createUser.dto';
 import { InfoLogger } from '../logger/info-logger.service';
 import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
+import { WordpressAuthGuard } from '../guards/Wordpress-auth.guard';
 import { userMessages } from '../../constant/messages';
 import { GetUserDto } from './dto/getUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
@@ -11,7 +12,6 @@ import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { RolesGuard } from '../guards/roles.guard';
 import { PaginationQueryDto } from '../common/pagination-query.dto';
-import { SAMLAuthGuard } from '../guards/SAML-auth.guard';
 @ApiTags('users')
 @ApiBearerAuth()
 @Controller('users')

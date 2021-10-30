@@ -1,19 +1,15 @@
 import * as jwt from 'jsonwebtoken';
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, HttpService } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { InfoLogger } from '../logger/info-logger.service';
 import { environment } from '../../environments/environment'
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/user.model';
-import { Repository } from 'typeorm';
-import { Roles } from '../roles/roles.model';
-
-
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
     constructor(
+        private http: HttpService,
         @Inject(forwardRef(() => UsersService))
         private readonly usersService: UsersService,
         private infoLogger: InfoLogger
@@ -34,7 +30,6 @@ export class AuthService {
         const refreshToken = await this.createRefreshToken(user);
         this.infoLogger.log('return the token', accessToken);
         return await { accessToken, refreshToken };
-
     }
 
     async createRefreshToken(user) {
@@ -46,6 +41,25 @@ export class AuthService {
         }, environment.JWTSecretRefreshToken, { expiresIn });
         return await accessToken;
 
+    }
+
+    createTokenByCode(code: string) {
+        const queryParams = {
+            grant_type: "authorization_code",
+            code: code,
+            client_id: environment.ClientID,
+            client_secret: environment.ClientSecret,
+            redirect_uri: environment.redirect_uri,
+            state:""
+        }
+        const url = environment.WorpressUrl + 'oauth/token';
+        return this.http.post(url, queryParams).pipe(map(response => response.data));    
+    }
+
+    getUserByData(token: string) {
+        const url = environment.WorpressUrl + 'oauth/me?access_token=' + token;
+        console.log(url);
+        return this.http.get(url).pipe(map(response => response.data));
     }
 
     async validateUser(payload: JwtPayload): Promise<any> {
