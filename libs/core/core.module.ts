@@ -26,6 +26,7 @@ import { AppState } from './store/states/app.state';
 import { storageMetaReducer } from './storage.metareducer';
 import { ApiErrorInterceptor } from './interceptors/error.interceptor';
 import { StorageService } from '@iverify/core/storage/storage.service';
+import { Login } from '@iverify/core/store/actions/auth.actions';
 /**
  * DEBUGGING
  */
@@ -72,10 +73,16 @@ function initActions(auth: any, store: any) {
 
 export function appInit(auth: AuthService, store: Store<AppState>, storage: StorageService) {
   return () => {
-    // if (window.location.href.split("?").length > 1) {
-    //   storage.set('token', {'token': {"accessToken": window.location.href.split("?")[1]}, 'userData': {'email': 'fulpagare@unicc.org'}});
-    // }
-    initActions(auth, store);
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('code')) {
+      store.dispatch(
+      new Login({
+          code: params.get('code')
+        })
+      );
+    } else {
+      initActions(auth, store);
+    }
   }
 }
 

@@ -6,6 +6,7 @@ export interface AuthRequest {
   client_id?: string;
   client_secret?: string;
   refresh_token?: string;
+  code?: string;
 }
 
 export interface AuthResponse {
