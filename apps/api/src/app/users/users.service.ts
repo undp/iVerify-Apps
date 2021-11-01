@@ -44,10 +44,12 @@ export class UsersService {
     }
 
     async findOrRegister(userDto: CreateUserDto, userId: string): Promise<User> {
-        const user: User = await this.userRepository.findOne(userDto.email, {relations: ['roles']});
+        const email = userDto.email;
+        const user: User = await this.userRepository.findOne({email}, {relations: ['roles']});
         if(!user) {
             return await this.registerUser(userDto, userId);
         }
+        return user;
     }
 
     async registerUser(userDto: CreateUserDto, userId: string) {        
