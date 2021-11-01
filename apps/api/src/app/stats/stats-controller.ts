@@ -1,13 +1,11 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 
 import { Message } from '@iverify/api-interfaces';
 import { StatsService } from './stats.service';
 import { ApiProperty, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { StatsFormatService } from './stats-format.service';
-
-
-
+import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
 export class DateBraket {
 
   @ApiProperty()
@@ -43,6 +41,7 @@ export class StatsController {
   constructor(private readonly statsService: StatsService, private formatService: StatsFormatService) {}
 
   @Post('stats-by-range')
+  @UseGuards(JWTTokenAuthGuard)
   async statsByRange(@Body() body: DateBraket){
     const startDate = new Date(body['startDate']);
     const endDate = new Date(body['endDate']) 

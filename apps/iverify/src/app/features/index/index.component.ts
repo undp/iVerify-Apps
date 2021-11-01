@@ -60,7 +60,6 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
     private media: MediaMatcher
   ) {
     super();
-
     this.store = store
     this.subs = new Subscription();
     this.user$ = this.store.select(selectUser);

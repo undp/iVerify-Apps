@@ -25,7 +25,8 @@ import { appReducers } from './store/reducers/app.reducers';
 import { AppState } from './store/states/app.state';
 import { storageMetaReducer } from './storage.metareducer';
 import { ApiErrorInterceptor } from './interceptors/error.interceptor';
-
+import { StorageService } from '@iverify/core/storage/storage.service';
+import { Login } from '@iverify/core/store/actions/auth.actions';
 /**
  * DEBUGGING
  */
@@ -47,7 +48,7 @@ export const BASE_PROVIDERS: any[] = [
   {
     provide: APP_INITIALIZER,
     useFactory: appInit,
-    deps: [AuthService, Store],
+    deps: [AuthService, Store, StorageService],
     multi: true
   },
   { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -70,9 +71,18 @@ function initActions(auth: any, store: any) {
     }
 }
 
-export function appInit(auth: AuthService, store: Store<AppState>) {
+export function appInit(auth: AuthService, store: Store<AppState>, storage: StorageService) {
   return () => {
-    initActions(auth, store);
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('code')) {
+      store.dispatch(
+      new Login({
+          code: params.get('code')
+        })
+      );
+    } else {
+      initActions(auth, store);
+    }
   }
 }
 

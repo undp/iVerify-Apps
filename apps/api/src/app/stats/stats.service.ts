@@ -163,7 +163,6 @@ export class StatsService{
         const searchStart = new Date(end.getTime());
         searchStart.setHours(endDate.getHours() -24);
         const formattedSearchStart = this.formatService.formatDate(searchStart);
-        console.log({formattedSearchStart, formattedEnd})
 
         const latestStats: Stats[] = await this.statsRepository.find({
             where: {
