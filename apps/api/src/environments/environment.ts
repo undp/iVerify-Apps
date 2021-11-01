@@ -6,7 +6,7 @@ export const environment = {
   JWTSecretRefreshToken: 'UmavWLNIMKfsF359Uz8dlLWZkwMeGsLM',
   ClientID: 'BXh9T50VmIHw9CPycvVAziPOtIUgFPJaqgS2o0jV',
   ClientSecret: '0uNZb7tEqcxueUe1D3VhmCDmMVwGBNhKV97BnZXY',
-  redirect_uri: 'http://localhost:4300/',
+  redirect_uri: 'http://20.93.245.255/',
   WorpressUrl: 'https://iverify.org.zm/',
   WPPassword: 'RHc6RJuW*f4FMmOPKao(q(Hh'
 };
