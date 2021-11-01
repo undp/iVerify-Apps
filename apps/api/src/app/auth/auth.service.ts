@@ -3,7 +3,7 @@ import { forwardRef, Inject, Injectable, HttpService } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { InfoLogger } from '../logger/info-logger.service';
-import { environment } from '../../environments/environment'
+import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
 @Injectable()
@@ -58,7 +58,6 @@ export class AuthService {
 
     getUserByData(token: string) {
         const url = environment.WorpressUrl + 'oauth/me?access_token=' + token;
-        console.log(url);
         return this.http.get(url).pipe(map(response => response.data));
     }
 

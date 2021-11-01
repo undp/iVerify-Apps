@@ -8,4 +8,5 @@ export const environment = {
   ClientSecret: '0uNZb7tEqcxueUe1D3VhmCDmMVwGBNhKV97BnZXY',
   redirect_uri: 'http://localhost:4300/',
   WorpressUrl: 'https://iverify.org.zm/',
+  WPPassword: 'RHc6RJuW*f4FMmOPKao(q(Hh'
 };
