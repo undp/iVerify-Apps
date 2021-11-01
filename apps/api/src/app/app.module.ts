@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { environment } from '../environments/environment';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 
