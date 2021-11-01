@@ -11,12 +11,12 @@ import { WordpressAuthGuard } from '../guards/Wordpress-auth.guard';
 import { userMessages } from '../../constant/messages';
 import { isEmpty } from 'lodash';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
-        private readonly userService: UsersService
         @Inject(forwardRef(() => UsersService))
         private readonly usersService: UsersService, 
         private InfoLogger: InfoLogger) {
@@ -61,12 +61,12 @@ export class AuthController {
                         "firstName": wpUserData.user_nicename,
                         "lastName": wpUserData.display_name,
                         "email": wpUserData.user_email,
-                        "password": "password",
+                        "password": environment.WPPassword,
                         "roles": [{name: "admin"}],
                         "phone":"",
                         "address":""
                     };
-                    userData = await this.userService.registerUser(userPostBody, null);
+                    userData = await this.usersService.registerUser(userPostBody, null);
                 }
                 // End
                 const token = await this.authService.createToken(userData);
