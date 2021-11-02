@@ -33,7 +33,7 @@ definitions:
       - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/Dockerfile-prod .
       - docker push $IMAGE_NAME_TAG-triage
       - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .
-      - docker push publisher-$IMAGE_NAME_TAG-publisher
+      - docker push $IMAGE_NAME_TAG-publisher
   iverifybuild: &iverifybuild
     name: Build Iverify
     image:
