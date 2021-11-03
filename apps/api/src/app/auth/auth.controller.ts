@@ -50,6 +50,7 @@ export class AuthController {
            const result = await this.authService.createTokenByCode(query.code)
            .pipe(
            catchError((error) => {
+               console.log(error);
                throw new BadGatewayException(); 
            })).toPromise();
             if (result.access_token && result.refresh_token) {
