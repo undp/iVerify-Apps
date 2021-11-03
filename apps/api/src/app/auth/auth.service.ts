@@ -52,12 +52,12 @@ export class AuthService {
             redirect_uri: environment.redirect_uri,
             state:""
         }
-        const url = environment.WorpressUrl + 'oauth/token';
+        const url = process.env.WP_URL + 'oauth/token';
         return this.http.post(url, queryParams).pipe(map(response => response.data));    
     }
 
     getUserByData(token: string) {
-        const url = environment.WorpressUrl + 'oauth/me?access_token=' + token;
+        const url = process.env.WP_URL + 'oauth/me?access_token=' + token;
         return this.http.get(url).pipe(map(response => response.data));
     }
 
