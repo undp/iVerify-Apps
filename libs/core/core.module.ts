@@ -65,6 +65,15 @@ function initActions(auth: any, store: any) {
     if (token && auth.hasRefreshToken(token)) {
       store.dispatch(new GetCurrentUser());
       store.dispatch(new UserLoggedIn());
+    } else {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('code')) {
+        store.dispatch(
+        new Login({
+            code: params.get('code')
+          })
+        );
+      }
     }
     if (!token) {
       store.dispatch(new LogoutSuccess());
@@ -73,16 +82,7 @@ function initActions(auth: any, store: any) {
 
 export function appInit(auth: AuthService, store: Store<AppState>, storage: StorageService) {
   return () => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('code')) {
-      store.dispatch(
-      new Login({
-          code: params.get('code')
-        })
-      );
-    } else {
-      initActions(auth, store);
-    }
+    initActions(auth, store);
   }
 }
 
