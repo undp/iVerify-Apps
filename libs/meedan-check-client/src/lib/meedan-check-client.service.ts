@@ -33,7 +33,6 @@ export class MeedanCheckClientService {
   getMeedanReport(id: string): Observable<any> {
     const query: string = this.helper.buildGetMeedanReportQuery(id);
     const headers = this.config.headers;
-    console.log(query)
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
       map(res => res.data.data.project_media.annotation.data.options[0]),
       retry(3),
