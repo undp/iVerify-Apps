@@ -50,6 +50,7 @@ export class AuthController {
            const result = await this.authService.createTokenByCode(query.code)
            .pipe(
            catchError((error) => {
+               console.log(error);
                throw new BadGatewayException(); 
            })).toPromise();
             if (result.access_token && result.refresh_token) {
@@ -60,7 +61,7 @@ export class AuthController {
                         "firstName": wpUserData.user_nicename,
                         "lastName": wpUserData.display_name,
                         "email": wpUserData.user_email,
-                        "password": environment.WPPassword,
+                        "password": environment.wpPassword,
                         "roles": [{name: "admin"}],
                         "phone":"",
                         "address":""
