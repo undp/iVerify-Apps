@@ -9,10 +9,10 @@ export class WordpressStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
     super(
       {
-        clientID: environment.clientID,
-        clientSecret: environment.clientSecret,
-        callbackURL: environment.redirectUri,
-        authorizationURL: environment.wpUrl + '/oauth/authorize'
+        clientID: environment.ClientID,
+        clientSecret: environment.ClientSecret,
+        callbackURL: environment.redirect_uri,
+        authorizationURL: environment.WordpressUrl + 'oauth/authorize'
       }
     );
   }
