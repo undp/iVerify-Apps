@@ -7,5 +7,6 @@ export const environment = {
   clientID: 'BXh9T50VmIHw9CPycvVAziPOtIUgFPJaqgS2o0jV',
   clientSecret: '0uNZb7tEqcxueUe1D3VhmCDmMVwGBNhKV97BnZXY',
   redirectUri: 'http://20.93.245.255/',
-  wpPassword: 'RHc6RJuW*f4FMmOPKao(q(Hh'
+  wpPassword: 'RHc6RJuW*f4FMmOPKao(q(Hh',
+  wordpressAppUrl: 'https://iverify.org.zm'
 };
