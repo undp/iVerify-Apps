@@ -12,11 +12,8 @@ export class WordpressStrategy extends PassportStrategy(Strategy) {
         clientID: environment.clientID,
         clientSecret: environment.clientSecret,
         callbackURL: environment.redirectUri,
-        authorizationURL: process.env.WP_URL + '/oauth/authorize'
+        authorizationURL: process.env.WP_URL + 'oauth/authorize'
       }
     );
-  }
-
-  async validate(accessToken: any, refreshToken: any, profile: any, done: any): Promise<any> {
   }
 }
