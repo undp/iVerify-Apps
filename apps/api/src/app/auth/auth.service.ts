@@ -52,12 +52,12 @@ export class AuthService {
             redirect_uri: environment.redirect_uri,
             state:""
         }
-        const url = environment.WordpressUrl + '/oauth/token';
+        const url = environment.WordpressUrl + 'oauth/token';
         return this.http.post(url, queryParams).pipe(map(response => response.data));    
     }
 
     getUserByData(token: string) {
-        const url = environment.WordpressUrl + '/oauth/me?access_token=' + token;
+        const url = environment.WordpressUrl + 'oauth/me?access_token=' + token;
         return this.http.get(url).pipe(map(response => response.data));
     }
 
