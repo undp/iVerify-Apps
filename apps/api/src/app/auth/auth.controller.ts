@@ -51,7 +51,7 @@ export class AuthController {
            .pipe(
            catchError((error) => {
                console.log(error);
-               throw new BadGatewayException(); 
+               throw new error; 
            })).toPromise();
             if (result.access_token && result.refresh_token) {
                 /* Find and create */
@@ -61,7 +61,7 @@ export class AuthController {
                         "firstName": wpUserData.user_nicename,
                         "lastName": wpUserData.display_name,
                         "email": wpUserData.user_email,
-                        "password": environment.wpPassword,
+                        "password": environment.WPPassword,
                         "roles": [{name: "admin"}],
                         "phone":"",
                         "address":""
