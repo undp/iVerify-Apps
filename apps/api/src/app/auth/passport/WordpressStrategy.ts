@@ -12,7 +12,7 @@ export class WordpressStrategy extends PassportStrategy(Strategy) {
         clientID: environment.clientID,
         clientSecret: environment.clientSecret,
         callbackURL: environment.redirectUri,
-        authorizationURL: environment.worpressUrl + 'oauth/authorize'
+        authorizationURL: process.env.WP_URL + '/oauth/authorize'
       }
     );
   }
