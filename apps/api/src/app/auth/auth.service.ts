@@ -26,7 +26,7 @@ export class AuthService {
             roles: user.roles
         };
         const expiresIn = environment.tokenExpTime;
-        const accessToken = jwt.sign(userObj, environment.JWTsecret, { expiresIn });
+        const accessToken = jwt.sign(userObj, environment.jWTsecret, { expiresIn });
         const refreshToken = await this.createRefreshToken(user);
         this.infoLogger.log('return the token', accessToken);
         return await { accessToken, refreshToken };
@@ -38,7 +38,7 @@ export class AuthService {
         const accessToken = jwt.sign({
             id: user.id,
             email: user.email
-        }, environment.JWTSecretRefreshToken, { expiresIn });
+        }, environment.jWTSecretRefreshToken, { expiresIn });
         return await accessToken;
 
     }
@@ -47,17 +47,17 @@ export class AuthService {
         const queryParams = {
             grant_type: "authorization_code",
             code: code,
-            client_id: environment.ClientID,
-            client_secret: environment.ClientSecret,
-            redirect_uri: environment.redirect_uri,
+            client_id: environment.clientID,
+            client_secret: environment.clientSecret,
+            redirect_uri: environment.redirectUri,
             state:""
         }
-        const url = environment.WorpressUrl + 'oauth/token';
+        const url = environment.worpressUrl + 'oauth/token';
         return this.http.post(url, queryParams).pipe(map(response => response.data));    
     }
 
     getUserByData(token: string) {
-        const url = environment.WorpressUrl + 'oauth/me?access_token=' + token;
+        const url = environment.worpressUrl + 'oauth/me?access_token=' + token;
         return this.http.get(url).pipe(map(response => response.data));
     }
 

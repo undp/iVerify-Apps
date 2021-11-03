@@ -60,7 +60,7 @@ export class AuthController {
                         "firstName": wpUserData.user_nicename,
                         "lastName": wpUserData.display_name,
                         "email": wpUserData.user_email,
-                        "password": environment.WPPassword,
+                        "password": environment.wpPassword,
                         "roles": [{name: "admin"}],
                         "phone":"",
                         "address":""
