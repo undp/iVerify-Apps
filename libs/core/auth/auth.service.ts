@@ -109,14 +109,6 @@ export class AuthService {
     if (this.hasRefreshToken(this._token)) {
       this.router.navigate(['/']);
     }
-    // return this.sendRequest(
-    //   {
-    //     client_id: environment.authentication.client_id,
-    //     client_secret: environment.authentication.client_secret,
-    //     grant_type: GrantType.RefreshToken,
-    //     refresh_token: this._token.refreshToken
-    //   }
-    // );
     return of(null);
   }
 
