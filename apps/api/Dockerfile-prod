@@ -25,7 +25,11 @@ RUN nx build --maxWorkers=1 --memoryLimit=5120 api
 FROM node:lts-alpine
 WORKDIR /app
 
+RUN addgroup -g 1001 -S iverify && adduser -u 1001 -S iverify  -G iverify 
+USER iverify
+
 COPY --from=builder /workspace/dist/apps/api .
+
 
 ENV PORT=3333
 EXPOSE 3333
