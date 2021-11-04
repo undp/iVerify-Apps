@@ -30,7 +30,7 @@ RUN chown -R iverify:iverify /app
 
 USER iverify
 
-COPY --from=builder /workspace/dist/apps/api
+COPY --from=builder /workspace/dist/apps/api .
 RUN chmod -R 700 iverify:iverify /app
 
 ENV PORT=3333
