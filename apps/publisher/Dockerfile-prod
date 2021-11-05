@@ -2,11 +2,11 @@ FROM node:lts-alpine
 WORKDIR /app
 
 RUN addgroup -g 1001 -S iverify && adduser -u 1001 -S iverify  -G iverify 
+COPY ./dist/apps/publisher .
+RUN chmod 750 -R /app
 RUN chown -R iverify:iverify /app
 
 USER iverify
-
-COPY ./dist/apps/publisher .
 
 ENV PORT=3334
 EXPOSE 3334
