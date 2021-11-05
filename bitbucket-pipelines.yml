@@ -69,9 +69,24 @@ definitions:
     services:
       - docker
     script:
-
+      - export IMAGE_NAME_TAG=build
+      - docker build --memory 5G  --memory-swap 7G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
+      - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
+      - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/Dockerfile-prod .
+      - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .
 
 pipelines:
+  default:
+    - step: 
+        size: 2x
+        services:
+          - docker
+        <<: *iverifybuild
+    - step: 
+        size: 2x
+        services:
+          - docker
+        <<: *build
   tags:
     '*':
       - step: 
