@@ -71,7 +71,7 @@ export class CheckClientHelperService{
     }
 
     buildCreateItemFromWPMutation(url: string, content: string): string{
-      const folderId = 11193;
+      const folderId = +process.env.CHECK_TIPLINE_FOLDER_ID;
       const taskResponse = JSON.stringify({
         mensaje_del_sitio_web: content
       })
