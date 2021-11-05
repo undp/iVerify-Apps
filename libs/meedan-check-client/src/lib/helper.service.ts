@@ -79,7 +79,7 @@ export class CheckClientHelperService{
           createProjectMedia(input: {
             project_id: ${folderId},
             url: "${url}",
-            set_tasks_responses: ${taskResponse},
+            set_tasks_responses: ${JSON.stringify(taskResponse)},
             clientMutationId: "1"
           }) {
             project_media {

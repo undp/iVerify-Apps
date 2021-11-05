@@ -73,7 +73,10 @@ export class MeedanCheckClientService {
 
   createItemFromWp(url: string, content: string): Observable<any>{
     const query: string = this.helper.buildCreateItemFromWPMutation(url, content);
+    console.log('query: ', query)
     const headers = this.config.headers;
+    console.log('headers: ', headers)
+
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
       map(res => res.data),
       retry(3),
