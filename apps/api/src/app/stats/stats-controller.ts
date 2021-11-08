@@ -41,7 +41,7 @@ export class StatsController {
   constructor(private readonly statsService: StatsService, private formatService: StatsFormatService) {}
 
   @Post('stats-by-range')
-  @UseGuards(JWTTokenAuthGuard)
+  // @UseGuards(JWTTokenAuthGuard)
   async statsByRange(@Body() body: DateBraket){
     const startDate = new Date(body['startDate']);
     const endDate = new Date(body['endDate']) 
