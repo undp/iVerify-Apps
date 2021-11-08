@@ -94,10 +94,10 @@ export class StatsController {
     return await this.statsService.getTicketsByTags(endDate);
   }
 
-  // @Post('tickets-by-type')
-  // async getTicketsByType(@Body() body: DateBraket) {
-  //   const startDate = this.formatService.formatDate(new Date(body['startDate']));
-  //   const endDate = this.formatService.formatDate(new Date(body['endDate']));
-  //   return await this.statsService.getTicketsByType(startDate, endDate);
-  // }
+  @Post('tickets-by-type')
+  async getTicketsByType(@Body() body: DateBraket) {
+    const startDate = this.formatService.formatDate(new Date(body['startDate']));
+    const endDate = this.formatService.formatDate(new Date(body['endDate']));
+    return await this.statsService.getTicketsByType(startDate, endDate);
+  }
 }
