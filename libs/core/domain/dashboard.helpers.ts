@@ -56,8 +56,8 @@ const GetTicketsByTag = (res: any[]) => {
   let processedData: any = [];
   if (!isEmpty(res)) {
     const len = res.length;
-    let sortData = res[len - 1][1]; //orderBy(res[len - 1][1], ['count'], ['desc']);    
-    sortData = sortData.filter((item: any) => item.category !== 'Unstarted' && item.category !== 'In Progress');
+    let sortData = res[len - 1][1]; // orderBy(res[len - 1][1], ['count'], ['desc']);    
+    sortData = sortData.filter((item: any) => item.category !== 'Unstarted' && item.category !== 'In Progress' && item.count !== 0);
     sortData.forEach((value: TicketCatResFormat, index: number) => {
       if (!isEmpty(value.category) && index < showItems) {
         const category = {
