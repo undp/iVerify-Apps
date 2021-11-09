@@ -55,11 +55,13 @@ export class StatsFormatService{
         return [];
     }
 
-    formatTticketsByTags(endDate: string, results): Stats[]{
+    formatTticketsByTags(endDate: string, results): Stats[] {
         
         const count = results.reduce((acc, val) => {
-            const tag: string = val.tag;
-            acc[tag] = val.search.number_of_results;
+            if (val.search.number_of_results > 0) {
+                const tag: string = val.tag;
+                acc[tag] = val.search.number_of_results;
+            }
             return acc;
         }, {});
         return this.buildStatsFromCount(endDate, count, CountBy.tag);
@@ -67,19 +69,6 @@ export class StatsFormatService{
 
     formatTticketsByStatus(endDate: string, results: any): Stats[]{
         
-// [
-//   {
-//     "search": {
-//       "number_of_results": 45
-//     },
-//     "status": "undetermined"
-//   },
-//   {
-//     "search": {
-//       "number_of_results": 14
-//     },
-//     "status": "in_progress"
-//   },
         const count = results.reduce((acc, val) => {
             const status: string = StatusesMap.find(i => i.value === val.status).label;
             acc[status] = val.search.number_of_results;
@@ -119,8 +108,6 @@ export class StatsFormatService{
             
         }, {});
 
-        console.log('solvedCount'); 
-        console.log(solvedCount); 
         return this.buildStatsFromCount(endDate, solvedCount, CountBy.type);
     }
 
@@ -165,6 +152,19 @@ export class StatsFormatService{
             acc.push(stat);
             return acc;
         }, [])
+    }
+
+    getStartEndDates(day) {
+        const endDate = this.formatDate(new Date(day));
+
+        const start = new Date(day);
+        const previousDay = new Date(start.getTime());
+        previousDay.setHours(start.getHours() -24);
+
+        const startDate = this.formatDate(previousDay);
+
+        return {startDate: startDate, endDate: endDate}
+
     }
 
 }
