@@ -71,7 +71,9 @@ export class StatsFormatService{
         
         const count = results.reduce((acc, val) => {
             const status: string = StatusesMap.find(i => i.value === val.status).label;
-            acc[status] = val.search.number_of_results;
+            if (val.search.number_of_results > 0) {
+                acc[status] = val.search.number_of_results;
+            }
             return acc;
         }, {});
         return this.buildStatsFromCount(endDate, count, CountBy.status);
