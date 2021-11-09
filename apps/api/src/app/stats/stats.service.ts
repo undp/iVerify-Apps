@@ -1,10 +1,8 @@
 import { HttpException, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Between, Equal, In, LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm";
-import { InfoLogger } from "../logger/info-logger.service";
+import { Between, In, Repository } from "typeorm";
 import { Stats } from "./models/stats.model";
 import { DateTime, Interval } from 'luxon';
-import { EnumValues } from 'enum-values';
 
 import { StatsFormatService } from "./stats-format.service";
 import { CheckStatsService } from "libs/meedan-check-client/src/lib/check-stats.service";
@@ -69,6 +67,7 @@ export class StatsService{
             const ticketsBySource: Stats[] = await this.getTicketsBySource(startDate, endDate);
             this.logger.log('Fetching tickes by publication..');
             const createdVsPublished: Stats[] = await this.getCreatedVsPublished(endDate);
+            this.logger.log('Fetching tickes by type..');
             const ticketsByType: Stats[] = await this.getTicketsByType(startDate, endDate);
             // const ticketsByChannel: Stats[] = await this.getTicketsByChannel(startDate, endDate);
             const stats: Stats[] = [
@@ -81,7 +80,7 @@ export class StatsService{
                 // ...this.formatService.formatTticketsByChannel(ticketsByChannel),
                 // ...this.formatService.formatTticketsByType(ticketsByType),
             ]
-            this.logger.log('Saving to DB...')
+            this.logger.log('Saving to DB...');
             return await this.saveMany(stats);
         }catch(e){
             throw new HttpException(e.message, 500);
@@ -133,6 +132,8 @@ export class StatsService{
 
     private async saveOne(stat: Partial<Stats>){
         const newRecord = await this.statsRepository.create(stat);
+        // console.log(stat);
+        // console.log(newRecord);
         return this.statsRepository.save(newRecord);
     }
 

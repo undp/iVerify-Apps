@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, AfterViewInit} from '@angular/core';
 import { DashboardHelpers } from '@iverify/core/domain/dashboard.helpers';
 import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { isEmpty } from 'lodash';
@@ -121,15 +122,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   getStatistics() {
     this.statData = {};
     this.subs.add(
-      this.dashboardService.list(this.options).subscribe((res) => {
-        this.statData = res;
-        this.isData = (this.statData && isEmpty(this.statData.results)) ? false : true;
-        this.agentsSourceData = DashboardHelpers.SortStatistics(this.statData.results);
+      this.dashboardService.list(this.options)
+      .pipe(map(res => res.results))
+      .subscribe((res) => {
+        this.isData = (res && isEmpty(res)) ? false : true;
+        this.agentsSourceData = DashboardHelpers.SortStatistics(res);
         this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.agentsSourceData['source']);
         this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['tag']);
-        this.ticketsByType = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['status']);
+        this.ticketsByType = DashboardHelpers.GetTicketsByType(this.agentsSourceData['type']);
         this.ticketsByCurrentStatus = DashboardHelpers.GetTicketsByCurrentStatus(this.agentsSourceData);
-        this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(this.statData.results, this.options);  
+        this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(res, this.options);  
         this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.agentsSourceData);
         this.totalPublished = (this.agentsSourceData['createdVsPublished'])? this.agentsSourceData['createdVsPublished'][0][1] : null;
       })

@@ -20,6 +20,22 @@ const SortStatistics = (results: any) => {
   return data;
 }
 
+const GetTicketsByType = (res: any) => {
+  let processedData: any = [];
+  if (!isEmpty(res)) {
+    res.forEach((value: string[], index: number) => {
+      if (!isEmpty(value[0]) && index < showItems) {
+        const category = {
+          name: value[0],
+          value: value[1]
+        };
+        processedData.push(category);
+      }
+    });
+  }
+  return processedData;
+}
+
 const GetTicketsByChannel = (res: any) => {
   let processedData: any = [];
   if (!isEmpty(res)) {
@@ -40,8 +56,8 @@ const GetTicketsByTag = (res: any[]) => {
   let processedData: any = [];
   if (!isEmpty(res)) {
     const len = res.length;
-    let sortData = orderBy(res[len - 1][1], ['count'], ['desc']);    
-    sortData = sortData.filter(item => item.category !== 'Unstarted' && item.category !== 'In Progress');
+    let sortData = res[len - 1][1]; //orderBy(res[len - 1][1], ['count'], ['desc']);    
+    sortData = sortData.filter((item: any) => item.category !== 'Unstarted' && item.category !== 'In Progress');
     sortData.forEach((value: TicketCatResFormat, index: number) => {
       if (!isEmpty(value.category) && index < showItems) {
         const category = {
@@ -258,5 +274,6 @@ export const DashboardHelpers = {
   GetTicketsByAgents,
   GetFirstLastDayMonth,
   GetTicketsByWeek,
-  GetPreviousWeekFirstDay
+  GetPreviousWeekFirstDay,
+  GetTicketsByType
 };
