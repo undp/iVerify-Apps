@@ -28,7 +28,7 @@ export class CheckStatsService{
         );          
     }
 
-    getTicketsByTags(): Observable<any>{
+    getTicketsByTags(startDate: string, endDate: string): Observable<any>{
         const team = this.config.checkApiTeam;
         const headers = this.config.headers;
         const query = this.helper.buildTeamTagsQuery(team);
@@ -36,7 +36,7 @@ export class CheckStatsService{
             map(res => res.data.data.team.tag_texts.edges.map(node => node.node.text)),
             retry(3),
             concatMap(tags => from(tags)),
-            concatMap(tag => this.getTicketsByTag(tag)),
+            concatMap(tag => this.getTicketsByTag(startDate, endDate, tag)),
             reduce((acc, val) => ([...acc, val]), []),
             catchError(err => {
             this.logger.error('Error getting tickets by agent: ', err.message)
@@ -45,8 +45,8 @@ export class CheckStatsService{
         );
     }
 
-    getTicketsByTag(tag): Observable<any>{
-        const query: string = this.helper.buildTicketsByTagQuery(tag);
+    getTicketsByTag(startDate: string, endDate: string, tag): Observable<any>{
+        const query: string = this.helper.buildTicketsByTagQuery(startDate, endDate, tag);
         const headers = this.config.headers;
         return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
             map(res => ({...res.data.data, tag})),
@@ -58,16 +58,16 @@ export class CheckStatsService{
         );
     };
 
-    getTicketsByStatuses(): Observable<any>{
+    getTicketsByStatuses(startDate: string, endDate: string): Observable<any>{
         const statuses = StatusesMap.map(i => i.value);
         return from(statuses).pipe(
-            concatMap(status => this.getTicketsByStatus(status)),
+            concatMap(status => this.getTicketsByStatus(startDate, endDate, status)),
             reduce((acc, val) => ([...acc, val]), [])
         )
     }
 
-    getTicketsByStatus(status: string): Observable<any>{
-        const query: string = this.helper.buildTicketsByStatusQuery(status);
+    getTicketsByStatus(startDate: string, endDate: string, status: string): Observable<any>{
+        const query: string = this.helper.buildTicketsByStatusQuery(startDate, endDate, status);
         const headers = this.config.headers;
         return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
             map(res => ({...res.data.data, status})),
@@ -118,15 +118,15 @@ export class CheckStatsService{
         );
     };
 
-    getCreatedVsPublished(): Observable<any>{
+    getCreatedVsPublished(startDate: string, endDate: string): Observable<any>{
         return from(['published', 'unpublished']).pipe(
-            concatMap(status => this.getCreatedOrPublished(status)),
+            concatMap(status => this.getCreatedOrPublished(startDate, endDate, status)),
             reduce((acc, val) => ([...acc, val]), [])
         )
     }
 
-    getCreatedOrPublished(status: string): Observable<any>{
-        const query: string = this.helper.buildCreatedVsPublishedQuery(status);
+    getCreatedOrPublished(startDate: string, endDate: string, status: string): Observable<any>{
+        const query: string = this.helper.buildCreatedVsPublishedQuery(startDate, endDate, status);
         const headers = this.config.headers;
         return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
             map(res => ({...res.data.data, status})),

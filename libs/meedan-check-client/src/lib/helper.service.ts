@@ -212,8 +212,15 @@ export class CheckClientHelperService{
       }`
     }
 
-    buildTicketsByTagQuery(tag){
+    buildTicketsByTagQuery(startDate: string, endDate: string, tag) {
+      
       const searchQuery = JSON.stringify({
+        range: {
+          created_at: {
+            start_time: startDate,
+            end_time: endDate
+          }
+        },
         tags: [tag],
         archived: 0
       })
@@ -224,8 +231,14 @@ export class CheckClientHelperService{
       }`
     }
 
-    buildTicketsByStatusQuery(status: string){
+    buildTicketsByStatusQuery(startDate: string, endDate: string, status: string){
       const searchQuery = JSON.stringify({
+        range: {
+          created_at: {
+            start_time: startDate,
+            end_time: endDate
+          }
+        },
         verification_status: [status],
         archived: 0
       });
@@ -237,8 +250,14 @@ export class CheckClientHelperService{
       }`
     }
 
-    buildCreatedVsPublishedQuery(publishedStatus: string){
+    buildCreatedVsPublishedQuery(startDate: string, endDate: string, publishedStatus: string){
       const searchQuery = JSON.stringify({
+        range: {
+          created_at: {
+            start_time: startDate,
+            end_time: endDate
+          }
+        },
         report_status: [publishedStatus],
         archived: 0
       })
