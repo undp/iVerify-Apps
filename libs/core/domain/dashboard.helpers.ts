@@ -20,6 +20,22 @@ const SortStatistics = (results: any) => {
   return data;
 }
 
+const GetTicketsByType = (res: any) => {
+  let processedData: any = [];
+  if (!isEmpty(res)) {
+    res.forEach((value: string[], index: number) => {
+      if (!isEmpty(value[0]) && index < showItems) {
+        const category = {
+          name: value[0],
+          value: value[1]
+        };
+        processedData.push(category);
+      }
+    });
+  }
+  return processedData;
+}
+
 const GetTicketsByChannel = (res: any) => {
   let processedData: any = [];
   if (!isEmpty(res)) {
@@ -258,5 +274,6 @@ export const DashboardHelpers = {
   GetTicketsByAgents,
   GetFirstLastDayMonth,
   GetTicketsByWeek,
-  GetPreviousWeekFirstDay
+  GetPreviousWeekFirstDay,
+  GetTicketsByType
 };

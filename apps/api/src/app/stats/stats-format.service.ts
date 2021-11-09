@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CountBy, StatusesMap } from "@iverify/iverify-common";
 import { Stats } from "./models/stats.model";
+import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 
 @Injectable()
 export class StatsFormatService{
@@ -103,17 +104,24 @@ export class StatsFormatService{
         const edges: any[] = results.search.medias.edges;
         const solved = edges.filter(val => this.resolutionStatuses.indexOf(val.node.status) > -1);
 
-
         const solvedCount = solved.reduce((acc, val) => {
             const tasksEdges = val.node.tasks.edges;
-            const nodeType = tasksEdges.find(taskNode => taskNode.node.label === 'Type of Violation');
-            const violationType = nodeType ? nodeType.first_response_value : null;
-            if(violationType && !acc[violationType]) acc[violationType] = 1;
-            else acc[violationType]++;
+            const nodeType = tasksEdges.find(taskNode => taskNode.node.label == 'Type of Violation');
+            const violationType = nodeType && nodeType.node ? nodeType.node.first_response_value : null;
+            if (violationType.length > 0) {
+                if (acc && violationType && !acc[violationType]) {
+                    acc[violationType] = 1;
+                } else {
+                    acc[violationType]++;
+                }
+            }
             return acc;
+            
         }, {});
 
-        return this.buildStatsFromCount(endDate, solvedCount, CountBy.type)
+        console.log('solvedCount'); 
+        console.log(solvedCount); 
+        return this.buildStatsFromCount(endDate, solvedCount, CountBy.type);
     }
 
     formatCreatedVsPublished(endDate, results): Stats[]{
@@ -143,7 +151,10 @@ export class StatsFormatService{
         }
     }
 
-    private buildStatsFromCount(day, count: Object, countBy: CountBy){
+    private buildStatsFromCount(day, count: Object, countBy: CountBy) {
+        if (Object.keys(count).length === 0) {
+            return [];
+        }
         return Object.keys(count).reduce((acc, val) => {
             const stat: Partial<Stats> = {
                 day,
