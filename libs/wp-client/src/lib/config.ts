@@ -16,8 +16,7 @@ export class WpConfig{
 
     readonly authParams = {
         username: process.env.WP_USERNAME,
-        password: 'VqpZ GKHH 83jj Bbi3 5Wi9 6LjP'
-        // password: process.env.WP_PASSWORD
+        password: process.env.WP_PASSWORD
 
     }
 

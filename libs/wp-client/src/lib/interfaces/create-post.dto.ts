@@ -45,7 +45,8 @@ export enum TasksLabels{
     rating_justification = 'Justificación de la evaluación',
     evidences_and_references = 'Evidencia y Referencias',
     card_title = 'Card Title',
-    toxic = 'Tóxico (puntuación)'
+    toxic = 'Tipo de discurso de odio'
+    
 }
 
 
