@@ -287,19 +287,6 @@ const GetTicketsByWeek = (res: any, dates: any) => {
         });
 
         if (!isEmpty(publishedTicketsWeek)) {
-
-            // let temp = publishedTicketsWeek.map((itemVal: any) => {
-            //   return uniqBy(itemVal[1], 'category');
-            // });
-
-            // temp = flatten(temp);
-            // let sortedPublished = orderBy(temp, ['count'], ['desc']); 
-            // sortedPublished = sortedPublished.filter((it: any) => it.category === 'published');
-            // const publishedCount = sortedPublished.reduce((acc, val) => {
-            //     acc = acc + val.count;          
-            //     return acc;
-            // }, 0);
-
           const completedCount = GetTotalCount(publishedTicketsWeek, 'published');
           if (completedCount > 0) {
             let temp = {
@@ -310,7 +297,6 @@ const GetTicketsByWeek = (res: any, dates: any) => {
           }
         }
       });
-      
     }
   }
 
