@@ -59,15 +59,15 @@ export class StatsService{
             this.logger.log('Fetching tickes by agent..');
             const ticketsByAgent: Stats[] = await this.getTicketsByAgent(startDate, endDate);
             this.logger.log('Fetching tickes by tags..');
-            const ticketsByTag: Stats[] = await this.getTicketsByTags(startDate, endDate);
+            const ticketsByTag: Stats[] = await this.getTicketsByTags(endDate, endDate);
             this.logger.log('Fetching tickes by status..');
-            const ticketsByStatus: Stats[] = await this.getTicketsByStatus(startDate, endDate);
+            const ticketsByStatus: Stats[] = await this.getTicketsByStatus(endDate, endDate);
             this.logger.log('Fetching tickes by source..');
             const ticketsBySource: Stats[] = await this.getTicketsBySource(startDate, endDate);
             this.logger.log('Fetching tickes by publication..');
-            const createdVsPublished: Stats[] = await this.getCreatedVsPublished(startDate, endDate);
+            const createdVsPublished: Stats[] = await this.getCreatedVsPublished(endDate, endDate);
             this.logger.log('Fetching tickes by type..');
-            const ticketsByType: Stats[] = await this.getTicketsByType(startDate, endDate);
+            const ticketsByType: Stats[] = await this.getTicketsByType(endDate, endDate);
             // const ticketsByChannel: Stats[] = await this.getTicketsByChannel(startDate, endDate);
             const stats: Stats[] = [
                 ...ticketsByAgent,
@@ -185,6 +185,11 @@ export class StatsService{
     }
 
     async dbIsEmpty(){
+        const count = await this.statsRepository.count({});
+        return count === 0;
+    }
+
+    async truncateTable(){
         const count = await this.statsRepository.count({});
         return count === 0;
     }

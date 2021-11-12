@@ -56,8 +56,15 @@ const GetTicketsByTag = (res: any[]) => {
   let processedData: any = [];
   if (!isEmpty(res)) {
     const len = res.length;
-    let sortData = res[len - 1][1]; // orderBy(res[len - 1][1], ['count'], ['desc']);    
-    sortData = sortData.filter((item: any) => item.category !== 'Unstarted' && item.category !== 'In Progress' && item.count !== 0);
+    // const data = flatten(res);
+
+    let newArr = res.map((itemVal: any) => {
+        let temp = itemVal[1].filter((item: any) => (item.count !== 0));
+        return temp;
+      });
+
+    newArr = flatten(newArr);
+    let sortData = orderBy(newArr, ['count'], ['desc']); 
     sortData.forEach((value: TicketCatResFormat, index: number) => {
       if (!isEmpty(value.category) && index < showItems) {
         const category = {
@@ -67,6 +74,18 @@ const GetTicketsByTag = (res: any[]) => {
         processedData.push(category);
       }
     });
+
+    // let sortData = res[len - 1][1]; // orderBy(res[len - 1][1], ['count'], ['desc']);    
+    // sortData = sortData.filter((item: any) => item.count !== 0);
+    // sortData.forEach((value: TicketCatResFormat, index: number) => {
+    //   if (!isEmpty(value.category) && index < showItems) {
+    //     const category = {
+    //       name: value.category,
+    //       value: value.count
+    //     };
+    //     processedData.push(category);
+    //   }
+    // });
   }
   return processedData;
 };
@@ -87,21 +106,31 @@ const GetTicketsByCurrentStatus = (res: any) => {
       const unstarted = sortData.filter((it: any) => it.category === 'Unstarted');
       const inprogress = sortData.filter((it: any) => it.category !== 'Unstarted');
 
+      const waintingCount = unstarted.reduce((acc, val) => {
+          acc = acc + val.count;          
+          return acc;
+      }, 0);
+
+      const inprogressCount = inprogress.reduce((acc, val) => {
+          acc = acc + val.count;          
+          return acc;
+      }, 0);
+
       processedData.push(
         {
           name: unstarted[0].category,
-          value: unstarted[0].count,
+          value: waintingCount,
           label: 'Waiting'
         }, {
           name: inprogress[0].category,
-          value: inprogress[0].count,
+          value: inprogressCount,
           label: 'Started'
         }
       );              
 
       const publishedItems = res.createdVsPublished;
       if (!isEmpty(publishedItems)) {
-        
+
         let publishedData = publishedItems.map((itemVal: any) => {
           return uniqBy(itemVal[1], 'category');
         });
@@ -109,10 +138,14 @@ const GetTicketsByCurrentStatus = (res: any) => {
         publishedData = flatten(publishedData);
         let sortedPublished = orderBy(publishedData, ['count'], ['desc']); 
         sortedPublished = sortedPublished.filter((it: any) => it.category === 'published');
+        const publishedCount = sortedPublished.reduce((acc, val) => {
+          acc = acc + val.count;          
+          return acc;
+      }, 0);
 
         let newItem = {
           name: sortedPublished[0].category,
-          value: sortedPublished[0].count,
+          value: publishedCount,
           label: 'Completed'
         };
         processedData.push(newItem);
@@ -193,6 +226,22 @@ const weeksBetween = (d1: any, d2: any): any => {
     return dateArr;
 }
 
+const GetTotalCount = (dataSet: any, category: string) => {
+  let temp = dataSet.map((itemVal: any) => {
+              return uniqBy(itemVal[1], 'category');
+            });
+
+    temp = flatten(temp);
+    let sortedPublished = orderBy(temp, ['count'], ['desc']); 
+    sortedPublished = sortedPublished.filter((it: any) => it.category.toLowerCase() === category);
+    const publishedCount = sortedPublished.reduce((acc, val) => {
+        acc = acc + val.count;          
+        return acc;
+    }, 0);
+
+    return publishedCount;
+}
+
 const GetTicketsByWeek = (res: any, dates: any) => {
   const statuses = res[TicketsByType.status];
   const published = res[TicketsByType.createdVsPublished];
@@ -205,41 +254,59 @@ const GetTicketsByWeek = (res: any, dates: any) => {
     if (weekData.length > 0) {
 
       weekData.forEach((range: any) => {
+        let ticketsByStatus = statuses.filter((item: any) => {
+          const date = new Date(item[0]).getTime();
+          const startDateTime = new Date(range.startDate).getTime();
+          const endDateTime   = new Date(range.endDate).getTime();
+          return date > startDateTime && date < endDateTime;
+        });
 
-        let key: any = range.endDate;
-        const dataCount = statuses.filter((item: any) => item[0] === key);
-        if (!isEmpty(dataCount)) {
-          let unstarted = dataCount[0][1].filter((item: any) => (item.category.toLowerCase() === 'unstarted'));
-          if (unstarted.length > 0) {
+        if (!isEmpty(ticketsByStatus)) {
+            const unstartedCount = GetTotalCount(ticketsByStatus, 'unstarted');
             let temp = {
-              name: FormatDate(dataCount[0][0], "MM/DD"),
-              value: unstarted[0].count
+              name: FormatDate(ticketsByStatus[0][0], "MM/DD"),
+              value: unstartedCount
             }
             unstartedStatuses.push(temp);
-          }
         }
 
-        if(!isEmpty(dataCount)) {
-          let inprogress = dataCount[0][1].filter((item: any) => (item.category.toLowerCase() === 'in progress'));
-          if (inprogress.length > 0) {
+        if(!isEmpty(ticketsByStatus)) {
+          const inprogressCount = GetTotalCount(ticketsByStatus, 'in progress');
             let temp = {
-              name: FormatDate(dataCount[0][0], "MM/DD"),
-              value: inprogress[0].count
+              name: FormatDate(ticketsByStatus[0][0], "MM/DD"),
+              value: inprogressCount
             }
-            inprogressStatuses.push(temp);
-          }
+            inprogressStatuses.push(temp);          
         }
 
-        const publishedCount = published.filter((item: any) => item[0] === key);
-        if (!isEmpty(publishedCount)) {
-            const firstEle = publishedCount[0];
-            let publishedCreated = firstEle[1].filter((item: any) => (item.category.toLowerCase() === 'published'));
-            if (publishedCreated.length > 0) {
-                let temp = {
-                  name: FormatDate(firstEle[0], "MM/DD"),
-                  value: publishedCreated[0].count
-                }
-                publishedStatuses.push(temp);
+        let publishedTicketsWeek = published.filter((item: any) => {
+          const date = new Date(item[0]).getTime();
+          const startDateTime = new Date(range.startDate).getTime();
+          const endDateTime   = new Date(range.endDate).getTime();
+          return date >= startDateTime && date <= endDateTime;
+        });
+
+        if (!isEmpty(publishedTicketsWeek)) {
+
+            // let temp = publishedTicketsWeek.map((itemVal: any) => {
+            //   return uniqBy(itemVal[1], 'category');
+            // });
+
+            // temp = flatten(temp);
+            // let sortedPublished = orderBy(temp, ['count'], ['desc']); 
+            // sortedPublished = sortedPublished.filter((it: any) => it.category === 'published');
+            // const publishedCount = sortedPublished.reduce((acc, val) => {
+            //     acc = acc + val.count;          
+            //     return acc;
+            // }, 0);
+
+          const completedCount = GetTotalCount(publishedTicketsWeek, 'published');
+          if (completedCount > 0) {
+            let temp = {
+              name: FormatDate(publishedTicketsWeek[0][0], "MM/DD"),
+              value: completedCount
+            }
+            publishedStatuses.push(temp);
           }
         }
       });

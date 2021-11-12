@@ -8,13 +8,19 @@ export class StatsCronService{
 
     constructor(private statsService: StatsService){}
 
-    @Timeout(5000)
+    @Timeout(10000)
     async handleTimeout(){
         const dbIsEmpty = await this.statsService.dbIsEmpty();
         if(!dbIsEmpty) return;
         const day = new Date();
-        this.logger.log(`Running initial job for day (UTC) ${day.toUTCString()}`)
-        return await this.fetchAndStore(day, true);
+        for (let i = 1; i < 20; i++) {
+            const previousDay = new Date(day.getTime());
+            previousDay.setHours(day.getHours() - 24 * i);
+            this.logger.log(`Running initial job for day (UTC) ${previousDay.toUTCString()}`)
+            await this.fetchAndStore(previousDay, false);
+        }
+        return Promise.resolve(true);
+        
     }
     
     @Cron(CronExpression.EVERY_DAY_AT_1AM)
