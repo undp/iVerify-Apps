@@ -52,40 +52,31 @@ const GetTicketsByChannel = (res: any) => {
   return processedData;
 };
 
-const GetTicketsByTag = (res: any[]) => {
-  let processedData: any = [];
-  if (!isEmpty(res)) {
-    const len = res.length;
-    // const data = flatten(res);
+const GetCountFromRes = (res: any[]) => {
 
-    let newArr = res.map((itemVal: any) => {
-        let temp = itemVal[1].filter((item: any) => (item.count !== 0));
-        return temp;
-      });
-
-    newArr = flatten(newArr);
-    let sortData = orderBy(newArr, ['count'], ['desc']); 
-    sortData.forEach((value: TicketCatResFormat, index: number) => {
+  let modified: any = [];
+  let newArr = res.map((itemVal: any) => {
+      let temp = itemVal[1].filter((item: any) => (item.count !== 0));
+      return temp;
+  });
+  newArr = flatten(newArr);
+  let sortData = orderBy(newArr, ['count'], ['desc']); 
+  sortData.forEach((value: TicketCatResFormat, index: number) => {
       if (!isEmpty(value.category) && index < showItems) {
         const category = {
           name: value.category,
           value: value.count
         };
-        processedData.push(category);
+        modified.push(category);
       }
-    });
+  });
+  return modified;
+}
 
-    // let sortData = res[len - 1][1]; // orderBy(res[len - 1][1], ['count'], ['desc']);    
-    // sortData = sortData.filter((item: any) => item.count !== 0);
-    // sortData.forEach((value: TicketCatResFormat, index: number) => {
-    //   if (!isEmpty(value.category) && index < showItems) {
-    //     const category = {
-    //       name: value.category,
-    //       value: value.count
-    //     };
-    //     processedData.push(category);
-    //   }
-    // });
+const GetTicketsByTag = (res: any[]) => {
+  let processedData: any = [];
+  if (!isEmpty(res)) {
+    processedData = GetCountFromRes(res);
   }
   return processedData;
 };
