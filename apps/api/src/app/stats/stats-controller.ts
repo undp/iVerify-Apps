@@ -1,13 +1,10 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 
-import { Message } from '@iverify/api-interfaces';
 import { StatsService } from './stats.service';
 import { ApiProperty, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { StatsFormatService } from './stats-format.service';
-
-
-
+import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
 export class DateBraket {
 
   @ApiProperty()
@@ -43,6 +40,7 @@ export class StatsController {
   constructor(private readonly statsService: StatsService, private formatService: StatsFormatService) {}
 
   @Post('stats-by-range')
+  @UseGuards(JWTTokenAuthGuard)
   async statsByRange(@Body() body: DateBraket){
     const startDate = new Date(body['startDate']);
     const endDate = new Date(body['endDate']) 
@@ -58,16 +56,10 @@ export class StatsController {
   
   @Post('created-vs-published')
   async createdVsPublished(@Body() body: DayDto) {
-    const endDate = new Date(body['day']) 
-    return await this.statsService.getCreatedVsPublished(this.formatService.formatDate(endDate));
+    const startDate = this.formatService.formatDate(new Date(body['startDate']));
+    const endDate = this.formatService.formatDate(new Date(body['endDate']));
+    return await this.statsService.getCreatedVsPublished(startDate, endDate);
   }
-
-  // @Post('tickets-by-channel')
-  // async getTicketsByChannel(@Body() body: DateBraket) {
-  //   const startDate = new Date(body['startDate']);
-  //   const endDate = new Date(body['endDate']) 
-  //   return await this.statsService.getTicketsByChannel(startDate, endDate);
-  // }
 
   @Post('tickets-by-agent')
   async getTicketsByAgent(@Body() body: DateBraket) {
@@ -85,20 +77,22 @@ export class StatsController {
 
   @Post('tickets-by-status')
   async getTicketsByStatus(@Body() body: DayDto) {
-    const endDate = this.formatService.formatDate(new Date(body['day']));
-    return await this.statsService.getTicketsByStatus(endDate);
+    const startDate = this.formatService.formatDate(new Date(body['startDate']));
+    const endDate = this.formatService.formatDate(new Date(body['endDate']));
+    return await this.statsService.getTicketsByStatus(startDate, endDate);
   }
 
   @Post('tickets-by-tags')
   async getTicketsByTags(@Body() body: DayDto) {
-    const endDate = this.formatService.formatDate(new Date(body['day']));
-    return await this.statsService.getTicketsByTags(endDate);
+    const startDate = this.formatService.formatDate(new Date(body['startDate']));
+    const endDate = this.formatService.formatDate(new Date(body['endDate']));
+    return await this.statsService.getTicketsByTags(startDate, endDate);
   }
 
-  // @Post('tickets-by-type')
-  // async getTicketsByType(@Body() body: DateBraket) {
-  //   const startDate = this.formatService.formatDate(new Date(body['startDate']));
-  //   const endDate = this.formatService.formatDate(new Date(body['endDate']));
-  //   return await this.statsService.getTicketsByType(startDate, endDate);
-  // }
+  @Post('tickets-by-type')
+  async getTicketsByType(@Body() body: DateBraket) {
+    const startDate = this.formatService.formatDate(new Date(body['startDate']));
+    const endDate = this.formatService.formatDate(new Date(body['endDate']));
+    return await this.statsService.getTicketsByType(startDate, endDate);
+  }
 }

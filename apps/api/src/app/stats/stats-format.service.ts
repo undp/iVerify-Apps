@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CountBy, StatusesMap } from "@iverify/iverify-common";
 import { Stats } from "./models/stats.model";
+import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 
 @Injectable()
 export class StatsFormatService{
@@ -54,11 +55,13 @@ export class StatsFormatService{
         return [];
     }
 
-    formatTticketsByTags(endDate: string, results): Stats[]{
+    formatTticketsByTags(endDate: string, results): Stats[] {
         
         const count = results.reduce((acc, val) => {
-            const tag: string = val.tag;
-            acc[tag] = val.search.number_of_results;
+            if (val.search.number_of_results > 0) {
+                const tag: string = val.tag;
+                acc[tag] = val.search.number_of_results;
+            }
             return acc;
         }, {});
         return this.buildStatsFromCount(endDate, count, CountBy.tag);
@@ -66,22 +69,11 @@ export class StatsFormatService{
 
     formatTticketsByStatus(endDate: string, results: any): Stats[]{
         
-// [
-//   {
-//     "search": {
-//       "number_of_results": 45
-//     },
-//     "status": "undetermined"
-//   },
-//   {
-//     "search": {
-//       "number_of_results": 14
-//     },
-//     "status": "in_progress"
-//   },
         const count = results.reduce((acc, val) => {
             const status: string = StatusesMap.find(i => i.value === val.status).label;
-            acc[status] = val.search.number_of_results;
+            if (val.search.number_of_results > 0) {
+                acc[status] = val.search.number_of_results;
+            }
             return acc;
         }, {});
         return this.buildStatsFromCount(endDate, count, CountBy.status);
@@ -103,17 +95,22 @@ export class StatsFormatService{
         const edges: any[] = results.search.medias.edges;
         const solved = edges.filter(val => this.resolutionStatuses.indexOf(val.node.status) > -1);
 
-
         const solvedCount = solved.reduce((acc, val) => {
             const tasksEdges = val.node.tasks.edges;
-            const nodeType = tasksEdges.find(taskNode => taskNode.node.label === 'Type of Violation');
-            const violationType = nodeType ? nodeType.first_response_value : null;
-            if(violationType && !acc[violationType]) acc[violationType] = 1;
-            else acc[violationType]++;
+            const nodeType = tasksEdges.find(taskNode => taskNode.node.label == 'Type of Violation');
+            const violationType = nodeType && nodeType.node ? nodeType.node.first_response_value : null;
+            if (violationType.length > 0) {
+                if (acc && violationType && !acc[violationType]) {
+                    acc[violationType] = 1;
+                } else {
+                    acc[violationType]++;
+                }
+            }
             return acc;
+            
         }, {});
 
-        return this.buildStatsFromCount(endDate, solvedCount, CountBy.type)
+        return this.buildStatsFromCount(endDate, solvedCount, CountBy.type);
     }
 
     formatCreatedVsPublished(endDate, results): Stats[]{
@@ -143,7 +140,10 @@ export class StatsFormatService{
         }
     }
 
-    private buildStatsFromCount(day, count: Object, countBy: CountBy){
+    private buildStatsFromCount(day, count: Object, countBy: CountBy) {
+        if (Object.keys(count).length === 0) {
+            return [];
+        }
         return Object.keys(count).reduce((acc, val) => {
             const stat: Partial<Stats> = {
                 day,
@@ -154,6 +154,19 @@ export class StatsFormatService{
             acc.push(stat);
             return acc;
         }, [])
+    }
+
+    getStartEndDates(day) {
+        const endDate = this.formatDate(new Date(day));
+
+        const start = new Date(day);
+        const previousDay = new Date(start.getTime());
+        previousDay.setHours(start.getHours() -24);
+
+        const startDate = this.formatDate(previousDay);
+
+        return {startDate: startDate, endDate: endDate}
+
     }
 
 }

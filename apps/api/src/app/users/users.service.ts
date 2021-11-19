@@ -43,6 +43,15 @@ export class UsersService {
         return user;        
     }
 
+    async findOrRegister(userDto: CreateUserDto, userId: string): Promise<User> {
+        const email = userDto.email;
+        const user: User = await this.userRepository.findOne({email}, {relations: ['roles']});
+        if(!user) {
+            return await this.registerUser(userDto, userId);
+        }
+        return user;
+    }
+
     async registerUser(userDto: CreateUserDto, userId: string) {        
         userDto.password = await this.encryptPassword(userDto.password);
         userDto['createdBy'] = userId;
@@ -51,7 +60,6 @@ export class UsersService {
                 return this.preloadRoleByName(role['name']);
             })
         ) 
-
         const user = await  this.userRepository.create({...userDto, roles});
         return this.userRepository.save(user);
     }

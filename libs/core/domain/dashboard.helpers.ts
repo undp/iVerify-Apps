@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { isEmpty, orderBy, uniqBy } from 'lodash';
+import { isEmpty, orderBy, uniqBy, flatten } from 'lodash';
 import { TicketsByType, TicketCatResFormat, StatusFormatPieChart, StatusFormat } from '../models/dashboard';
 
 const showItems = 5;
@@ -18,6 +18,22 @@ const SortStatistics = (results: any) => {
     }
   }
   return data;
+}
+
+const GetTicketsByType = (res: any) => {
+  let processedData: any = [];
+  if (!isEmpty(res)) {
+    res.forEach((value: string[], index: number) => {
+      if (!isEmpty(value[0]) && index < showItems) {
+        const category = {
+          name: value[0],
+          value: value[1]
+        };
+        processedData.push(category);
+      }
+    });
+  }
+  return processedData;
 }
 
 const GetTicketsByChannel = (res: any) => {
@@ -39,8 +55,9 @@ const GetTicketsByChannel = (res: any) => {
 const GetTicketsByTag = (res: any[]) => {
   let processedData: any = [];
   if (!isEmpty(res)) {
-    let sortData = orderBy(res[0][1], ['count'], ['desc']);    
-    sortData = sortData.filter(item => item.category !== 'Unstarted' && item.category !== 'In Progress');
+    const len = res.length;
+    let sortData = res[len - 1][1]; // orderBy(res[len - 1][1], ['count'], ['desc']);    
+    sortData = sortData.filter((item: any) => item.category !== 'Unstarted' && item.category !== 'In Progress' && item.count !== 0);
     sortData.forEach((value: TicketCatResFormat, index: number) => {
       if (!isEmpty(value.category) && index < showItems) {
         const category = {
@@ -58,29 +75,48 @@ const GetTicketsByCurrentStatus = (res: any) => {
     let processedData: StatusFormatPieChart[] = [];
     if (!isEmpty(res)) {
       const statuses = res.status;
-      const latestDateIndex = statuses.length - 1;
-      let sortData = orderBy(statuses[latestDateIndex][1], ['count'], ['desc']); 
-      if (sortData.length > 0 ) {
-        let currentStatuses = sortData.filter(item => (item.category === 'Unstarted' || item.category === 'In Progress'));
-        currentStatuses = uniqBy(currentStatuses, 'category');
-        processedData = currentStatuses.map((item) => {
-            let newItem = {
-              name: item.category,
-              value: item.count,
-              label: (item.category === 'Unstarted') ? 'Waiting' : 'Started'
-            };              
-            return newItem;
-        });
-      }
+
+      let newArr = statuses.map((itemVal: any) => {
+        let temp = itemVal[1].filter((item: any) => (item.category === 'Unstarted' || item.category === 'In Progress'));
+        temp = uniqBy(temp, 'category');
+        return temp;
+      });
+      newArr = flatten(newArr);
+      let sortData = orderBy(newArr, ['count'], ['desc']); 
+
+      const unstarted = sortData.filter((it: any) => it.category === 'Unstarted');
+      const inprogress = sortData.filter((it: any) => it.category !== 'Unstarted');
+
+      processedData.push(
+        {
+          name: unstarted[0].category,
+          value: unstarted[0].count,
+          label: 'Waiting'
+        }, {
+          name: inprogress[0].category,
+          value: inprogress[0].count,
+          label: 'Started'
+        }
+      );              
 
       const publishedItems = res.createdVsPublished;
-      const latestDatePubInd = publishedItems.length - 1;
-      let newItem = {
-        name: publishedItems[latestDatePubInd][1][0].category,
-        value: publishedItems[latestDatePubInd][1][0].count,
-        label: 'Completed'
-      };
-      processedData.push(newItem);
+      if (!isEmpty(publishedItems)) {
+        
+        let publishedData = publishedItems.map((itemVal: any) => {
+          return uniqBy(itemVal[1], 'category');
+        });
+
+        publishedData = flatten(publishedData);
+        let sortedPublished = orderBy(publishedData, ['count'], ['desc']); 
+        sortedPublished = sortedPublished.filter((it: any) => it.category === 'published');
+
+        let newItem = {
+          name: sortedPublished[0].category,
+          value: sortedPublished[0].count,
+          label: 'Completed'
+        };
+        processedData.push(newItem);
+      }
     }
     return processedData;
 };
@@ -228,7 +264,7 @@ const GetTicketsByWeek = (res: any, dates: any) => {
     ]
     return finalStatusesByWeek;
   }
-  return null;  
+  return null; 
 }
 
 const daysInMonth = (month: number, year: number) => {
@@ -257,5 +293,6 @@ export const DashboardHelpers = {
   GetTicketsByAgents,
   GetFirstLastDayMonth,
   GetTicketsByWeek,
-  GetPreviousWeekFirstDay
+  GetPreviousWeekFirstDay,
+  GetTicketsByType
 };

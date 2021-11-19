@@ -109,6 +109,7 @@ export class ClearUserPermissions implements Action {
   readonly type = EAuthActions.ClearUserPermissions;
 }
 
+
 export type AuthActions =
   | Login
   | LoginSuccess

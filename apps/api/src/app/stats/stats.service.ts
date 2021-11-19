@@ -1,10 +1,8 @@
 import { HttpException, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Between, Equal, In, LessThanOrEqual, MoreThanOrEqual, Repository } from "typeorm";
-import { InfoLogger } from "../logger/info-logger.service";
+import { Between, In, Repository } from "typeorm";
 import { Stats } from "./models/stats.model";
 import { DateTime, Interval } from 'luxon';
-import { EnumValues } from 'enum-values';
 
 import { StatsFormatService } from "./stats-format.service";
 import { CheckStatsService } from "libs/meedan-check-client/src/lib/check-stats.service";
@@ -51,24 +49,24 @@ export class StatsService{
             const endDate = this.formatService.formatDate(day);
 
             const previousDay = new Date(day.getTime());
-            previousDay.setHours(day.getHours() -24);
+            previousDay.setHours(day.getHours() - 24);
             
             const previousYear = new Date(day.getTime());
             previousYear.setFullYear(day.getFullYear() -1);
-            
 
             const startDate = allPrevius ? this.formatService.formatDate(previousYear) : this.formatService.formatDate(previousDay);
 
             this.logger.log('Fetching tickes by agent..');
             const ticketsByAgent: Stats[] = await this.getTicketsByAgent(startDate, endDate);
             this.logger.log('Fetching tickes by tags..');
-            const ticketsByTag: Stats[] = await this.getTicketsByTags(endDate);
+            const ticketsByTag: Stats[] = await this.getTicketsByTags(startDate, endDate);
             this.logger.log('Fetching tickes by status..');
-            const ticketsByStatus: Stats[] = await this.getTicketsByStatus(endDate);
+            const ticketsByStatus: Stats[] = await this.getTicketsByStatus(startDate, endDate);
             this.logger.log('Fetching tickes by source..');
             const ticketsBySource: Stats[] = await this.getTicketsBySource(startDate, endDate);
             this.logger.log('Fetching tickes by publication..');
-            const createdVsPublished: Stats[] = await this.getCreatedVsPublished(endDate);
+            const createdVsPublished: Stats[] = await this.getCreatedVsPublished(startDate, endDate);
+            this.logger.log('Fetching tickes by type..');
             const ticketsByType: Stats[] = await this.getTicketsByType(startDate, endDate);
             // const ticketsByChannel: Stats[] = await this.getTicketsByChannel(startDate, endDate);
             const stats: Stats[] = [
@@ -81,7 +79,7 @@ export class StatsService{
                 // ...this.formatService.formatTticketsByChannel(ticketsByChannel),
                 // ...this.formatService.formatTticketsByType(ticketsByType),
             ]
-            this.logger.log('Saving to DB...')
+            this.logger.log('Saving to DB...');
             return await this.saveMany(stats);
         }catch(e){
             throw new HttpException(e.message, 500);
@@ -93,8 +91,8 @@ export class StatsService{
         return this.formatService.formatTticketsByAgent(endDate, results);
     }
     
-    async getTicketsByTags(endDate: string){
-        const results = await this.checkStatsClient.getTicketsByTags().toPromise();
+    async getTicketsByTags(startDate: string, endDate: string){
+        const results = await this.checkStatsClient.getTicketsByTags(startDate, endDate).toPromise();
         return this.formatService.formatTticketsByTags(endDate, results);
     }
 
@@ -103,13 +101,13 @@ export class StatsService{
         return this.formatService.formatTticketsBySource(endDate, results)
     }
 
-    async getCreatedVsPublished(endDate: string){
-        const results = await this.checkStatsClient.getCreatedVsPublished().toPromise();
+    async getCreatedVsPublished(startDate: string, endDate: string){
+        const results = await this.checkStatsClient.getCreatedVsPublished(startDate, endDate).toPromise();
         return this.formatService.formatCreatedVsPublished(endDate, results);
     }
 
-    async getTicketsByStatus(endDate: string){
-        const results = await this.checkStatsClient.getTicketsByStatuses().toPromise();
+    async getTicketsByStatus(startDate: string, endDate: string){
+        const results = await this.checkStatsClient.getTicketsByStatuses(startDate, endDate).toPromise();
         return this.formatService.formatTticketsByStatus(endDate, results);
     }
 
@@ -163,7 +161,6 @@ export class StatsService{
         const searchStart = new Date(end.getTime());
         searchStart.setHours(endDate.getHours() -24);
         const formattedSearchStart = this.formatService.formatDate(searchStart);
-        console.log({formattedSearchStart, formattedEnd})
 
         const latestStats: Stats[] = await this.statsRepository.find({
             where: {
