@@ -11,7 +11,10 @@ export class StatsCronService{
     @Timeout(5000)
     async handleTimeout(){
         const dbIsEmpty = await this.statsService.dbIsEmpty();
-        if(!dbIsEmpty) return;
+        if(!dbIsEmpty) {
+            this.logger.log(`DB is not empty, skipping initial job.`)
+            return
+        };
         const day = new Date();
         this.logger.log(`Running initial job for day (UTC) ${day.toUTCString()}`)
         return await this.fetchAndStore(day, true);

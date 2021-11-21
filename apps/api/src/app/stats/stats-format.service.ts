@@ -14,35 +14,31 @@ export class StatsFormatService{
     }
 
     formatTticketsByAgent(endDate: string, results: any): Stats[]{
-        const edges: any[] = results.search.medias.edges;
-        // const unstartedStatuses = StatusesMap.filter(status => status.default).map(status => status.value);
-        // const processingStatuses = StatusesMap.filter(status => !status.default && !status.resolution).map(status => status.value);
-        // const resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
-
-        const unstarted = edges.filter(val => this.unstartedStatuses.indexOf(val.node.status) > -1);
-        const processing = edges.filter(val => this.processingStatuses.indexOf(val.node.status) > -1);
-        const solved = edges.filter(val => this.resolutionStatuses.indexOf(val.node.status) > -1);
+        const unstarted = results.filter(val => this.unstartedStatuses.indexOf(val.status) > -1);
+        const processing = results.filter(val => this.processingStatuses.indexOf(val.status) > -1);
+        const solved = results.filter(val => this.resolutionStatuses.indexOf(val.status) > -1);
 
         const unstartedCount = unstarted.reduce((acc, val) => {
-            const user = val.node.account && val.node.account.user && val.node.account.user.name  ? val.node.account.user.name : 'undefined';
-            if(!acc[user]) acc[user] = 1;
-            else acc[user]++;
+            const user = val.agent ? val.agent : 'undefined';
+            if(!acc[user]) acc[user] = val.count;
+            else acc[user] = acc[user] + val.count;
             return acc;
         }, {});
 
         const processingCount = processing.reduce((acc, val) => {
-            const user = val.node.account && val.node.account.user && val.node.account.user.name  ? val.node.account.user.name : 'undefined';
-            if(!acc[user]) acc[user] = 1;
-            else acc[user]++;
+            const user = val.agent ? val.agent : 'undefined';
+            if(!acc[user]) acc[user] = val.count;
+            else acc[user] = acc[user] + val.count;
             return acc;
         }, {});
 
         const solvedCount = solved.reduce((acc, val) => {
-            const user = val.node.account && val.node.account.user && val.node.account.user.name  ? val.node.account.user.name : 'undefined';
-            if(!acc[user]) acc[user] = 1;
-            else acc[user]++;
+            const user = val.agent ? val.agent : 'undefined';
+            if(!acc[user]) acc[user] = val.count;
+            else acc[user] = acc[user] + val.count;
             return acc;
         }, {});
+
 
         return [
             ...this.buildStatsFromCount(endDate, unstartedCount, CountBy.agentUnstarted),
@@ -65,6 +61,16 @@ export class StatsFormatService{
             return acc;
         }, {});
         return this.buildStatsFromCount(endDate, count, CountBy.tag);
+    }
+
+    formatTticketsByViolation(endDate: string, results): Stats[] {
+        
+        const count = results.reduce((acc, val) => {
+            const violation: string = val.violation;
+            acc[violation] = val.count;
+            return acc;
+        }, {});
+        return this.buildStatsFromCount(endDate, count, CountBy.violationType);
     }
 
     formatTticketsByStatus(endDate: string, results: any): Stats[]{
