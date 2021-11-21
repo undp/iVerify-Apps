@@ -3,6 +3,7 @@ export enum CountBy{
     agentProcessing = 'agentProsessing',
     agentSolved = 'agentSolved',
     type = 'type',
+    violationType = 'violationType',
     channel = 'channel',
     tag = 'tag',
     status = 'status',

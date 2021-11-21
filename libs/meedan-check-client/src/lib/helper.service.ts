@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { throwIfEmpty } from "rxjs/operators";
 import { ToxicityScores } from "./interfaces/toxicity-scores";
 
 @Injectable()
@@ -166,8 +167,112 @@ export class CheckClientHelperService{
       }`;
     }
 
+    buildTicketsByTaskTypeQuery(taskId: string, value: string){
+      const searchQuery = JSON.stringify({
+        team_tasks: [
+          {
+            id: taskId,
+            response: value
+          }
+        ],
+        archived: 0
+      });
+
+      return `query {
+        search(query: ${JSON.stringify(searchQuery)}) {
+          number_of_results
+        }
+      }`;
+
+    }
+
     buildTicketsByChannelQuery(startDate: string, endDate: string){
       return '';
+    }
+
+    buildAllAgentsQuery(teamSlug: string){
+      return `query {
+        team(slug: "${teamSlug}") {
+          users {
+            edges {
+              node {
+                id
+                dbid
+                name
+              }
+            }
+          }
+        }
+      }`
+    }
+
+    buildGetByAgentAndStatus(agentId: number, status: string){
+      const searchQuery = JSON.stringify({
+        assigned_to: [agentId],
+        verification_status: [status],
+        archived: 0
+      });
+
+      return `query {
+        search(query: ${JSON.stringify(searchQuery)}) {
+          number_of_results
+        }
+      }`;
+    }
+
+    formatAllAgentsResponse(response: any){
+      const isValid = response && response.team && response.team.users && response.team.users.edges;
+      if(!isValid) return [] 
+      const edges = response.team.users.edges;
+      return edges.reduce((acc, val) => {
+        const node = val.node;
+        const name = node.name;
+        const id = node.dbid;
+        acc.push({name, id});
+        return acc;
+      }, []);
+    }
+
+    buildAllProjectsQuery(teamSlug: string){
+      return `query {
+        team(slug: "${teamSlug}") {
+          projects {
+            edges {
+              node {
+                id
+                dbid
+                title
+              }
+            }
+          }
+        }
+      }`
+    }
+
+    formatAllProjectsResponse(response: any){
+      const isValid = response && response.team && response.team.projects && response.team.projects.edges;
+      if(!isValid) return [] 
+      const edges = response.team.projects.edges;
+      return edges.reduce((acc, val) => {
+        const node = val.node;
+        const title = node.title.trim();
+        const id = node.dbid;
+        acc.push({title, id});
+        return acc;
+      }, []);
+    }
+
+    buildCountByProjectQuery(projectId: number){
+      const searchQuery = JSON.stringify({
+        projects: [projectId],
+        archived: 0
+      });
+
+      return `query {
+        search(query: ${JSON.stringify(searchQuery)}) {
+          number_of_results
+        }
+      }`;
     }
 
     buildTicketsBySourceQuery(startDate: string, endDate: string){
@@ -212,15 +317,9 @@ export class CheckClientHelperService{
       }`
     }
 
-    buildTicketsByTagQuery(startDate: string, endDate: string, tag) {
+    buildTicketsByTagQuery(tag) {
       
       const searchQuery = JSON.stringify({
-        range: {
-          created_at: {
-            start_time: startDate,
-            end_time: endDate
-          }
-        },
         tags: [tag],
         archived: 0
       })
@@ -231,14 +330,8 @@ export class CheckClientHelperService{
       }`
     }
 
-    buildTicketsByStatusQuery(startDate: string, endDate: string, status: string){
+    buildTicketsByStatusQuery(status: string){
       const searchQuery = JSON.stringify({
-        range: {
-          created_at: {
-            start_time: startDate,
-            end_time: endDate
-          }
-        },
         verification_status: [status],
         archived: 0
       });
@@ -250,20 +343,22 @@ export class CheckClientHelperService{
       }`
     }
 
-    buildCreatedVsPublishedQuery(startDate: string, endDate: string, publishedStatus: string){
+    buildCreatedVsPublishedQuery(publishedStatus: string){
       const searchQuery = JSON.stringify({
-        range: {
-          created_at: {
-            start_time: startDate,
-            end_time: endDate
-          }
-        },
         report_status: [publishedStatus],
         archived: 0
       })
       return `query {
         search(query: ${JSON.stringify(searchQuery)}) {
           number_of_results
+        }
+      }`
+    }
+
+    buildAllMediaQuery(teamSlug: string){
+      return  `query {
+        team(slug: "${teamSlug}") {
+          medias_count
         }
       }`
     }

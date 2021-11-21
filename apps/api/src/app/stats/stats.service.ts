@@ -11,6 +11,8 @@ import { StatsResults, CountBy, StatusesMap } from "@iverify/iverify-common";
 @Injectable()
 export class StatsService{
     private readonly logger = new Logger('MeedanCheckClient');
+    allStatuses = StatusesMap.map(status => status.value);
+
 
     constructor(
         @InjectRepository(Stats)
@@ -57,17 +59,17 @@ export class StatsService{
             const startDate = allPrevius ? this.formatService.formatDate(previousYear) : this.formatService.formatDate(previousDay);
 
             this.logger.log('Fetching tickes by agent..');
-            const ticketsByAgent: Stats[] = await this.getTicketsByAgent(startDate, endDate);
+            const ticketsByAgent: Stats[] = await this.getTicketsByAgent(endDate);
             this.logger.log('Fetching tickes by tags..');
-            const ticketsByTag: Stats[] = await this.getTicketsByTags(startDate, endDate);
+            const ticketsByTag: Stats[] = await this.getTicketsByTags(endDate);
             this.logger.log('Fetching tickes by status..');
-            const ticketsByStatus: Stats[] = await this.getTicketsByStatus(startDate, endDate);
+            const ticketsByStatus: Stats[] = await this.getTicketsByStatus(endDate);
             this.logger.log('Fetching tickes by source..');
             const ticketsBySource: Stats[] = await this.getTicketsBySource(startDate, endDate);
             this.logger.log('Fetching tickes by publication..');
-            const createdVsPublished: Stats[] = await this.getCreatedVsPublished(startDate, endDate);
-            this.logger.log('Fetching tickes by type..');
-            const ticketsByType: Stats[] = await this.getTicketsByType(startDate, endDate);
+            const createdVsPublished: Stats[] = await this.getCreatedVsPublished(endDate);
+            this.logger.log('Fetching tickes by violation type..');
+            const ticketsByType: Stats[] = await this.getTicketsByViolationType(endDate);
             // const ticketsByChannel: Stats[] = await this.getTicketsByChannel(startDate, endDate);
             const stats: Stats[] = [
                 ...ticketsByAgent,
@@ -86,13 +88,13 @@ export class StatsService{
         }
     }
 
-    async getTicketsByAgent(startDate: string, endDate: string){
-        const results = await this.checkStatsClient.getTicketsByAgent(startDate, endDate).toPromise();
+    async getTicketsByAgent(endDate: string){
+        const results = await this.checkStatsClient.getTicketsByAgent(this.allStatuses).toPromise();
         return this.formatService.formatTticketsByAgent(endDate, results);
     }
     
-    async getTicketsByTags(startDate: string, endDate: string){
-        const results = await this.checkStatsClient.getTicketsByTags(startDate, endDate).toPromise();
+    async getTicketsByTags(endDate: string){
+        const results = await this.checkStatsClient.getTicketsByTags().toPromise();
         return this.formatService.formatTticketsByTags(endDate, results);
     }
 
@@ -101,19 +103,19 @@ export class StatsService{
         return this.formatService.formatTticketsBySource(endDate, results)
     }
 
-    async getCreatedVsPublished(startDate: string, endDate: string){
-        const results = await this.checkStatsClient.getCreatedVsPublished(startDate, endDate).toPromise();
+    async getCreatedVsPublished(endDate: string){
+        const results = await this.checkStatsClient.getCreatedVsPublished().toPromise();
         return this.formatService.formatCreatedVsPublished(endDate, results);
     }
 
-    async getTicketsByStatus(startDate: string, endDate: string){
-        const results = await this.checkStatsClient.getTicketsByStatuses(startDate, endDate).toPromise();
+    async getTicketsByStatus(endDate: string){
+        const results = await this.checkStatsClient.getTicketsByStatuses().toPromise();
         return this.formatService.formatTticketsByStatus(endDate, results);
     }
 
-    async getTicketsByType(startDate: string, endDate: string){
-        const results = await this.checkStatsClient.getTicketsByType(startDate, endDate).toPromise();
-        return this.formatService.formatTticketsByType(endDate, results);
+    async getTicketsByViolationType(endDate: string){         
+        const results = await this.checkStatsClient.getTicketsByViolationTypes().toPromise();
+        return this.formatService.formatTticketsByViolation(endDate, results);
     }
 
     // async getTicketsByChannel(startDate: string, endDate: string){
@@ -148,11 +150,8 @@ export class StatsService{
             where: {
                 day: Between(formattedStart, formattedEnd),
                 countBy: In([
-                    CountBy.agentUnstarted.toString(),
-                    CountBy.agentProcessing.toString(),
-                    CountBy.agentSolved.toString(),
                     CountBy.source.toString(),
-                    CountBy.type.toString()
+                    // CountBy.type.toString()
                 ])
             }
         });
@@ -166,8 +165,12 @@ export class StatsService{
             where: {
                 day: Between(formattedStart, formattedEnd),
                 countBy: In([
+                    CountBy.agentUnstarted.toString(),
+                    CountBy.agentProcessing.toString(),
+                    CountBy.agentSolved.toString(),
                     CountBy.createdVsPublished.toString(),
                     CountBy.tag.toString(),
+                    CountBy.violationType.toString(),
                     CountBy.status.toString()
                 ])
             }
