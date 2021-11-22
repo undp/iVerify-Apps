@@ -192,6 +192,11 @@ export class StatsService{
         return count === 0;
     }
 
+    async truncateTable(){
+        const count = await this.statsRepository.count({});
+        return count === 0;
+    }
+
     private aggregateByDate(stats: Stats[]){
         return stats.reduce((acc, val) => {
             const obj: Partial<Stats> = {category: val.category, count: val.count};
