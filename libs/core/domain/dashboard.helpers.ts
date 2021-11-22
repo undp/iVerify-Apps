@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { isEmpty, orderBy, uniqBy, flatten } from 'lodash';
+import { isEmpty, orderBy, uniqBy, flatten, keyBy } from 'lodash';
 import { TicketsByType, TicketCatResFormat, StatusFormatPieChart, StatusFormat } from '../models/dashboard';
 
 const showItems = 5;
@@ -23,15 +23,7 @@ const SortStatistics = (results: any) => {
 const GetTicketsByType = (res: any) => {
   let processedData: any = [];
   if (!isEmpty(res)) {
-    res.forEach((value: string[], index: number) => {
-      if (!isEmpty(value[0]) && index < showItems) {
-        const category = {
-          name: value[0],
-          value: value[1]
-        };
-        processedData.push(category);
-      }
-    });
+    processedData = GetCountFromRes(res);
   }
   return processedData;
 }
@@ -55,21 +47,24 @@ const GetTicketsByChannel = (res: any) => {
 const GetCountFromRes = (res: any[]) => {
 
   let modified: any = [];
-  let newArr = res.map((itemVal: any) => {
-      let temp = itemVal[1].filter((item: any) => (item.count !== 0));
-      return temp;
-  });
-  newArr = flatten(newArr);
-  let sortData = orderBy(newArr, ['count'], ['desc']); 
-  sortData.forEach((value: TicketCatResFormat, index: number) => {
-      if (!isEmpty(value.category) && index < showItems) {
-        const category = {
-          name: value.category,
-          value: value.count
-        };
-        modified.push(category);
-      }
-  });
+  if (res && res.length > 0) {
+    let newArr = res.map((itemVal: any) => {
+        let temp = itemVal[1].filter((item: any) => (item.count !== 0));
+        temp = uniqBy(temp, 'category');
+        return temp;
+    });
+    newArr = flatten(newArr);
+    let sortData = orderBy(newArr, ['count'], ['desc']); 
+    sortData.forEach((value: TicketCatResFormat, index: number) => {
+        if (!isEmpty(value.category) && index < showItems) {
+          const category = {
+            name: value.category,
+            value: value.count
+          };
+          modified.push(category);
+        }
+    });
+  }
   return modified;
 }
 
@@ -151,7 +146,7 @@ const GetTicketsByAgents = (res: any) => {
   const iteratorArray = [TicketsByType.agentUnstarted, TicketsByType.agentSolved, TicketsByType.agentProcessing];  
   iteratorArray.forEach((val: any)=> {
     if (!isEmpty(res[val])) {
-      let temp: any = {};
+      let temp: any = [];
       res[val].forEach((item: any)=> {
           if (item[0] !== 'undefined') {
             temp[item[0]] = item[1];
@@ -160,30 +155,33 @@ const GetTicketsByAgents = (res: any) => {
       responseItems[val] = temp;
     }
   });
-  const unstarted = responseItems[TicketsByType.agentUnstarted];
-  const progressing = responseItems[TicketsByType.agentProcessing];
-  const solved  = responseItems[TicketsByType.agentSolved];
+  const unstarted = keyBy(GetCountFromRes(res[TicketsByType.agentUnstarted]), (o)=> o.name);
+  const progressing = keyBy(GetCountFromRes(res[TicketsByType.agentProcessing]), (o)=> o.name);
+  const solved  = keyBy(GetCountFromRes(res[TicketsByType.agentSolved]), (o)=> o.name);
+
   if (!isEmpty(unstarted)) {
       Object.keys(unstarted).forEach((categoryName: string, index: number) => {
         if (index < showItems) {
-          let agentData: any = {};
+          if (categoryName !== "undefined") {
+            let agentData: any = {};
             agentData['name'] = categoryName;
             agentData['series'] = [
               {
                 "name": "Unstarted",
-                "value": (unstarted && unstarted[categoryName]) ? unstarted[categoryName] : 0
+                "value": (unstarted && unstarted[categoryName]) ? unstarted[categoryName].value : 0
               },
               {
                 "name": "Started",
-                "value": (progressing && progressing[categoryName]) ? progressing[categoryName] : 0
+                "value": (progressing && progressing[categoryName]) ? progressing[categoryName].value : 0
               },
               {
                 "name": "Solved",
-                "value": (solved && solved[categoryName]) ? solved[categoryName] : 0
+                "value": (solved && solved[categoryName]) ? solved[categoryName].value : 0
               }
             ];
             processedData.push(agentData);
           }
+        }
       });
   }
 
