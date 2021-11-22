@@ -129,7 +129,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.agentsSourceData = DashboardHelpers.SortStatistics(res);
         this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.agentsSourceData['source']);
         this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['tag']);
-        this.ticketsByType = DashboardHelpers.GetTicketsByType(this.agentsSourceData['type']);
+        this.ticketsByType = DashboardHelpers.GetTicketsByType(this.agentsSourceData['violationType']);
         this.ticketsByCurrentStatus = DashboardHelpers.GetTicketsByCurrentStatus(this.agentsSourceData);
         this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(res, this.options);  
         this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.agentsSourceData);
