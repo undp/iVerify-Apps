@@ -218,12 +218,7 @@ const GetTotalCount = (dataSet: any, category: string) => {
     temp = flatten(temp);
     let sortedPublished = orderBy(temp, ['count'], ['desc']); 
     sortedPublished = sortedPublished.filter((it: any) => it.category.toLowerCase() === category);
-    const publishedCount = sortedPublished.reduce((acc, val) => {
-        acc = acc + val.count;          
-        return acc;
-    }, 0);
-
-    return publishedCount;
+    return sortedPublished[0].count;
 }
 
 const GetTicketsByWeek = (res: any, dates: any) => {
