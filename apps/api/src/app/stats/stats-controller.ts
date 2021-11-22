@@ -40,7 +40,7 @@ export class StatsController {
   constructor(private readonly statsService: StatsService, private formatService: StatsFormatService) {}
 
   @Post('stats-by-range')
-  @UseGuards(JWTTokenAuthGuard)
+  // @UseGuards(JWTTokenAuthGuard)
   async statsByRange(@Body() body: DateBraket){
     const startDate = new Date(body['startDate']);
     const endDate = new Date(body['endDate']) 
@@ -56,16 +56,14 @@ export class StatsController {
   
   @Post('created-vs-published')
   async createdVsPublished(@Body() body: DayDto) {
-    const startDate = this.formatService.formatDate(new Date(body['startDate']));
     const endDate = this.formatService.formatDate(new Date(body['endDate']));
-    return await this.statsService.getCreatedVsPublished(startDate, endDate);
+    return await this.statsService.getCreatedVsPublished(endDate);
   }
 
   @Post('tickets-by-agent')
-  async getTicketsByAgent(@Body() body: DateBraket) {
-    const startDate = this.formatService.formatDate(new Date(body['startDate']));
+  async getTicketsByAgent(@Body() body: DayDto) {
     const endDate = this.formatService.formatDate(new Date(body['endDate'])); 
-    return await this.statsService.getTicketsByAgent(startDate, endDate);
+    return await this.statsService.getTicketsByAgent(endDate);
   }
 
   @Post('tickets-by-source')
@@ -77,22 +75,19 @@ export class StatsController {
 
   @Post('tickets-by-status')
   async getTicketsByStatus(@Body() body: DayDto) {
-    const startDate = this.formatService.formatDate(new Date(body['startDate']));
     const endDate = this.formatService.formatDate(new Date(body['endDate']));
-    return await this.statsService.getTicketsByStatus(startDate, endDate);
+    return await this.statsService.getTicketsByStatus(endDate);
   }
 
   @Post('tickets-by-tags')
   async getTicketsByTags(@Body() body: DayDto) {
-    const startDate = this.formatService.formatDate(new Date(body['startDate']));
     const endDate = this.formatService.formatDate(new Date(body['endDate']));
-    return await this.statsService.getTicketsByTags(startDate, endDate);
+    return await this.statsService.getTicketsByTags(endDate);
   }
 
   @Post('tickets-by-type')
-  async getTicketsByType(@Body() body: DateBraket) {
-    const startDate = this.formatService.formatDate(new Date(body['startDate']));
+  async getTicketsByType(@Body() body: DayDto) {
     const endDate = this.formatService.formatDate(new Date(body['endDate']));
-    return await this.statsService.getTicketsByType(startDate, endDate);
+    return await this.statsService.getTicketsByViolationType(endDate);
   }
 }
