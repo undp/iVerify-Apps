@@ -54,9 +54,7 @@
               "testing/tsconfig.libs.spec.json",
               "testing/tsconfig.base.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -85,10 +83,8 @@
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               "apps/iverify/src/fonts.scss",
               "apps/iverify/src/styles.scss"
-              ],
-            "scripts": [
-         
-            ]
+            ],
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -189,7 +185,6 @@
         }
       }
     },
-    
     "api": {
       "root": "apps/api",
       "sourceRoot": "apps/api/src",
@@ -486,6 +481,27 @@
           "outputs": ["coverage/libs/iverify-common"],
           "options": {
             "jestConfig": "libs/iverify-common/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "api-client": {
+      "root": "libs/api-client",
+      "sourceRoot": "libs/api-client/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/api-client/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api-client"],
+          "options": {
+            "jestConfig": "libs/api-client/jest.config.js",
             "passWithNoTests": true
           }
         }

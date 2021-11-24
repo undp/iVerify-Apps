@@ -1,21 +1,18 @@
 import { Injectable } from "@nestjs/common";
-import { CommentStatus, CreatePostDto, PostFields, PostFormat, PostStatus, TasksLabels } from "libs/wp-client/src/lib/interfaces/create-post.dto";
+import { CommentStatus, CreatePostDto, PostFields, PostFormat, PostStatus } from "libs/wp-client/src/lib/interfaces/create-post.dto";
+import { SharedHelper } from "../shared/helper";
+import { TasksLabels } from '@iverify/iverify-common';
 
 @Injectable()
 export class WpPublisherHelper{
-    constructor(){}
+    constructor(private sharedHelper: SharedHelper){}
 
     extractMedia(report: any): string{
         return report.media.metadata.picture;
     }
 
     extractTags(report: any): string[]{
-      // return ['Covid-19', 'Elections']
-      return report.tags.edges.reduce((acc, val) => {
-          acc = [...acc, val.node.tag_text]
-          return acc;
-      }, []);
-
+      return this.sharedHelper.extractTags(report);
     }
 
 
@@ -35,12 +32,12 @@ export class WpPublisherHelper{
         const check_id = report.dbid;
         const title = meedanReport.title;
         const subtitle = meedanReport.description;
-        const toxicField = this.extractTask(report, TasksLabels.toxic);
+        const toxicField = this.sharedHelper.extractTask(report, TasksLabels.toxic);
         const toxic = toxicField && process.env.DETOXIFY_TRESHOLD && +toxicField >= +process.env.DETOXIFY_TRESHOLD ? 1 : 0;
         const factchecking_status = this.extractFactcheckingStatus(report);
-        const claim = this.extractTask(report, TasksLabels.claim);
-        const rating_justification = this.extractTask(report, TasksLabels.rating_justification);
-        const evidence = this.extractTask(report, TasksLabels.evidences_and_references);
+        const claim = this.sharedHelper.extractTask(report, TasksLabels.claim);
+        const rating_justification = this.sharedHelper.extractTask(report, TasksLabels.rating_justification);
+        const evidence = this.sharedHelper.extractTask(report, TasksLabels.evidences_and_references);
         const evidence_and_references = this.formatEvidence(evidence);
         const _webdados_fb_open_graph_specific_image = visualCard;
         const fields: PostFields = {check_id, factchecking_status, claim, rating_justification, evidence_and_references, subtitle, toxic};
@@ -62,19 +59,10 @@ export class WpPublisherHelper{
         if(!post.featured_media) delete post.featured_media;
 
         return post;
-    }
+    }    
 
-    extractTask(report: any, label){
-      const edges = report.tasks.edges;
-      if(!edges.length) return '';
-      const node =  edges.find(node => node.node.label === label);
-      const res = node && node.node.first_response_value ? node.node.first_response_value : '';
-      return res;
-    }
-
-    extractFactcheckingStatus(report){
-      const field = report.annotation.data.fields.find(field => field.field_name === 'verification_status_status');
-      return field.formatted_value;
+    extractFactcheckingStatus(report: any){
+      return this.sharedHelper.extractFactcheckingStatus(report);
     }
 
     formatEvidence(evidence: string){
