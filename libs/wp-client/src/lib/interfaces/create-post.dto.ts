@@ -41,12 +41,14 @@ export interface PostFields{
 }
 
 export enum TasksLabels{
-    claim = 'Claim',
-    rating_justification = 'Rating Justification',
-    evidences_and_references = 'Evidence and References',
+    claim = 'Declaración',
+    rating_justification = 'Justificación de la evaluación',
+    evidences_and_references = 'Evidencia y Referencias',
     card_title = 'Card Title',
-    toxic = 'Toxic Score'
+    toxic = 'Tipo de discurso de odio'
+    
 }
+
 
 export interface CreatePostDto{
     date?: string
