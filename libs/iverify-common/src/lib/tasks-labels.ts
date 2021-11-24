@@ -1,0 +1,16 @@
+export enum TasksLabels{
+    claim = 'Claim',
+    rating_justification = 'Rating Justification',
+    evidences_and_references = 'Evidence and References',
+    card_title = 'Card Title',
+    toxic = 'Toxic Score',
+    threat_level = 'Threat level',
+    violation_type = 'Type of Violation',
+    disinfo_type = 'Mis/Disinformation Type',
+    hate_speech_type = 'Hate Speech Type',
+    toxic_score = 'Toxic Score',
+    obscene_score = 'Obscene Score',
+    identity_score = 'Attack on Identity Score',
+    threat_score = 'Threat Score ',
+    sexually_explicit_score = 'Sexually Explicit Score',
+}

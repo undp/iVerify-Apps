@@ -9,5 +9,6 @@ module.exports = {
     '<rootDir>/libs/crowdtangle-client',
     '<rootDir>/libs/ml-service-client',
     '<rootDir>/libs/iverify-common',
+    '<rootDir>/libs/api-client',
   ],
 };

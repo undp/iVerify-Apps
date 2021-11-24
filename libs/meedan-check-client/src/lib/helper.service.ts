@@ -11,6 +11,9 @@ export class CheckClientHelperService{
           title
           description
           dbid
+          source {
+            name
+    			}
           media {
             metadata
           }

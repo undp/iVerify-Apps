@@ -62,6 +62,7 @@ export class WpPublisherService{
         take(1),
         tap(() => console.log('emitting to publish...')),
         switchMap(postDto => this.wpClient.publishPost(postDto)),
+        tap(wpPost => this.shared.updateWpPost(wpPost)),
         catchError(err => {
           throw new HttpException(err.message, 500);
         })
