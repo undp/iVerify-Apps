@@ -121,7 +121,7 @@ const GetTicketsByCurrentStatus = (res: any) => {
         });
 
         let newItem = {
-          name: 'published',
+          name: 'Completed',
           value: completedCount.count,
           label: 'Completed'
         };
