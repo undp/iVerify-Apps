@@ -31,6 +31,7 @@ env:
   DB_PORT: 3306
   DB_HOST: undphq10ds002.mysql.database.azure.com
   DB_NAME: iverify
+  language: eng
 
 secret: 
   - name: DB_PASSWORD
