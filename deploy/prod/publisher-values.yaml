@@ -33,6 +33,7 @@ env:
   WP_PUBLISHED_FOLDER: 8159
   NODE_TLS_REJECT_UNAUTHORIZED: 0
   DETOXIFY_TRESHOLD: 0.1
+  language: eng
 
 secret: 
   - name: CT_API_KEY
