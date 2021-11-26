@@ -31,6 +31,7 @@ env:
   CT_API_URL: https://api.crowdtangle.com 
   ML_SERVICE_API_BASE:  http://ml-service.iverify-python.svc.cluster.local
   DETOXIFY_TRESHOLD: "0.1" 
+  language: eng
 
 secret: 
   - name: CT_API_KEY
