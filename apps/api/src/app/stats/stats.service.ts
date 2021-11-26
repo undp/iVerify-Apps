@@ -27,6 +27,7 @@ export class StatsService{
         const creationDate = DateTime.fromSeconds(+results.project_media.created_at);
         const title = results.project_media.title;
         const node = results.project_media.log.edges.find(node => node.node.event_type === 'update_dynamicannotationfield');
+        if(!node) return;
         const status_changes_obj = JSON.parse(node.node.object_changes_json);
         const values = status_changes_obj.value.map(val => JSON.parse(val));
         const resolutionDate =  DateTime.fromSeconds(+node.node.created_at);
@@ -171,7 +172,9 @@ export class StatsService{
                     CountBy.createdVsPublished.toString(),
                     CountBy.tag.toString(),
                     CountBy.violationType.toString(),
-                    CountBy.status.toString()
+                    CountBy.status.toString(),
+                    CountBy.responseVelocity.toString(),
+                    CountBy.resolutionVelocity.toString()
                 ])
             }
         }); 
