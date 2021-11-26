@@ -232,14 +232,14 @@ const GetTicketsByWeek = (res: any, dates: any) => {
           const date = new Date(item[0]).getTime();
           const startDateTime = new Date(range.startDate).getTime();
           const endDateTime   = new Date(range.endDate).getTime();
-          return date > startDateTime && date < endDateTime;
+          return date >= startDateTime && date <= endDateTime;
         });
 
         if (!isEmpty(ticketsByStatus)) {
             const unstartedCount = GetTotalCount(ticketsByStatus, Statuses.Unstarted);
             const precheckedCount = GetTotalCount(ticketsByStatus, Statuses.PreChecked);
             let temp = {
-              name: FormatDate(ticketsByStatus[0][0], "MM/DD"),
+              name: FormatDate(range.startDate, "MM/DD"),
               value: unstartedCount + precheckedCount
             }
             unstartedStatuses.push(temp);
@@ -248,7 +248,7 @@ const GetTicketsByWeek = (res: any, dates: any) => {
         if (!isEmpty(ticketsByStatus)) {
           const inprogressCount = GetTotalCount(ticketsByStatus, Statuses.InProgress);
             let temp = {
-              name: FormatDate(ticketsByStatus[0][0], "MM/DD"),
+              name: FormatDate(range.startDate, "MM/DD"),
               value: inprogressCount
             }
             inprogressStatuses.push(temp);          
@@ -263,7 +263,7 @@ const GetTicketsByWeek = (res: any, dates: any) => {
 
         if (completedCount > 0) {
           let temp = {
-            name: FormatDate(ticketsByStatus[0][0], "MM/DD"),
+            name: FormatDate(range.startDate, "MM/DD"),
             value: completedCount
           }
           publishedStatuses.push(temp);
