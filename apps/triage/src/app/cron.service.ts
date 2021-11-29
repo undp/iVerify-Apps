@@ -18,11 +18,11 @@ export class CronService{
     //     return await this.analyze(startDate, endDate);
     // }
     
-    @Cron(CronExpression.EVERY_6_HOURS)
+    @Cron(CronExpression.EVERY_2_HOURS)
     async handleCron(){
         const endDate = new Date().toISOString();
         const start = new Date();
-        start.setHours(new Date().getHours() -6);
+        start.setHours(new Date().getHours() -2);
         const startDate = start.toISOString();
         this.logger.log(`Running cron job with startDate ${startDate} and endDate ${endDate}`)
         return await this.analyze(startDate, endDate);
