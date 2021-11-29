@@ -24,13 +24,18 @@ export class StatsService{
 
     async processItemStatusChanged(id: string, day: string){
         const results = await this.checkStatsClient.getTicketLastStatus(id).toPromise();
+        console.log('results: ', results)
         const creationDate = DateTime.fromSeconds(+results.project_media.created_at);
         const title = results.project_media.title;
         const node = results.project_media.log.edges.find(node => node.node.event_type === 'update_dynamicannotationfield');
         if(!node) return;
         const status_changes_obj = JSON.parse(node.node.object_changes_json);
+        console.log(node.node)
+        console.log(node.node.object_changes_json)
         const values = status_changes_obj.value.map(val => JSON.parse(val));
         const resolutionDate =  DateTime.fromSeconds(+node.node.created_at);
+        console.log('creationDate: ', creationDate)
+        console.log('resolutionDate: ', resolutionDate)
         const initialStates = StatusesMap.filter(status => !status.resolution).map(status => status.value);
         const resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
         const defaultStatuses = StatusesMap.filter(status => status.default).map(status => status.value);
@@ -38,13 +43,15 @@ export class StatsService{
         if(initialStates.indexOf(values[0]) > -1 && resolutionStatuses.indexOf(values[1]) > -1){
             const resolutionTime = Math.round(Interval.fromDateTimes(creationDate, resolutionDate).length('hours'));
             const stats: Partial<Stats> = this.formatService.formatResolutionTime(day, title, resolutionTime);
-            await this.saveOne(stats);
+            return await this.saveOne(stats);
         }
-        if(defaultStatuses.indexOf(values[0]) > -1 && activeStatuses.indexOf(values[1]) > -1){
+        else if(defaultStatuses.indexOf(values[0]) > -1 && activeStatuses.indexOf(values[1]) > -1){
             const responseTime = Math.round(Interval.fromDateTimes(creationDate, resolutionDate).length('hours'));
+            console.log('response time: ', responseTime)
             const stats: Partial<Stats> = this.formatService.formatResponseTime(day, title, responseTime);
-            await this.saveOne(stats);
+            return await this.saveOne(stats);
         }
+        else return null;
     }
 
     async fetchAndStore(day: Date, allPrevius?: boolean){
