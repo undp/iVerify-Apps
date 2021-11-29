@@ -41,12 +41,14 @@ ingress:
   hostname: chart-example.local
   extraHosts:
     - host: extra.chart-example.local
+  tls:
+    enabled: false
   paths:
     - path: /
       port: 80
   annotations: {}
     # kubernetes.io/ingress.class: nginx
-
+  
 resources: 
    limits:
      cpu: 300m
