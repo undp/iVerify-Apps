@@ -10,5 +10,5 @@ export enum CountBy{
     source = 'source',
     createdVsPublished = 'createdVsPublished',   
     resolutionVelocity = 'resolutionVelocity',
-    responseVelocity = 'resolutionVelocity' 
+    responseVelocity = 'responseVelocity' 
 }
