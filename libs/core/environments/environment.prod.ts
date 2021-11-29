@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   api: {
-    base: 'http://20.86.237.214',
+    base: 'https://api.iverify.org.zm',
     version: 'v3'
   },
   authentication: {
