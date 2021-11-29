@@ -34,8 +34,4 @@ spec:
                   {{- end }}
         {{- end }}
     {{- end }}
-    {{- range .Values.ingress.extraHosts }}
-    - host: {{ .host }}
-      http: *hostname
-    {{- end }}
 {{- end }}
