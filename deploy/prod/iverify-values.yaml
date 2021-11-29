@@ -34,4 +34,3 @@ resources:
 
 app:
   containerPort: 8200
-
