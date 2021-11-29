@@ -24,6 +24,10 @@ ingress:
     kubernetes.io/ingress.class: azure/application-gateway
     appgw.ingress.kubernetes.io/ssl-redirect: "true"
 
+livenessProbe:
+   enabled: true
+   path: /api
+
 resources: 
    limits:
      cpu: 500m
