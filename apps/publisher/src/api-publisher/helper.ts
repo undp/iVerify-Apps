@@ -4,6 +4,7 @@ import { SharedHelper } from "../shared/helper";
 
 @Injectable()
 export class ApiPublisherHelper{
+    lang = process.env.language
     constructor(private sharedHelper: SharedHelper){}
 
     buildArticle(report: any, wpPost: any): Partial<Article>{
@@ -73,7 +74,7 @@ export class ApiPublisherHelper{
     }
 
     extractWpId(wpPost: any): number{
-        return 0;
+        return wpPost.id || '';
     }
 
     extractTitle(report: any){
@@ -85,11 +86,11 @@ export class ApiPublisherHelper{
     }
 
     extractWpUrl(wpPost: any){
-        return '';
+        return wpPost.link || '';
     }
 
     extractPublishDate(wpPost: any){
-        return '';
+        return wpPost.date || '';
     }
 
     extractTags(report: any){
@@ -101,51 +102,51 @@ export class ApiPublisherHelper{
     }
 
     extractThreathLevel(report: any){
-        return this.sharedHelper.extractTask(report, TasksLabels.threat_level);
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].threat_level);
     }
 
     extractViolationType(report: any){
-        return this.sharedHelper.extractTask(report, TasksLabels.violation_type);
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].violation_type);
     }
 
     extractClaim(report: any){
-        return this.sharedHelper.extractTask(report, TasksLabels.claim);
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].claim);
     }
 
     extractJustification(report: any){
-        return this.sharedHelper.extractTask(report, TasksLabels.rating_justification);
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].rating_justification);
     }
 
     extractEvidence(report: any){
-        return this.sharedHelper.extractTask(report, TasksLabels.evidences_and_references);
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].evidences_and_references);
     }
 
     extractMisinfoType(report: any){
-        return this.sharedHelper.extractTask(report, TasksLabels.disinfo_type);
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].disinfo_type);
     }
 
     extractHateSpeechType(report: any){
-        return this.sharedHelper.extractTask(report, TasksLabels.hate_speech_type);
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].hate_speech_type);
     }
 
     extractToxicScore(report: any): number{
-        return this.sharedHelper.extractTask(report, TasksLabels.toxic_score);
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].toxic_score);
     }
 
     extractObsceneScore(report: any): number{
-        return this.sharedHelper.extractTask(report, TasksLabels.obscene_score);
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].obscene_score);
     }
 
     extractIdentityScore(report: any): number{
-        return this.sharedHelper.extractTask(report, TasksLabels.identity_score);
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].identity_score);
     }
 
     extractThreatScore(report: any): number{
-        return this.sharedHelper.extractTask(report, TasksLabels.threat_score);
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].threat_score);
     }
 
     extractexplicitScore(report: any): number{
-        return this.sharedHelper.extractTask(report, TasksLabels.sexually_explicit_score);
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].sexually_explicit_score);
     }
 
     extractDToxicScore(report: any): number{
