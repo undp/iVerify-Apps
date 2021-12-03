@@ -1,19 +1,4 @@
-// export enum TasksLabels{
-//     claim = 'Claim',
-//     rating_justification = 'Rating Justification',
-//     evidences_and_references = 'Evidence and References',
-//     card_title = 'Card Title',
-//     toxic = 'Toxic Score',
-//     threat_level = 'Threat level',
-//     violation_type = 'Type of Violation',
-//     disinfo_type = 'Mis/Disinformation Type',
-//     hate_speech_type = 'Hate Speech Type',
-//     toxic_score = 'Toxic Score',
-//     obscene_score = 'Obscene Score',
-//     identity_score = 'Attack on Identity Score',
-//     threat_score = 'Threat Score ',
-//     sexually_explicit_score = 'Sexually Explicit Score',
-// }
+
 
 export const TasksLabels = {
     en: {
@@ -31,6 +16,21 @@ export const TasksLabels = {
         identity_score: 'Attack on Identity Score',
         threat_score: 'Threat Score ',
         sexually_explicit_score: 'Sexually Explicit Score',
+        violation_disinfo: 'Disinformation',
+        violation_misinfo: 'Misinformation',
+        violation_hate_speech: 'Hate Speech',
+        violation_threat: 'Threat / Intimidation',
+        violation_violence: 'Incitement Of Violence',
+        status_unstarted: 'Unstarted',
+        status_in_progress: 'In Progress',
+        status_false: 'False',
+        status_true: 'True',
+        status_misleading: 'Misleading',
+        status_out_of_scope: 'Out of scope',
+        status_partly_false: 'Partly false',
+        status_inconclusive: 'Inconclusive',
+        status_pre_checked: 'Pre-checked'
+
     },
     es: {
         claim: 'Declaración',
@@ -47,5 +47,19 @@ export const TasksLabels = {
         identity_score: 'Ataque a la identidad (puntuación)',
         threat_score: 'Amenaza (puntuación)',
         sexually_explicit_score: 'Sexualmente explicito (puntuación)',
+        violation_disinfo: 'Desinformación',
+        violation_misinfo: 'Desinformación',
+        violation_hate_speech: 'Discurso del odio',
+        violation_threat: 'Amenaza / Intimidación',
+        violation_violence: 'Incitación a la violencia',
+        status_unstarted: 'Sin iniciar',
+        status_in_progress: 'En curso',
+        status_false: 'Falso',
+        status_true: 'Verdadero',
+        status_misleading: 'fraudolento',
+        status_out_of_scope: 'Fuera de perspectiva',
+        status_partly_false: 'Sostenible',
+        status_inconclusive: 'No confirmado',
+        status_pre_checked: 'Pre-comprobado'
     }
 }

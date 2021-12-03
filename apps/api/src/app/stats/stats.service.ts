@@ -109,7 +109,7 @@ export class StatsService{
     }
 
     async getTicketsByStatus(endDate: string){
-        const results = await this.checkStatsClient.getTicketsByStatuses().toPromise();
+        const results = await this.checkStatsClient.getTicketsByStatuses(StatusesMap).toPromise();
         return this.formatService.formatTticketsByStatus(endDate, results);
     }
 

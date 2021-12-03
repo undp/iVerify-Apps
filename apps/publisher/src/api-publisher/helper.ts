@@ -4,7 +4,7 @@ import { SharedHelper } from "../shared/helper";
 
 @Injectable()
 export class ApiPublisherHelper{
-    lang = process.env.language
+    lang = process.env.LANGUAGE
     constructor(private sharedHelper: SharedHelper){}
 
     buildArticle(report: any, wpPost: any): Partial<Article>{

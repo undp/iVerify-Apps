@@ -5,7 +5,7 @@ import { TasksLabels } from '@iverify/iverify-common';
 
 @Injectable()
 export class WpPublisherHelper{
-    lang = process.env.language;
+    lang = process.env.LANGUAGE;
 
     constructor(private sharedHelper: SharedHelper){}
 
