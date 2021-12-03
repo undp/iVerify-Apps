@@ -9,7 +9,7 @@ options:
 definitions:
   services:
     docker:
-      memory: 7124
+      memory: 4096
 
   checkRepo: &checkRepo
     name: Check & create repo
@@ -27,7 +27,7 @@ definitions:
       - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
       - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
       - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR
-      - docker build --memory 5G  --memory-swap 7G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
+      - docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
       - docker push $IMAGE_NAME_TAG-api
       - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
       - docker push $IMAGE_NAME_TAG-iverify
@@ -65,7 +65,7 @@ definitions:
       - docker
     script:
       - export IMAGE_NAME_TAG=build
-      - docker build --memory 5G  --memory-swap 7G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
+      - docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
       - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
       - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/Dockerfile-prod .
       - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .
