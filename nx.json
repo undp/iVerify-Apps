@@ -55,6 +55,9 @@
     },
     "iverify-common": {
       "tags": []
+    },
+    "api-client": {
+      "tags": []
     }
   }
 }

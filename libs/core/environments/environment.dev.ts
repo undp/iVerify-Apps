@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   api: {
-    base: 'https://undpjtf-zambia-backend-dev.serpis.un-icc.cloud',
+    base: 'https://api-iverify-honduras-js-test.rhone.un-icc.cloud',
     version: 'v3'
   },
   authentication: {

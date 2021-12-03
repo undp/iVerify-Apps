@@ -1,13 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { CountBy, StatusesMap } from "@iverify/iverify-common";
 import { Stats } from "./models/stats.model";
-import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 
 @Injectable()
 export class StatsFormatService{
     unstartedStatuses = StatusesMap.filter(status => status.default).map(status => status.value);
     processingStatuses = StatusesMap.filter(status => !status.default && !status.resolution).map(status => status.value);
     resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
+
+    constructor(){}
     
     formatDate(date: Date){
         return `${date.getUTCFullYear()}-${date.getUTCMonth() +1}-${date.getUTCDate()}`

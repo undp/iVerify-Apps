@@ -1,11 +1,16 @@
-export const StatusesMap = [
-    {label: 'Unstarted', value: 'undetermined', resolution: false, default: true},
-    {label: 'In Progress', value: 'in_progress', resolution: false, default: false},
-    {label: 'False', value: 'inconclusive', resolution: true, default: false},
-    {label: 'True', value: 'verified', resolution: true, default: false},
-    {label: 'Misleading', value: 'report-true', resolution: true, default: false},
-    {label: 'Out of scope', value: 'report-false', resolution: true, default: false},
-    {label: 'Partly false', value: '1596659071130', resolution: true, default: false},
-    {label: 'Inconclusive', value: '1612330491802', resolution: true, default: false},
-    {label: 'Pre-checked', value: '1624969590287', resolution: false, default: false}
-]
+import { Injectable } from "@nestjs/common";
+import { TasksLabels } from "./tasks-labels";
+
+// const lan = process.env.LANGUAGE 
+
+    export const StatusesMap = [
+        {label: TasksLabels['es'].status_unstarted, value: process.env.UNSTARTED_VALUE, resolution: false, default: true},
+        {label: TasksLabels['es'].status_in_progress, value: process.env.IN_PROGRESS_VALUE, resolution: false, default: false},
+        {label: TasksLabels['es'].status_false, value: process.env.FALSE_VALUE, resolution: true, default: false},
+        {label: TasksLabels['es'].status_true, value: process.env.TRUE_VALUE, resolution: true, default: false},
+        {label: TasksLabels['es'].status_misleading, value: process.env.MISLEADING_VALUE, resolution: true, default: false},
+        {label: TasksLabels['es'].status_out_of_scope, value: process.env.OUT_OF_SCOPE, resolution: true, default: false},
+        {label: TasksLabels['es'].status_partly_false, value: process.env.PARTLY_FALSE_VALUE, resolution: true, default: false},
+        {label: TasksLabels['es'].status_inconclusive, value: process.env.INCONCLUSIVE_VALUE, resolution: true, default: false},
+        {label: TasksLabels['es'].status_pre_checked, value: process.env.PRE_CHECKED_VALUE, resolution: false, default: false}
+    ]

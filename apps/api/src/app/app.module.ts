@@ -19,6 +19,10 @@ import { MeedanCheckClientModule } from '@iverify/meedan-check-client';
 import { StatsController } from './stats/stats-controller';
 import { ScheduleModule } from '@nestjs/schedule';
 import { StatsCronService } from './stats/cron.service';
+import { Article } from '@iverify/iverify-common';
+import { ArticlesController } from './articles/articles.controller';
+import { ArticlesModule } from './articles/articles.module';
+import { ArticlesService } from './articles/articles.service';
 
 @Module({
   imports: [
@@ -26,6 +30,7 @@ import { StatsCronService } from './stats/cron.service';
     AuthModule, 
     RolesModule,
     StatsModule,
+    ArticlesModule,
     MeedanCheckClientModule,
     ConfigModule.forRoot(),
     ScheduleModule.forRoot(),
@@ -40,10 +45,10 @@ import { StatsCronService } from './stats/cron.service';
       autoLoadEntities: true,
       synchronize: true
     }),
-    TypeOrmModule.forFeature([User, Roles, Stats]),
+    TypeOrmModule.forFeature([User, Roles, Stats, Article]),
 
   ],
-  controllers: [AppController, UsersController, StatsController],
-  providers: [AppService, UsersService, StatsService, StatsFormatService, StatsCronService],
+  controllers: [AppController, UsersController, StatsController, ArticlesController],
+  providers: [AppService, UsersService, StatsService, StatsFormatService, StatsCronService, ArticlesService],
 })
 export class AppModule {} 

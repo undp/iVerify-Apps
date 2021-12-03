@@ -39,15 +39,6 @@ export interface PostFields{
     subtitle: string
     _webdados_fb_open_graph_specific_image?: string
 }
-
-export enum TasksLabels{
-    claim = 'Claim',
-    rating_justification = 'Rating Justification',
-    evidences_and_references = 'Evidence and References',
-    card_title = 'Card Title',
-    toxic = 'Toxic Score'
-}
-
 export interface CreatePostDto{
     date?: string
     date_gmt?: string

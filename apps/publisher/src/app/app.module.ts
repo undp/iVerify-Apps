@@ -6,7 +6,9 @@ import { AppService } from './app.service';
 import { SharedModule } from '../shared/shared.module';
 import { WpPublisherModule } from '../wp-publisher/wp-publisher.module';
 import { MeedanCheckClientModule } from '@iverify/meedan-check-client';
+import { ApiClientModule } from '@iverify/api-client';
 import { WpClientModule } from '@iverify/wp-client';
+import { ApiPublisherModule } from '../api-publisher/api-publisher.module';
 
 
 @Module({
@@ -15,6 +17,8 @@ import { WpClientModule } from '@iverify/wp-client';
     WpPublisherModule,
     MeedanCheckClientModule,
     WpClientModule,
+    ApiPublisherModule,
+    ApiClientModule,
     HttpModule
   ],
   controllers: [AppController],

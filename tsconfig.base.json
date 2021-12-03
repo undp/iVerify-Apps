@@ -27,7 +27,8 @@
       "@iverify/crowdtangle-client": ["libs/crowdtangle-client/src/index.ts"],
       "@iverify/ml-service-client": ["libs/ml-service-client/src/index.ts"],
       "@iverify/iverify-common": ["libs/iverify-common/src/index.ts"],
-      "@iverify/*": ["libs/*"]
+      "@iverify/*": ["libs/*"],
+      "@iverify/api-client": ["libs/api-client/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

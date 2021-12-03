@@ -34,7 +34,9 @@ export class AppService {
       let createdItems = [];
       this.logger.log(`${toxicPosts.length} toxic posts found. Creating Meedan Check items...`);
       for(const post of toxicPosts){
+        this.logger.log('Creating item...')
         const item = await this.checkClient.createItem(post.postUrl, post.toxicScores).toPromise();
+        console.log('item: ', item)
         createdItems = [...createdItems, item];
       }
       this.logger.log(`Created ${createdItems.length} items.`)
@@ -60,9 +62,9 @@ export class AppService {
         const postMessage = post.message ? post.message : '';
         const postDescription = post.description ? post.description : '';
         const text = `${postMessage}. ${postDescription}`;
-        this.logger.log(`Sending request for text: ${text}`);
+        this.logger.log(`Sending post for analysis...`)
         const toxicScores = await this.mlClient.analyze([text]).toPromise();
-        this.logger.log(`Received response: ${postMessage}`);
+        this.logger.log(`Received toxic score: ${toxicScores}`)
         const isToxic = this.isToxic(toxicScores, post.postUrl, text.length);
         if(isToxic) posts.push({...post, toxicScores});
         postsCount++;
