@@ -25,6 +25,8 @@ app:
   containerPort: 8000
 
 env:
+  CHECK_API_URL: https://check-api.checkmedia.org/api/graphql
+  CHECK_API_TEAM: undp
   DB_USER: iverify@undphq10ds002
   DB_PORT: 3306
   DB_HOST: undphq10ds002.mysql.database.azure.com
@@ -34,3 +36,6 @@ secret:
   - name: DB_PASSWORD
     secret_name: iverify
     secret_key: DB_PASSWORD
+  - name: CHECK_API_TOKEN
+    secret_name: iverify
+    secret_key: CHECK_API_TOKEN

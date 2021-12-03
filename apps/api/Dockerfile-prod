@@ -15,17 +15,22 @@ RUN apt-get update && \
 
 WORKDIR /workspace
 COPY . .
-RUN ls -la 
+
 
 RUN npm install
 ENV PATH /workspace/node_modules/.bin:$PATH
-RUN nx build api 
+RUN nx build --maxWorkers=1 --memoryLimit=5120 api 
 
 
 FROM node:lts-alpine
 WORKDIR /app
 
+RUN addgroup -g 1001 -S iverify && adduser -u 1001 -S iverify  -G iverify 
 COPY --from=builder /workspace/dist/apps/api .
+RUN chmod 750 -R /app
+RUN chown -R iverify:iverify /app
+
+USER iverify
 
 ENV PORT=3333
 EXPOSE 3333

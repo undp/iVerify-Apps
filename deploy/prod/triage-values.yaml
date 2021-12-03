@@ -30,7 +30,7 @@ env:
   CHECK_FOLDER_ID: "11058"
   CT_API_URL: https://api.crowdtangle.com 
   ML_SERVICE_API_BASE:  http://ml-service.iverify-python.svc.cluster.local
-  DETOXIFY_TRESHOLD: "0.6" 
+  DETOXIFY_TRESHOLD: "0.1" 
 
 secret: 
   - name: CT_API_KEY
