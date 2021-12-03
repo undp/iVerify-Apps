@@ -1,5 +1,5 @@
 import { Article } from '@iverify/iverify-common';
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpException, Post, UseGuards } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
 import { ArticlesService } from './articles.service';
@@ -12,7 +12,12 @@ export class ArticlesController {
 
   @Post('save-article')
   async saveArticle(@Body() body: Partial<Article>) {
-    return await this.articlesService.saveOne(body);
+    try{
+      return await this.articlesService.saveOne(body);
+    } catch(e){
+      console.log('Error while saving article...');
+      throw new HttpException(e.message, 500); 
+    }
   }
   
 }
