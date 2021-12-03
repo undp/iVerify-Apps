@@ -39,10 +39,6 @@ definitions:
     name: Build Iverify
     image:
         name: node:14.17.1 
-    caches:
-      - docker
-    services:
-      - docker
     script:
       - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
       - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
@@ -66,8 +62,6 @@ definitions:
   build: &build
     name: Build
     caches:
-      - docker
-    services:
       - docker
     script:
       - export IMAGE_NAME_TAG=build
