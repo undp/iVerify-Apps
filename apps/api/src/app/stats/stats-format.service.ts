@@ -7,6 +7,8 @@ export class StatsFormatService{
     unstartedStatuses = StatusesMap.filter(status => status.default).map(status => status.value);
     processingStatuses = StatusesMap.filter(status => !status.default && !status.resolution).map(status => status.value);
     resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
+
+    constructor(){}
     
     formatDate(date: Date){
         return `${date.getUTCFullYear()}-${date.getUTCMonth() +1}-${date.getUTCDate()}`

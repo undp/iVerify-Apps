@@ -22,6 +22,7 @@ import { StatsCronService } from './stats/cron.service';
 import { Article } from '@iverify/iverify-common';
 import { ArticlesController } from './articles/articles.controller';
 import { ArticlesModule } from './articles/articles.module';
+import { ArticlesService } from './articles/articles.service';
 
 @Module({
   imports: [
@@ -48,6 +49,6 @@ import { ArticlesModule } from './articles/articles.module';
 
   ],
   controllers: [AppController, UsersController, StatsController, ArticlesController],
-  providers: [AppService, UsersService, StatsService, StatsFormatService, StatsCronService],
+  providers: [AppService, UsersService, StatsService, StatsFormatService, StatsCronService, ArticlesService],
 })
 export class AppModule {} 
