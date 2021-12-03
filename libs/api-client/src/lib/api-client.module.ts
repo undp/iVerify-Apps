@@ -6,6 +6,6 @@ import { ApiClientConfig } from './config';
   controllers: [],
   imports: [HttpModule],
   providers: [ApiClientService, ApiClientConfig],
-  exports: [],
+  exports: [ApiClientService],
 })
 export class ApiClientModule {}
