@@ -3,11 +3,12 @@ import { combineLatest, from, Observable } from "rxjs";
 import { catchError, concatMap, filter, first, map, reduce, retry, take, tap } from "rxjs/operators";
 import { CheckClientConfig } from "./config";
 import { CheckClientHelperService } from "./helper.service";
-import { StatusesMap } from "@iverify/iverify-common";
+import { StatusesMap, TasksLabels } from "@iverify/iverify-common";
 
 @Injectable()
 export class CheckStatsService{
     private readonly logger = new Logger('MeedanCheckClient');
+    lang = process.env.LANGUAGE;
 
     constructor(
         private http: HttpService, 
@@ -144,10 +145,10 @@ export class CheckStatsService{
         );
     };
 
-    getTicketsByStatuses(): Observable<any>{
-        const statuses = StatusesMap.map(i => i.value);
+    getTicketsByStatuses(statusesMap): Observable<any>{
+        const statuses = statusesMap.map(i => i.value);
         return from(statuses).pipe(
-            concatMap(status => this.getTicketsByStatus(status)),
+            concatMap((status: string) => this.getTicketsByStatus(status)),
             reduce((acc, val) => ([...acc, val]), [])
         )
     }
@@ -179,11 +180,19 @@ export class CheckStatsService{
     };
 
     getTicketsByViolationTypes(){
-        const taskId = '7766';
-        const taskResponses = ['Disinformation', 'Misinformation', 'Hate Speech', 'Threat / Intimidation', 'Incitement Of Violence'];
+        // const violationTaskId = '7766';
+        const violationTaskId = process.env.VIOLATION_TASK_ID;
+        const taskResponses = [
+            TasksLabels[this.lang].violation_disinfo,
+            TasksLabels[this.lang].violation_misinfo,
+            TasksLabels[this.lang].violation_hate_speech,
+            TasksLabels[this.lang].violation_threat,
+            TasksLabels[this.lang].violation_violence,
+            TasksLabels[this.lang].violation_disinfo,
+        ];
 
         return from(taskResponses).pipe(
-            concatMap(violation => this.getTicketsByTaskType(taskId, violation).pipe(
+            concatMap(violation => this.getTicketsByTaskType(violationTaskId, violation).pipe(
                 map((result) => {
                     const count = result && result.search && result.search.number_of_results ?
                     result.search.number_of_results :

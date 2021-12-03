@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { CountBy, StatusesMap } from "@iverify/iverify-common";
 import { Stats } from "./models/stats.model";
-import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 
 @Injectable()
 export class StatsFormatService{
