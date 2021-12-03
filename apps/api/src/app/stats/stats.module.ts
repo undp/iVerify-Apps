@@ -1,3 +1,4 @@
+import { StatusesMap } from "@iverify/iverify-common";
 import { MeedanCheckClientModule, MeedanCheckClientService } from "@iverify/meedan-check-client";
 import { HttpModule, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";

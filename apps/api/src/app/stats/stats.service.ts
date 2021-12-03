@@ -18,7 +18,7 @@ export class StatsService{
         @InjectRepository(Stats)
         private readonly statsRepository: Repository<Stats>,
         private formatService: StatsFormatService,
-        private checkStatsClient: CheckStatsService
+        private checkStatsClient: CheckStatsService,
         ) {
     }
 
