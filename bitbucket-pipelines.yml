@@ -1,15 +1,16 @@
-definitions:
-    services:
-      docker:
-        memory: 7124
-        
+    
 image:
   name: atlassian/pipelines-awscli:1.18.190
 
 options:
+  size: 2x
   docker: true
 
 definitions:
+  services:
+    docker:
+      memory: 4096
+
   checkRepo: &checkRepo
     name: Check & create repo
     script:
@@ -26,7 +27,7 @@ definitions:
       - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
       - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
       - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR
-      - docker build --memory 5G  --memory-swap 7G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
+      - docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
       - docker push $IMAGE_NAME_TAG-api
       - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
       - docker push $IMAGE_NAME_TAG-iverify
@@ -38,10 +39,6 @@ definitions:
     name: Build Iverify
     image:
         name: node:14.17.1 
-    caches:
-      - docker
-    services:
-      - docker
     script:
       - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
       - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
@@ -66,11 +63,9 @@ definitions:
     name: Build
     caches:
       - docker
-    services:
-      - docker
     script:
       - export IMAGE_NAME_TAG=build
-      - docker build --memory 5G  --memory-swap 7G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
+      - docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
       - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
       - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/Dockerfile-prod .
       - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .
@@ -79,11 +74,8 @@ pipelines:
   default:
     - step: 
         size: 2x
-        services:
-          - docker
         <<: *iverifybuild
     - step: 
-        size: 2x
         services:
           - docker
         <<: *build
@@ -93,11 +85,8 @@ pipelines:
           *checkRepo
       - step: 
           size: 2x
-          services:
-            - docker
           <<: *iverifybuild
       - step: 
-          size: 2x
           services:
             - docker
           <<: *buildPushTag
