@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   api: {
-    base: 'https://undpjtf-zambia-backend-dev.serpis.un-icc.cloud',
+    base: process.env.API_URL,
     version: 'v3'
   },
   authentication: {
