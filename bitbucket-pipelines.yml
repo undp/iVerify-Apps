@@ -1,15 +1,16 @@
-definitions:
-    services:
-      docker:
-        memory: 7124
-        
+    
 image:
   name: atlassian/pipelines-awscli:1.18.190
 
 options:
+  size: 2x
   docker: true
 
 definitions:
+  services:
+    docker:
+      memory: 7124
+
   checkRepo: &checkRepo
     name: Check & create repo
     script:
@@ -79,11 +80,8 @@ pipelines:
   default:
     - step: 
         size: 2x
-        services:
-          - docker
         <<: *iverifybuild
     - step: 
-        size: 2x
         services:
           - docker
         <<: *build
@@ -93,11 +91,8 @@ pipelines:
           *checkRepo
       - step: 
           size: 2x
-          services:
-            - docker
           <<: *iverifybuild
       - step: 
-          size: 2x
           services:
             - docker
           <<: *buildPushTag
