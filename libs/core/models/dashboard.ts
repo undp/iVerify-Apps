@@ -37,6 +37,18 @@ export enum ChartTypeEnum {
   BUBBLE = 5
 }
 
+export enum Statuses {
+  InProgress = 'In Progress',
+  Unstarted = 'Unstarted',
+  PreChecked = 'Pre-checked',
+  False = 'False',
+  True = 'True',
+  OutOfScope = 'Out of scope',
+  Misleading = 'Misleading',
+  PartlyFalse = 'Partly false',
+  Inconclusive = 'Inconclusive'
+}
+
 export interface StatusFormat {
     name: string,
     value: number;

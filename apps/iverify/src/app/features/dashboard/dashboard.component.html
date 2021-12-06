@@ -1,6 +1,6 @@
 <div class="published">
     <p *ngIf="totalPublished">
-      {{ totalPublished[0].count }} {{ 'TICKETS_COMPLETED' | translate }}
+      {{ (totalPublished && totalPublished[0]) ? totalPublished[0].count : 0}} {{ 'TICKETS_COMPLETED' | translate }}
     </p>
 </div> 
 <div class="row">

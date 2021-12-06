@@ -64,7 +64,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   subs: Subscription;
   statData: any;
-  agentsSourceData: any;
+  statsByCategories: any;
   ticketsByChannel: StatusFormat[];
   ticketsByType: StatusFormat[];
   ticketsByTag: StatusFormat[];
@@ -85,6 +85,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   startDate: any = new Date();
   endDate: any = new Date();
   isData: boolean = false;
+  isDefaultData: boolean = true;
   
   constructor(
     // private toast: ToastService,
@@ -126,14 +127,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(map(res => res.results))
       .subscribe((res) => {
         this.isData = (res && isEmpty(res)) ? false : true;
-        this.agentsSourceData = DashboardHelpers.SortStatistics(res);
-        this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.agentsSourceData['source']);
-        this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.agentsSourceData['tag']);
-        this.ticketsByType = DashboardHelpers.GetTicketsByType(this.agentsSourceData['type']);
-        this.ticketsByCurrentStatus = DashboardHelpers.GetTicketsByCurrentStatus(this.agentsSourceData);
+        this.statsByCategories = DashboardHelpers.SortStatistics(res);
+        this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.statsByCategories['source']);
+        this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.statsByCategories['tag']);
+        this.ticketsByType = DashboardHelpers.GetTicketsByType(this.statsByCategories['violationType']);
         this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(res, this.options);  
-        this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.agentsSourceData);
-        this.totalPublished = (this.agentsSourceData['createdVsPublished'])? this.agentsSourceData['createdVsPublished'][0][1] : null;
+        this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.statsByCategories);
+        if (this.isDefaultData) {
+          this.ticketsByCurrentStatus = DashboardHelpers.GetTicketsByCurrentStatus(this.statsByCategories);
+          this.totalPublished = (this.ticketsByCurrentStatus && this.ticketsByCurrentStatus[2]) ? this.ticketsByCurrentStatus[2].value : 0;
+        }
       })
     );
   }
@@ -141,6 +144,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   getStatisticsByDates() {
     this.options.startDate = DashboardHelpers.FormatDate(this.startDate);
     this.options.endDate = DashboardHelpers.FormatDate(this.endDate);
+    this.isDefaultData = false;
     this.getStatistics();
   }
 

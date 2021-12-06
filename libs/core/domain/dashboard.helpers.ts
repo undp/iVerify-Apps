@@ -1,8 +1,8 @@
 import * as moment from 'moment';
-import { isEmpty, orderBy, uniqBy, flatten } from 'lodash';
-import { TicketsByType, TicketCatResFormat, StatusFormatPieChart, StatusFormat } from '../models/dashboard';
+import { isEmpty, orderBy, uniqBy, uniq, flatten, keyBy } from 'lodash';
+import { TicketsByType, TicketCatResFormat, StatusFormatPieChart, StatusFormat, Statuses } from '../models/dashboard';
 
-const showItems = 5;
+const showItems = 20;
 
 const FormatDate = (date: Date, format: string = 'YYYY-MM-DD') => {
   return moment(date).format(format);
@@ -23,15 +23,7 @@ const SortStatistics = (results: any) => {
 const GetTicketsByType = (res: any) => {
   let processedData: any = [];
   if (!isEmpty(res)) {
-    res.forEach((value: string[], index: number) => {
-      if (!isEmpty(value[0]) && index < showItems) {
-        const category = {
-          name: value[0],
-          value: value[1]
-        };
-        processedData.push(category);
-      }
-    });
+    processedData = GetCountFromRes(res);
   }
   return processedData;
 }
@@ -52,21 +44,36 @@ const GetTicketsByChannel = (res: any) => {
   return processedData;
 };
 
+const GetCountFromRes = (res: any[]) => {
+
+  let modified: any = [];
+  if (res && res.length > 0) {
+    let newArr = res[res.length - 1].map((itemVal: any) => {
+        if (Array.isArray(itemVal)) {
+          let temp = itemVal.filter((item: any) => (item.count !== 0));
+          return temp;
+        }
+        return false;        
+    });
+    newArr = uniqBy(newArr[1], 'category');
+    let sortData = orderBy(newArr, ['count'], ['desc']); 
+    sortData.forEach((value: TicketCatResFormat, index: number) => {
+        if (!isEmpty(value.category) && index < showItems) {
+          const category = {
+            name: value.category,
+            value: value.count
+          };
+          modified.push(category);
+        }
+    });
+  }
+  return modified;
+}
+
 const GetTicketsByTag = (res: any[]) => {
   let processedData: any = [];
   if (!isEmpty(res)) {
-    const len = res.length;
-    let sortData = res[len - 1][1]; // orderBy(res[len - 1][1], ['count'], ['desc']);    
-    sortData = sortData.filter((item: any) => item.category !== 'Unstarted' && item.category !== 'In Progress' && item.count !== 0);
-    sortData.forEach((value: TicketCatResFormat, index: number) => {
-      if (!isEmpty(value.category) && index < showItems) {
-        const category = {
-          name: value.category,
-          value: value.count
-        };
-        processedData.push(category);
-      }
-    });
+    processedData = GetCountFromRes(res);
   }
   return processedData;
 };
@@ -77,42 +84,48 @@ const GetTicketsByCurrentStatus = (res: any) => {
       const statuses = res.status;
 
       let newArr = statuses.map((itemVal: any) => {
-        let temp = itemVal[1].filter((item: any) => (item.category === 'Unstarted' || item.category === 'In Progress'));
+        let temp = itemVal[1].filter((item: any) => (item.category === Statuses.Unstarted || item.category === Statuses.InProgress || item.category === Statuses.PreChecked));
         temp = uniqBy(temp, 'category');
         return temp;
       });
+    
       newArr = flatten(newArr);
       let sortData = orderBy(newArr, ['count'], ['desc']); 
 
-      const unstarted = sortData.filter((it: any) => it.category === 'Unstarted');
-      const inprogress = sortData.filter((it: any) => it.category !== 'Unstarted');
+      const unstarted = sortData.filter((it: any) => it.category === Statuses.Unstarted);
+      const inprogress = sortData.filter((it: any) => it.category !== Statuses.Unstarted);
+      const precheckedCount = sortData.filter((it: any) => it.category === Statuses.PreChecked);
 
       processedData.push(
         {
           name: unstarted[0].category,
-          value: unstarted[0].count,
-          label: 'Waiting'
+          value: unstarted[0].count + precheckedCount[0].count,
+          label: 'Unstarted'
         }, {
           name: inprogress[0].category,
           value: inprogress[0].count,
-          label: 'Started'
+          label: 'Inprogress'
         }
       );              
 
-      const publishedItems = res.createdVsPublished;
-      if (!isEmpty(publishedItems)) {
-        
-        let publishedData = publishedItems.map((itemVal: any) => {
-          return uniqBy(itemVal[1], 'category');
+      if (!isEmpty(statuses)) {
+
+        let newArr = statuses.map((itemVal: any) => {
+          let temp = itemVal[1].filter((item: any) => (item.category !== Statuses.Unstarted && item.category !== Statuses.InProgress && item.category !== Statuses.PreChecked));
+          temp = uniqBy(temp, 'category');
+          return temp;
+        });
+        newArr = flatten(newArr);
+        let sortedPublished = orderBy(newArr, ['count'], ['desc']); 
+        sortedPublished = uniqBy(sortedPublished, 'category'); 
+        const completedCount = sortedPublished.reduce((acc, curr) => {
+            acc['count'] += parseInt(curr.count);
+            return acc;
         });
 
-        publishedData = flatten(publishedData);
-        let sortedPublished = orderBy(publishedData, ['count'], ['desc']); 
-        sortedPublished = sortedPublished.filter((it: any) => it.category === 'published');
-
         let newItem = {
-          name: sortedPublished[0].category,
-          value: sortedPublished[0].count,
+          name: 'Completed',
+          value: completedCount.count,
           label: 'Completed'
         };
         processedData.push(newItem);
@@ -127,7 +140,7 @@ const GetTicketsByAgents = (res: any) => {
   const iteratorArray = [TicketsByType.agentUnstarted, TicketsByType.agentSolved, TicketsByType.agentProcessing];  
   iteratorArray.forEach((val: any)=> {
     if (!isEmpty(res[val])) {
-      let temp: any = {};
+      let temp: any = [];
       res[val].forEach((item: any)=> {
           if (item[0] !== 'undefined') {
             temp[item[0]] = item[1];
@@ -136,30 +149,35 @@ const GetTicketsByAgents = (res: any) => {
       responseItems[val] = temp;
     }
   });
-  const unstarted = responseItems[TicketsByType.agentUnstarted];
-  const progressing = responseItems[TicketsByType.agentProcessing];
-  const solved  = responseItems[TicketsByType.agentSolved];
-  if (!isEmpty(unstarted)) {
-      Object.keys(unstarted).forEach((categoryName: string, index: number) => {
+  const unstarted = keyBy(GetCountFromRes(res[TicketsByType.agentUnstarted]), (o)=> o.name);
+  const progressing = keyBy(GetCountFromRes(res[TicketsByType.agentProcessing]), (o)=> o.name);
+  const solved  = keyBy(GetCountFromRes(res[TicketsByType.agentSolved]), (o)=> o.name);
+
+  const allUniqueAgents = uniq([ ...Object.keys(unstarted), ...Object.keys(progressing), ...Object.keys(solved)]);
+
+  if (!isEmpty(allUniqueAgents)) {
+      allUniqueAgents.forEach((categoryName: string, index: number) => {
         if (index < showItems) {
-          let agentData: any = {};
+          if (categoryName !== "undefined") {
+            let agentData: any = {};
             agentData['name'] = categoryName;
             agentData['series'] = [
               {
                 "name": "Unstarted",
-                "value": (unstarted && unstarted[categoryName]) ? unstarted[categoryName] : 0
+                "value": (unstarted && unstarted[categoryName]) ? unstarted[categoryName].value : 0
               },
               {
                 "name": "Started",
-                "value": (progressing && progressing[categoryName]) ? progressing[categoryName] : 0
+                "value": (progressing && progressing[categoryName]) ? progressing[categoryName].value : 0
               },
               {
                 "name": "Solved",
-                "value": (solved && solved[categoryName]) ? solved[categoryName] : 0
+                "value": (solved && solved[categoryName]) ? solved[categoryName].value : 0
               }
             ];
             processedData.push(agentData);
           }
+        }
       });
   }
 
@@ -193,9 +211,19 @@ const weeksBetween = (d1: any, d2: any): any => {
     return dateArr;
 }
 
+const GetTotalCount = (dataSet: any, category: string) => {
+  let temp = dataSet.map((itemVal: any) => {
+              return uniqBy(itemVal[1], 'category');
+            });
+
+    temp = flatten(temp);
+    let sortedPublished = orderBy(temp, ['count'], ['desc']); 
+    sortedPublished = sortedPublished.filter((it: any) => it.category == category);
+    return (sortedPublished && sortedPublished.length > 0) ? sortedPublished[0].count : 0;
+}
+
 const GetTicketsByWeek = (res: any, dates: any) => {
   const statuses = res[TicketsByType.status];
-  const published = res[TicketsByType.createdVsPublished];
   let unstartedStatuses: StatusFormat[] = [], publishedStatuses:StatusFormat[] = [], inprogressStatuses: StatusFormat[] = [];
   const startDate = new Date(dates.startDate);
   const endDate = new Date(dates.endDate);
@@ -205,52 +233,54 @@ const GetTicketsByWeek = (res: any, dates: any) => {
     if (weekData.length > 0) {
 
       weekData.forEach((range: any) => {
+        let ticketsByStatus = statuses.filter((item: any) => {
+          const date = new Date(item[0]).getTime();
+          const startDateTime = new Date(range.startDate).getTime();
+          const endDateTime   = new Date(range.endDate).getTime();
+          return date >= startDateTime && date <= endDateTime;
+        });
 
-        let key: any = range.endDate;
-        const dataCount = statuses.filter((item: any) => item[0] === key);
-        if (!isEmpty(dataCount)) {
-          let unstarted = dataCount[0][1].filter((item: any) => (item.category.toLowerCase() === 'unstarted'));
-          if (unstarted.length > 0) {
+        if (!isEmpty(ticketsByStatus)) {
+            const unstartedCount = GetTotalCount(ticketsByStatus, Statuses.Unstarted);
+            const precheckedCount = GetTotalCount(ticketsByStatus, Statuses.PreChecked);
             let temp = {
-              name: FormatDate(dataCount[0][0], "MM/DD"),
-              value: unstarted[0].count
+              name: FormatDate(range.startDate, "MM/DD"),
+              value: unstartedCount + precheckedCount
             }
             unstartedStatuses.push(temp);
-          }
         }
 
-        if(!isEmpty(dataCount)) {
-          let inprogress = dataCount[0][1].filter((item: any) => (item.category.toLowerCase() === 'in progress'));
-          if (inprogress.length > 0) {
+        if (!isEmpty(ticketsByStatus)) {
+          const inprogressCount = GetTotalCount(ticketsByStatus, Statuses.InProgress);
             let temp = {
-              name: FormatDate(dataCount[0][0], "MM/DD"),
-              value: inprogress[0].count
+              name: FormatDate(range.startDate, "MM/DD"),
+              value: inprogressCount
             }
-            inprogressStatuses.push(temp);
-          }
+            inprogressStatuses.push(temp);          
         }
 
-        const publishedCount = published.filter((item: any) => item[0] === key);
-        if (!isEmpty(publishedCount)) {
-            const firstEle = publishedCount[0];
-            let publishedCreated = firstEle[1].filter((item: any) => (item.category.toLowerCase() === 'published'));
-            if (publishedCreated.length > 0) {
-                let temp = {
-                  name: FormatDate(firstEle[0], "MM/DD"),
-                  value: publishedCreated[0].count
-                }
-                publishedStatuses.push(temp);
+        let completedCount = 0;
+        if (!isEmpty(ticketsByStatus)) {
+            [Statuses.False, Statuses.True, Statuses.OutOfScope, Statuses.PartlyFalse, Statuses.Inconclusive, Statuses.Misleading].forEach((status) => {
+              completedCount += GetTotalCount(ticketsByStatus, status);
+            });
+        }
+
+        if (completedCount > 0) {
+          let temp = {
+            name: FormatDate(range.startDate, "MM/DD"),
+            value: completedCount
           }
+          publishedStatuses.push(temp);
         }
       });
-      
     }
   }
 
   if (unstartedStatuses.length > 0 || inprogressStatuses.length > 0 || publishedStatuses.length > 0) {
     const finalStatusesByWeek = [
           {
-            name: 'Unstarted',
+            name: Statuses.Unstarted,
             series: unstartedStatuses
           },
           {
