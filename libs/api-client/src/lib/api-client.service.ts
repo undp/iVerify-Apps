@@ -17,7 +17,7 @@ export class ApiClientService {
 
   postArticle(article: Partial<Article>): Observable<any> {
     return this.http.post(this.config.postArticleUrl, {article}).pipe(
-      map(res => res.data.data.project_media),
+      // map(res => res.data.data.project_media),
       retry(3),
       catchError(err => {
         this.logger.error('Error posting article: ', err.message)
