@@ -21,6 +21,7 @@ export class ApiPublisherService{
     wpId$: Observable<number> = this.wpPost$.pipe(map(wpPost => wpPost.id));
 
     article$: Observable<Partial<Article>> = combineLatest([this.report$, this.wpPost$]).pipe(
+        tap(() => console.log('generating article...')),
         map(([report, wpPost]) => this.helper.buildArticle(report, wpPost)),
         catchError(err => {
             console.log('Problems converting report and post to article....')
@@ -29,6 +30,7 @@ export class ApiPublisherService{
     )
 
     postToApi$: Observable<any> = this.article$.pipe(
+        tap(() => console.log('posting article...')),
         switchMap(article => this.apiClient.postArticle(article)),
         catchError(err => {
             console.log('Problems posting article to api....')
