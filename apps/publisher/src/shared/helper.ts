@@ -25,22 +25,22 @@ export class SharedHelper{
       }
 
     extractTitle(report: any){
-        return report.project_media.title || '';
+        return report.title || '';
     }
 
     extractDescription(report: any){
-        return report.project_media.description || '';
+        return report.description || '';
     }
 
     extractDbid(report: any){
-        return report.project_media.dbid || '';
+        return report.dbid || '';
     }
 
     extractSourceDomain(report: any){
-        return report.project_media.domain || '';
+        return report.domain || '';
     }
 
     extractSourceName(report: any){
-        return report.project_media.source.name || '';
+        return report.source.name || '';
     }
 }
