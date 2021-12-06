@@ -1,5 +1,5 @@
 import { Article } from '@iverify/iverify-common';
-import { Body, Controller, HttpException, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Post, UseGuards } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
 import { ArticlesService } from './articles.service';
@@ -19,5 +19,17 @@ export class ArticlesController {
       throw new HttpException(e.message, 500); 
     }
   }
+
+  @Get('articles')
+  async getArticles() {
+    try{
+      return await this.articlesService.getArticles();
+    } catch(e){
+      console.log('Error while getting articles...');
+      throw new HttpException(e.message, 500); 
+    }
+  }
+
+
   
 }

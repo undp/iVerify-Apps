@@ -27,5 +27,9 @@ export class ArticlesService{
         const newRecord = await this.articleRepository.create(article);
         return this.articleRepository.save(newRecord);
     }
+
+    async getArticles(){
+        return await this.articleRepository.find({})
+    }
     
 }
