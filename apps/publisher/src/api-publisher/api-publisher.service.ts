@@ -24,8 +24,8 @@ export class ApiPublisherService{
         tap(() => console.log('generating article...')),
         map(([report, wpPost]) => this.helper.buildArticle(report, wpPost)),
         catchError(err => {
-            console.log('Problems converting report and post to article....')
-            throw new HttpException(err.message, 500);
+            console.log('Problems converting report and post to article....', err.message)
+            return of(null);
           })
     )
 
@@ -33,8 +33,8 @@ export class ApiPublisherService{
         tap(() => console.log('posting article...')),
         switchMap(article => this.apiClient.postArticle(article)),
         catchError(err => {
-            console.log('Problems posting article to api....')
-            throw new HttpException(err.message, 500);
+            console.log('Problems posting article to api....', err.message)
+            return of(null);
           })
     )
 
