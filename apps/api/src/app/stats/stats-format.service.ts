@@ -129,12 +129,12 @@ export class StatsFormatService{
         return this.buildStatsFromCount(endDate, count, CountBy.createdVsPublished);
     }
 
-    formatResponseTime(day, title, resolutionTime): Partial<Stats>{
+    formatResponseTime(day, title, responseTime): Partial<Stats>{
         return {
             day,
-            countBy: CountBy.resolutionVelocity,
+            countBy: CountBy.responseVelocity,
             category: title,
-            count: resolutionTime
+            count: responseTime
         }
     }
 

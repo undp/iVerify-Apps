@@ -48,9 +48,13 @@ export class StatsController {
   }
 
   @Post('item-status-changed')
-  async itemResolved(@Body() body: ItemChangedDto) {
-    const id = body.id;
+  async itemResolved(@Body() body) {
+    const event = body.event;
+    const data = body.data;
+    const id = data.project_media.dbid;
+    console.log('item status changed payload: ', {event, data, id})
     const day = this.formatService.formatDate(new Date());
+    if(event !== 'update_project_media') return;
     return await this.statsService.processItemStatusChanged(id, day);
   }
   

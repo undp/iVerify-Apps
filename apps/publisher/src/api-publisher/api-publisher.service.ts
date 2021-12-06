@@ -21,11 +21,19 @@ export class ApiPublisherService{
     wpId$: Observable<number> = this.wpPost$.pipe(map(wpPost => wpPost.id));
 
     article$: Observable<Partial<Article>> = combineLatest([this.report$, this.wpPost$]).pipe(
-        map(([report, wpPost]) => this.helper.buildArticle(report, wpPost))
+        map(([report, wpPost]) => this.helper.buildArticle(report, wpPost)),
+        catchError(err => {
+            console.log('Problems converting report and post to article....')
+            throw new HttpException(err.message, 500);
+          })
     )
 
     postToApi$: Observable<any> = this.article$.pipe(
-        switchMap(article => this.apiClient.postArticle(article))
+        switchMap(article => this.apiClient.postArticle(article)),
+        catchError(err => {
+            console.log('Problems posting article to api....')
+            throw new HttpException(err.message, 500);
+          })
     )
 
     constructor(
