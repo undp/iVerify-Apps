@@ -158,9 +158,9 @@ const GetTicketsByAgents = (res: any) => {
   const progressingItems = res[TicketsByType.agentProcessing];
   const solvedItems = res[TicketsByType.agentSolved];
 
-  const unstarted = keyBy(GetCountFromRes(unstartedItems, unstartedItems.length), (o)=> o.name);
-  const progressing = keyBy(GetCountFromRes(progressingItems, progressingItems.length), (o)=> o.name);
-  const solved  = keyBy(GetCountFromRes(solvedItems, solvedItems.length), (o)=> o.name);
+  const unstarted = (unstartedItems && unstartedItems[1]) ? keyBy(GetCountFromRes(unstartedItems, unstartedItems[1].length), (o)=> o.name) : [];
+  const progressing = (progressingItems && progressingItems[1]) ? keyBy(GetCountFromRes(progressingItems, progressingItems[1].length), (o)=> o.name) : [];
+  const solved  = (solvedItems && solvedItems[1]) ? keyBy(GetCountFromRes(solvedItems, solvedItems[1].length), (o)=> o.name) : [];
 
   const allUniqueAgents = uniq([ ...Object.keys(unstarted), ...Object.keys(progressing), ...Object.keys(solved)]);
 
