@@ -1,8 +1,8 @@
 import * as moment from 'moment';
 import { isEmpty, orderBy, uniqBy, uniq, flatten, keyBy } from 'lodash';
-import { TicketsByType, TicketCatResFormat, StatusFormatPieChart, StatusFormat, Statuses } from '../models/dashboard';
+import { TicketsByType, TicketResponseTime, BubbleChartFormat, StatusFormatPieChart, StatusFormat, Statuses } from '../models/dashboard';
 
-const showItems = 20;
+const showItems = 5;
 
 const FormatDate = (date: Date, format: string = 'YYYY-MM-DD') => {
   return moment(date).format(format);
@@ -48,24 +48,28 @@ const GetCountFromRes = (res: any[]) => {
 
   let modified: any = [];
   if (res && res.length > 0) {
-    let newArr = res[res.length - 1].map((itemVal: any) => {
-        if (Array.isArray(itemVal)) {
-          let temp = itemVal.filter((item: any) => (item.count !== 0));
-          return temp;
+    const lastest = res[res.length - 1][1];
+    let data = lastest.filter((itemVal: any) => {
+        if (!isEmpty(itemVal)) {
+          return (itemVal.count !== 0);
         }
-        return false;        
+        return false;
     });
-    newArr = uniqBy(newArr[1], 'category');
-    let sortData = orderBy(newArr, ['count'], ['desc']); 
-    sortData.forEach((value: TicketCatResFormat, index: number) => {
-        if (!isEmpty(value.category) && index < showItems) {
-          const category = {
-            name: value.category,
-            value: value.count
-          };
-          modified.push(category);
-        }
-    });
+    if (data.length > 0) {
+      const dataUniq = uniqBy(data, 'category');
+      let sortData = orderBy(dataUniq, ['count'], ['desc']); 
+      sortData.forEach((value: any, index: number) => {
+          if (!isEmpty(value.category) && index < showItems) {
+            const category = {
+              name: value.category,
+              value: value.count
+            };
+            modified.push(category);
+          }
+      });
+
+    }
+    
   }
   return modified;
 }
@@ -182,6 +186,25 @@ const GetTicketsByAgents = (res: any) => {
   }
 
   return processedData;
+}
+
+const GetTicketsReponseTime = (data: TicketResponseTime[], type: string) => {
+  let series:any = [], bubbleData : BubbleChartFormat[] = [];
+  if (!isEmpty(data)) {
+    series = data.map((record: any) => {
+      record = record[1];
+      return { name: record.category, x: record.count, y: '', r: record.count};
+    });
+  }
+  if (series && series.length > 0) {
+    bubbleData  = [
+      {
+        name: type,
+        series: series
+      }
+    ];
+  }
+  return bubbleData;
 }
 
 const weeksBetween = (d1: any, d2: any): any => {
@@ -324,5 +347,6 @@ export const DashboardHelpers = {
   GetFirstLastDayMonth,
   GetTicketsByWeek,
   GetPreviousWeekFirstDay,
-  GetTicketsByType
+  GetTicketsByType,
+  GetTicketsReponseTime
 };

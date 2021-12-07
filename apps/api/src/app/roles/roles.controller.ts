@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Get, BadRequestException, NotFoundException, Put, Query, Delete, UseGuards, Injectable, Scope, Inject, BadGatewayException } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesService } from './roles.service'
 import { CreateRoleDto } from './dto/createRole.dto';
 import { InfoLogger } from '../logger/info-logger.service';
@@ -24,7 +24,7 @@ export class RolesController {
     }
 
     @Post()
-    @UseGuards(JWTTokenAuthGuard, RolesGuard)
+    // @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async create(@Body() createRoleDto: CreateRoleDto) {
         const userId = this.request.user && this.request.user['id'] ? this.request.user['id'] : 1;
         if (userId) {
@@ -56,7 +56,7 @@ export class RolesController {
     }
 
     @Put()
-    @UseGuards(JWTTokenAuthGuard, RolesGuard)
+    // @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async editRole(
         @Query() roleId: GetRoleDto,
         @Body() editRoleDto: EditRoleDto
