@@ -1,6 +1,6 @@
 <div class="published">
     <p *ngIf="totalPublished">
-      {{ totalPublished }} {{ 'TICKETS_COMPLETED' | translate }}
+      {{ (totalPublished && totalPublished[0]) ? totalPublished[0].count : 0}} {{ 'TICKETS_COMPLETED' | translate }}
     </p>
 </div> 
 <div class="row">
@@ -127,7 +127,7 @@
       <iverify-charts
       [chartType]="5"
       [viewVal]="bubbleChartViewSize"
-      [data]="bubbleData"
+      [data]="ticketsReponseTime"
     ></iverify-charts>
     </div>
 </div>   

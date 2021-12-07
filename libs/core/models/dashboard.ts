@@ -80,3 +80,14 @@ export interface TicketCatResFormat {
   count: number;
 }
 
+export interface TicketResponseTime {
+  category: string;
+  count: number;
+  day: string;
+}
+
+export enum ResTimeMinAvgLong {
+  MIN = 100,
+  AVG = 200,
+  MAX = 500
+}

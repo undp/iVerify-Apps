@@ -7,50 +7,6 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { isEmpty } from 'lodash';
 import { TicketRequest, StatusFormat, StatusFormatPieChart, TicketsByAgentFormat, BubbleChartFormat } from '@iverify/core/models/dashboard';
 
-export const bubbleData : BubbleChartFormat[] =  [
-  {
-    name: 'Response',
-    series: [
-      {
-        name: '1.2',
-        x: 1.2,
-        y: 0,
-        r: 10
-      },
-      {
-        name: '2.3',
-        x: 2.3,
-        y: 0,
-        r: 10
-      },
-      {
-        name: '2.9',
-        x: 2.9,
-        y: 0,
-        r: 10
-      },
-      {
-        name: '4.3',
-        x: 4.3,
-        y: 0,
-        r: 10
-      },
-      {
-        name: '7.9',
-        x: 7.9,
-        y: 0,
-        r: 10
-      },
-      {
-        name: '15.8',
-        x: 15.8,
-        y: 0,
-        r: 10
-      }
-    ]
-  }
-];
-
 const BubbleChartViewSize: any = {
   WEB_VIEW_SIZE : [600, 150],
   MOBILE_VIEW_SIZE : [250, 150]
@@ -70,11 +26,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   ticketsByTag: StatusFormat[];
   ticketsByCurrentStatus: StatusFormatPieChart[];
   ticketsByAgents: TicketsByAgentFormat[];
+  ticketsReponseTime: any[];
   totalPublished: any;
   ticketsByWeek: any;
   selectedTimeType: number = 1;
   breakpoint: number = 3;
-  bubbleData = bubbleData;  
   range = new FormGroup({
     start: new FormControl(),
     end: new FormControl()
@@ -133,6 +89,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.ticketsByType = DashboardHelpers.GetTicketsByType(this.statsByCategories['violationType']);
         this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(res, this.options);  
         this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.statsByCategories);
+        this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['responseVelocity'], 'Title');
         if (this.isDefaultData) {
           this.ticketsByCurrentStatus = DashboardHelpers.GetTicketsByCurrentStatus(this.statsByCategories);
           this.totalPublished = (this.ticketsByCurrentStatus && this.ticketsByCurrentStatus[2]) ? this.ticketsByCurrentStatus[2].value : 0;
@@ -150,8 +107,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getAllTicketsData() {
     if (this.selectedTimeType === 1) {
+      this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['responseVelocity'], 'Title');
       this.responseVelocity = 'RESPONSE_TIME';
     } else {
+      this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['resolveVelocity'], 'Title');
       this.responseVelocity = 'RESOLVE_TIME';
     }
   }
