@@ -11,9 +11,13 @@ export class ArticlesCronService{
     
     @Cron(CronExpression.EVERY_5_MINUTES)
     async handleCron(){
-        const day = new Date();
-        this.logger.log(`Running articles cron job for dat (UTC) ${day.toUTCString()}`);
-        const articles = await this.articlesService.getArticles();
-        return await this.emailService.sendCsvReport(articles) ;
+        try{
+            const day = new Date();
+            this.logger.log(`Running articles cron job for dat (UTC) ${day.toUTCString()}`);
+            const articles = await this.articlesService.getArticles();
+            return await this.emailService.sendCsvReport(articles) ;
+        }catch(e){
+            console.log('Articles cron job error: ', e.message);
+        }
     }
 }

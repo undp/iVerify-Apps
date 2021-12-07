@@ -13,8 +13,8 @@ export class EmailService {
     const csv = await converter.json2csvAsync(data);
     await this.mailerService.sendMail({
       to: 'chiodigiovanni1@gmail.com',
-      from: '"Support Team" <support@example.com>',
-      subject: 'Welcome to Nice App! Confirm your Email',
+      from: 'chiodigiovanni1@gmail.com',
+      subject: 'iVerify publications report',
       text: 'CSV report',
       attachments: [
         {   
