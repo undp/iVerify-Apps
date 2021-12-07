@@ -2,75 +2,8 @@ import { Component, OnDestroy, Input, OnChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ChartTypeEnum } from '@iverify/core/models/dashboard';
 import { curveBasis } from 'd3-shape';
-
-const multi =  [
-  {
-    "name": "Unstarted",
-    "series": [
-      {
-        "name": "Mon",
-        "value": 25
-      },
-      {
-        "name": "Tue",
-        "value": 30
-      },
-      {
-        "name": "Wed",
-        "value": 10
-      }
-    ]
-  },
-
-  {
-    "name": "Inprogress",
-    "series": [
-      {
-        "name": "Mon",
-        "value": 40
-      },
-      {
-        "name": "Thu",
-        "value": 10
-      },
-      {
-        "name": "Wed",
-        "value": 30
-      },
-      {
-        "name": "Fri",
-        "value": 30
-      }
-    ]
-  },
-
-  {
-    "name": "Completed",
-    "series": [
-      {
-        "name": "Mon",
-        "value": 10
-      },
-      {
-        "name": "Thu",
-        "value": 30
-      },
-      {
-        "name": "Fri",
-        "value": 20
-      },
-      {
-        "name": "Sat",
-        "value": 20
-      },
-      {
-        "name": "Sun",
-        "value": 20
-      }
-    ]
-  }  
-];
-
+import { TranslateService } from '@ngx-translate/core';
+import { ResTimeMinAvgLong } from '@iverify/core/models/dashboard';
 
 @Component({
   selector: 'iverify-charts',
@@ -93,10 +26,10 @@ export class ChartComponent implements  OnDestroy, OnChanges {
   gradient: boolean = false;
   showLegend: boolean = true;
   showXAxisLabel: boolean = false;
+  xAxisLabelBubbleChart: string = 'BUBBLE_CHART';
   yAxisLabel: string = '';
   showYAxisLabel: boolean = true;
   xAxisLabel: string = '';  
-  multi = multi;
   tickIndex: number = 0;
   curve: any = curveBasis;
   colorScheme = [
@@ -116,6 +49,7 @@ export class ChartComponent implements  OnDestroy, OnChanges {
 
 
   constructor(
+    protected translate: TranslateService
   ) {
     this.subs = new Subscription();
   }
@@ -142,11 +76,11 @@ export class ChartComponent implements  OnDestroy, OnChanges {
 
   xticksFormatting(val: any) {
     let tickVal = '';
-    if (val === 1) {
+    if (val === ResTimeMinAvgLong.MIN) {
       tickVal = `Quickest ${val} h`;
-    } else if (val === 4) {
+    } else if (val === ResTimeMinAvgLong.AVG) {
       tickVal = `Average ${val} h`;
-    } else if (val === 15) {
+    } else if (val === ResTimeMinAvgLong.MAX) {
       tickVal = `Longest ${val} h`;
     }
      return tickVal;

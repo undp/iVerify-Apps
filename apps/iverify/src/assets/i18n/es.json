@@ -321,9 +321,5 @@
   "USER_DELETED": "User deleted",
   "ROLE_DELETED": "Role deleted",
   "COMFIRMATION": "Alert!",
-  "DASHBOARD_NAME": "SPEED PROGRESS TICKETS",
-  "QUICKEST": "Quickest",
-  "AVERAGE": "Average",
-  "LONGEST": "Longest",
-  "BUBBLE_CHART": "Time in hours"
+  "DASHBOARD_NAME": "SPEED PROGRESS TICKETS"
 }

@@ -1,6 +1,6 @@
 import * as moment from 'moment';
-import { isEmpty, orderBy, uniqBy, flatten, keyBy } from 'lodash';
-import { TicketsByType, TicketCatResFormat, StatusFormatPieChart, StatusFormat, Statuses } from '../models/dashboard';
+import { isEmpty, orderBy, uniqBy, uniq, flatten, keyBy } from 'lodash';
+import { TicketsByType, TicketResponseTime, BubbleChartFormat, StatusFormatPieChart, StatusFormat, Statuses } from '../models/dashboard';
 
 const showItems = 5;
 
@@ -44,25 +44,32 @@ const GetTicketsByChannel = (res: any) => {
   return processedData;
 };
 
-const GetCountFromRes = (res: any[]) => {
+const GetCountFromRes = (res: any[],  displayItem = showItems) => {
 
   let modified: any = [];
   if (res && res.length > 0) {
-    let newArr = res.map((itemVal: any) => {
-        let temp = itemVal[1].filter((item: any) => (item.count !== 0));
-        return temp;
-    });
-    newArr = uniqBy(flatten(newArr), 'category');
-    let sortData = orderBy(newArr, ['count'], ['desc']); 
-    sortData.forEach((value: TicketCatResFormat, index: number) => {
-        if (!isEmpty(value.category) && index < showItems) {
-          const category = {
-            name: value.category,
-            value: value.count
-          };
-          modified.push(category);
+    const lastest = res[res.length - 1][1];
+    let data = lastest.filter((itemVal: any) => {
+        if (!isEmpty(itemVal)) {
+          return (itemVal.count !== 0);
         }
+        return false;
     });
+    if (data.length > 0) {
+      const dataUniq = uniqBy(data, 'category');
+      let sortData = orderBy(dataUniq, ['count'], ['desc']); 
+      sortData.forEach((value: any, index: number) => {
+          if (!isEmpty(value.category) && index < displayItem) {
+            const category = {
+              name: value.category,
+              value: value.count
+            };
+            modified.push(category);
+          }
+      });
+
+    }
+    
   }
   return modified;
 }
@@ -146,12 +153,19 @@ const GetTicketsByAgents = (res: any) => {
       responseItems[val] = temp;
     }
   });
-  const unstarted = keyBy(GetCountFromRes(res[TicketsByType.agentUnstarted]), (o)=> o.name);
-  const progressing = keyBy(GetCountFromRes(res[TicketsByType.agentProcessing]), (o)=> o.name);
-  const solved  = keyBy(GetCountFromRes(res[TicketsByType.agentSolved]), (o)=> o.name);
 
-  if (!isEmpty(unstarted)) {
-      Object.keys(unstarted).forEach((categoryName: string, index: number) => {
+  const unstartedItems = res[TicketsByType.agentUnstarted];
+  const progressingItems = res[TicketsByType.agentProcessing];
+  const solvedItems = res[TicketsByType.agentSolved];
+
+  const unstarted = keyBy(GetCountFromRes(unstartedItems, unstartedItems.length), (o)=> o.name);
+  const progressing = keyBy(GetCountFromRes(progressingItems, progressingItems.length), (o)=> o.name);
+  const solved  = keyBy(GetCountFromRes(solvedItems, solvedItems.length), (o)=> o.name);
+
+  const allUniqueAgents = uniq([ ...Object.keys(unstarted), ...Object.keys(progressing), ...Object.keys(solved)]);
+
+  if (!isEmpty(allUniqueAgents)) {
+      allUniqueAgents.forEach((categoryName: string, index: number) => {
         if (index < showItems) {
           if (categoryName !== "undefined") {
             let agentData: any = {};
@@ -177,6 +191,25 @@ const GetTicketsByAgents = (res: any) => {
   }
 
   return processedData;
+}
+
+const GetTicketsReponseTime = (data: TicketResponseTime[], type: string) => {
+  let series:any = [], bubbleData : BubbleChartFormat[] = [];
+  if (!isEmpty(data)) {
+    series = data.map((record: any) => {
+      record = record[1];
+      return { name: record.category, x: record.count, y: '', r: record.count};
+    });
+  }
+  if (series && series.length > 0) {
+    bubbleData  = [
+      {
+        name: type,
+        series: series
+      }
+    ];
+  }
+  return bubbleData;
 }
 
 const weeksBetween = (d1: any, d2: any): any => {
@@ -319,5 +352,6 @@ export const DashboardHelpers = {
   GetFirstLastDayMonth,
   GetTicketsByWeek,
   GetPreviousWeekFirstDay,
-  GetTicketsByType
+  GetTicketsByType,
+  GetTicketsReponseTime
 };
