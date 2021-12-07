@@ -44,7 +44,7 @@ const GetTicketsByChannel = (res: any) => {
   return processedData;
 };
 
-const GetCountFromRes = (res: any[]) => {
+const GetCountFromRes = (res: any[],  displayItem = showItems) => {
 
   let modified: any = [];
   if (res && res.length > 0) {
@@ -59,7 +59,7 @@ const GetCountFromRes = (res: any[]) => {
       const dataUniq = uniqBy(data, 'category');
       let sortData = orderBy(dataUniq, ['count'], ['desc']); 
       sortData.forEach((value: any, index: number) => {
-          if (!isEmpty(value.category) && index < showItems) {
+          if (!isEmpty(value.category) && index < displayItem) {
             const category = {
               name: value.category,
               value: value.count
@@ -153,9 +153,14 @@ const GetTicketsByAgents = (res: any) => {
       responseItems[val] = temp;
     }
   });
-  const unstarted = keyBy(GetCountFromRes(res[TicketsByType.agentUnstarted]), (o)=> o.name);
-  const progressing = keyBy(GetCountFromRes(res[TicketsByType.agentProcessing]), (o)=> o.name);
-  const solved  = keyBy(GetCountFromRes(res[TicketsByType.agentSolved]), (o)=> o.name);
+
+  const unstartedItems = res[TicketsByType.agentUnstarted];
+  const progressingItems = res[TicketsByType.agentProcessing];
+  const solvedItems = res[TicketsByType.agentSolved];
+
+  const unstarted = keyBy(GetCountFromRes(unstartedItems, unstartedItems.length), (o)=> o.name);
+  const progressing = keyBy(GetCountFromRes(progressingItems, progressingItems.length), (o)=> o.name);
+  const solved  = keyBy(GetCountFromRes(solvedItems, solvedItems.length), (o)=> o.name);
 
   const allUniqueAgents = uniq([ ...Object.keys(unstarted), ...Object.keys(progressing), ...Object.keys(solved)]);
 
