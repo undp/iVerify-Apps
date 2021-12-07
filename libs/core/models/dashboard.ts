@@ -80,3 +80,9 @@ export interface TicketCatResFormat {
   count: number;
 }
 
+export interface TicketResponseTime {
+  category: string;
+  count: number;
+  day: string;
+}
+

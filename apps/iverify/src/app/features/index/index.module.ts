@@ -1,6 +1,6 @@
 import { RouterModule, Routes } from '@angular/router';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { TranslateModule } from '@ngx-translate/core';
 import { IndexComponent } from './index.component';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -81,6 +81,6 @@ export const routes: Routes = [
   providers: [MatDatepickerModule],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   declarations: [IndexComponent, DashboardComponent, ChartComponent],
-  exports: [IndexComponent]
+  exports: [IndexComponent, TranslateModule]
 })
 export class IndexModule {}
