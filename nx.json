@@ -58,6 +58,9 @@
     },
     "api-client": {
       "tags": []
+    },
+    "email": {
+      "tags": []
     }
   }
 }

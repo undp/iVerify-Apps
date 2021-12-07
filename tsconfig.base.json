@@ -28,7 +28,8 @@
       "@iverify/ml-service-client": ["libs/ml-service-client/src/index.ts"],
       "@iverify/iverify-common": ["libs/iverify-common/src/index.ts"],
       "@iverify/*": ["libs/*"],
-      "@iverify/api-client": ["libs/api-client/src/index.ts"]
+      "@iverify/api-client": ["libs/api-client/src/index.ts"],
+      "@iverify/email": ["libs/email/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
