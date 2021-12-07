@@ -10,5 +10,6 @@ module.exports = {
     '<rootDir>/libs/ml-service-client',
     '<rootDir>/libs/iverify-common',
     '<rootDir>/libs/api-client',
+    '<rootDir>/libs/email',
   ],
 };
