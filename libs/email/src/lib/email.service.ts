@@ -9,8 +9,8 @@ export class EmailService {
 
   async sendCsvReport(data: Article[]) {
 
-    const articles = JSON.stringify(data);
-    const csv = await converter.json2csvAsync(articles);
+    // const articles = JSON.stringify(data);
+    const csv = await converter.json2csvAsync(data);
     await this.mailerService.sendMail({
       to: 'chiodigiovanni1@gmail.com',
       from: '"Support Team" <support@example.com>',
