@@ -86,3 +86,8 @@ export interface TicketResponseTime {
   day: string;
 }
 
+export enum ResTimeMinAvgLong {
+  MIN = 100,
+  AVG = 200,
+  MAX = 500
+}
