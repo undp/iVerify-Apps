@@ -3,6 +3,8 @@ import { Subscription } from 'rxjs';
 import { ChartTypeEnum } from '@iverify/core/models/dashboard';
 import { curveBasis } from 'd3-shape';
 import { TranslateService } from '@ngx-translate/core';
+import { ResTimeMinAvgLong } from '@iverify/core/models/dashboard';
+
 @Component({
   selector: 'iverify-charts',
   templateUrl: 'charts.component.html',
@@ -74,11 +76,11 @@ export class ChartComponent implements  OnDestroy, OnChanges {
 
   xticksFormatting(val: any) {
     let tickVal = '';
-    if (val === 100) {
+    if (val === ResTimeMinAvgLong.MIN) {
       tickVal = `Quickest ${val} h`;
-    } else if (val === 200) {
+    } else if (val === ResTimeMinAvgLong.AVG) {
       tickVal = `Average ${val} h`;
-    } else if (val === 500) {
+    } else if (val === ResTimeMinAvgLong.MAX) {
       tickVal = `Longest ${val} h`;
     }
      return tickVal;
