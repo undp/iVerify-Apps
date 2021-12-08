@@ -114,7 +114,7 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
     this.user$.subscribe((user) => {
       if (user) {
       let role = user.roles[0];
-      if (role) {
+      if (role && role.resource && role.resource.length > 0) {
         const resources = JSON.parse(role.resource);
         if (!isEmpty(resources)) {
           const roleItem = resources.filter((sect: any) => sect.name === 'users');

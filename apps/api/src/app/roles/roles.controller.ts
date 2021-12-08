@@ -47,7 +47,7 @@ export class RolesController {
     }
 
     @Get('RoleId')
-    @UseGuards(JWTTokenAuthGuard, RolesGuard)
+    // @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async getRole(@Query() roleId: GetRoleDto) {
         const userRole = await this.rolesService.findByRoleId(roleId.roleId);
         if (!userRole) throw new NotFoundException(roleMessages.roleNotFound);

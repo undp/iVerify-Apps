@@ -113,14 +113,16 @@ export class UserManagementComponent implements OnInit {
   isUserAllowed(permissionType: string, type: string) {
     if (this.user) {
       let role = this.user.roles[0];
-      const resources = JSON.parse(role.resource);
-      if (!isEmpty(resources)) {
-        const roleItem = resources.filter((sect: any) => sect.name === type);
-        if (!isEmpty(roleItem)) {
-          const val = roleItem[0].permissions.find((item: string) => item === permissionType);
-          return (val !== undefined);
+      if (role.resource && role.resource.length > 0) {
+        const resources = JSON.parse(role.resource);
+        if (!isEmpty(resources)) {
+          const roleItem = resources.filter((sect: any) => sect.name === type);
+          if (!isEmpty(roleItem)) {
+            const val = roleItem[0].permissions.find((item: string) => item === permissionType);
+            return (val !== undefined);
+          }
         }
-      }
+      }      
     }
     return false;
   }

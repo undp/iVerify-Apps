@@ -110,7 +110,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['responseVelocity'], 'Title');
       this.responseVelocity = 'RESPONSE_TIME';
     } else {
-      this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['resolveVelocity'], 'Title');
+      this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['resolutionVelocity'], 'Title');
       this.responseVelocity = 'RESOLVE_TIME';
     }
   }
