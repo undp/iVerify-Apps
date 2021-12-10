@@ -30,7 +30,7 @@ export class ApiPublisherService{
     )
 
     postToApi$: Observable<any> = this.article$.pipe(
-        tap(() => console.log('posting article...')),
+        tap(article => console.log('posting article...', article)),
         switchMap(article => this.apiClient.postArticle(article)),
         catchError(err => {
             console.log('Problems posting article to api....', err.message)
