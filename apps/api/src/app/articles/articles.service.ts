@@ -23,7 +23,7 @@ export class ArticlesService{
     }
 
     async saveOne(article: Partial<Article>){
-        this.logger.log(`Saving article ${article}`)
+        this.logger.log(`Saving article ${JSON.stringify(article)}`)
         const newRecord = await this.articleRepository.create(article);
         return this.articleRepository.save(newRecord);
     }
