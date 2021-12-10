@@ -54,7 +54,7 @@ export class StatsController {
     const id = data.project_media.dbid;
     console.log('item status changed payload: ', {event, data, id})
     const day = this.formatService.formatDate(new Date());
-    if(event !== 'update_project_media') return;
+    if(event !== 'update_annotation_verification_status') return;
     return await this.statsService.processItemStatusChanged(id, day);
   }
   
