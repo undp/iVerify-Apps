@@ -8,7 +8,7 @@ import { StatusesMap, TasksLabels } from "@iverify/iverify-common";
 @Injectable()
 export class CheckStatsService{
     private readonly logger = new Logger('MeedanCheckClient');
-    lang = process.env.LANGUAGE;
+    lang = process.env.language;
 
     constructor(
         private http: HttpService, 

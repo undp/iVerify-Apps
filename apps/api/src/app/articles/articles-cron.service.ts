@@ -9,7 +9,7 @@ export class ArticlesCronService{
 
     constructor(private articlesService: ArticlesService, private emailService: EmailService){}
     
-    @Cron(CronExpression.EVERY_5_MINUTES)
+    @Cron(CronExpression.EVERY_30_MINUTES)
     async handleCron(){
         try{
             const day = new Date();
