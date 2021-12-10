@@ -1,7 +1,7 @@
 import { Article } from "@iverify/iverify-common";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Between, Repository } from "typeorm";
 
 @Injectable()
 export class ArticlesService{
@@ -30,6 +30,14 @@ export class ArticlesService{
 
     async getArticles(){
         return await this.articleRepository.find({})
+    }
+
+    async getArticlesByRange(start: string, end: string){
+        return await this.articleRepository.find({
+            where: {
+                publishDate: Between(start, end)
+            }
+        });
     }
     
 }

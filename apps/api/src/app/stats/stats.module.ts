@@ -11,6 +11,7 @@ import { StatsService } from "./stats.service";
 @Module({
     imports: [TypeOrmModule.forFeature([Stats]), MeedanCheckClientModule],
     controllers: [StatsController],
-    providers: [StatsService, StatsFormatService]
+    providers: [StatsService, StatsFormatService],
+    exports: [StatsFormatService]
 })
 export class StatsModule{}

@@ -5,9 +5,10 @@ import { ArticlesService } from "./articles.service";
 import { ArticlesController } from "./articles.controller";
 import { EmailModule } from '@iverify/email';
 import { ArticlesCronService } from "./articles-cron.service";
+import { StatsModule } from "../stats/stats.module";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Article]), EmailModule],
+    imports: [TypeOrmModule.forFeature([Article]), EmailModule, StatsModule],
     controllers: [ArticlesController],
     providers: [ArticlesService, ArticlesCronService]
 })
