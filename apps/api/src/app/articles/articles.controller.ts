@@ -11,11 +11,13 @@ export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Post('save-article')
-  async saveArticle(@Body() body: Partial<Article>) {
+  async saveArticle(@Body() body) {
     try{
-      return await this.articlesService.saveOne(body);
+      const article = body.article;
+      await this.articlesService.saveOne(article);
+      return 'ok';
     } catch(e){
-      console.log('Error while saving article...');
+      console.log('Error while saving article...', e.message);
       throw new HttpException(e.message, 500); 
     }
   }
