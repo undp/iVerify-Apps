@@ -45,7 +45,7 @@ export class EmailService {
     const msg = `
     `
     await this.mailerService.sendMail({
-      to: 'chiodigiovanni1@gmail.com, benet@unicc.org',
+      to: 'chiodigiovanni1@gmail.com, benet@unicc.org, almadhoun@unicc.org',
       from: 'no_reply@un-icc.cloud',
       subject: 'Daily iVerify publications - Honduras-test',
       text: 'CSV report',
