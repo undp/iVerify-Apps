@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpException, Post, UseGuards } from '@nestjs/common';
 
 import { StatsService } from './stats.service';
 import { ApiProperty, ApiTags } from '@nestjs/swagger';
@@ -49,13 +49,18 @@ export class StatsController {
 
   @Post('item-status-changed')
   async itemResolved(@Body() body) {
-    const event = body.event;
-    const data = body.data;
-    const id = data.project_media.dbid;
-    console.log('item status changed payload: ', {event, data, id})
-    const day = this.formatService.formatDate(new Date());
-    if(event !== 'update_annotation_verification_status') return;
-    return await this.statsService.processItemStatusChanged(id, day);
+    try{
+      console.log('status changed hit with body:', body)
+      const event = body.event;
+      const data = body.data;
+      const id = data.project_media.dbid;
+      console.log('item status changed payload: ', {event, data, id})
+      const day = this.formatService.formatDate(new Date());
+      if(event !== 'update_annotation_verification_status') return;
+      return await this.statsService.processItemStatusChanged(id, day);
+    }catch(e){
+      throw new HttpException(e.message, 500); 
+    }
   }
   
   @Post('created-vs-published')
