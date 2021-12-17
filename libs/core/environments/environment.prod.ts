@@ -120,13 +120,18 @@ export const environment = {
     {
       countryCode: 'en',
       countryLanguage: 'English'
+    },
+    {
+      countryCode: 'es',
+      countryLanguage: 'Spanish'
     }
   ],
   availableLanguages:[
-    "en"
+    "en",
+    "es"
   ],
-  defaultLanguage: "en",
-  defaultCountryCode: 'ZM',
+  defaultLanguage: "es",
+  defaultCountryCode: 'HN',
   app_state_key: 'app_storage',
   xAxisLabel: 'Report dates',
   yAxisLabel: 'No of reports',

@@ -77,11 +77,11 @@ export class ChartComponent implements  OnDestroy, OnChanges {
   xticksFormatting(val: any) {
     let tickVal = '';
     if (val === ResTimeMinAvgLong.MIN) {
-      tickVal = `Quickest ${val} h`;
+      tickVal = `El más rápido ${val} h`;
     } else if (val === ResTimeMinAvgLong.AVG) {
-      tickVal = `Average ${val} h`;
+      tickVal = `Media ${val} h`;
     } else if (val === ResTimeMinAvgLong.MAX) {
-      tickVal = `Longest ${val} h`;
+      tickVal = `El más largo ${val} h`;
     }
      return tickVal;
   }

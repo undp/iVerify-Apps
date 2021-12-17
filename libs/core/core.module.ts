@@ -120,10 +120,6 @@ export class CoreModule {
   ) {
     throwIfAlreadyLoaded(parentModule, 'CoreModule');
     translate.setDefaultLang(environment.defaultLanguage);
-    if(environment.availableLanguages.find(languageCode=>languageCode.toLowerCase()===lang.toLowerCase())){
-      translate.use(lang);
-    } else {
-      translate.use(environment.defaultLanguage);
-    }
+    translate.use(environment.defaultLanguage);
   }
 }
