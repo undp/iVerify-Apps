@@ -61,6 +61,7 @@ export class StatsController {
       if(event !== 'update_annotation_verification_status') return;
       return await this.statsService.processItemStatusChanged(id, day);
     }catch(e){
+      this.logger.error(e.message)
       throw new HttpException(e.message, 500); 
     }
   }

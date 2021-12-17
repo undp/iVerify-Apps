@@ -28,13 +28,14 @@ export class StatsService{
 
     async processItemStatusChanged(id: string, day: string){
         const velocities = await this.processVelocities(id, day);
-        const meedanItem = await this.checkClient.getReport(id) as any;
+        const meedanItem = await this.checkClient.getReport(id).toPromise() as any;
         const status = meedanItem.status;
         const verification = await this.processVerification(status, day);
         return {velocities, verification};
     }
 
     async processVerification(status: string, day: string){
+        this.logger.log(`Processing verification for status ${status} and day ${day}`);
         if(this.resolutionStatuses.indexOf(status)===-1) return;
         const stat: Stats = await this.statsRepository.findOne({
             where: {
@@ -43,8 +44,10 @@ export class StatsService{
                 day
             }
         });
+        this.logger.log(`Found record: ${stat}`);
         if(stat) stat.count++;
         const statToSave = stat ? stat : {day, countBy: CountBy.verifiedByDay, category: status, count: 1};
+        this.logger.log(`Saving stat: ${JSON.stringify(statToSave)}`);
         return await this.statsRepository.save(statToSave);
     }
 
