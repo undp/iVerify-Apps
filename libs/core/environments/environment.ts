@@ -1,8 +1,9 @@
 export const environment = {
   production: false,
   api: {
-    base: 'http://localhost:8000',
-    // base: 'http://localhost:4199',
+    // base: 'http://localhost:8000',
+    // base: 'https://api.iverify.org.zm',
+    base: 'https://api-iverify-honduras-js-test.rhone.un-icc.cloud',
     version: 'v3'
   },
   authentication: {
@@ -121,13 +122,18 @@ export const environment = {
     {
       countryCode: 'en',
       countryLanguage: 'English'
+    },
+    {
+      countryCode: 'es',
+      countryLanguage: 'Spanish'
     }
   ],
   availableLanguages:[
-    "en"
+    "en",
+    "es"
   ],
-  defaultLanguage: "en",
-  defaultCountryCode: 'ZM',
+  defaultLanguage: "es",
+  defaultCountryCode: 'HN',
   app_state_key: 'app_storage',
   xAxisLabel: 'Report dates',
   yAxisLabel: 'No of reports',

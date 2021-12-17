@@ -117,16 +117,21 @@ export const environment = {
       timing: 900
     },
     countryCodes: [
-      {
-        countryCode: 'en',
-        countryLanguage: 'English'
-      }
-    ],
-    availableLanguages:[
-      "en"
-    ],
-    defaultLanguage: "en",
-    defaultCountryCode: 'ZM',
+    {
+      countryCode: 'en',
+      countryLanguage: 'English'
+    },
+    {
+      countryCode: 'es',
+      countryLanguage: 'Spanish'
+    }
+  ],
+  availableLanguages:[
+    "en",
+    "es"
+  ],
+  defaultLanguage: "es",
+    defaultCountryCode: 'HN',
     app_state_key: 'app_storage',
     xAxisLabel: 'Report dates',
     yAxisLabel: 'No of reports',
