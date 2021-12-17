@@ -11,6 +11,7 @@ export class CheckClientHelperService{
           title
           description
           dbid
+          status
           source {
             name
     			}
