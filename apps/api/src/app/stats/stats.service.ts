@@ -207,7 +207,8 @@ export class StatsService{
                     CountBy.violationType.toString(),
                     CountBy.status.toString(),
                     CountBy.responseVelocity.toString(),
-                    CountBy.resolutionVelocity.toString()
+                    CountBy.resolutionVelocity.toString(),
+                    CountBy.verifiedByDay.toString()
                 ])
             }
         }); 
