@@ -96,5 +96,9 @@
   "QUICKEST": "Quickest",
   "AVERAGE": "Average",
   "LONGEST": "Longest",
-  "BUBBLE_CHART": "Time in hours"
+  "BUBBLE_CHART": "Time in hours",
+  "INPROGRESS": "In progress",
+  "UNSTARTED": "Unstarted",
+  "COMPLETED": "Completed",
+  "SOLVED": "Solved"
 }
