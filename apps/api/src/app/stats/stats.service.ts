@@ -7,11 +7,14 @@ import { DateTime, Interval } from 'luxon';
 import { StatsFormatService } from "./stats-format.service";
 import { CheckStatsService } from "libs/meedan-check-client/src/lib/check-stats.service";
 import { StatsResults, CountBy, StatusesMap } from "@iverify/iverify-common";
+import { MeedanCheckClientService } from "@iverify/meedan-check-client";
 
 @Injectable()
 export class StatsService{
     private readonly logger = new Logger('MeedanCheckClient');
     allStatuses = StatusesMap.map(status => status.value);
+    resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
+
 
 
     constructor(
@@ -19,23 +22,41 @@ export class StatsService{
         private readonly statsRepository: Repository<Stats>,
         private formatService: StatsFormatService,
         private checkStatsClient: CheckStatsService,
+        private checkClient: MeedanCheckClientService
         ) {
     }
 
     async processItemStatusChanged(id: string, day: string){
+        const velocities = await this.processVelocities(id, day);
+        const meedanItem = await this.checkClient.getReport(id) as any;
+        const status = meedanItem.status;
+        const verification = await this.processVerification(status, day);
+        return {velocities, verification};
+    }
+
+    async processVerification(status: string, day: string){
+        if(this.resolutionStatuses.indexOf(status)===-1) return;
+        const stat: Stats = await this.statsRepository.findOne({
+            where: {
+                countBy: CountBy.verifiedByDay,
+                category: status,
+                day
+            }
+        });
+        if(stat) stat.count++;
+        const statToSave = stat ? stat : {day, countBy: CountBy.verifiedByDay, category: status, count: 1};
+        return await this.statsRepository.save(statToSave);
+    }
+
+    async processVelocities(id: string, day: string){
         const results = await this.checkStatsClient.getTicketLastStatus(id).toPromise();
-        // console.log('results: ', results)
         const creationDate = DateTime.fromSeconds(+results.project_media.created_at);
         const title = results.project_media.title;
         const node = results.project_media.log.edges.find(node => node.node.event_type === 'update_dynamicannotationfield');
         if(!node) return;
         const status_changes_obj = JSON.parse(node.node.object_changes_json);
-        // console.log(node.node)
-        // console.log(node.node.object_changes_json)
         const values = status_changes_obj.value.map(val => JSON.parse(val));
         const resolutionDate =  DateTime.fromSeconds(+node.node.created_at);
-        // console.log('creationDate: ', creationDate)
-        // console.log('resolutionDate: ', resolutionDate)
         const initialStates = StatusesMap.filter(status => !status.resolution).map(status => status.value);
         const resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
         const defaultStatuses = StatusesMap.filter(status => status.default).map(status => status.value);
