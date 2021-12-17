@@ -37,16 +37,18 @@ export class StatsService{
     async processVerification(status: string, day: string){
         this.logger.log(`Processing verification for status ${status} and day ${day}`);
         if(this.resolutionStatuses.indexOf(status)===-1) return;
+        const statusObj = StatusesMap.find(s => s['value'] === status);
+        const statusLabel = statusObj ? statusObj['label'] : '';
         const stat: Stats = await this.statsRepository.findOne({
             where: {
                 countBy: CountBy.verifiedByDay,
-                category: status,
+                category: statusLabel,
                 day
             }
         });
         this.logger.log(`Found record: ${stat}`);
         if(stat) stat.count++;
-        const statToSave = stat ? stat : {day, countBy: CountBy.verifiedByDay, category: status, count: 1};
+        const statToSave = stat ? stat : {day, countBy: CountBy.verifiedByDay, category: statusLabel, count: 1};
         this.logger.log(`Saving stat: ${JSON.stringify(statToSave)}`);
         return await this.statsRepository.save(statToSave);
     }
