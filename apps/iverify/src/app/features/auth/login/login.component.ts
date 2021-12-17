@@ -77,11 +77,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   //   map(siteConfig => (siteConfig ? siteConfig.private : true))
   // );
 
-  footer = {
-    ...environment.footer,
-    year: new Date().getFullYear()
-  };
-
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', Validators.required)
