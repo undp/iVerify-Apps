@@ -100,15 +100,9 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
 
   private subs: Subscription;
 
-  footer = {
-    ...environment.footer,
-    year: new Date().getFullYear()
-  };
-
   hasUserPermission(permission: Permission) {
     return AuthHelpers.User.HasUserPermission(this.store, permission);
   }
-
 
   isUserAllowed() {
     this.user$.subscribe((user) => {

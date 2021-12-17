@@ -38,15 +38,17 @@ export enum ChartTypeEnum {
 }
 
 export enum Statuses {
-  InProgress = 'In Progress',
-  Unstarted = 'Unstarted',
-  PreChecked = 'Pre-checked',
-  False = 'False',
-  True = 'True',
-  OutOfScope = 'Out of scope',
+  InProgress = 'En curso',
+  Unstarted = 'Sin iniciar',
+  PreChecked = 'Pre-comprobado',
+  False = 'Falso',
+  True = 'Verdadero',
+  OutOfScope = 'Fuera de perspectiva',
   Misleading = 'Misleading',
-  PartlyFalse = 'Partly false',
-  Inconclusive = 'Inconclusive'
+  PartlyFalse = 'Sostenible',
+  Inconclusive = 'No confirmado',
+  Completed = 'Terminada',
+  Solved = 'Resuelto'
 }
 
 export interface StatusFormat {
