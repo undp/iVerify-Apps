@@ -28,10 +28,10 @@ export class ArticlesCronService{
             const formattedStart = this.formatService.formatDate(start);
             const formattedEnd = this.formatService.formatDate(end);
             this.logger.log(`Running articles cron job for date (UTC) ${endDate.toUTCString()}`);
-            const articles = await this.articlesService.getArticlesByRange(formattedStart, formattedEnd);
+            const articles = await this.articlesService.getArticles();
             return await this.emailService.sendCsvReport(articles, formattedEnd) ;
         }catch(e){
-            console.log('Articles cron job error: ', e.message);
+            this.logger.error(e.message)
         }
     }
 }
