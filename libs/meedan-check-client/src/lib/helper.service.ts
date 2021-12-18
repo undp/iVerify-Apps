@@ -384,4 +384,22 @@ export class CheckClientHelperService{
         }
       }`
     }
+
+    buildGetAllFoldersQuery(teamSlug: string){
+      return `query {
+        team(slug: "${teamSlug}") {
+          title
+          created_at
+          projects {
+            edges {
+              node {
+                dbid
+                title
+                description
+              }
+            }
+          }
+        }
+      }`
+    }
 }
