@@ -104,6 +104,8 @@ export class StatsService{
             const createdVsPublished: Stats[] = await this.getCreatedVsPublished(endDate);
             this.logger.log('Fetching tickes by violation type..');
             const ticketsByType: Stats[] = await this.getTicketsByViolationType(endDate);
+            this.logger.log('Fetching tickes by folder..');
+            const ticketsByFolder: Stats[] = await this.getTicketsByFolder(endDate);
             // const ticketsByChannel: Stats[] = await this.getTicketsByChannel(startDate, endDate);
             const stats: Stats[] = [
                 ...ticketsByAgent,
@@ -111,7 +113,8 @@ export class StatsService{
                 ...ticketsByStatus,
                 ...ticketsBySource,
                 ...createdVsPublished,
-                ...ticketsByType
+                ...ticketsByType,
+                ...ticketsByFolder
                 // ...this.formatService.formatTticketsByChannel(ticketsByChannel),
                 // ...this.formatService.formatTticketsByType(ticketsByType),
             ]
@@ -125,6 +128,11 @@ export class StatsService{
     async getTicketsByAgent(endDate: string){
         const results = await this.checkStatsClient.getTicketsByAgent(this.allStatuses).toPromise();
         return this.formatService.formatTticketsByAgent(endDate, results);
+    }
+
+    async getTicketsByFolder(endDate: string){
+        const results = await this.checkStatsClient.getTicketsByProjects().toPromise();
+        return this.formatService.formatTticketsByProjects(endDate, results);
     }
     
     async getTicketsByTags(endDate: string){
@@ -208,12 +216,14 @@ export class StatsService{
                     CountBy.status.toString(),
                     CountBy.responseVelocity.toString(),
                     CountBy.resolutionVelocity.toString(),
-                    CountBy.verifiedByDay.toString()
+                    CountBy.verifiedByDay.toString(),
+                    CountBy.folder.toString()
                 ])
             }
         }); 
 
         const latest = this.aggregateByCountBy(latestStats);
+        //group by date:
         Object.keys(latest).forEach(key => {
             if(key !== CountBy.responseVelocity && key !== CountBy.resolutionVelocity){
                 latest[key] = this.aggregateByDate(latest[key])

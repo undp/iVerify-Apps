@@ -120,6 +120,15 @@ export class StatsFormatService{
         return this.buildStatsFromCount(endDate, solvedCount, CountBy.type);
     }
 
+    formatTticketsByProjects(endDate: string, results: any){
+        const count = results.reduce((acc, val) => {
+            acc[val['project']] = val['count'];
+            return acc;
+        }, {});
+        return this.buildStatsFromCount(endDate, count, CountBy.folder);  
+    }
+
+
     formatCreatedVsPublished(endDate, results): Stats[]{
         const count = results.reduce((acc, val) => {
             const status: string = val.status;
@@ -175,5 +184,7 @@ export class StatsFormatService{
         return {startDate: startDate, endDate: endDate}
 
     }
+
+    
 
 }

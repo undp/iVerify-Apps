@@ -16,6 +16,8 @@ export class CheckStatsService{
         private helper: CheckClientHelperService
         ){}
 
+    
+
     getTicketsByAgent(statuses: string[]): Observable<any>{
         const teamSlug = this.config.checkApiTeam;
         return this.getAllAgents(teamSlug).pipe(
@@ -76,6 +78,21 @@ export class CheckStatsService{
         return this.getAllProjects(team).pipe(
             concatMap(projects => from(projects)),
             filter(project => project['title'].startsWith('1 ')),
+            concatMap(project => this.getCountByProject(project['id']).pipe(
+                map(count => ({project: project['title'], count}))
+            )),
+            reduce((acc, val) => ([...acc, val]), []),
+            catchError(err => {
+                this.logger.error(`Error getting tickets by input projects: `, err.message)
+                throw new HttpException(err.message, 500);
+            })
+        )
+    }
+
+    getTicketsByProjects(){
+        const team = this.config.checkApiTeam;
+        return this.getAllProjects(team).pipe(
+            concatMap(projects => from(projects)),
             concatMap(project => this.getCountByProject(project['id']).pipe(
                 map(count => ({project: project['title'], count}))
             )),
