@@ -42,12 +42,12 @@ export class EmailService {
     // 'Notes'
     // ]
     const csv = await converter.json2csvAsync(data);
-    const msg = `
-    `
+    const mailingList = ['chiodigiovanni1@gmail.com', 'benet@unicc.org', 'almadhoun@unicc.org', 'chiodi@unicc.org', 'mark.belinsky@undp.org', 'mathilde.vougny@undp.org']
+    const env = process.env.ENV === 'prod' ? 'Honuras' : 'Honduras -test';
     await this.mailerService.sendMail({
-      to: 'chiodigiovanni1@gmail.com, benet@unicc.org, almadhoun@unicc.org',
+      to: mailingList,
       from: 'no_reply@un-icc.cloud',
-      subject: 'Daily iVerify publications - Honduras-test',
+      subject: `Daily iVerify publications - ${env}`,
       text: 'CSV report',
       attachments: [
         {   
