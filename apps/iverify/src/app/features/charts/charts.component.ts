@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { ChartTypeEnum } from '@iverify/core/models/dashboard';
 import { curveBasis } from 'd3-shape';
 import { TranslateService } from '@ngx-translate/core';
-import { ResTimeMinAvgLong } from '@iverify/core/models/dashboard';
+import { DataRange } from '@iverify/core/models/dashboard';
 
 @Component({
   selector: 'iverify-charts',
@@ -52,9 +52,17 @@ export class ChartComponent implements  OnDestroy, OnChanges {
     protected translate: TranslateService
   ) {
     this.subs = new Subscription();
+    
+      
   }
 
   ngOnChanges() {
+    if (this.chartType === ChartTypeEnum.BUBBLE) {
+      DataRange.min = this.data.dataRange.min;
+      DataRange.max = this.data.dataRange.max;
+      DataRange.avg = this.data.dataRange.avg;
+    }
+   
     if (this.data && this.data.length === 1) {
       this.view = [300, 35];
     } else {
@@ -76,16 +84,18 @@ export class ChartComponent implements  OnDestroy, OnChanges {
 
   xticksFormatting(val: any) {
     let tickVal = '';
-    if (val === ResTimeMinAvgLong.MIN) {
-      tickVal = `El más rápido ${val} h`;
-    } else if (val === ResTimeMinAvgLong.AVG) {
-      tickVal = `Media ${val} h`;
-    } else if (val === ResTimeMinAvgLong.MAX) {
-      tickVal = `El más largo ${val} h`;
+    const text = (val > 1) ? 'days' : 'day';
+    if (val == DataRange.min) {
+      tickVal = `El más rápido ${val} ${text}`;
+    } else if (val == DataRange.avg) {
+      tickVal = `Media ${val} ${text}`;
+    } else if (val == DataRange.max) {
+      tickVal = `El más largo ${val} ${text}`;
     }
-     return tickVal;
+    return tickVal;
   }
 
+  
   ngOnDestroy() {
 
   }

@@ -88,8 +88,5 @@ export interface TicketResponseTime {
   day: string;
 }
 
-export enum ResTimeMinAvgLong {
-  MIN = 100,
-  AVG = 200,
-  MAX = 500
-}
+export let DataRange = {min: 0, avg: 0, max: 0};
+
