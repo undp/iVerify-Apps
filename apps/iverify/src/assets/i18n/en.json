@@ -96,10 +96,11 @@
   "QUICKEST": "Quickest",
   "AVERAGE": "Average",
   "LONGEST": "Longest",
-  "BUBBLE_CHART": "Time in hours",
+  "BUBBLE_CHART": "Time in days",
   "INPROGRESS": "In progress",
   "UNSTARTED": "Unstarted",
   "COMPLETED": "Completed",
   "SOLVED": "Solved",
-  "TICKETS_FOLDER": "Tickts by folder"
+  "TICKETS_FOLDER": "Tickts by folder",
+  "TITLE": "Title"
 }
