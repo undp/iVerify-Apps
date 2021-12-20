@@ -78,8 +78,8 @@
   "TICKETS_BY_AGENT": "Tickets por agente",
   "CURRENT_STATUS": "Estado actual",
   "STATUS_BY_WEEK": "Estado por semana",
-  "RESPONSE_TIME": "Tiempo de respuesta",
-  "RESOLVE_TIME": "Tiempo de resolución",
+  "RESPONSE_TIME": "Tiempo de comienzo",
+  "RESOLVE_TIME": "Tiempo de finalización",
   "START": "Fecha de comienzo",
   "END": "Fecha de fin",
   "RESPONSE_VELOCITY": "Velocidad de respuesta",
@@ -95,9 +95,10 @@
   "QUICKEST": "El más rápido",
   "AVERAGE": "Media",
   "LONGEST": "El más largo",
-  "BUBBLE_CHART": "Tiempo en horas",
+  "BUBBLE_CHART": "Tiempo en dias",
   "INPROGRESS": "En curso",
   "UNSTARTED": "Sin iniciar",
   "COMPLETED": "Completed",
-  "SOLVED": "Solved"
+  "SOLVED": "Solved",
+  "TITLE": "Título"
 }

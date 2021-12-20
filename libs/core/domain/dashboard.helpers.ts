@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { isEmpty, orderBy, uniqBy, uniq, flatten, keyBy } from 'lodash';
+import { isEmpty, orderBy, uniqBy, uniq, flatten, keyBy, sortBy } from 'lodash';
 import { TicketsByType, TicketResponseTime, BubbleChartFormat, StatusFormatPieChart, StatusFormat } from '../models/dashboard';
 import { TasksLabels } from '@iverify/iverify-common/src/lib/tasks-labels';
 import { environment } from '../environments/environment';
@@ -203,12 +203,31 @@ const GetTicketsByAgents = (res: any) => {
 }
 
 const GetTicketsReponseTime = (data: TicketResponseTime[], type: string) => {
-  let series:any = [], bubbleData : BubbleChartFormat[] = [];
+  let series:any = [], bubbleData : any[] = [], sortedData:any = [], hoursArray: number[] = [], minMaxAvg: any = {};
   if (!isEmpty(data)) {
     series = data.map((record: any) => {
       record = record[1];
-      return { name: record.category, x: record.count, y: '', r: record.count};
+      let count = 0;
+      if (record.count > 0) {
+        hoursArray.push(record.count);
+        const days = Math.floor(record.count / 24);
+        count = days;
+      }
+      return { name: record.category, x: count, y: '', r: count};
     });
+
+    hoursArray = hoursArray.sort();
+    const hoursArrLen = hoursArray.length;
+    if (hoursArray && hoursArrLen > 0) {
+      const sum = hoursArray.reduce((acc,ind) => {
+          return acc = acc + ind;
+      });
+      minMaxAvg = {
+        min: Math.floor(hoursArray[0] / 24),
+        max: Math.floor(hoursArray[hoursArrLen - 1] / 24), 
+        avg: Math.floor((sum / hoursArrLen) / 24)
+      };
+    }
   }
   if (series && series.length > 0) {
     bubbleData  = [
@@ -218,7 +237,8 @@ const GetTicketsReponseTime = (data: TicketResponseTime[], type: string) => {
       }
     ];
   }
-  return bubbleData;
+  
+  return { data: bubbleData, dataRange: minMaxAvg };
 }
 
 const weeksBetween = (d1: any, d2: any): any => {
