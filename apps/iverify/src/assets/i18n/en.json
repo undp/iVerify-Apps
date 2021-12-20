@@ -101,5 +101,6 @@
   "UNSTARTED": "Unstarted",
   "COMPLETED": "Completed",
   "SOLVED": "Solved",
-  "TITLE": "Title1"
+  "TICKETS_FOLDER": "Tickts by folder",
+  "TITLE": "Title"
 }

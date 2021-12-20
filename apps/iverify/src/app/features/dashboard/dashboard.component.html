@@ -59,7 +59,7 @@
        {{ 'NO_RECORDS' | translate }}
     </span>
   </mat-grid-tile>
-  <mat-grid-tile>
+  <!-- <mat-grid-tile>
     <mat-grid-tile-header>
       <p class="fontRalewayRegular text-uppercase">
         {{ 'CURRENT_STATUS' | translate }}
@@ -72,6 +72,19 @@
         [data]="ticketsByCurrentStatus"
       ></iverify-charts>
       <span  *ngIf="ticketsByCurrentStatus && ticketsByCurrentStatus.length === 0" class="fontRalewayRegular text-uppercase">
+       {{ 'NO_RECORDS' | translate }}
+      </span>
+    </div>
+  </mat-grid-tile> -->
+  <mat-grid-tile>
+    <mat-grid-tile-header>
+      <p class="fontRalewayRegular text-uppercase">
+        {{ 'TICKETS_FOLDER' | translate }}
+      </p>
+    </mat-grid-tile-header>
+    <div style="margin-top: 5rem">
+      <iverify-charts *ngIf="ticketsByFolder && ticketsByFolder.length > 0" [chartType]="2" [data]="ticketsByFolder"></iverify-charts>
+      <span  *ngIf="ticketsByFolder && ticketsByFolder.length === 0" class="fontRalewayRegular text-uppercase">
        {{ 'NO_RECORDS' | translate }}
       </span>
     </div>

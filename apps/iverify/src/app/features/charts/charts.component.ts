@@ -40,7 +40,7 @@ export class ChartComponent implements  OnDestroy, OnChanges {
       domain: ['#E05548', '#FFA033']
     },
     {
-      domain: ['#E05548', '#FFA033','#7E9E0A']
+      domain: ['#E05548', '#FFA033','#7E9E0A', '#FF5733', '#FFD433', '#6BFF33', '#33FF77', '#33FFB5', '#3358FF', '#C133FF']
     },
     {
       domain: ['#7E9E0A']

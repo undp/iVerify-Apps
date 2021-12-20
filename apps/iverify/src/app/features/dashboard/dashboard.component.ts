@@ -30,6 +30,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   ticketsReponseTime: any = {};
   totalPublished: any;
   ticketsByWeek: any;
+  ticketsByFolder: any;
   selectedTimeType: number = 1;
   breakpoint: number = 3;
   range = new FormGroup({
@@ -94,6 +95,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.ticketsByType = DashboardHelpers.GetTicketsByType(this.statsByCategories['violationType']);
         this.ticketsByWeek = DashboardHelpers.GetTicketsByWeek(res, this.options);  
         this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.statsByCategories);
+        this.ticketsByFolder = DashboardHelpers.GetTicketsByFolder(this.statsByCategories['folder']);
         this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['responseVelocity'], this.title);
         if (this.isDefaultData) {
           this.ticketsByCurrentStatus = DashboardHelpers.GetTicketsByCurrentStatus(this.statsByCategories);
