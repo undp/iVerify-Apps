@@ -259,6 +259,42 @@ const GetTotalCount = (dataSet: any, category: string) => {
     return (sortedPublished && sortedPublished.length > 0) ? sortedPublished[0].count : 0;
 }
 
+const GetTicketsByFolder = (dataSet: any) => {
+  let folders: any = [];
+   if (!isEmpty(dataSet)) {
+     dataSet.forEach((item: any) => {
+       if (!isEmpty(item[1])) {
+         item[1].forEach((cat : any) => {
+           let temp = {
+              name: FormatDate(item[0], "MM/DD"),
+              value: cat.count
+            }
+            const folderName = cat.category;
+            if (isEmpty(folders[folderName])) {
+              folders[folderName] = [temp];
+            } else {
+              folders[folderName] = [...folders[folderName], temp];
+            }
+         });
+       }
+     });
+
+     if (Array.isArray(folders)) {
+       let parseData: any = [];
+       Object.entries(folders).forEach(([k,v]) => {
+          let temp = {
+              name: k,
+              series: v
+            }
+          parseData.push(temp);
+       });
+      return parseData;       
+     }
+  }
+  return []; 
+}
+  
+
 const GetTicketsByWeek = (res: any, dates: any) => {
   const statuses = res[TicketsByType.status];
   let unstartedStatuses: StatusFormat[] = [], publishedStatuses:StatusFormat[] = [], inprogressStatuses: StatusFormat[] = [];
@@ -362,5 +398,6 @@ export const DashboardHelpers = {
   GetTicketsByWeek,
   GetPreviousWeekFirstDay,
   GetTicketsByType,
-  GetTicketsReponseTime
+  GetTicketsReponseTime,
+  GetTicketsByFolder
 };

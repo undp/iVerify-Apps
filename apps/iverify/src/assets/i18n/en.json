@@ -100,5 +100,6 @@
   "INPROGRESS": "In progress",
   "UNSTARTED": "Unstarted",
   "COMPLETED": "Completed",
-  "SOLVED": "Solved"
+  "SOLVED": "Solved",
+  "TICKETS_FOLDER": "Tickts by folder"
 }

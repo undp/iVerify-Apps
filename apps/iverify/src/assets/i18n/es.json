@@ -98,6 +98,7 @@
   "BUBBLE_CHART": "Tiempo en horas",
   "INPROGRESS": "En curso",
   "UNSTARTED": "Sin iniciar",
-  "COMPLETED": "Completed",
-  "SOLVED": "Solved"
+  "COMPLETED": "Terminada",
+  "SOLVED": "Resuelto",
+  "TICKETS_FOLDER": "Tickets por carpeta"
 }
