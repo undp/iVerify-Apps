@@ -11,5 +11,6 @@ module.exports = {
     '<rootDir>/libs/iverify-common',
     '<rootDir>/libs/api-client',
     '<rootDir>/libs/email',
+    '<rootDir>/libs/perspective-client',
   ],
 };

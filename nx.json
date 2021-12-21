@@ -58,6 +58,9 @@
     },
     "email": {
       "tags": []
+    },
+    "perspective-client": {
+      "tags": []
     }
   }
 }

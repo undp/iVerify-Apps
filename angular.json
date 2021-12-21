@@ -528,6 +528,27 @@
           }
         }
       }
+    },
+    "perspective-client": {
+      "root": "libs/perspective-client",
+      "sourceRoot": "libs/perspective-client/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/perspective-client/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/perspective-client"],
+          "options": {
+            "jestConfig": "libs/perspective-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }
