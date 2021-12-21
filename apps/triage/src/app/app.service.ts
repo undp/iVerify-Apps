@@ -3,6 +3,8 @@ import { CrowdtangleClientService } from 'libs/crowdtangle-client/src/lib/crowdt
 import { MeedanCheckClientService, ToxicityScores } from '@iverify/meedan-check-client';
 import { MlServiceClientService } from 'libs/ml-service-client/src/lib/ml-service-client.service';
 import { TriageConfig } from './config';
+import { PerspectiveClientService } from '@iverify/perspective-client/src/lib/perspective-client.service';
+import { MlServiceType } from '@iverify/iverify-common';
 
 @Injectable()
 export class AppService {
@@ -12,6 +14,7 @@ export class AppService {
   constructor(
     private ctClient: CrowdtangleClientService, 
     private mlClient: MlServiceClientService,
+    private perspectiveClient: PerspectiveClientService,
     private checkClient: MeedanCheckClientService,
     private config: TriageConfig
     ){}
@@ -32,8 +35,9 @@ export class AppService {
         return toxicPosts;
       }
       let createdItems = [];
-      this.logger.log(`${toxicPosts.length} toxic posts found. Creating Meedan Check items...`);
-      for(const post of toxicPosts){
+      const uniqueToxicPosts = [...new Set(toxicPosts)]
+      this.logger.log(`${uniqueToxicPosts.length} toxic posts found. Creating Meedan Check items...`);
+      for(const post of uniqueToxicPosts){
         this.logger.log('Creating item...')
         const item = await this.checkClient.createItem(post.postUrl, post.toxicScores).toPromise();
         console.log('item: ', item)
@@ -63,9 +67,9 @@ export class AppService {
         const postDescription = post.description ? post.description : '';
         const text = `${postMessage}. ${postDescription}`;
         this.logger.log(`Sending post for analysis...`)
-        const toxicScores = await this.mlClient.analyze([text]).toPromise();
+        const toxicScores = await this.mlAnalyze(text);
         this.logger.log(`Received toxic score: ${toxicScores}`)
-        const isToxic = this.isToxic(toxicScores, post.postUrl, text.length);
+        const isToxic = toxicScores && toxicScores.toxicity ? this.isToxic(toxicScores, post.postUrl, text.length) : false;
         if(isToxic) posts.push({...post, toxicScores});
         postsCount++;
       }
@@ -98,5 +102,12 @@ export class AppService {
 
   async createItemFromWp(url: string, content: string){
     return await this.checkClient.createItemFromWp(url.trim(), content);
+  }
+
+  private async mlAnalyze(text: string){
+    switch(this.config.mlServiceType){
+      case MlServiceType.UNICC_DETOXIFY_1: return await this.mlClient.analyze([text]).toPromise();
+      case MlServiceType.PERSPECTIVE: return await this.perspectiveClient.analyze(text, this.config.toxicTreshold).toPromise();
+    }
   }
 }
