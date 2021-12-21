@@ -8,15 +8,15 @@ export class CronService{
 
     constructor(private appService: AppService){}
 
-    @Timeout(5000)
-    async handleTimeout(){
-        const endDate = new Date().toISOString();
-        const start = new Date();
-        start.setHours(new Date().getHours() -1);
-        const startDate = start.toISOString();
-        this.logger.log(`Running initial job with startDate ${startDate} and endDate ${endDate}`)
-        return await this.analyze(startDate, endDate);
-    }
+    // @Timeout(5000)
+    // async handleTimeout(){
+    //     const endDate = new Date().toISOString();
+    //     const start = new Date();
+    //     start.setHours(new Date().getHours() -1);
+    //     const startDate = start.toISOString();
+    //     this.logger.log(`Running initial job with startDate ${startDate} and endDate ${endDate}`)
+    //     return await this.analyze(startDate, endDate);
+    // }
     
     @Cron(CronExpression.EVERY_2_HOURS)
     async handleCron(){
