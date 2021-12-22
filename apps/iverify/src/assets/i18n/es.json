@@ -72,7 +72,7 @@
   "PHONE_VALIDATION_MSG": "Formato de número de teléfono incorrecto (por ejemplo: +260211000000).",
   "PHONE_LENGTH_VALIDATION_MSG": "Formato de número de teléfono incorrecto: mínimo 7 números",
   "TICKETS_COMPLETED": "Completado",
-  "ALL_TICKETS_BY_TYPE": "Multas por tipo de infracción",
+  "ALL_TICKETS_BY_TYPE": "Tickets por tipo de infracción",
   "ALL_TICKETS_BY_CHANNEL": "Entradas por fuente",
   "ALL_TICKETS_BY_TAG": "Tickets por etiqueta",
   "TICKETS_BY_AGENT": "Tickets por agente",
