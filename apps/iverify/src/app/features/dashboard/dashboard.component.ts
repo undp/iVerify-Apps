@@ -132,7 +132,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   openDetailModal(dataType: CountBy, title: string) {
-    const data = this.dataResults
+    const data = this.dataResults[dataType]
     console.log('statsdata...', this.dataResults)
 
     console.log('data...', data)
