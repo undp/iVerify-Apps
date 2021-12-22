@@ -1,7 +1,7 @@
 import { CountBy } from "./count-by.enum";
 
 export interface StatsResults{
-    range: {
+    range?: {
         startDate: string,
         endDate: string
     },
