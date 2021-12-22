@@ -20,7 +20,12 @@ import { IndicatorDetailService, IndicatorDetailState } from "./indicator-detail
         this.stateService.updateDataType(value);
       };
 
+      @Input() startDate: Date;
+      @Input() endDate: Date;
+
       form = this.fb.group({
+        startDate: new Date(),
+        endDate: new Date(),
         chartSelection: ['1']
       })
 
@@ -29,6 +34,19 @@ import { IndicatorDetailService, IndicatorDetailState } from "./indicator-detail
       formattedData$: Observable<any> = this.stateService.formattedData$;
       data$: Observable<any[]> = this.stateService.data$;
       constructor(private stateService: IndicatorDetailService, private fb: FormBuilder){
+      }
+
+      ngOnInit(){
+        this.form.setValue({
+          startDate: this.startDate,
+          endDate: this.endDate
+        })
+      }
+
+      getStatisticsByDates(){
+        const startDate = this.form.controls['startDate'].value;
+        const endDate = this.form.controls['endDate'].value;
+        this.stateService.updateDateRange(startDate, endDate);
       }
 
 
