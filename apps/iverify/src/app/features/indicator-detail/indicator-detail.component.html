@@ -19,6 +19,10 @@
             </mat-form-field>
                 <div style="margin: 20px 0px 0px 10px;"><button  mat-raised-button (click)="getStatisticsByDates()">{{'APPLY'|translate}}</button></div>
         </div>
+        <mat-radio-group formControlName="chartSelection" class="margin-left">
+            <mat-radio-button  value="male"> Male </mat-radio-button>
+            <mat-radio-button  value="female"> Female </mat-radio-button>
+        </mat-radio-group>
     </form>
     <div class="indicator-detail-container" fxLayout="row" fxLayoutAlign="center end" *ngIf="asyncData.formattedData">
         <iverify-detail-charts [chartType]="asyncData.chartType" [data]="asyncData.formattedData"></iverify-detail-charts>

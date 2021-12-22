@@ -26,7 +26,7 @@ import { IndicatorDetailService, IndicatorDetailState } from "./indicator-detail
       form = this.fb.group({
         startDate: new Date(),
         endDate: new Date(),
-        chartSelection: ['1']
+        chartSelection: ['male']
       })
 
 
@@ -39,7 +39,8 @@ import { IndicatorDetailService, IndicatorDetailState } from "./indicator-detail
       ngOnInit(){
         this.form.setValue({
           startDate: this.startDate,
-          endDate: this.endDate
+          endDate: this.endDate,
+          chartSelection: 'male'
         })
       }
 
