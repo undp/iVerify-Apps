@@ -1,9 +1,10 @@
+import { TasksLabels } from "@iverify/common/src";
 import { HttpException, HttpService, Injectable, Logger } from "@nestjs/common";
 import { combineLatest, from, Observable } from "rxjs";
 import { catchError, concatMap, filter, first, map, reduce, retry, take, tap } from "rxjs/operators";
 import { CheckClientConfig } from "./config";
 import { CheckClientHelperService } from "./helper.service";
-import { StatusesMap, TasksLabels } from "@iverify/iverify-common";
+// import { StatusesMap, TasksLabels } from "@iverify/iverify-common";
 
 @Injectable()
 export class CheckStatsService{

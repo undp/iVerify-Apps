@@ -1,4 +1,5 @@
-import { Article, TasksLabels } from "@iverify/iverify-common";
+import { TasksLabels } from "@iverify/common/src";
+import { Article } from "@iverify/iverify-common";
 import { Injectable } from "@nestjs/common";
 import { SharedHelper } from "../shared/helper";
 
