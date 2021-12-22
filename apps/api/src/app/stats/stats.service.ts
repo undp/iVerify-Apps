@@ -232,7 +232,7 @@ export class StatsService{
 
 
         return {
-            range: { startDate: formattedStart, endDate: formattedEnd },
+            // range: { startDate: formattedStart, endDate: formattedEnd },
             results: {...aggregatedStats, ...latest} 
         }
 
