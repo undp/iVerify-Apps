@@ -1,0 +1,9 @@
+<div *ngIf="{
+    chartType: chartType$ | async,
+    formattedData: formattedData$ | async,
+    data: data$ | async
+} as asyncData">
+<div class="indicator-detail-container" fxLayout="row" fxLayoutAlign="center end" *ngIf="asyncData.formattedData">
+    <iverify-detail-charts [chartType]="asyncData.chartType" [data]="asyncData.formattedData"></iverify-detail-charts>
+</div>
+</div>
