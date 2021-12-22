@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { CountBy, StatusesMap } from "@iverify/iverify-common";
+import { StatusesMap } from "@iverify/iverify-common";
 import { Stats } from "./models/stats.model";
+import { CountBy } from "@iverify/common/src";
 
 @Injectable()
 export class StatsFormatService{

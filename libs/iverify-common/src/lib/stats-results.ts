@@ -1,4 +1,4 @@
-import { CountBy } from "./count-by.enum";
+import { CountBy } from "@iverify/common/src";
 
 export interface StatsResults{
     range?: {

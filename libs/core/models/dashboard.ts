@@ -30,11 +30,13 @@ export interface TicketRequest {
 }
 
 export enum ChartTypeEnum {
-  BAR = 1,
-  LINE = 2,
-  PIE = 3,
-  STACKED = 4,
-  BUBBLE = 5
+  BAR = 'bar',
+  LINE = 'line',
+  PIE = 'pie',
+  STACKED = 'stacked',
+  BUBBLE = 'bubble',
+  AREA_STACKED = 'area_stacked',
+  VERTICAL_BAR_STACKED = 'vertical_bar_stacked'
 }
 
 export enum Statuses {

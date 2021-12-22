@@ -6,7 +6,10 @@ import { DashboardService } from '@iverify/core/domain/dashboad.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { isEmpty } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
-import { TicketRequest, StatusFormat, StatusFormatPieChart, TicketsByAgentFormat, BubbleChartFormat } from '@iverify/core/models/dashboard';
+import { TicketRequest, StatusFormat, StatusFormatPieChart, TicketsByAgentFormat, BubbleChartFormat, ChartTypeEnum } from '@iverify/core/models/dashboard';
+import { CountBy } from '@iverify/common/src';
+import { ModalComponent } from '../modal/modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 const BubbleChartViewSize: any = {
   WEB_VIEW_SIZE : [600, 150],
@@ -45,10 +48,15 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   isData: boolean = false;
   isDefaultData: boolean = true;
   title: string = '';
+
+  CountBy = CountBy;
+  dataResults: any;
+  ChartTypeEnum = ChartTypeEnum
   
   constructor(
     private dashboardService: DashboardService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    public dialog: MatDialog
   ) {
 
     this.subs = new Subscription();
@@ -89,6 +97,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(map(res => res.results))
       .subscribe((res) => {
         this.isData = (res && isEmpty(res)) ? false : true;
+        this.dataResults = res;
         this.statsByCategories = DashboardHelpers.SortStatistics(res);
         this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.statsByCategories['source']);
         this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.statsByCategories['tag']);
@@ -120,6 +129,23 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['resolutionVelocity'], this.title);
       this.responseVelocity = 'RESOLVE_TIME';
     }
+  }
+
+  openDetailModal(dataType: CountBy, title: string) {
+    const data = this.dataResults[dataType]
+    console.log('statsdata...', this.dataResults)
+
+    console.log('data...', data)
+    this.dialog.open(ModalComponent, {
+      minHeight: '90%',
+      minWidth: '90%',
+      height: '90%',
+      data: {
+        data,
+        dataType,
+        title
+      }
+    });
   }
 
   ngOnDestroy() {

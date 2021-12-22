@@ -1,8 +1,8 @@
 import * as moment from 'moment';
 import { isEmpty, orderBy, uniqBy, uniq, flatten, keyBy, sortBy } from 'lodash';
 import { TicketsByType, TicketResponseTime, BubbleChartFormat, StatusFormatPieChart, StatusFormat } from '../models/dashboard';
-import { TasksLabels } from '@iverify/iverify-common/src/lib/tasks-labels';
 import { environment } from '../environments/environment';
+import { TasksLabels } from '@iverify/common/src';
 
 const showItems = 5;
 let Statuses: any;
@@ -419,5 +419,6 @@ export const DashboardHelpers = {
   GetPreviousWeekFirstDay,
   GetTicketsByType,
   GetTicketsReponseTime,
-  GetTicketsByFolder
+  GetTicketsByFolder,
+  GetCountFromRes
 };

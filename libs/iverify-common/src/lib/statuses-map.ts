@@ -1,5 +1,4 @@
-import { Injectable } from "@nestjs/common";
-import { TasksLabels } from "./tasks-labels";
+import { TasksLabels } from "@iverify/common/src"
 
 const lan = process.env.language
 

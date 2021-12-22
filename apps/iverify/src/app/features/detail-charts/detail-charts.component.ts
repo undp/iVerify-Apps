@@ -6,19 +6,19 @@ import { TranslateService } from '@ngx-translate/core';
 import { DataRange } from '@iverify/core/models/dashboard';
 
 @Component({
-  selector: 'iverify-charts',
-  templateUrl: 'charts.component.html',
-  styleUrls: ['charts.component.scss']
+  selector: 'iverify-detail-charts',
+  templateUrl: 'detail-charts.component.html',
+  styleUrls: ['./detail-charts.component.scss']
 })
-export class ChartComponent implements  OnDestroy, OnChanges {
+export class DetailChartComponent {
 
   subs: Subscription;
 
   @Input() data: any;
   @Input() chartType: ChartTypeEnum;
   @Input() viewVal: [number, number];
+  @Input() view: [number, number];
   single: any[];
-  view: [number, number] = [300, 100];
   ChartTypeEnum = ChartTypeEnum;
   // options
   showXAxis: boolean = false;
@@ -55,18 +55,11 @@ export class ChartComponent implements  OnDestroy, OnChanges {
     
       
   }
-
   ngOnChanges() {
     if (this.chartType === ChartTypeEnum.BUBBLE) {
       DataRange.min = this.data.dataRange.min;
       DataRange.max = this.data.dataRange.max;
       DataRange.avg = this.data.dataRange.avg;
-    }
-   
-    if (this.data && this.data.length === 1) {
-      this.view = [300, 35];
-    } else {
-      this.view = [300, 100];
     }
   }
 
