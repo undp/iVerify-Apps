@@ -3,7 +3,24 @@
     formattedData: formattedData$ | async,
     data: data$ | async
 } as asyncData">
-<div class="indicator-detail-container" fxLayout="row" fxLayoutAlign="center end" *ngIf="asyncData.formattedData">
-    <iverify-detail-charts [chartType]="asyncData.chartType" [data]="asyncData.formattedData"></iverify-detail-charts>
-</div>
+    <form [formGroup]="form">
+        <div class="d-inline-flex flex-wrap" style="margin-top: -10px;">
+            <mat-form-field appearance="fill">
+                <mat-label>{{ 'START' | translate }}</mat-label>
+                <input formControlName="startDate" matInput [matDatepicker]="picker1">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="fill" style="margin-left: 10px;">
+                <mat-label>{{ 'END' | translate }}</mat-label>
+                <input formControlName="endDate" matInput [matDatepicker]="picker2" [min]="startDate">
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+                <div style="margin: 20px 0px 0px 10px;"><button  mat-raised-button (click)="getStatisticsByDates()">{{'APPLY'|translate}}</button></div>
+        </div>
+    </form>
+    <div class="indicator-detail-container" fxLayout="row" fxLayoutAlign="center end" *ngIf="asyncData.formattedData">
+        <iverify-detail-charts [chartType]="asyncData.chartType" [data]="asyncData.formattedData"></iverify-detail-charts>
+    </div>
 </div>
