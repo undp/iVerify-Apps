@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { TasksLabels } from "./tasks-labels";
 
-const lan = process.env.language
+const lan = process.env.language;
 
     export const StatusesMap = [
         {label: TasksLabels[lan].status_unstarted, value: process.env.UNSTARTED_VALUE, resolution: false, default: true},
