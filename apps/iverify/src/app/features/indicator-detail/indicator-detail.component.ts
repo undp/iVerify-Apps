@@ -27,7 +27,7 @@ import { EnumValues } from 'enum-values';
       @Input() endDate: Date;
 
       ChartTypeEnum = ChartTypeEnum;
-      chartTypeValues: string[] = EnumValues.getValues(ChartTypeEnum);
+      chartTypeValues = EnumValues.getValues(ChartTypeEnum).filter(v => v !== ChartTypeEnum.BUBBLE.toString());
 
       form = this.fb.group({
         startDate: new Date(),
