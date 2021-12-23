@@ -25,6 +25,8 @@ import { EnumValues } from 'enum-values';
 
       @Input() startDate: Date;
       @Input() endDate: Date;
+      @Input() inputChartType: Date;
+
 
       ChartTypeEnum = ChartTypeEnum;
       chartTypeValues = EnumValues.getValues(ChartTypeEnum).filter(v => v !== ChartTypeEnum.BUBBLE.toString());
@@ -32,7 +34,7 @@ import { EnumValues } from 'enum-values';
       form = this.fb.group({
         startDate: new Date(),
         endDate: new Date(),
-        chartSelection: [ChartTypeEnum.BAR]
+        chartSelection: [null],
       })
 
 
@@ -46,7 +48,7 @@ import { EnumValues } from 'enum-values';
         private fb: FormBuilder, 
         public translate: TranslateService,
         ){
-        this.chartTypeChanges$.pipe(skip(1)).subscribe(value => this.stateService.updateChartType(value));
+        this.chartTypeChanges$.subscribe(value => this.stateService.updateChartType(value));
       }
 
 
@@ -54,7 +56,7 @@ import { EnumValues } from 'enum-values';
         this.form.setValue({
           startDate: this.startDate,
           endDate: this.endDate,
-          chartSelection: ChartTypeEnum.BAR
+          chartSelection: this.inputChartType
         })
       }
 

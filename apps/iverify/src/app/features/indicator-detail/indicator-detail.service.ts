@@ -20,7 +20,7 @@ export class IndicatorDetailService {
     private _state: IndicatorDetailState = {
         dataType: null,
         data: null,
-        chartType: ChartTypeEnum.BAR,
+        chartType: null,
         startDate: null,
         endDate: null
     }

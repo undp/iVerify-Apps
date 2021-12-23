@@ -132,7 +132,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  openDetailModal(dataType: CountBy, title: string) {
+  openDetailModal(dataType: CountBy, title: string, chartType: ChartTypeEnum) {
     const data = this.dataResults
     console.log('statsdata...', this.dataResults)
 
@@ -146,7 +146,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         dataType,
         title,
         startDate: this.startDate,
-        endDate: this.endDate
+        endDate: this.endDate,
+        chartType
       }
     });
   }
