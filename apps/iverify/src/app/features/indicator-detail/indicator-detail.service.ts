@@ -31,7 +31,7 @@ export class IndicatorDetailService {
     dataType$: Observable<CountBy> = this.state$.pipe(map(state => state.dataType), distinctUntilChanged(), shareReplay(1));
     data$: Observable<any> = this.state.pipe(map(state => state.data), filter(data => !!data), shareReplay(1), tap(data => console.log('new data in state...', data)));
     chartType$: Observable<ChartTypeEnum> = this.state.pipe(map(state => state.chartType), distinctUntilChanged(), shareReplay(1));
-    startDate$: Observable<string> = this.state.pipe(map(state => state.endDate), filter(date => !!date), map(date => DashboardHelpers.FormatDate(date)), distinctUntilChanged(), shareReplay(1));
+    startDate$: Observable<string> = this.state.pipe(map(state => state.startDate), filter(date => !!date), map(date => DashboardHelpers.FormatDate(date)), distinctUntilChanged(), shareReplay(1));
     endDate$: Observable<string> = this.state.pipe(map(state => state.endDate), filter(date => !!date), map(date => DashboardHelpers.FormatDate(date)), distinctUntilChanged(), shareReplay(1));
 
     formattedData$: Observable<any> = combineLatest([this.chartType$, this.dataType$, this.data$]).pipe(

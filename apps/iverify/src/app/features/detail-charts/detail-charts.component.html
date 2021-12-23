@@ -127,7 +127,7 @@
   [legendTitle]="''"
   [labelFormatting]="pieChartLabel.bind(this, data)">
 </ngx-charts-pie-chart>
-<ngx-charts-advanced-pie-chart
+<!-- <ngx-charts-advanced-pie-chart
   *ngIf="chartType === ChartTypeEnum.ADVANCED_PIE"
   [view]="[1000, 400]"
   [scheme]="colorScheme[2]"
@@ -140,7 +140,7 @@
   [showDataLabel]="true"
   [legendTitle]="''"
   [labelFormatting]="pieChartLabel.bind(this, data)">
-</ngx-charts-advanced-pie-chart>
+</ngx-charts-advanced-pie-chart> -->
 <ngx-charts-pie-grid
   *ngIf="chartType === ChartTypeEnum.PIE_GRID"
   [view]="[1000, 400]"
@@ -155,7 +155,7 @@
   [legendTitle]="''"
   [labelFormatting]="pieChartLabel.bind(this, data)">
 </ngx-charts-pie-grid>
-<ngx-charts-polar-chart
+<!-- <ngx-charts-polar-chart
   *ngIf="chartType === ChartTypeEnum.POLAR_CHART"
   [view]="[1000, 400]"
   [scheme]="colorScheme[2]"
@@ -168,7 +168,7 @@
   [showDataLabel]="true"
   [legendTitle]="''"
   [labelFormatting]="pieChartLabel.bind(this, data)">
-</ngx-charts-polar-chart>
+</ngx-charts-polar-chart> -->
 
 
 <ngx-charts-line-chart
@@ -211,6 +211,66 @@
   (deactivate)="onDeactivate($event)"
   >
 </ngx-charts-area-chart>
+<ngx-charts-area-chart-stacked
+  *ngIf="chartType === ChartTypeEnum.AREA_STACKED"
+  [view]="[1000, 400]"
+  [scheme]="colorScheme[2]"
+  [legend]="false"
+  [showXAxisLabel]="false"
+  [showYAxisLabel]="true"
+  [showDataLabel]="true"
+  [xAxis]="true"
+  [yAxis]="true"
+  [curve]="curve"
+  [xAxisLabel]=""
+  [yAxisLabel]="'Estados'"
+  [timeline]="true"
+  [results]="data"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+  >
+</ngx-charts-area-chart-stacked>
+<ngx-charts-tree-map
+  *ngIf="chartType === ChartTypeEnum.TREE_MAP"
+  [view]="[1000, 400]"
+  [scheme]="colorScheme[2]"
+  [legend]="false"
+  [showXAxisLabel]="false"
+  [showYAxisLabel]="true"
+  [showDataLabel]="true"
+  [xAxis]="true"
+  [yAxis]="true"
+  [curve]="curve"
+  [xAxisLabel]=""
+  [yAxisLabel]="'Estados'"
+  [timeline]="true"
+  [results]="data"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+  >
+</ngx-charts-tree-map>
+<!-- <ngx-charts-heat-map
+  *ngIf="chartType === ChartTypeEnum.HEAT_MAP"
+  [view]="[1000, 400]"
+  [scheme]="colorScheme[2]"
+  [legend]="false"
+  [showXAxisLabel]="false"
+  [showYAxisLabel]="true"
+  [showDataLabel]="true"
+  [xAxis]="true"
+  [yAxis]="true"
+  [curve]="curve"
+  [xAxisLabel]=""
+  [yAxisLabel]="'Estados'"
+  [timeline]="true"
+  [results]="data"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+  >
+</ngx-charts-heat-map> -->
 <ngx-charts-area-chart-normalized
   *ngIf="chartType === ChartTypeEnum.NORMALIZED_AREA"
   [view]="[1000, 400]"
@@ -257,25 +317,6 @@
   (activate)="onActivate($event)"
   (deactivate)="onDeactivate($event)">
 </ngx-charts-bubble-chart>
-<ngx-charts-area-chart-stacked
-  *ngIf="chartType === ChartTypeEnum.AREA_STACKED"
-  [view]="[1000, 400]"
-  [scheme]="colorScheme[2]"
-  [legend]="false"
-  [showXAxisLabel]="false"
-  [showYAxisLabel]="true"
-  [showDataLabel]="true"
-  [xAxis]="true"
-  [yAxis]="true"
-  [curve]="curve"
-  [xAxisLabel]=""
-  [yAxisLabel]="'Estados'"
-  [timeline]="true"
-  [results]="data"
-  (select)="onSelect($event)"
-  (activate)="onActivate($event)"
-  (deactivate)="onDeactivate($event)"
-  >
-</ngx-charts-area-chart-stacked>
+
 
 

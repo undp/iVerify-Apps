@@ -36,15 +36,15 @@ export const ResultsToChartModel = (chartType: ChartTypeEnum, dataType: CountBy,
         case ChartTypeEnum.PIE:
         case ChartTypeEnum.BAR: 
         case ChartTypeEnum.VERTICAL_BAR: 
-        case ChartTypeEnum.ADVANCED_PIE:
+        // case ChartTypeEnum.ADVANCED_PIE:
         case ChartTypeEnum.PIE_GRID:
         case ChartTypeEnum.TREE_MAP:        
             return ResultsToModel_1(dataType, data);
         case ChartTypeEnum.AREA_STACKED: 
         case ChartTypeEnum.LINE:
-        case ChartTypeEnum.GROUP_HORIZONTAL_BAR:
-        case ChartTypeEnum.GROUP_VERTICAL_BAR:
-        case ChartTypeEnum.POLAR_CHART:
+        // case ChartTypeEnum.GROUP_HORIZONTAL_BAR:
+        // case ChartTypeEnum.GROUP_VERTICAL_BAR:
+        // case ChartTypeEnum.HEAT_MAP:
         case ChartTypeEnum.AREA:
         case ChartTypeEnum.NORMALIZED_AREA:              
             return ResultsToModel_2_a(dataType, data);

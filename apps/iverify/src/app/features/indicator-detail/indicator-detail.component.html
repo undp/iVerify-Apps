@@ -22,7 +22,7 @@
         <!-- <label>{{'AVAILABLE_CHARTS' | translate}}</label> -->
         <div>
             <mat-radio-group formControlName="chartSelection" >
-                <mat-radio-button  *ngFor="let value of chartTypeValues" class="margin-right" [value]="value">{{ value | translate}}</mat-radio-button>
+                <mat-radio-button  *ngFor="let value of chartTypeValues" class="margin-right" [value]="value.toString()">{{ value.toString() | translate}}</mat-radio-button>
             </mat-radio-group>
         </div>
     </form>
