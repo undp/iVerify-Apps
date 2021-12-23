@@ -31,12 +31,24 @@ export interface TicketRequest {
 
 export enum ChartTypeEnum {
   BAR = 'bar',
-  LINE = 'line',
-  PIE = 'pie',
+  VERTICAL_BAR = 'vertical_bar',
   STACKED = 'stacked',
-  BUBBLE = 'bubble',
+  VERTICAL_BAR_STACKED = 'vertical_bar_stacked',
+  NORMALIZED_HORIZONTAL_BAR = 'normalized_horizontal_bar',
+  NORMALIZED_VERTICAL_BAR = 'normalized_vertical_bar',
+  GROUP_HORIZONTAL_BAR = 'group_horizontal_bar',
+  GROUP_VERTICAL_BAR = 'group_vertical_bar',
+  ADVANCED_PIE = 'advanced_pie',
+  PIE = 'pie',
+  PIE_GRID = 'pie_grid',
+  POLAR_CHART = 'polar_chart',
+  AREA = 'area',
   AREA_STACKED = 'area_stacked',
-  VERTICAL_BAR_STACKED = 'vertical_bar_stacked'
+  NORMALIZED_AREA = 'normalized_area',
+  TREE_MAP = 'tree_map',
+  HEAT_MAP = 'heat_map',
+  LINE = 'line',
+  BUBBLE = 'bubble',
 }
 
 export enum Statuses {
