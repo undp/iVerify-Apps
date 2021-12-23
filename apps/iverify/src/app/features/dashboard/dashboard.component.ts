@@ -10,6 +10,7 @@ import { TicketRequest, StatusFormat, StatusFormatPieChart, TicketsByAgentFormat
 import { CountBy } from '@iverify/common/src';
 import { ModalComponent } from '../modal/modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import * as _ from 'lodash';
 
 const BubbleChartViewSize: any = {
   WEB_VIEW_SIZE : [600, 150],
@@ -97,7 +98,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(map(res => res.results))
       .subscribe((res) => {
         this.isData = (res && isEmpty(res)) ? false : true;
-        this.dataResults = res;
+        this.dataResults = _.cloneDeep(res);
         this.statsByCategories = DashboardHelpers.SortStatistics(res);
         this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.statsByCategories['source']);
         this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.statsByCategories['tag']);
@@ -132,7 +133,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   openDetailModal(dataType: CountBy, title: string) {
-    const data = this.dataResults[dataType]
+    const data = this.dataResults
     console.log('statsdata...', this.dataResults)
 
     console.log('data...', data)

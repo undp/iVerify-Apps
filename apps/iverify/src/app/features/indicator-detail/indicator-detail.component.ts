@@ -2,8 +2,11 @@ import { Component, Input } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { CountBy } from "@iverify/common/src";
 import { ChartTypeEnum } from "@iverify/core/models/dashboard";
+import { TranslateService } from "@ngx-translate/core";
 import { Observable } from "rxjs";
+import { skip } from "rxjs/operators";
 import { IndicatorDetailService, IndicatorDetailState } from "./indicator-detail.service";
+import { EnumValues } from 'enum-values';
 
 @Component({
     selector: 'iverify-indicator-detail',
@@ -23,24 +26,35 @@ import { IndicatorDetailService, IndicatorDetailState } from "./indicator-detail
       @Input() startDate: Date;
       @Input() endDate: Date;
 
+      ChartTypeEnum = ChartTypeEnum;
+      chartTypeValues: string[] = EnumValues.getValues(ChartTypeEnum);
+
       form = this.fb.group({
         startDate: new Date(),
         endDate: new Date(),
-        chartSelection: ['male']
+        chartSelection: [ChartTypeEnum.BAR]
       })
 
 
       chartType$: Observable<ChartTypeEnum> = this.stateService.chartType$;
       formattedData$: Observable<any> = this.stateService.formattedData$;
       data$: Observable<any[]> = this.stateService.data$;
-      constructor(private stateService: IndicatorDetailService, private fb: FormBuilder){
+      chartTypeChanges$: Observable<any> = this.form.controls['chartSelection'].valueChanges;
+
+      constructor(
+        private stateService: IndicatorDetailService, 
+        private fb: FormBuilder, 
+        public translate: TranslateService,
+        ){
+        this.chartTypeChanges$.pipe(skip(1)).subscribe(value => this.stateService.updateChartType(value));
       }
+
 
       ngOnInit(){
         this.form.setValue({
           startDate: this.startDate,
           endDate: this.endDate,
-          chartSelection: 'male'
+          chartSelection: ChartTypeEnum.BAR
         })
       }
 

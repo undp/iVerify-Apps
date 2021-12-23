@@ -13,6 +13,11 @@ export interface StatsResults{
     }
 }
 
+export interface CategoryCount{
+    category: string,
+    count: number
+}
+
 // example:
 
 // {

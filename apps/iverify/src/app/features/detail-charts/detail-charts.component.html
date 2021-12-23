@@ -17,23 +17,29 @@
   (deactivate)="onDeactivate($event)"
 >
 </ngx-charts-bar-horizontal>
-<ngx-charts-pie-chart
-  *ngIf="chartType === ChartTypeEnum.PIE"
-  [view]="[300, 200]"
-  [scheme]="colorScheme[2]"
+<ngx-charts-bar-vertical
+  *ngIf="chartType === ChartTypeEnum.VERTICAL_BAR"
+  [view]="[1000, 400]"
+  [scheme]="colorScheme[0]"
   [results]="data"
-  [legend]="false"
-  [labels]="true"
-  [animations]="false"
-  [doughnut]="true"
-  [legendPosition] = ""
+  [gradient]="false"
   [showDataLabel]="true"
-  [legendTitle]="''"
-  [labelFormatting]="pieChartLabel.bind(this, data)">
-</ngx-charts-pie-chart>
+  [xAxis]="showXAxis"
+  [yAxis]="showYAxis"
+  [legend]="false"
+  [showXAxisLabel]="showXAxisLabel"
+  [showYAxisLabel]="true"
+  [xAxisLabel]="xAxisLabel"
+  [yAxisLabel]="yAxisLabel"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+>
+</ngx-charts-bar-vertical>
+
 <ngx-charts-bar-horizontal-stacked
   *ngIf="chartType === ChartTypeEnum.STACKED"
-  [view]="view"
+  [view]="[1000, 400]"
   [scheme]="colorScheme[2]"
   [results]="data"
   [gradient]="false"
@@ -49,9 +55,125 @@
   (select)="onSelect($event)">
 </ngx-charts-bar-horizontal-stacked>
 
+<ngx-charts-bar-vertical-stacked
+  *ngIf="chartType === ChartTypeEnum.VERTICAL_BAR_STACKED"
+  [view]="[1000, 400]"
+  [scheme]="colorScheme[2]"
+  [legend]="false"
+  [showXAxisLabel]="false"
+  [showYAxisLabel]="true"
+  [showDataLabel]="true"
+  [xAxis]="true"
+  [yAxis]="true"
+  [curve]="curve"
+  [xAxisLabel]=""
+  [yAxisLabel]="'Estados'"
+  [timeline]="true"
+  [results]="data"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+  >
+</ngx-charts-bar-vertical-stacked>
+<ngx-charts-bar-horizontal-normalized
+  *ngIf="chartType === ChartTypeEnum.NORMALIZED_HORIZONTAL_BAR"
+  [view]="[1000, 400]"
+  [scheme]="colorScheme[2]"
+  [results]="data"
+  [gradient]="false"
+  [xAxis]="showXAxis"
+  [yAxis]="showYAxis"
+  [legend]="false"
+  [gradient]="true"
+  [showXAxisLabel]="showXAxisLabel"
+  [showYAxisLabel]=""
+  [showDataLabel]="true"
+  [xAxisLabel]="xAxisLabel"
+  [yAxisLabel]="yAxisLabel"
+  (select)="onSelect($event)">
+</ngx-charts-bar-horizontal-normalized>
+<ngx-charts-bar-vertical-normalized
+  *ngIf="chartType === ChartTypeEnum.NORMALIZED_VERTICAL_BAR"
+  [view]="[1000, 400]"
+  [scheme]="colorScheme[2]"
+  [legend]="false"
+  [showXAxisLabel]="false"
+  [showYAxisLabel]="true"
+  [showDataLabel]="true"
+  [xAxis]="true"
+  [yAxis]="true"
+  [curve]="curve"
+  [xAxisLabel]=""
+  [yAxisLabel]="'Estados'"
+  [timeline]="true"
+  [results]="data"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+  >
+</ngx-charts-bar-vertical-normalized>
+
+<ngx-charts-pie-chart
+  *ngIf="chartType === ChartTypeEnum.PIE"
+  [view]="[1000, 400]"
+  [scheme]="colorScheme[2]"
+  [results]="data"
+  [legend]="false"
+  [labels]="true"
+  [animations]="false"
+  [doughnut]="true"
+  [legendPosition] = ""
+  [showDataLabel]="true"
+  [legendTitle]="''"
+  [labelFormatting]="pieChartLabel.bind(this, data)">
+</ngx-charts-pie-chart>
+<ngx-charts-advanced-pie-chart
+  *ngIf="chartType === ChartTypeEnum.ADVANCED_PIE"
+  [view]="[1000, 400]"
+  [scheme]="colorScheme[2]"
+  [results]="data"
+  [legend]="false"
+  [labels]="true"
+  [animations]="false"
+  [doughnut]="true"
+  [legendPosition] = ""
+  [showDataLabel]="true"
+  [legendTitle]="''"
+  [labelFormatting]="pieChartLabel.bind(this, data)">
+</ngx-charts-advanced-pie-chart>
+<ngx-charts-pie-grid
+  *ngIf="chartType === ChartTypeEnum.PIE_GRID"
+  [view]="[1000, 400]"
+  [scheme]="colorScheme[2]"
+  [results]="data"
+  [legend]="false"
+  [labels]="true"
+  [animations]="false"
+  [doughnut]="true"
+  [legendPosition] = ""
+  [showDataLabel]="true"
+  [legendTitle]="''"
+  [labelFormatting]="pieChartLabel.bind(this, data)">
+</ngx-charts-pie-grid>
+<ngx-charts-polar-chart
+  *ngIf="chartType === ChartTypeEnum.POLAR_CHART"
+  [view]="[1000, 400]"
+  [scheme]="colorScheme[2]"
+  [results]="data"
+  [legend]="false"
+  [labels]="true"
+  [animations]="false"
+  [doughnut]="true"
+  [legendPosition] = ""
+  [showDataLabel]="true"
+  [legendTitle]="''"
+  [labelFormatting]="pieChartLabel.bind(this, data)">
+</ngx-charts-polar-chart>
+
+
 <ngx-charts-line-chart
   *ngIf="chartType === ChartTypeEnum.LINE"
-  [view]="[300, 200]"
+  [view]="[1000, 400]"
   [scheme]="colorScheme[2]"
   [legend]="false"
   [showXAxisLabel]="false"
@@ -69,6 +191,46 @@
   (deactivate)="onDeactivate($event)"
   >
 </ngx-charts-line-chart>
+<ngx-charts-area-chart
+  *ngIf="chartType === ChartTypeEnum.AREA"
+  [view]="[1000, 400]"
+  [scheme]="colorScheme[2]"
+  [legend]="false"
+  [showXAxisLabel]="false"
+  [showYAxisLabel]="true"
+  [showDataLabel]="true"
+  [xAxis]="true"
+  [yAxis]="true"
+  [curve]="curve"
+  [xAxisLabel]=""
+  [yAxisLabel]="'Estados'"
+  [timeline]="true"
+  [results]="data"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+  >
+</ngx-charts-area-chart>
+<ngx-charts-area-chart-normalized
+  *ngIf="chartType === ChartTypeEnum.NORMALIZED_AREA"
+  [view]="[1000, 400]"
+  [scheme]="colorScheme[2]"
+  [legend]="false"
+  [showXAxisLabel]="false"
+  [showYAxisLabel]="true"
+  [showDataLabel]="true"
+  [xAxis]="true"
+  [yAxis]="true"
+  [curve]="curve"
+  [xAxisLabel]=""
+  [yAxisLabel]="'Estados'"
+  [timeline]="true"
+  [results]="data"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+  >
+</ngx-charts-area-chart-normalized>
 <ngx-charts-bubble-chart
   *ngIf="chartType === ChartTypeEnum.BUBBLE"
   [view]="viewVal"
@@ -97,7 +259,7 @@
 </ngx-charts-bubble-chart>
 <ngx-charts-area-chart-stacked
   *ngIf="chartType === ChartTypeEnum.AREA_STACKED"
-  [view]="[300, 200]"
+  [view]="[1000, 400]"
   [scheme]="colorScheme[2]"
   [legend]="false"
   [showXAxisLabel]="false"
@@ -115,24 +277,5 @@
   (deactivate)="onDeactivate($event)"
   >
 </ngx-charts-area-chart-stacked>
-<ngx-charts-bar-vertical-stacked
-  *ngIf="chartType === ChartTypeEnum.VERTICAL_BAR_STACKED"
-  [view]="[300, 200]"
-  [scheme]="colorScheme[2]"
-  [legend]="false"
-  [showXAxisLabel]="false"
-  [showYAxisLabel]="true"
-  [showDataLabel]="true"
-  [xAxis]="true"
-  [yAxis]="true"
-  [curve]="curve"
-  [xAxisLabel]=""
-  [yAxisLabel]="'Estados'"
-  [timeline]="true"
-  [results]="data"
-  (select)="onSelect($event)"
-  (activate)="onActivate($event)"
-  (deactivate)="onDeactivate($event)"
-  >
-</ngx-charts-bar-vertical-stacked>
+
 
