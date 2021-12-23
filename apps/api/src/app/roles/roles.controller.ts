@@ -24,7 +24,7 @@ export class RolesController {
     }
 
     @Post()
-    // @UseGuards(JWTTokenAuthGuard, RolesGuard)
+    @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async create(@Body() createRoleDto: CreateRoleDto) {
         const userId = (this.request.user) ? this.request.user['id'] : 1;
         if (userId) {
@@ -47,7 +47,7 @@ export class RolesController {
     }
 
     @Get('RoleId')
-    // @UseGuards(JWTTokenAuthGuard, RolesGuard)
+    @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async getRole(@Query() roleId: GetRoleDto) {
         const userRole = await this.rolesService.findByRoleId(roleId.roleId);
         if (!userRole) throw new NotFoundException(roleMessages.roleNotFound);
@@ -56,7 +56,7 @@ export class RolesController {
     }
 
     @Put()
-    // @UseGuards(JWTTokenAuthGuard, RolesGuard)
+    @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async editRole(
         @Query() roleId: GetRoleDto,
         @Body() editRoleDto: EditRoleDto

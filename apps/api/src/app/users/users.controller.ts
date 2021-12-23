@@ -54,7 +54,7 @@ export class UsersController {
     }
 
     @Put()
-    // @UseGuards(JWTTokenAuthGuard, RolesGuard)
+    @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async editUser(
         @Query() user: GetUserDto,
         @Body() editUserDto: UpdateUserDto
