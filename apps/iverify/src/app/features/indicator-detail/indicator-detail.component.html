@@ -28,6 +28,6 @@
     </form>
     <hr>
     <div class="indicator-detail-container" fxLayout="row" fxLayoutAlign="center end" *ngIf="asyncData.formattedData">
-        <iverify-detail-charts [chartType]="asyncData.chartType" [data]="asyncData.formattedData"></iverify-detail-charts>
+        <iverify-detail-charts [chartType]="asyncData.chartType" [data]="asyncData.formattedData" [view]="[1000, 400]"></iverify-detail-charts>
     </div>
 </div>

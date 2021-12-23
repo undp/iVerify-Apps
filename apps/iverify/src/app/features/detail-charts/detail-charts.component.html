@@ -1,6 +1,6 @@
 <ngx-charts-bar-horizontal
   *ngIf="chartType === ChartTypeEnum.BAR"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[0]"
   [results]="data"
   [gradient]="false"
@@ -19,7 +19,7 @@
 </ngx-charts-bar-horizontal>
 <ngx-charts-bar-vertical
   *ngIf="chartType === ChartTypeEnum.VERTICAL_BAR"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[0]"
   [results]="data"
   [gradient]="false"
@@ -39,13 +39,13 @@
 
 <ngx-charts-bar-horizontal-stacked
   *ngIf="chartType === ChartTypeEnum.STACKED"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
   [results]="data"
   [gradient]="false"
   [xAxis]="showXAxis"
   [yAxis]="showYAxis"
-  [legend]="false"
+  [legend]="true"
   [gradient]="true"
   [showXAxisLabel]="showXAxisLabel"
   [showYAxisLabel]=""
@@ -57,9 +57,9 @@
 
 <ngx-charts-bar-vertical-stacked
   *ngIf="chartType === ChartTypeEnum.VERTICAL_BAR_STACKED"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
-  [legend]="false"
+  [legend]="true"
   [showXAxisLabel]="false"
   [showYAxisLabel]="true"
   [showDataLabel]="true"
@@ -67,7 +67,7 @@
   [yAxis]="true"
   [curve]="curve"
   [xAxisLabel]=""
-  [yAxisLabel]="'Estados'"
+  [yAxisLabel]=""
   [timeline]="true"
   [results]="data"
   (select)="onSelect($event)"
@@ -77,13 +77,13 @@
 </ngx-charts-bar-vertical-stacked>
 <ngx-charts-bar-horizontal-normalized
   *ngIf="chartType === ChartTypeEnum.NORMALIZED_HORIZONTAL_BAR"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
   [results]="data"
   [gradient]="false"
   [xAxis]="showXAxis"
   [yAxis]="showYAxis"
-  [legend]="false"
+  [legend]="true"
   [gradient]="true"
   [showXAxisLabel]="showXAxisLabel"
   [showYAxisLabel]=""
@@ -94,9 +94,9 @@
 </ngx-charts-bar-horizontal-normalized>
 <ngx-charts-bar-vertical-normalized
   *ngIf="chartType === ChartTypeEnum.NORMALIZED_VERTICAL_BAR"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
-  [legend]="false"
+  [legend]="true"
   [showXAxisLabel]="false"
   [showYAxisLabel]="true"
   [showDataLabel]="true"
@@ -115,7 +115,7 @@
 
 <ngx-charts-pie-chart
   *ngIf="chartType === ChartTypeEnum.PIE"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
   [results]="data"
   [legend]="false"
@@ -125,11 +125,11 @@
   [legendPosition] = ""
   [showDataLabel]="true"
   [legendTitle]="''"
-  [labelFormatting]="pieChartLabel.bind(this, data)">
+  >
 </ngx-charts-pie-chart>
 <!-- <ngx-charts-advanced-pie-chart
   *ngIf="chartType === ChartTypeEnum.ADVANCED_PIE"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
   [results]="data"
   [legend]="false"
@@ -143,7 +143,7 @@
 </ngx-charts-advanced-pie-chart> -->
 <ngx-charts-pie-grid
   *ngIf="chartType === ChartTypeEnum.PIE_GRID"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
   [results]="data"
   [legend]="false"
@@ -157,7 +157,7 @@
 </ngx-charts-pie-grid>
 <!-- <ngx-charts-polar-chart
   *ngIf="chartType === ChartTypeEnum.POLAR_CHART"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
   [results]="data"
   [legend]="false"
@@ -173,9 +173,9 @@
 
 <ngx-charts-line-chart
   *ngIf="chartType === ChartTypeEnum.LINE"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
-  [legend]="false"
+  [legend]="true"
   [showXAxisLabel]="false"
   [showYAxisLabel]="true"
   [showDataLabel]="true"
@@ -193,9 +193,9 @@
 </ngx-charts-line-chart>
 <ngx-charts-area-chart
   *ngIf="chartType === ChartTypeEnum.AREA"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
-  [legend]="false"
+  [legend]="true"
   [showXAxisLabel]="false"
   [showYAxisLabel]="true"
   [showDataLabel]="true"
@@ -213,9 +213,9 @@
 </ngx-charts-area-chart>
 <ngx-charts-area-chart-stacked
   *ngIf="chartType === ChartTypeEnum.AREA_STACKED"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
-  [legend]="false"
+  [legend]="true"
   [showXAxisLabel]="false"
   [showYAxisLabel]="true"
   [showDataLabel]="true"
@@ -233,7 +233,7 @@
 </ngx-charts-area-chart-stacked>
 <ngx-charts-tree-map
   *ngIf="chartType === ChartTypeEnum.TREE_MAP"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
   [legend]="false"
   [showXAxisLabel]="false"
@@ -253,7 +253,7 @@
 </ngx-charts-tree-map>
 <!-- <ngx-charts-heat-map
   *ngIf="chartType === ChartTypeEnum.HEAT_MAP"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
   [legend]="false"
   [showXAxisLabel]="false"
@@ -273,7 +273,7 @@
 </ngx-charts-heat-map> -->
 <ngx-charts-area-chart-normalized
   *ngIf="chartType === ChartTypeEnum.NORMALIZED_AREA"
-  [view]="[1000, 400]"
+  [view]="view"
   [scheme]="colorScheme[2]"
   [legend]="false"
   [showXAxisLabel]="false"

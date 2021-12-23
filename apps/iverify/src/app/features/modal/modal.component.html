@@ -6,7 +6,13 @@
         </div>
     </mat-dialog-header>
     <mat-dialog-content>
-        <iverify-indicator-detail [data]="data.data" [dataType]="data.dataType" [startDate]="data.startDate" [endDate]="data.endDate"></iverify-indicator-detail>
+        <iverify-indicator-detail 
+            [data]="data.data" 
+            [dataType]="data.dataType" 
+            [startDate]="data.startDate" 
+            [endDate]="data.endDate"
+            [inputChartType]="data.chartType">
+        </iverify-indicator-detail>
     </mat-dialog-content>
     <!-- <mat-dialog-footer></mat-dialog-footer> -->
 </div>

@@ -95,7 +95,7 @@ export const ResultsToModel_2_a = (dataType: CountBy, data: any): Model_2[] => {
 
     console.log('Reduce results: ', results)
 
-    return results;
+    return results.sort((a, b) => a.name - b.name);
 }
 
 export const ResultsToModel_2_b = (dataType: CountBy, data: any): Model_2[] => {
