@@ -104,7 +104,7 @@
     </div>
   </mat-grid-tile>
   <mat-grid-tile>
-    <mat-grid-tile-header>
+    <mat-grid-tile-header (click)="openDetailModal(CountBy.agentAllStatuses, 'TICKETS_BY_AGENT', ChartTypeEnum.STACKED)">
       <p class="fontRalewayRegular text-uppercase">
         {{ 'TICKETS_BY_AGENT' | translate }}
       </p>
