@@ -5,8 +5,14 @@
             <mat-icon mat-button mat-dialog-close>close</mat-icon> 
         </div>
     </mat-dialog-header>
-    <mat-dialog-content>
-        <iverify-indicator-detail [data]="data.data" [dataType]="data.dataType"></iverify-indicator-detail>
-    </mat-dialog-content>
+    <!-- <mat-dialog-content> -->
+        <iverify-indicator-detail 
+            [data]="data.data" 
+            [dataType]="data.dataType" 
+            [startDate]="data.startDate" 
+            [endDate]="data.endDate"
+            [inputChartType]="data.chartType">
+        </iverify-indicator-detail>
+    <!-- </mat-dialog-content> -->
     <!-- <mat-dialog-footer></mat-dialog-footer> -->
 </div>

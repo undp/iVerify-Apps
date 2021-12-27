@@ -101,5 +101,26 @@
   "COMPLETED": "Terminada",
   "SOLVED": "Resuelto",
   "TICKETS_FOLDER": "Tickets por carpeta",
-  "TITLE": "Título"
+  "TITLE": "Título",
+  "AVAILABLE_CHARTS": "Gráficos disponibles",
+
+  "bar": "Horizontal bars",
+  "vertical_bar": "Vertical bars",
+  "stacked": "Horizontal bars stacked",
+  "vertical_bar_stacked": "Vertical bars stacked",
+  "normalized_horizontal_bar": "Normalized horizontal bars",
+  "normalized_vertical_bar": "Normalized vertical bars",
+  "group_horizontal_bar": "Group horizontal bars",
+  "group_vertical_bar": "Group vertical bars",
+  "advanced_pie": "Advanced pie",
+  "pie": "Pie",
+  "pie_grid": "Pie grid",
+  "polar_chart": "Polar chart",
+  "area": "Area",
+  "area_stacked": "Area stacked",
+  "normalized_area": "Normalized area",
+  "tree_map": "Tree map",
+  "heat_map": "Heat map",
+  "line": "Line",
+  "bubble": "Bubble"
 }

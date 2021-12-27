@@ -27,7 +27,7 @@
   [gutterSize]="'3px'"
 >
   <mat-grid-tile>
-    <mat-grid-tile-header (click)="openDetailModal(CountBy.violationType, 'ALL_TICKETS_BY_TYPE')">
+    <mat-grid-tile-header (click)="openDetailModal(CountBy.violationType, 'ALL_TICKETS_BY_TYPE', ChartTypeEnum.BAR)">
       <p class="fontRalewayRegular text-uppercase">
         {{ 'ALL_TICKETS_BY_TYPE' | translate }}
       </p>
@@ -38,7 +38,7 @@
     </span>
   </mat-grid-tile>
   <mat-grid-tile>
-    <mat-grid-tile-header (click)="openDetailModal(CountBy.tag, 'ALL_TICKETS_BY_TAG')">
+    <mat-grid-tile-header (click)="openDetailModal(CountBy.tag, 'ALL_TICKETS_BY_TAG', ChartTypeEnum.BAR)">
       <p class="fontRalewayRegular text-uppercase">
         {{ 'ALL_TICKETS_BY_TAG' | translate }}
       </p>
@@ -50,7 +50,7 @@
     </span>
   </mat-grid-tile>
   <mat-grid-tile >
-    <mat-grid-tile-header (click)="openDetailModal(CountBy.source, 'ALL_TICKETS_BY_CHANNEL')">
+    <mat-grid-tile-header >
       <p class="fontRalewayRegular text-uppercase">
         {{ 'ALL_TICKETS_BY_CHANNEL' | translate }}
       </p>
@@ -78,7 +78,7 @@
     </div>
   </mat-grid-tile> -->
   <mat-grid-tile>
-    <mat-grid-tile-header (click)="openDetailModal(CountBy.folder, 'TICKETS_FOLDER')">
+    <mat-grid-tile-header (click)="openDetailModal(CountBy.folder, 'TICKETS_FOLDER', ChartTypeEnum.AREA_STACKED)">
       <p class="fontRalewayRegular text-uppercase">
         {{ 'TICKETS_FOLDER' | translate }}
       </p>
@@ -91,7 +91,7 @@
     </div>
   </mat-grid-tile>
   <mat-grid-tile>
-    <mat-grid-tile-header>
+    <mat-grid-tile-header (click)="openDetailModal(CountBy.verifiedByDay, 'STATUS_BY_WEEK', ChartTypeEnum.LINE)">
       <p class="fontRalewayRegular text-uppercase">
         {{ 'STATUS_BY_WEEK' | translate }}
       </p>
@@ -104,7 +104,7 @@
     </div>
   </mat-grid-tile>
   <mat-grid-tile>
-    <mat-grid-tile-header>
+    <mat-grid-tile-header (click)="openDetailModal(CountBy.agentAllStatuses, 'TICKETS_BY_AGENT', ChartTypeEnum.STACKED)">
       <p class="fontRalewayRegular text-uppercase">
         {{ 'TICKETS_BY_AGENT' | translate }}
       </p>

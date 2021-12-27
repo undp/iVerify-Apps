@@ -6,9 +6,9 @@ import { DateTime, Interval } from 'luxon';
 
 import { StatsFormatService } from "./stats-format.service";
 import { CheckStatsService } from "libs/meedan-check-client/src/lib/check-stats.service";
-import { StatsResults, StatusesMap } from "@iverify/iverify-common";
+import { StatusesMap } from "@iverify/iverify-common";
 import { MeedanCheckClientService } from "@iverify/meedan-check-client";
-import { CountBy } from "@iverify/common/src";
+import { CountBy, StatsResults } from "@iverify/common/src";
 
 @Injectable()
 export class StatsService{

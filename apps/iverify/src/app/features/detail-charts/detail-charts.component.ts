@@ -21,13 +21,13 @@ export class DetailChartComponent {
   single: any[];
   ChartTypeEnum = ChartTypeEnum;
   // options
-  showXAxis: boolean = false;
+  showXAxis: boolean = true;
   showYAxis: boolean = true;
   gradient: boolean = false;
   showLegend: boolean = true;
-  showXAxisLabel: boolean = false;
+  showXAxisLabel: boolean = true;
   xAxisLabelBubbleChart: string = 'BUBBLE_CHART';
-  yAxisLabel: string = '';
+  yAxisLabel: string = 'Count';
   showYAxisLabel: boolean = true;
   xAxisLabel: string = '';  
   tickIndex: number = 0;
