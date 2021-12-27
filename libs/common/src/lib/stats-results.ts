@@ -6,10 +6,7 @@ export interface StatsResults{
         endDate: string
     },
     results: {
-        [key in CountBy]?: {
-            category: string,
-            count: number
-        }
+        [key in CountBy]?: CategoryCount
     }
 }
 

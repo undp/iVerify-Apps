@@ -8,7 +8,7 @@ import { StatsFormatService } from "./stats-format.service";
 import { CheckStatsService } from "libs/meedan-check-client/src/lib/check-stats.service";
 import { StatusesMap } from "@iverify/iverify-common";
 import { MeedanCheckClientService } from "@iverify/meedan-check-client";
-import { CountBy, StatsResults } from "@iverify/common/src";
+import { CountBy } from "@iverify/common";
 
 @Injectable()
 export class StatsService{
@@ -179,7 +179,7 @@ export class StatsService{
         return this.statsRepository.save(newRecord);
     }
 
-    async getByDate(startDate: Date, endDate: Date): Promise<StatsResults>{
+    async getByDate(startDate: Date, endDate: Date): Promise<any>{
         const start = new Date(startDate.getTime());
         start.setHours(startDate.getHours() -24);
 
