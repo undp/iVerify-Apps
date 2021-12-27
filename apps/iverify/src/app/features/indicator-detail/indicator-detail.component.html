@@ -1,7 +1,8 @@
 <div *ngIf="{
     chartType: chartType$ | async,
     formattedData: formattedData$ | async,
-    data: data$ | async
+    data: data$ | async,
+    chartTypeValues: chartTypeValues$ | async
 } as asyncData">
     <form [formGroup]="form">
         <div class="d-inline-flex flex-wrap" style="margin-top: -10px;">
@@ -22,12 +23,12 @@
         <!-- <label>{{'AVAILABLE_CHARTS' | translate}}</label> -->
         <div>
             <mat-radio-group formControlName="chartSelection" >
-                <mat-radio-button  *ngFor="let value of chartTypeValues" class="margin-right" [value]="value.toString()">{{ value.toString() | translate}}</mat-radio-button>
+                <mat-radio-button  *ngFor="let value of asyncData.chartTypeValues" class="margin-right" [value]="value.toString()">{{ value.toString() | translate}}</mat-radio-button>
             </mat-radio-group>
         </div>
     </form>
     <hr>
     <div class="indicator-detail-container" fxLayout="row" fxLayoutAlign="center end" *ngIf="asyncData.formattedData">
-        <iverify-detail-charts [chartType]="asyncData.chartType" [data]="asyncData.formattedData" [view]="[1000, 400]"></iverify-detail-charts>
+        <iverify-detail-charts [chartType]="asyncData.chartType" [data]="asyncData.formattedData" [view]="[1000, 500]"></iverify-detail-charts>
     </div>
 </div>

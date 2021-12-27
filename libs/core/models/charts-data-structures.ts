@@ -1,11 +1,6 @@
 import { CategoryCount, CountBy, StatsResults } from '../../common/src';
 import { ChartTypeEnum } from './dashboard';
 
-
-export enum ChartsModels{
-    Model_1 = 'Model_1'
-}
-
 export interface Model_1{
     name: string
     value: number
@@ -61,7 +56,6 @@ export const ResultsToChartModel = (chartType: ChartTypeEnum, dataType: CountBy,
 }
 
 export const ResultsToModel_1 = (dataType: CountBy, data: any): Model_1[] => {
-    console.log('Received data: ', data)
     if(!data) return [];
     const rangeData = data[dataType];
     if(!rangeData) return [];
@@ -72,11 +66,23 @@ export const ResultsToModel_1 = (dataType: CountBy, data: any): Model_1[] => {
 }
 
 export const ResultsToModel_2_a = (dataType: CountBy, data: any): Model_2[] => {
-    console.log('Received data: ', data)
     if(!data) return [];
     const rangeData = data[dataType];
-    console.log('Range data: ', rangeData)
     if(!rangeData) return [];
+    const results = AggregateRangeModel_2_a(rangeData);
+    return results.sort((a: any, b: any) => a.name - b.name);
+}
+
+export const ResultsToModel_2_b = (dataType: CountBy, data: any): Model_2[] => {
+    if(!data) return [];
+    if(dataType === CountBy.agentAllStatuses) return AgentsToModel_2_b(data);
+    const rangeData = data[dataType];
+    if(!rangeData) return [];
+    return AggregateRangeModel_2_b(rangeData);
+    
+}
+
+export const AggregateRangeModel_2_a = (rangeData: any): Model_2[] => {
     const groupedByCategory = Object.keys(rangeData).reduce((acc: any, date) => {
         const dayData = rangeData[date];
         dayData.forEach((d: CategoryCount) => {
@@ -84,8 +90,7 @@ export const ResultsToModel_2_a = (dataType: CountBy, data: any): Model_2[] => {
             else acc[d.category] = [...acc[d.category], {name: date, value: d.count}]
         })
         return acc;
-    }, {})
-    console.log('Grouped by category: ', groupedByCategory)
+    }, {});
 
     const results = Object.keys(groupedByCategory).reduce((acc, cat) => {
         const series = groupedByCategory[cat];
@@ -93,18 +98,11 @@ export const ResultsToModel_2_a = (dataType: CountBy, data: any): Model_2[] => {
         return acc;
     }, []);
 
-    console.log('Reduce results: ', results)
-
-    return results.sort((a, b) => a.name - b.name);
+    return results;
 }
 
-export const ResultsToModel_2_b = (dataType: CountBy, data: any): Model_2[] => {
-    console.log('Received data: ', data)
-    if(!data) return [];
-    const rangeData = data[dataType];
-    console.log('Range data: ', rangeData)
-    if(!rangeData) return [];
-    const results = Object.keys(rangeData).reduce((acc, date) => {
+export const AggregateRangeModel_2_b = (rangeData: any): Model_2[] => {
+    const results = Object.keys(rangeData).reduce((acc, date: any) => {
         const dayData = rangeData[date];
         const series: Model_1 = dayData.map((d: CategoryCount) => ({name: d.category, value: d.count}));
         acc = [...acc, {name: date, series}];
@@ -112,6 +110,25 @@ export const ResultsToModel_2_b = (dataType: CountBy, data: any): Model_2[] => {
     }, [])
 
     return results;
+}
+
+export const AgentsToModel_2_b = (data: any): Model_2[] => {
+    const unstartedRange = data[CountBy.agentUnstarted];
+    const processingRange = data[CountBy.agentProcessing];
+    const solvedRange = data[CountBy.agentSolved];
+
+    const unstartedLast = unstartedRange[Object.keys(unstartedRange)[Object.keys(unstartedRange).length -1]];
+    const processingLast = processingRange[Object.keys(processingRange)[Object.keys(processingRange).length -1]];
+    const solvedLast = solvedRange[Object.keys(solvedRange)[Object.keys(solvedRange).length -1]];
+
+    const toAggregate = {
+        unstarted : unstartedLast,
+        precessing: processingLast,
+        solved: solvedLast
+    }
+
+    const aggregated = AggregateRangeModel_2_a(toAggregate);
+    return aggregated;
 }
 
 export const ResultsToModel_4 = (dataType: CountBy, data: any): Model_1[] => {
