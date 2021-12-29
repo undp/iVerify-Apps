@@ -65,6 +65,18 @@ export class StatsController {
       throw new HttpException(e.message, 500); 
     }
   }
+
+  @Post('toxicity')
+  async addToxicityStats(@Body() body) {
+    try{
+      const toxicCount = body.toxicCount;
+      const day = this.formatService.formatDate(new Date());
+      return await this.statsService.addToxicityStats(toxicCount, day);
+    }catch(e){
+      this.logger.error(e.message)
+      throw new HttpException(e.message, 500); 
+    }
+  }
   
   @Post('created-vs-published')
   async createdVsPublished(@Body() body: DayDto) {

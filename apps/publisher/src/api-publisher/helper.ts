@@ -10,6 +10,8 @@ export class ApiPublisherHelper{
 
     buildArticle(report: any, wpPost: any): Partial<Article>{
         const meedanId = this.extractMeedanId(report);
+        const creationDate = this.extractCreationDate(report);
+        const toxicFlag = this.extractToxicFlag(wpPost);
         const wpId = this.extractWpId(wpPost);
         const title = this.extractTitle(report);
         const content = this.extractContent(report);
@@ -40,6 +42,8 @@ export class ApiPublisherHelper{
 
         return {
             meedanId,
+            creationDate,
+            toxicFlag,
             wpId,
             wpUrl,
             title,
@@ -72,6 +76,14 @@ export class ApiPublisherHelper{
 
     extractMeedanId(report: any): number{
         return this.sharedHelper.extractDbid(report);
+    }
+
+    extractCreationDate(report: any): string{
+        return this.sharedHelper.extractCreationDate(report);
+    }
+
+    extractToxicFlag(wpPost: any): boolean{
+        return !!wpPost.toxic;
     }
 
     extractWpId(wpPost: any): number{
