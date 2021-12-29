@@ -19,7 +19,7 @@ export class AppService {
     private config: TriageConfig
     ){}
 
-  async analyze(startDate: string, endDate: string) {
+  async analyze(startDate: string, endDate: string): Promise<number> {
     try{
       const lists = await this.ctClient.getLists().toPromise();
       const savedSearches = lists.filter(list => list.type === 'SAVED_SEARCH');
@@ -32,7 +32,7 @@ export class AppService {
       } 
       if(!toxicPosts.length){
         this.logger.log('No toxic posts found.')
-        return toxicPosts;
+        return 0;
       }
       let createdItems = [];
       const uniqueToxicPosts = [...new Set(toxicPosts)]
@@ -41,10 +41,10 @@ export class AppService {
         this.logger.log('Creating item...')
         const item = await this.checkClient.createItem(post.postUrl, post.toxicScores).toPromise();
         console.log('item: ', item)
-        createdItems = [...createdItems, item];
+        if(!item.error) createdItems = [...createdItems, item];
       }
       this.logger.log(`Created ${createdItems.length} items.`)
-      return createdItems;
+      return createdItems.length;
     } catch(e){
       this.logger.error('Analyze error: ', e.message);
       throw new HttpException(e.message, 500);

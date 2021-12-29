@@ -13,5 +13,6 @@ export enum CountBy{
     resolutionVelocity = 'resolutionVelocity',
     responseVelocity = 'responseVelocity',
     verifiedByDay = 'verifiedByDay',
-    folder = 'folder'
+    folder = 'folder',
+    toxicity = 'toxicity'
 }

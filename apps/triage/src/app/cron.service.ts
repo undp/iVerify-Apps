@@ -1,3 +1,4 @@
+import { ApiClientService } from "@iverify/api-client/src";
 import { HttpException, Injectable, Logger } from "@nestjs/common";
 import { Cron, CronExpression, Timeout } from '@nestjs/schedule';
 import { AppService } from "./app.service";
@@ -6,7 +7,7 @@ import { AppService } from "./app.service";
 export class CronService{
     private readonly logger = new Logger('CronService');
 
-    constructor(private appService: AppService){}
+    constructor(private appService: AppService, private apiClient: ApiClientService){}
 
     // @Timeout(5000)
     // async handleTimeout(){
@@ -30,7 +31,8 @@ export class CronService{
 
     async analyze(startDate, endDate){
         try{            
-            return await this.appService.analyze(startDate, endDate);
+            const created: number = await this.appService.analyze(startDate, endDate);
+            return this.apiClient.postToxicStats(created);
         } catch(e){
             this.logger.error('Cron job error: ', e.message);
             throw new HttpException(e.message, 500);

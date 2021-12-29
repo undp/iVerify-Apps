@@ -12,6 +12,7 @@ export class CheckClientHelperService{
           description
           dbid
           status
+          created_at
           source {
             name
     			}

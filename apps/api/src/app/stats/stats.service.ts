@@ -6,7 +6,7 @@ import { DateTime, Interval } from 'luxon';
 
 import { StatsFormatService } from "./stats-format.service";
 import { CheckStatsService } from "libs/meedan-check-client/src/lib/check-stats.service";
-import { StatusesMap } from "@iverify/iverify-common";
+import { Article, StatusesMap } from "@iverify/iverify-common";
 import { MeedanCheckClientService } from "@iverify/meedan-check-client";
 import { CountBy } from "@iverify/common";
 
@@ -50,6 +50,41 @@ export class StatsService{
         this.logger.log(`Found record: ${stat}`);
         if(stat) stat.count++;
         const statToSave = stat ? stat : {day, countBy: CountBy.verifiedByDay, category: statusLabel, count: 1};
+        this.logger.log(`Saving stat: ${JSON.stringify(statToSave)}`);
+        return await this.statsRepository.save(statToSave);
+    }
+
+    async addToxicityStats(toxicCount: number, day: string){
+        this.logger.log(`Processing toxicity count ${toxicCount} and day ${day}`);
+        const category: string = 'toxic';
+        const stat: Stats = await this.statsRepository.findOne({
+            where: {
+                countBy: CountBy.toxicity,
+                category,
+                day
+            }
+        });
+        this.logger.log(`Found record: ${stat}`);
+        if(stat) stat.count+= toxicCount;
+        const statToSave = stat ? stat : {day, countBy: CountBy.toxicity, category, count: toxicCount};
+        this.logger.log(`Saving stat: ${JSON.stringify(statToSave)}`);
+        return await this.statsRepository.save(statToSave);
+    }
+
+    async addToxicPublishedStats(article: Article){
+        const day: string = this.formatService.formatDate(new Date(article.creationDate));
+        this.logger.log(`Processing toxic published article ${JSON.stringify(article)} and day ${day}`);
+        const category: string = article.toxicFlag ? 'publishedToxic' : 'publishedNonToxic';
+        const stat: Stats = await this.statsRepository.findOne({
+            where: {
+                countBy: CountBy.toxicity,
+                category,
+                day
+            }
+        });
+        this.logger.log(`Found record: ${stat}`);
+        if(stat) stat.count++;
+        const statToSave = stat ? stat : {day, countBy: CountBy.toxicity, category, count: 1};
         this.logger.log(`Saving stat: ${JSON.stringify(statToSave)}`);
         return await this.statsRepository.save(statToSave);
     }
@@ -218,7 +253,8 @@ export class StatsService{
                     CountBy.responseVelocity.toString(),
                     CountBy.resolutionVelocity.toString(),
                     CountBy.verifiedByDay.toString(),
-                    CountBy.folder.toString()
+                    CountBy.folder.toString(),
+                    CountBy.toxicity.toString()
                 ])
             }
         }); 
