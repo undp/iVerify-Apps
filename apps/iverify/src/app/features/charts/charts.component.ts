@@ -84,7 +84,7 @@ export class ChartComponent implements  OnDestroy, OnChanges {
 
   xticksFormatting(val: any) {
     let tickVal = '';
-    const text = (val > 1) ? 'days' : 'day';
+    const text = (val > 1) ? 'días' : 'día';
     if (val == DataRange.min) {
       tickVal = `El más rápido ${val} ${text}`;
     } else if (val == DataRange.avg) {

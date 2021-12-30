@@ -122,5 +122,6 @@
   "tree_map": "Tree map",
   "heat_map": "Heat map",
   "line": "Line",
-  "bubble": "Bubble"
+  "bubble": "Bubble",
+  "BACK": "Espalda"
 }
