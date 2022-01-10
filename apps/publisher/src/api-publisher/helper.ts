@@ -163,27 +163,27 @@ export class ApiPublisherHelper{
     }
 
     extractDToxicScore(report: any): number{
-        return 0;
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].d_toxic_score);
     }
 
     extractDObsceneScore(report: any): number{
-        return 0;
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].d_obscene_score);
     }
 
     extractDIdentityScore(report: any): number{
-        return 0;
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].d_identity_score);
     }
 
     extractDThreatScore(report: any): number{
-        return 0;
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].d_threat_score);
     }
 
     extractDExplicitScore(report: any): number{
-        return 0;
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].sexually_explicit_score);
     }
 
     extractDInsultScore(report: any): number{
-        return 0;
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].d_insult_score);
     }
 
     extractSourceName(report: any){
