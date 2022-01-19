@@ -25,6 +25,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ToastModule } from '../toast/toast.module';
 import { DialogComponent } from './dialog.component';
 import { RolePermissionFormatPipe } from '@iverify/core/pipes/role-permission-format.pipe';
+import {MatRadioModule} from '@angular/material/radio';
 
 export const routes: Routes = [
   {
@@ -49,6 +50,7 @@ export const routes: Routes = [
     MatTableModule,
     MatTabsModule,
     MatFormFieldModule,
+    MatRadioModule,
     ReactiveFormsModule,
     MatInputModule,
     MatIconModule,

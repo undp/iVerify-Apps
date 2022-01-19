@@ -1,4 +1,5 @@
-import { Article, TasksLabels } from "@iverify/iverify-common";
+import { TasksLabels } from "@iverify/common/src";
+import { Article } from "@iverify/iverify-common";
 import { Injectable } from "@nestjs/common";
 import { SharedHelper } from "../shared/helper";
 
@@ -9,6 +10,8 @@ export class ApiPublisherHelper{
 
     buildArticle(report: any, wpPost: any): Partial<Article>{
         const meedanId = this.extractMeedanId(report);
+        const creationDate = this.extractCreationDate(report);
+        const toxicFlag = this.extractToxicFlag(wpPost);
         const wpId = this.extractWpId(wpPost);
         const title = this.extractTitle(report);
         const content = this.extractContent(report);
@@ -39,6 +42,8 @@ export class ApiPublisherHelper{
 
         return {
             meedanId,
+            creationDate,
+            toxicFlag,
             wpId,
             wpUrl,
             title,
@@ -71,6 +76,14 @@ export class ApiPublisherHelper{
 
     extractMeedanId(report: any): number{
         return this.sharedHelper.extractDbid(report);
+    }
+
+    extractCreationDate(report: any): string{
+        return this.sharedHelper.extractCreationDate(report);
+    }
+
+    extractToxicFlag(wpPost: any): boolean{
+        return !!wpPost.toxic;
     }
 
     extractWpId(wpPost: any): number{
@@ -150,27 +163,27 @@ export class ApiPublisherHelper{
     }
 
     extractDToxicScore(report: any): number{
-        return 0;
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].d_toxic_score);
     }
 
     extractDObsceneScore(report: any): number{
-        return 0;
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].d_obscene_score);
     }
 
     extractDIdentityScore(report: any): number{
-        return 0;
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].d_identity_score);
     }
 
     extractDThreatScore(report: any): number{
-        return 0;
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].d_threat_score);
     }
 
     extractDExplicitScore(report: any): number{
-        return 0;
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].sexually_explicit_score);
     }
 
     extractDInsultScore(report: any): number{
-        return 0;
+        return this.sharedHelper.extractTask(report, TasksLabels[this.lang].d_insult_score);
     }
 
     extractSourceName(report: any){

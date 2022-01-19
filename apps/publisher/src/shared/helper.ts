@@ -28,6 +28,10 @@ export class SharedHelper{
         return report.title || '';
     }
 
+    extractCreationDate(report: any){
+        return report.created_at || '';
+    }
+
     extractDescription(report: any){
         return report.description || '';
     }

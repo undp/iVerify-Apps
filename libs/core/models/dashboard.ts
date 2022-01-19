@@ -30,23 +30,39 @@ export interface TicketRequest {
 }
 
 export enum ChartTypeEnum {
-  BAR = 1,
-  LINE = 2,
-  PIE = 3,
-  STACKED = 4,
-  BUBBLE = 5
+  BAR = 'bar',
+  VERTICAL_BAR = 'vertical_bar',
+  STACKED = 'stacked',
+  VERTICAL_BAR_STACKED = 'vertical_bar_stacked',
+  NORMALIZED_HORIZONTAL_BAR = 'normalized_horizontal_bar',
+  NORMALIZED_VERTICAL_BAR = 'normalized_vertical_bar',
+  // GROUP_HORIZONTAL_BAR = 'group_horizontal_bar',
+  // GROUP_VERTICAL_BAR = 'group_vertical_bar',
+  PIE = 'pie',
+  // ADVANCED_PIE = 'advanced_pie',
+  PIE_GRID = 'pie_grid',
+  // POLAR_CHART = 'polar_chart',
+  AREA = 'area',
+  AREA_STACKED = 'area_stacked',
+  NORMALIZED_AREA = 'normalized_area',
+  TREE_MAP = 'tree_map',
+  // HEAT_MAP = 'heat_map',
+  LINE = 'line',
+  BUBBLE = 'bubble',
 }
 
 export enum Statuses {
-  InProgress = 'In Progress',
-  Unstarted = 'Unstarted',
-  PreChecked = 'Pre-checked',
-  False = 'False',
-  True = 'True',
-  OutOfScope = 'Out of scope',
+  InProgress = 'En curso',
+  Unstarted = 'Sin iniciar',
+  PreChecked = 'Pre-comprobado',
+  False = 'Falso',
+  True = 'Verdadero',
+  OutOfScope = 'Fuera de perspectiva',
   Misleading = 'Misleading',
-  PartlyFalse = 'Partly false',
-  Inconclusive = 'Inconclusive'
+  PartlyFalse = 'Sostenible',
+  Inconclusive = 'No confirmado',
+  Completed = 'Terminada',
+  Solved = 'Resuelto'
 }
 
 export interface StatusFormat {
@@ -86,8 +102,5 @@ export interface TicketResponseTime {
   day: string;
 }
 
-export enum ResTimeMinAvgLong {
-  MIN = 100,
-  AVG = 200,
-  MAX = 500
-}
+export let DataRange = {min: 0, avg: 0, max: 0};
+

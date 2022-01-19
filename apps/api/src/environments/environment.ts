@@ -2,11 +2,11 @@ export const environment = {
   production: false,
   tokenExpTime: 1200,
   refreshExpTime: 2400,
-  JWTsecret: 'hPtI4RBTo5ahZsmF4lPYrWbkgzgf2DEc',
-  JWTSecretRefreshToken: 'UmavWLNIMKfsF359Uz8dlLWZkwMeGsLM',
-  ClientID: 'BXh9T50VmIHw9CPycvVAziPOtIUgFPJaqgS2o0jV',
-  ClientSecret: '0uNZb7tEqcxueUe1D3VhmCDmMVwGBNhKV97BnZXY',
-  redirect_uri: 'http://20.93.245.255/',
-  WordpressUrl: 'https://iverify.org.zm/',
-  WPPassword: 'RHc6RJuW*f4FMmOPKao(q(Hh'
+  JWTsecret: process.env.JWT_SECRET,
+  JWTSecretRefreshToken: process.env.JWT_SECRET_TOKEN,
+  ClientID: process.env.CLIENT_ID,
+  ClientSecret: process.env.CLIENT_SECRET,
+  redirect_uri: process.env.REDIRECT_URI,
+  WordpressUrl: process.env.WP_URL,
+  WPPassword: process.env.WP_PASSWORD
 };

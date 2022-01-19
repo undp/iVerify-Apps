@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { ChartTypeEnum } from '@iverify/core/models/dashboard';
 import { curveBasis } from 'd3-shape';
 import { TranslateService } from '@ngx-translate/core';
-import { ResTimeMinAvgLong } from '@iverify/core/models/dashboard';
+import { DataRange } from '@iverify/core/models/dashboard';
 
 @Component({
   selector: 'iverify-charts',
@@ -15,7 +15,7 @@ export class ChartComponent implements  OnDestroy, OnChanges {
   subs: Subscription;
 
   @Input() data: any;
-  @Input() chartType: number;
+  @Input() chartType: ChartTypeEnum;
   @Input() viewVal: [number, number];
   single: any[];
   view: [number, number] = [300, 100];
@@ -40,7 +40,7 @@ export class ChartComponent implements  OnDestroy, OnChanges {
       domain: ['#E05548', '#FFA033']
     },
     {
-      domain: ['#E05548', '#FFA033','#7E9E0A']
+      domain: ['#E05548', '#FFA033','#7E9E0A', '#FF5733', '#FFD433', '#6BFF33', '#33FF77', '#33FFB5', '#3358FF', '#C133FF']
     },
     {
       domain: ['#7E9E0A']
@@ -52,9 +52,17 @@ export class ChartComponent implements  OnDestroy, OnChanges {
     protected translate: TranslateService
   ) {
     this.subs = new Subscription();
+    
+      
   }
 
   ngOnChanges() {
+    if (this.chartType === ChartTypeEnum.BUBBLE) {
+      DataRange.min = this.data.dataRange.min;
+      DataRange.max = this.data.dataRange.max;
+      DataRange.avg = this.data.dataRange.avg;
+    }
+   
     if (this.data && this.data.length === 1) {
       this.view = [300, 35];
     } else {
@@ -76,16 +84,18 @@ export class ChartComponent implements  OnDestroy, OnChanges {
 
   xticksFormatting(val: any) {
     let tickVal = '';
-    if (val === ResTimeMinAvgLong.MIN) {
-      tickVal = `Quickest ${val} h`;
-    } else if (val === ResTimeMinAvgLong.AVG) {
-      tickVal = `Average ${val} h`;
-    } else if (val === ResTimeMinAvgLong.MAX) {
-      tickVal = `Longest ${val} h`;
+    const text = (val > 1) ? 'días' : 'día';
+    if (val == DataRange.min) {
+      tickVal = `El más rápido ${val} ${text}`;
+    } else if (val == DataRange.avg) {
+      tickVal = `Media ${val} ${text}`;
+    } else if (val == DataRange.max) {
+      tickVal = `El más largo ${val} ${text}`;
     }
-     return tickVal;
+    return tickVal;
   }
 
+  
   ngOnDestroy() {
 
   }

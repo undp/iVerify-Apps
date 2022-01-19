@@ -8,18 +8,10 @@
   </button>
   <span class="fontRalewayBold header-text">{{'HEADER_TAG_LINE'|translate}}</span>  
   <span class="example-spacer"></span>
- <!-- <button mat-button color="black" [matMenuTriggerFor]="settingsMenu" aria-label="Example icon button with a bookmark icon">
-    <mat-icon>account_circle</mat-icon>
-  </button>        
-<mat-menu #settingsMenu>
-  <menu mat-menu-item disabled>{{ (user$ | async)?.email }}</menu>
-  <button mat-menu-item (click)="onLogoutClick()">{{ 'LOGOUT' | translate }}</button>
-</mat-menu> -->
 </mat-toolbar>
 <mat-sidenav-container
   class="example-sidenav-container"
   [style.marginTop.px]="viewportMobileQuery.matches ? 0 : 0"
-  
 >
   <mat-sidenav #snav [mode]="viewportMobileQuery.matches ? 'over' : 'side'"
                  [fixedInViewport]="viewportMobileQuery.matches" fixedTopGap="0" (click)="snav.toggle()">
@@ -30,7 +22,7 @@
       <mat-divider></mat-divider>
       <a class="text-capitalize fontRobotoRegular" mat-menu-item [routerLink]="['/dashboard/index']">
           <mat-icon>arrowback</mat-icon>
-          {{'Back' | translate}}
+          {{'BACK' | translate}}
       </a>
     </mat-nav-list>
   </mat-sidenav>

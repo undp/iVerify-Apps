@@ -21,7 +21,7 @@ export class CrowdtangleClientService{
     }
 
     getPosts(listIds: string, count: number, offset: number, startDate: string, endDate: string){
-        const params = {token: this.config.apiKey, count, offset, startDate, sortBy: 'date', endDate};
+        const params = {token: this.config.apiKey, count, offset, startDate, sortBy: 'date', endDate, listIds};
         return this.http.get(`${this.config.endpoints.posts}`, {params}).pipe(           
             map(res => res.data.result),
             retry(3),

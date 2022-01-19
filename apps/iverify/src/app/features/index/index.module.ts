@@ -23,11 +23,17 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDividerModule } from '@angular/material/divider';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatDialogModule } from '@angular/material/dialog';
+import { IndicatorDetailComponent } from '../indicator-detail/indicator-detail.component';
+import { ModalComponent } from '../modal/modal.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { DetailChartComponent } from '../detail-charts/detail-charts.component';
+
 
 export const routes: Routes = [
   {
@@ -68,6 +74,7 @@ export const routes: Routes = [
     MatBottomSheetModule,
     MatIconModule,
     MatInputModule,
+    MatRadioModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatRippleModule,
@@ -76,11 +83,12 @@ export const routes: Routes = [
     MatSidenavModule,
     MatDividerModule,
     OverlayModule,
-    MatDialogModule
+    MatDialogModule,
+    FlexLayoutModule
   ],
   providers: [MatDatepickerModule],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-  declarations: [IndexComponent, DashboardComponent, ChartComponent],
+  declarations: [IndexComponent, DashboardComponent, ChartComponent, IndicatorDetailComponent, ModalComponent, DetailChartComponent],
   exports: [IndexComponent, TranslateModule]
 })
 export class IndexModule {}

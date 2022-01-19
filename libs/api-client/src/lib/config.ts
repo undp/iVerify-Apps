@@ -4,5 +4,7 @@ import { Injectable } from "@nestjs/common";
 export class ApiClientConfig{
     readonly apiUrl = process.env.API_URL;
     readonly postArticleUrl = this.apiUrl + '/articles/save-article';
+    readonly postToxicStatsUrl = this.apiUrl + '/stats/toxicity';
+
 
 }

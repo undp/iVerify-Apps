@@ -1,16 +1,18 @@
-import { CountBy } from "./count-by.enum";
+import { CountBy } from "@iverify/common/src";
 
 export interface StatsResults{
-    range: {
+    range?: {
         startDate: string,
         endDate: string
     },
     results: {
-        [key in CountBy]?: {
-            category: string,
-            count: number
-        }
+        [key in CountBy]?: CategoryCount
     }
+}
+
+export interface CategoryCount{
+    category: string,
+    count: number
 }
 
 // example:

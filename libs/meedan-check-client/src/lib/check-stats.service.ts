@@ -1,9 +1,10 @@
+import { TasksLabels } from "@iverify/common/src";
 import { HttpException, HttpService, Injectable, Logger } from "@nestjs/common";
 import { combineLatest, from, Observable } from "rxjs";
 import { catchError, concatMap, filter, first, map, reduce, retry, take, tap } from "rxjs/operators";
 import { CheckClientConfig } from "./config";
 import { CheckClientHelperService } from "./helper.service";
-import { StatusesMap, TasksLabels } from "@iverify/iverify-common";
+// import { StatusesMap, TasksLabels } from "@iverify/iverify-common";
 
 @Injectable()
 export class CheckStatsService{
@@ -15,6 +16,8 @@ export class CheckStatsService{
         private config: CheckClientConfig,
         private helper: CheckClientHelperService
         ){}
+
+    
 
     getTicketsByAgent(statuses: string[]): Observable<any>{
         const teamSlug = this.config.checkApiTeam;
@@ -76,6 +79,21 @@ export class CheckStatsService{
         return this.getAllProjects(team).pipe(
             concatMap(projects => from(projects)),
             filter(project => project['title'].startsWith('1 ')),
+            concatMap(project => this.getCountByProject(project['id']).pipe(
+                map(count => ({project: project['title'], count}))
+            )),
+            reduce((acc, val) => ([...acc, val]), []),
+            catchError(err => {
+                this.logger.error(`Error getting tickets by input projects: `, err.message)
+                throw new HttpException(err.message, 500);
+            })
+        )
+    }
+
+    getTicketsByProjects(){
+        const team = this.config.checkApiTeam;
+        return this.getAllProjects(team).pipe(
+            concatMap(projects => from(projects)),
             concatMap(project => this.getCountByProject(project['id']).pipe(
                 map(count => ({project: project['title'], count}))
             )),

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { CountBy, StatusesMap } from "@iverify/iverify-common";
+import { StatusesMap } from "@iverify/iverify-common";
 import { Stats } from "./models/stats.model";
+import { CountBy } from "@iverify/common/src";
 
 @Injectable()
 export class StatsFormatService{
@@ -120,6 +121,15 @@ export class StatsFormatService{
         return this.buildStatsFromCount(endDate, solvedCount, CountBy.type);
     }
 
+    formatTticketsByProjects(endDate: string, results: any){
+        const count = results.reduce((acc, val) => {
+            acc[val['project']] = val['count'];
+            return acc;
+        }, {});
+        return this.buildStatsFromCount(endDate, count, CountBy.folder);  
+    }
+
+
     formatCreatedVsPublished(endDate, results): Stats[]{
         const count = results.reduce((acc, val) => {
             const status: string = val.status;
@@ -175,5 +185,7 @@ export class StatsFormatService{
         return {startDate: startDate, endDate: endDate}
 
     }
+
+    
 
 }

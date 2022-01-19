@@ -61,6 +61,15 @@
     },
     "email": {
       "tags": []
+    },
+    "perspective-client": {
+      "tags": []
+    },
+    "shared": {
+      "tags": []
+    },
+    "common": {
+      "tags": []
     }
   }
 }

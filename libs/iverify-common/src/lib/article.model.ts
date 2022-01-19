@@ -8,8 +8,14 @@ export class Article{
     @Column()
     meedanId: number
 
+    @Column({type: 'date', nullable: true})
+    creationDate: string
+
     @Column()
     wpId: number
+
+    @Column()
+    toxicFlag: boolean
 
     @Column()
     title: string 

@@ -1,7 +1,7 @@
+import { TasksLabels } from "@iverify/common/src";
 import { Injectable } from "@nestjs/common";
 import { CommentStatus, CreatePostDto, PostFields, PostFormat, PostStatus } from "libs/wp-client/src/lib/interfaces/create-post.dto";
 import { SharedHelper } from "../shared/helper";
-import { TasksLabels } from '@iverify/iverify-common';
 
 @Injectable()
 export class WpPublisherHelper{

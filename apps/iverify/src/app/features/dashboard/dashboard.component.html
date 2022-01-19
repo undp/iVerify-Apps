@@ -31,8 +31,9 @@
       <p class="fontRalewayRegular text-uppercase">
         {{ 'ALL_TICKETS_BY_TYPE' | translate }}
       </p>
+      <i (click)="openDetailModal(CountBy.violationType, 'ALL_TICKETS_BY_TYPE', ChartTypeEnum.BAR)" class="fa fa-expand"></i>
     </mat-grid-tile-header>
-    <iverify-charts *ngIf="ticketsByType && ticketsByType.length > 0" [chartType]="1" [data]="ticketsByType"></iverify-charts>
+    <iverify-charts *ngIf="ticketsByType && ticketsByType.length > 0" [chartType]="ChartTypeEnum.BAR" [data]="ticketsByType"></iverify-charts>
     <span  *ngIf="ticketsByType && ticketsByType.length === 0" class="fontRalewayRegular text-uppercase">
        {{ 'NO_RECORDS' | translate }}
     </span>
@@ -42,24 +43,25 @@
       <p class="fontRalewayRegular text-uppercase">
         {{ 'ALL_TICKETS_BY_TAG' | translate }}
       </p>
+      <i (click)="openDetailModal(CountBy.tag, 'ALL_TICKETS_BY_TAG', ChartTypeEnum.BAR)" class="fa fa-expand"></i>
     </mat-grid-tile-header>
-    <iverify-charts *ngIf="ticketsByTag && ticketsByTag.length > 0"  [chartType]="1" [data]="ticketsByTag"></iverify-charts>
+    <iverify-charts *ngIf="ticketsByTag && ticketsByTag.length > 0"  [chartType]="ChartTypeEnum.BAR" [data]="ticketsByTag"></iverify-charts>
     <span  *ngIf="ticketsByTag && ticketsByTag.length === 0" class="fontRalewayRegular text-uppercase">
        {{ 'NO_RECORDS' | translate }}
     </span>
   </mat-grid-tile>
-  <mat-grid-tile>
+  <mat-grid-tile >
     <mat-grid-tile-header >
       <p class="fontRalewayRegular text-uppercase">
         {{ 'ALL_TICKETS_BY_CHANNEL' | translate }}
       </p>
     </mat-grid-tile-header>
-    <iverify-charts *ngIf="ticketsByChannel && ticketsByChannel.length > 0" [chartType]="1" [data]="ticketsByChannel"></iverify-charts>
+    <iverify-charts *ngIf="ticketsByChannel && ticketsByChannel.length > 0" [chartType]="ChartTypeEnum.BAR" [data]="ticketsByChannel"></iverify-charts>
     <span  *ngIf="ticketsByChannel && ticketsByChannel.length === 0" class="fontRalewayRegular text-uppercase">
        {{ 'NO_RECORDS' | translate }}
     </span>
   </mat-grid-tile>
-  <mat-grid-tile>
+  <!-- <mat-grid-tile>
     <mat-grid-tile-header>
       <p class="fontRalewayRegular text-uppercase">
         {{ 'CURRENT_STATUS' | translate }}
@@ -75,15 +77,30 @@
        {{ 'NO_RECORDS' | translate }}
       </span>
     </div>
+  </mat-grid-tile> -->
+  <mat-grid-tile>
+    <mat-grid-tile-header>
+      <p class="fontRalewayRegular text-uppercase">
+        {{ 'TICKETS_FOLDER' | translate }}
+      </p>
+      <i (click)="openDetailModal(CountBy.folder, 'TICKETS_FOLDER', ChartTypeEnum.AREA_STACKED)" class="fa fa-expand"></i>
+    </mat-grid-tile-header>
+    <div style="margin-top: 5rem">
+      <iverify-charts *ngIf="ticketsByFolder && ticketsByFolder.length > 0" [chartType]="ChartTypeEnum.AREA_STACKED" [data]="ticketsByFolder"></iverify-charts>
+      <span  *ngIf="ticketsByFolder && ticketsByFolder.length === 0" class="fontRalewayRegular text-uppercase">
+       {{ 'NO_RECORDS' | translate }}
+      </span>
+    </div>
   </mat-grid-tile>
   <mat-grid-tile>
     <mat-grid-tile-header>
       <p class="fontRalewayRegular text-uppercase">
         {{ 'STATUS_BY_WEEK' | translate }}
       </p>
+      <i (click)="openDetailModal(CountBy.verifiedByDay, 'STATUS_BY_WEEK', ChartTypeEnum.LINE)" class="fa fa-expand"></i>
     </mat-grid-tile-header>
     <div style="margin-top: 5rem">
-      <iverify-charts *ngIf="ticketsByWeek && ticketsByWeek.length > 0" [chartType]="2" [data]="ticketsByWeek"></iverify-charts>
+      <iverify-charts *ngIf="ticketsByWeek && ticketsByWeek.length > 0" [chartType]="ChartTypeEnum.LINE" [data]="ticketsByWeek"></iverify-charts>
       <span  *ngIf="ticketsByWeek && ticketsByWeek.length === 0" class="fontRalewayRegular text-uppercase">
        {{ 'NO_RECORDS' | translate }}
       </span>
@@ -94,8 +111,9 @@
       <p class="fontRalewayRegular text-uppercase">
         {{ 'TICKETS_BY_AGENT' | translate }}
       </p>
+      <i (click)="openDetailModal(CountBy.agentAllStatuses, 'TICKETS_BY_AGENT', ChartTypeEnum.STACKED)" class="fa fa-expand"></i>
     </mat-grid-tile-header>
-    <iverify-charts *ngIf="ticketsByAgents && ticketsByAgents.length > 0" [chartType]="4" [data]="ticketsByAgents"></iverify-charts>
+    <iverify-charts *ngIf="ticketsByAgents && ticketsByAgents.length > 0" [chartType]="ChartTypeEnum.STACKED" [data]="ticketsByAgents"></iverify-charts>
     <span  *ngIf="ticketsByAgents && ticketsByAgents.length === 0" class="fontRalewayRegular text-uppercase">
        {{ 'NO_RECORDS' | translate }}
       </span>
@@ -125,7 +143,7 @@
       </mat-label>
     <div class="row mt-3 bubble-chart">
       <iverify-charts
-      [chartType]="5"
+      [chartType]="ChartTypeEnum.BUBBLE"
       [viewVal]="bubbleChartViewSize"
       [data]="ticketsReponseTime"
     ></iverify-charts>

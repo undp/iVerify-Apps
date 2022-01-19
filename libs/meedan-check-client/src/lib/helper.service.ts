@@ -11,6 +11,8 @@ export class CheckClientHelperService{
           title
           description
           dbid
+          status
+          created_at
           source {
             name
     			}
@@ -377,6 +379,24 @@ export class CheckClientHelperService{
                 event_type
                 object_changes_json
                 created_at
+              }
+            }
+          }
+        }
+      }`
+    }
+
+    buildGetAllFoldersQuery(teamSlug: string){
+      return `query {
+        team(slug: "${teamSlug}") {
+          title
+          created_at
+          projects {
+            edges {
+              node {
+                dbid
+                title
+                description
               }
             }
           }

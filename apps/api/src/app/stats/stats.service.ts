@@ -6,12 +6,16 @@ import { DateTime, Interval } from 'luxon';
 
 import { StatsFormatService } from "./stats-format.service";
 import { CheckStatsService } from "libs/meedan-check-client/src/lib/check-stats.service";
-import { StatsResults, CountBy, StatusesMap } from "@iverify/iverify-common";
+import { Article, StatusesMap } from "@iverify/iverify-common";
+import { MeedanCheckClientService } from "@iverify/meedan-check-client";
+import { CountBy } from "@iverify/common";
 
 @Injectable()
 export class StatsService{
     private readonly logger = new Logger('MeedanCheckClient');
     allStatuses = StatusesMap.map(status => status.value);
+    resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
+
 
 
     constructor(
@@ -19,23 +23,81 @@ export class StatsService{
         private readonly statsRepository: Repository<Stats>,
         private formatService: StatsFormatService,
         private checkStatsClient: CheckStatsService,
+        private checkClient: MeedanCheckClientService
         ) {
     }
 
     async processItemStatusChanged(id: string, day: string){
+        const velocities = await this.processVelocities(id, day);
+        const meedanItem = await this.checkClient.getReport(id).toPromise() as any;
+        const status = meedanItem.status;
+        const verification = await this.processVerification(status, day);
+        return {velocities, verification};
+    }
+
+    async processVerification(status: string, day: string){
+        this.logger.log(`Processing verification for status ${status} and day ${day}`);
+        if(this.resolutionStatuses.indexOf(status)===-1) return;
+        const statusObj = StatusesMap.find(s => s['value'] === status);
+        const statusLabel = statusObj ? statusObj['label'] : '';
+        const stat: Stats = await this.statsRepository.findOne({
+            where: {
+                countBy: CountBy.verifiedByDay,
+                category: statusLabel,
+                day
+            }
+        });
+        this.logger.log(`Found record: ${stat}`);
+        if(stat) stat.count++;
+        const statToSave = stat ? stat : {day, countBy: CountBy.verifiedByDay, category: statusLabel, count: 1};
+        this.logger.log(`Saving stat: ${JSON.stringify(statToSave)}`);
+        return await this.statsRepository.save(statToSave);
+    }
+
+    async addToxicityStats(toxicCount: number, day: string){
+        this.logger.log(`Processing toxicity count ${toxicCount} and day ${day}`);
+        const category: string = 'toxic';
+        const stat: Stats = await this.statsRepository.findOne({
+            where: {
+                countBy: CountBy.toxicity,
+                category,
+                day
+            }
+        });
+        this.logger.log(`Found record: ${stat}`);
+        if(stat) stat.count+= toxicCount;
+        const statToSave = stat ? stat : {day, countBy: CountBy.toxicity, category, count: toxicCount};
+        this.logger.log(`Saving stat: ${JSON.stringify(statToSave)}`);
+        return await this.statsRepository.save(statToSave);
+    }
+
+    async addToxicPublishedStats(article: Article){
+        const day: string = this.formatService.formatDate(new Date(article.creationDate));
+        this.logger.log(`Processing toxic published article ${JSON.stringify(article)} and day ${day}`);
+        const category: string = article.toxicFlag ? 'publishedToxic' : 'publishedNonToxic';
+        const stat: Stats = await this.statsRepository.findOne({
+            where: {
+                countBy: CountBy.toxicity,
+                category,
+                day
+            }
+        });
+        this.logger.log(`Found record: ${stat}`);
+        if(stat) stat.count++;
+        const statToSave = stat ? stat : {day, countBy: CountBy.toxicity, category, count: 1};
+        this.logger.log(`Saving stat: ${JSON.stringify(statToSave)}`);
+        return await this.statsRepository.save(statToSave);
+    }
+
+    async processVelocities(id: string, day: string){
         const results = await this.checkStatsClient.getTicketLastStatus(id).toPromise();
-        // console.log('results: ', results)
         const creationDate = DateTime.fromSeconds(+results.project_media.created_at);
         const title = results.project_media.title;
         const node = results.project_media.log.edges.find(node => node.node.event_type === 'update_dynamicannotationfield');
         if(!node) return;
         const status_changes_obj = JSON.parse(node.node.object_changes_json);
-        // console.log(node.node)
-        // console.log(node.node.object_changes_json)
         const values = status_changes_obj.value.map(val => JSON.parse(val));
         const resolutionDate =  DateTime.fromSeconds(+node.node.created_at);
-        // console.log('creationDate: ', creationDate)
-        // console.log('resolutionDate: ', resolutionDate)
         const initialStates = StatusesMap.filter(status => !status.resolution).map(status => status.value);
         const resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
         const defaultStatuses = StatusesMap.filter(status => status.default).map(status => status.value);
@@ -78,6 +140,8 @@ export class StatsService{
             const createdVsPublished: Stats[] = await this.getCreatedVsPublished(endDate);
             this.logger.log('Fetching tickes by violation type..');
             const ticketsByType: Stats[] = await this.getTicketsByViolationType(endDate);
+            this.logger.log('Fetching tickes by folder..');
+            const ticketsByFolder: Stats[] = await this.getTicketsByFolder(endDate);
             // const ticketsByChannel: Stats[] = await this.getTicketsByChannel(startDate, endDate);
             const stats: Stats[] = [
                 ...ticketsByAgent,
@@ -85,7 +149,8 @@ export class StatsService{
                 ...ticketsByStatus,
                 ...ticketsBySource,
                 ...createdVsPublished,
-                ...ticketsByType
+                ...ticketsByType,
+                ...ticketsByFolder
                 // ...this.formatService.formatTticketsByChannel(ticketsByChannel),
                 // ...this.formatService.formatTticketsByType(ticketsByType),
             ]
@@ -99,6 +164,11 @@ export class StatsService{
     async getTicketsByAgent(endDate: string){
         const results = await this.checkStatsClient.getTicketsByAgent(this.allStatuses).toPromise();
         return this.formatService.formatTticketsByAgent(endDate, results);
+    }
+
+    async getTicketsByFolder(endDate: string){
+        const results = await this.checkStatsClient.getTicketsByProjects().toPromise();
+        return this.formatService.formatTticketsByProjects(endDate, results);
     }
     
     async getTicketsByTags(endDate: string){
@@ -144,7 +214,7 @@ export class StatsService{
         return this.statsRepository.save(newRecord);
     }
 
-    async getByDate(startDate: Date, endDate: Date): Promise<StatsResults>{
+    async getByDate(startDate: Date, endDate: Date): Promise<any>{
         const start = new Date(startDate.getTime());
         start.setHours(startDate.getHours() -24);
 
@@ -181,12 +251,16 @@ export class StatsService{
                     CountBy.violationType.toString(),
                     CountBy.status.toString(),
                     CountBy.responseVelocity.toString(),
-                    CountBy.resolutionVelocity.toString()
+                    CountBy.resolutionVelocity.toString(),
+                    CountBy.verifiedByDay.toString(),
+                    CountBy.folder.toString(),
+                    CountBy.toxicity.toString()
                 ])
             }
         }); 
 
         const latest = this.aggregateByCountBy(latestStats);
+        //group by date:
         Object.keys(latest).forEach(key => {
             if(key !== CountBy.responseVelocity && key !== CountBy.resolutionVelocity){
                 latest[key] = this.aggregateByDate(latest[key])
@@ -195,7 +269,7 @@ export class StatsService{
 
 
         return {
-            range: { startDate: formattedStart, endDate: formattedEnd },
+            // range: { startDate: formattedStart, endDate: formattedEnd },
             results: {...aggregatedStats, ...latest} 
         }
 
