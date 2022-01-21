@@ -11,14 +11,17 @@ export class RolePermissionFormatPipe implements PipeTransform {
 
 
   transform(value: string, ...args: unknown[]): unknown {
-    const data = JSON.parse(value); let formattedData: string = '';
-    data.map((item: any) => {
-      let htmlData: string[] = [];
-      item.permissions.map((item: string) => {
-        htmlData.push(item);
+    let formattedData: string = '';
+    if (value) {
+        const data = JSON.parse(value); 
+        data.map((item: any) => {
+        let htmlData: string[] = [];
+        item.permissions.map((item: string) => {
+          htmlData.push(item);
+        });
+        formattedData += this.capitalizeFirstLetter(item.name) + ' : ' + htmlData.join() + '</br>';
       });
-      formattedData += this.capitalizeFirstLetter(item.name) + ' : ' + htmlData.join() + '</br>';
-    });
+    }
     return formattedData;
   }
 
