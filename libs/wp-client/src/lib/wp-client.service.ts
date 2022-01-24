@@ -14,8 +14,9 @@ export class WpClientService{
 
     private readonly auth = {auth: this.config.authParams};
 
-    publishPost(post: CreatePostDto): Observable<any>{
-        return this.http.post(this.config.endpoints.posts, post, this.auth).pipe(
+    publishPost(post: CreatePostDto, id?: number): Observable<any>{
+        const endPoint = id ? `${this.config.endpoints.posts}/${id}` : this.config.endpoints.posts;
+        return this.http.post(endPoint, post, this.auth).pipe(
             map(res => res.data),
             catchError(err => {
                 console.log('Error publishing post', err)
@@ -40,6 +41,17 @@ export class WpClientService{
             map(res => res.data),
             catchError(err => {
                 console.log('Error getting post', err)
+                throw new HttpException(err.message, 500);
+              })
+        );
+    }
+
+    getPostByCheckId(check_id: string){
+        const params = {check_id};
+        return this.http.get(this.config.endpoints.posts, {params}).pipe( 
+            map(res => res.data),
+            catchError(err => {
+                console.log('Error getting post by check id', err)
                 throw new HttpException(err.message, 500);
               })
         );
