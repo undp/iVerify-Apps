@@ -4,14 +4,20 @@ import { CommentStatus, CreatePostDto, PostFormat, PostStatus } from "libs/wp-cl
 import { CreateTagDto } from "libs/wp-client/src/lib/interfaces/create-tag.dto";
 import { WpClientService } from "libs/wp-client/src/lib/wp-client.service";
 import { combineLatest, from, iif, Observable, of, zip } from "rxjs";
-import { catchError, concatMap, filter, map, reduce, scan, shareReplay, switchMap, take, tap } from "rxjs/operators";
+import { catchError, concatMap, filter, map, reduce, scan, shareReplay, switchMap, take, tap, withLatestFrom } from "rxjs/operators";
 import { SharedService } from "../shared/shared.service";
 import { WpPublisherHelper } from "./wp-publisher-helper.service";
 
 @Injectable({ scope: Scope.REQUEST })
 export class WpPublisherService{
+    private reportId$: Observable<string> = this.shared.reportId$;
     private report$: Observable<any> = this.shared.report$;
     private meedanReport$: Observable<any> = this.shared.meedanReport$;
+
+    wpPostId$: Observable<number> = this.reportId$.pipe(
+      switchMap(id => this.wpClient.getPostByCheckId(id)),
+      map(res => res && res.length ? res[0].id : null)
+    )
 
     categoriesIds$: Observable<number[]> = this.report$.pipe(
       map(report => this.helper.extractFactcheckingStatus(report)),
@@ -60,7 +66,9 @@ export class WpPublisherService{
         filter(post => !!post.title.length),
         take(1),
         tap(() => console.log('emitting to publish...')),
-        switchMap(postDto => this.wpClient.publishPost(postDto)),
+        withLatestFrom(this.wpPostId$),
+        map(([postDto, wpPostId]) => ({postDto, wpPostId})),
+        switchMap(data => this.wpClient.publishPost(data.postDto, data.wpPostId)),
         tap(wpPost => this.shared.updateWpPost(wpPost)),
         catchError(err => {
           throw new HttpException(err.message, 500);
