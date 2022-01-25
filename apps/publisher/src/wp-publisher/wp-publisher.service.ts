@@ -83,36 +83,39 @@ export class WpPublisherService{
     ){}
 
       private tagsIds(tags: string[]): Observable<number[]>{
-        const tagsLowCase = tags.map(tag => tag.toLowerCase());
-        console.log('tags: ', tagsLowCase)
-        const wpTags$: Observable<any> = this.wpClient.listTags().pipe(
-          take(1),
-          shareReplay(1)
-          // tap(tags => tags.forEach(tag => console.log('wp tag: ', tag.name.toLowerCase())))
-        );
-        const existingTagsIds$: Observable<number[]> = wpTags$.pipe(
-          map(wpTags => wpTags.filter(tag => tagsLowCase.indexOf(tag.name.toLowerCase()) > -1).map(tag => {
-            console.log('existing tag name: ', tag.name.toLowerCase())
-            return tag.id
-          })),
-          );
-        const newTags$: Observable<string[]> = wpTags$.pipe(
-          map(wpTags => wpTags.map(tag => tag.name.toLowerCase() as string)),
-          tap(wpTags => console.log('wpTags: ', wpTags)),
-          map(wpTags => tags.filter(tag => wpTags.indexOf(tag.toLowerCase()) === -1)),
-          tap(wpTags => console.log('new tags: ', wpTags)),
+        const tagsIds$: Observable<number[]> = of(tags).pipe(
+          switchMap(tags => iif(()=> !!tags.length, this.createManyTags(tags), of([]))),
+        )
 
-        ) 
-        const newTagsIds$: Observable<number[]> = newTags$.pipe(
-          switchMap(tags => iif(()=> !!tags.length, this.createManyTags(tags).pipe(map(tag => [tag.id])), of([]))),
-          reduce((acc, val) => [...acc, ...val], [])
-        )
-        const tagsIds$: Observable<number[]> = combineLatest([existingTagsIds$, newTagsIds$]).pipe(
-          map(([existingIds, newIds]) => [...existingIds, ...newIds]),
-          catchError(err => {
-            throw new HttpException(err.message, 500);
-          })
-        )
+        // const tagsLowCase = tags.map(tag => tag.toLowerCase());
+        // console.log('tags: ', tagsLowCase)
+        // const wpTags$: Observable<any> = this.wpClient.listTags().pipe(
+        //   take(1),
+        //   shareReplay(1)
+        // );
+        // const existingTagsIds$: Observable<number[]> = wpTags$.pipe(
+        //   map(wpTags => wpTags.filter(tag => tagsLowCase.indexOf(tag.name.toLowerCase()) > -1).map(tag => {
+        //     console.log('existing tag name: ', tag.name.toLowerCase())
+        //     return tag.id
+        //   })),
+        //   );
+        // const newTags$: Observable<string[]> = wpTags$.pipe(
+        //   map(wpTags => wpTags.map(tag => tag.name.toLowerCase() as string)),
+        //   tap(wpTags => console.log('wpTags: ', wpTags)),
+        //   map(wpTags => tags.filter(tag => wpTags.indexOf(tag.toLowerCase()) === -1)),
+        //   tap(wpTags => console.log('new tags: ', wpTags)),
+
+        // ) 
+        // const newTagsIds$: Observable<number[]> = newTags$.pipe(
+        //   switchMap(tags => iif(()=> !!tags.length, this.createManyTags(tags).pipe(map(tag => [tag.id])), of([]))),
+        //   reduce((acc, val) => [...acc, ...val], [])
+        // )
+        // const tagsIds$: Observable<number[]> = combineLatest([existingTagsIds$, newTagsIds$]).pipe(
+        //   map(([existingIds, newIds]) => [...existingIds, ...newIds]),
+        //   catchError(err => {
+        //     throw new HttpException(err.message, 500);
+        //   })
+        // )
     
         return tagsIds$;
       }
@@ -141,7 +144,10 @@ export class WpPublisherService{
       private createManyTags(tags: string[]): Observable<any>{
         const tagsDtos: CreateTagDto[] = tags.map(tag => ({name: tag})) 
         return from(tagsDtos).pipe(
-          concatMap(tag => this.createSingleTag(tag))
+          tap(tag => console.log('sending tag to creation: ', tag)),
+          concatMap(tag => this.createSingleTag(tag)),
+          tap(tag => console.log('Returning tag from creation: ', tag)),
+          reduce((acc, item) => [...acc, item], [])
         )
       }
     

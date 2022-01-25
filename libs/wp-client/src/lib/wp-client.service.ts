@@ -1,5 +1,5 @@
 import { HttpException, HttpService, Injectable } from "@nestjs/common";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { WpConfig } from "./config";
 import { CreateCategoryDto } from "./interfaces/create-category.dto";
@@ -59,10 +59,14 @@ export class WpClientService{
 
     createTag(tag: CreateTagDto): Observable<any>{
         return this.http.post(this.config.endpoints.tags, tag, this.auth).pipe(
-            map(res => res.data),
+            map(res => res.data.id),
             catchError(err => {
-                console.log('Error creating tag: ', err)
-                throw new HttpException(err.message, 500);
+                if(err.response.data && err.response.data.code && err.response.data.code === 'term_exists') {
+                    return of(err.response.data.data.term_id)
+                } else {
+                    console.log('Error creating tag: ', err)
+                    throw new HttpException(err.message, 500);
+                }
               })
         );
     }
