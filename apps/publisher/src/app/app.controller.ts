@@ -18,14 +18,6 @@ export class AppController {
   @Post('publish-webhook')
   async punlishReportWebhook(@Body() body){
     try{
-      const WP_USERNAME = process.env.WP_USERNAME;
-      console.log('WP_USERNAME: ', WP_USERNAME);
-      const WP_PASSWORD = process.env.WP_PASSWORD;
-      console.log('WP_PASSWORD: ', WP_PASSWORD);
-      const CHECK_API_URL = process.env.CHECK_API_URL;
-      console.log('CHECK_API_URL: ', CHECK_API_URL);
-      const CHECK_API_TOKEN = process.env.CHECK_API_TOKEN;
-      console.log('CHECK_API_TOKEN: ', CHECK_API_TOKEN);
       const event = body.event;
       this.logger.log(`Received event: ${event}`);
       const data = body.data;
@@ -49,14 +41,6 @@ export class AppController {
   @Post('publish-test-endpoint')
   async punlishTestEndpoint(@Body() body){
     try{
-      const WP_USERNAME = process.env.WP_USERNAME;
-      console.log('WP_USERNAME: ', WP_USERNAME);
-      const WP_PASSWORD = process.env.WP_PASSWORD;
-      console.log('WP_PASSWORD: ', WP_PASSWORD);
-      const CHECK_API_URL = process.env.CHECK_API_URL;
-      console.log('CHECK_API_URL: ', CHECK_API_URL);
-      const CHECK_API_TOKEN = process.env.CHECK_API_TOKEN;
-      console.log('CHECK_API_TOKEN: ', CHECK_API_TOKEN);
       const id = body.id;
       this.logger.log(`project media id: ${id}`)
       return this.appService.publishReportById(id).pipe(
