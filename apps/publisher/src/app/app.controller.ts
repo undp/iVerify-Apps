@@ -18,6 +18,10 @@ export class AppController {
   @Post('publish-webhook')
   async punlishReportWebhook(@Body() body){
     try{
+      const WP_USERNAME = process.env.WP_USERNAME;
+      console.log('WP_USERNAME: ', WP_USERNAME);
+      const WP_PASSWORD = process.env.WP_PASSWORD;
+      console.log('WP_PASSWORD: ', WP_PASSWORD);
       const event = body.event;
       this.logger.log(`Received event: ${event}`);
       const data = body.data;
@@ -41,6 +45,10 @@ export class AppController {
   @Post('publish-test-endpoint')
   async punlishTestEndpoint(@Body() body){
     try{
+      const WP_USERNAME = process.env.WP_USERNAME;
+      console.log('WP_USERNAME: ', WP_USERNAME);
+      const WP_PASSWORD = process.env.WP_PASSWORD;
+      console.log('WP_PASSWORD: ', WP_PASSWORD);
       const id = body.id;
       this.logger.log(`project media id: ${id}`)
       return this.appService.publishReportById(id).pipe(
