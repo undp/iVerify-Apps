@@ -22,6 +22,8 @@ export class AppController {
       console.log('WP_USERNAME: ', WP_USERNAME);
       const WP_PASSWORD = process.env.WP_PASSWORD;
       console.log('WP_PASSWORD: ', WP_PASSWORD);
+      const CT_API_KEY = process.env.CT_API_KEY;
+      console.log('CT_API_KEY: ', CT_API_KEY);
       const event = body.event;
       this.logger.log(`Received event: ${event}`);
       const data = body.data;
@@ -49,6 +51,8 @@ export class AppController {
       console.log('WP_USERNAME: ', WP_USERNAME);
       const WP_PASSWORD = process.env.WP_PASSWORD;
       console.log('WP_PASSWORD: ', WP_PASSWORD);
+      const CT_API_KEY = process.env.CT_API_KEY;
+      console.log('CT_API_KEY: ', CT_API_KEY);
       const id = body.id;
       this.logger.log(`project media id: ${id}`)
       return this.appService.publishReportById(id).pipe(
