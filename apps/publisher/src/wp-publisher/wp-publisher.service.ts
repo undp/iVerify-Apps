@@ -11,8 +11,8 @@ import { WpPublisherHelper } from "./wp-publisher-helper.service";
 @Injectable({ scope: Scope.REQUEST })
 export class WpPublisherService{
     private reportId$: Observable<string> = this.shared.reportId$;
-    private report$: Observable<any> = this.shared.report$;
-    private meedanReport$: Observable<any> = this.shared.meedanReport$;
+    private report$: Observable<any> = this.shared.report$.pipe(tap(report => console.log('Report: ', JSON.stringify(report))));
+    private meedanReport$: Observable<any> = this.shared.meedanReport$.pipe(tap(report => console.log('Meedan report: ', JSON.stringify(report))));
 
     wpPostId$: Observable<number> = this.reportId$.pipe(
       switchMap(id => this.wpClient.getPostByCheckId(id)),
