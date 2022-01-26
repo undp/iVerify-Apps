@@ -45,6 +45,6 @@ export class SharedHelper{
     }
 
     extractSourceName(report: any){
-        return report.source.name || '';
+        return report.source ? report.source.name : '';
     }
 }
