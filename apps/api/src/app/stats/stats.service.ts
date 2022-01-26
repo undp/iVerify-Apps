@@ -72,7 +72,7 @@ export class StatsService{
     }
 
     async addToxicPublishedStats(article: Article){
-        const day: string = this.formatService.formatDate(new Date(article.creationDate));
+        const day: string = this.formatService.formatDate(new Date(+article.creationDate));
         this.logger.log(`Processing toxic published article ${JSON.stringify(article)} and day ${day}`);
         const category: string = article.toxicFlag ? 'publishedToxic' : 'publishedNonToxic';
         const stat: Stats = await this.statsRepository.findOne({
