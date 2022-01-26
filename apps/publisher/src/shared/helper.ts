@@ -31,6 +31,7 @@ export class SharedHelper{
     extractCreationDate(report: any){
         if(!report) return '';
         const dateString: string = new Date(parseInt(report.created_at) * 1000).toISOString();
+        console.log('Extracted creation date: ', dateString);
         return dateString;
     }
 
