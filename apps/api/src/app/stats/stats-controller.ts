@@ -70,6 +70,7 @@ export class StatsController {
   async addToxicityStats(@Body() body) {
     try{
       const toxicCount = body.toxicCount;
+      this.logger.log(`Received request for adding toxicity stat with count: ${toxicCount}`);
       const day = this.formatService.formatDate(new Date());
       return await this.statsService.addToxicityStats(toxicCount, day);
     }catch(e){

@@ -32,6 +32,7 @@ export class CronService{
     async analyze(startDate, endDate){
         try{            
             const created: number = await this.appService.analyze(startDate, endDate);
+            console.log('Items created: ', created);
             return this.apiClient.postToxicStats(created);
         } catch(e){
             this.logger.error('Cron job error: ', e.message);
