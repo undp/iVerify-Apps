@@ -29,7 +29,9 @@ export class SharedHelper{
     }
 
     extractCreationDate(report: any){
-        return report.created_at || '';
+        if(!report) return '';
+        const dateString: string = new Date(parseInt(report.created_at) * 1000).toISOString();
+        return dateString;
     }
 
     extractDescription(report: any){
