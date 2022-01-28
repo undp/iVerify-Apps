@@ -6,7 +6,7 @@ import { shareReplay, switchMap, take } from "rxjs/operators";
 @Injectable({ scope: Scope.REQUEST })
 export class SharedService{
     private _reportId: Subject<string> = new Subject<string>();
-    private reportId$: Observable<string> = this._reportId.asObservable().pipe(take(1), shareReplay(1));
+    reportId$: Observable<string> = this._reportId.asObservable().pipe(take(1), shareReplay(1));
 
     private _wpPost: Subject<any> = new Subject<any>();
     wpPost$: Observable<string> = this._wpPost.asObservable().pipe(take(1), shareReplay(1));

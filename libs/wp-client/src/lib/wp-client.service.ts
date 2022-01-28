@@ -1,5 +1,5 @@
 import { HttpException, HttpService, Injectable } from "@nestjs/common";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { WpConfig } from "./config";
 import { CreateCategoryDto } from "./interfaces/create-category.dto";
@@ -14,8 +14,9 @@ export class WpClientService{
 
     private readonly auth = {auth: this.config.authParams};
 
-    publishPost(post: CreatePostDto): Observable<any>{
-        return this.http.post(this.config.endpoints.posts, post, this.auth).pipe(
+    publishPost(post: CreatePostDto, id?: number): Observable<any>{
+        const endPoint = id ? `${this.config.endpoints.posts}/${id}` : this.config.endpoints.posts;
+        return this.http.post(endPoint, post, this.auth).pipe(
             map(res => res.data),
             catchError(err => {
                 console.log('Error publishing post', err)
@@ -45,12 +46,27 @@ export class WpClientService{
         );
     }
 
-    createTag(tag: CreateTagDto): Observable<any>{
-        return this.http.post(this.config.endpoints.tags, tag, this.auth).pipe(
+    getPostByCheckId(check_id: string){
+        const params = {check_id};
+        return this.http.get(this.config.endpoints.posts, {params}).pipe( 
             map(res => res.data),
             catchError(err => {
-                console.log('Error creating tag: ', err)
+                console.log('Error getting post by check id', err)
                 throw new HttpException(err.message, 500);
+              })
+        );
+    }
+
+    createTag(tag: CreateTagDto): Observable<any>{
+        return this.http.post(this.config.endpoints.tags, tag, this.auth).pipe(
+            map(res => res.data.id),
+            catchError(err => {
+                if(err.response.data && err.response.data.code && err.response.data.code === 'term_exists') {
+                    return of(err.response.data.data.term_id)
+                } else {
+                    console.log('Error creating tag: ', err)
+                    throw new HttpException(err.message, 500);
+                }
               })
         );
     }

@@ -19,8 +19,9 @@ export class MeedanCheckClientService {
   getReport(id: string): Observable<any> {
     const query: string = this.helper.buildGetReportQuery(id);
     const headers = this.config.headers;
-    console.log(query)
+    console.log('Getting report query: ', query)
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
+      tap(res => console.log('Getting report res: ', JSON.stringify(res.data))),
       map(res => res.data.data.project_media),
       retry(3),
       catchError(err => {
@@ -33,7 +34,9 @@ export class MeedanCheckClientService {
   getMeedanReport(id: string): Observable<any> {
     const query: string = this.helper.buildGetMeedanReportQuery(id);
     const headers = this.config.headers;
+    console.log('Getting meedan report query: ', query)
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
+      tap(res => console.log('Getting meedan report res: ', JSON.stringify(res.data))),
       map(res => res.data.data.project_media.annotation.data.options[0]),
       retry(3),
       catchError(err => {

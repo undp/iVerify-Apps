@@ -1,104 +1,115 @@
+## Iverify Apps
 
+  *WIP Documentation*
 
-# Iverify
+-  **Analytic Dashboard**
 
-This project was generated using [Nx](https://nx.dev).
+   - Analitic indicators for the iVerify instance
+   - To run locally: `npx nx serve iverify`
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+- **Dashboard API**
 
-🔎 **Smart, Extensible Build Framework**
+  - Backend of the analytic dashboard
+  - To run locally: `npx nx serve api`
 
-## Quick Start & Documentation
+- **Publisher**
 
-[Nx Documentation](https://nx.dev/angular)
+  - Publishes Meedan Check items on iVerify WordPress
+  - To run locally: `npx nx serve publisher`
 
-[10-minute video showing all Nx features](https://nx.dev/angular/getting-started/what-is-nx)
+- **Triage**
 
-[Interactive Tutorial](https://nx.dev/angular/tutorial/01-create-application)
+  - Fetches social media content from CrowdTangle and uploads toxic content on Meeedan Check
+  - To run locally: `npx nx serve triage`
 
-## Adding capabilities to your workspace
+  
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+# Configurations
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+  
 
-Below are our core plugins:
+- CHECK_API_URL: url of the Meedan Check instance
 
-- [Angular](https://angular.io)
-  - `ng add @nrwl/angular`
-- [React](https://reactjs.org)
-  - `ng add @nrwl/react`
-- Web (no framework frontends)
-  - `ng add @nrwl/web`
-- [Nest](https://nestjs.com)
-  - `ng add @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `ng add @nrwl/express`
-- [Node](https://nodejs.org)
-  - `ng add @nrwl/node`
+- CHECK_API_TOKEN: Meedan Check authentication token
 
-There are also many [community plugins](https://nx.dev/nx-community) you could add.
+- CHECK_API_TEAM: Meedan Check team's slug
 
-## Generate an application
+- CHECK_FOLDER_ID: ID of the Meedan Check folder where items from CrowdTangle are loaded
 
-Run `ng g @nrwl/angular:app my-app` to generate an application.
+- CHECK_TIPLINE_FOLDER_ID: ID of the Meedan Check folder for items from WordPress tipline
 
-> You can use any of the plugins above to generate applications as well.
+  
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
+- WP_SECRET: secret token for the authentication of iVerify WordPress on Triage
 
-## Generate a library
+- WP_URL: url of iVerify WordPress
 
-Run `ng g @nrwl/angular:lib my-lib` to generate a library.
+- WP_USERNAME: login for iVerify WordPress REST API
 
-> You can also use any of the plugins above to generate libraries as well.
+- WP_PASSWORD: login for iVerify WordPress REST API
 
-Libraries are shareable across libraries and applications. They can be imported from `@iverify/mylib`.
+- WP_PUBLISHED_FOLDER: ID of the Meedan Check folder where published items are moved to
 
-## Development server
+  
 
-Run `ng serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+- CT_API_URL: CrowdTangle API URL
 
-## Code scaffolding
+- CT_API_KEY: CrowdTangle authentication token
 
-Run `ng g component my-component --project=my-app` to generate a new component.
+  
 
-## Build
+- ML_SERVICE_API_BASE: base URL of the Detoxify server
 
-Run `ng build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+- DETOXIFY_TRESHOLD: toxicity cutoff
 
-## Running unit tests
+  
 
-Run `ng test my-app` to execute the unit tests via [Jest](https://jestjs.io).
+- DB_USER: Database credentials
 
-Run `nx affected:test` to execute the unit tests affected by a change.
+- DB_PORT: Database credentials
 
-## Running end-to-end tests
+- DB_HOST: Database credentials
 
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
+- DB_NAME: Database credentials
 
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
+- DB_PASSWORD: Database credentials
 
-## Understand your workspace
+  
 
-Run `nx dep-graph` to see a diagram of the dependencies of your projects.
+- language: language ('en' or 'es')
 
-## Further help
+- VIOLATION_TASK_ID: ID for task 'Violation Type' on Meedan Check
 
-Visit the [Nx Documentation](https://nx.dev/angular) to learn more.
+- UNSTARTED_VALUE: 'value' property of validation statuses on Meedan Check
 
+- IN_PROGRESS_VALUE: 'value' property of validation statuses on Meedan Check
 
+- FALSE_VALUE: 'value' property of validation statuses on Meedan Check
 
+- TRUE_VALUE: 'value' property of validation statuses on Meedan Check
 
+- MISLEADING_VALUE: 'value' property of validation statuses on Meedan Check
 
-## ☁ Nx Cloud
+- OUT_OF_SCOPE_VALUE: 'value' property of validation statuses on Meedan Check
 
-### Distributed Computation Caching & Distributed Task Execution
+- PARTLY_FALSE_VALUE: 'value' property of validation statuses on Meedan Check
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
+- INCONCLUSIVE_VALUE: 'value' property of validation statuses on Meedan Check
 
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
+- PRE_CHECKED_VALUE=: 'value' property of validation statuses on Meedan Check
 
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
+  
 
-Visit [Nx Cloud](https://nx.app/) to learn more. 
+- API_URL: base url of the Dashboard API
+
+  
+
+- JWT_SECRET: secrets for Dashboard authentication through iVerify WordPress
+
+- WT_SECRET_TOKEN: secrets for Dashboard authentication through iVerify WordPress
+
+- CLIENT_ID: secrets for Dashboard authentication through iVerify WordPress
+
+- CLIENT_SECRET: secrets for Dashboard authentication through iVerify WordPress
+
+- REDIRECT_URI: secrets for Dashboard authentication through iVerify WordPressation. 
