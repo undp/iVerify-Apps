@@ -212,6 +212,7 @@ export class CheckStatsService{
         return from(taskResponses).pipe(
             concatMap(violation => this.getTicketsByTaskType(violationTaskId, violation).pipe(
                 map((result) => {
+                    console.log('Tickets by type results: ', JSON.stringify(result));
                     const count = result && result.search && result.search.number_of_results ?
                     result.search.number_of_results :
                     0;
@@ -220,7 +221,7 @@ export class CheckStatsService{
             )),
             reduce((acc, val) => ([...acc, val]), []),
             catchError(err => {
-            this.logger.error('Error getting tickets by agent: ', err.message)
+            this.logger.error('Error getting tickets by type: ', err.message)
             throw new HttpException(err.message, 500);
             })
         )
@@ -228,6 +229,7 @@ export class CheckStatsService{
 
     getTicketsByTaskType(taskId: string, value: string): Observable<any>{
         const query: string = this.helper.buildTicketsByTaskTypeQuery(taskId, value);
+        console.log('Tickets by type query: ', query);
         const headers = this.config.headers;
         return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
             map(res => res.data.data),
