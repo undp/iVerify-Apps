@@ -35,6 +35,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   totalPublished: any;
   ticketsByWeek: any;
   ticketsByFolder: any;
+  ticketsByToxicity: any;
   selectedTimeType: number = 1;
   breakpoint: number = 3;
   range = new FormGroup({
@@ -100,13 +101,14 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isData = (res && isEmpty(res)) ? false : true;
         this.dataResults = _.cloneDeep(res);
         this.statsByCategories = DashboardHelpers.SortStatistics(res);
-        this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.statsByCategories['source']);
-        this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.statsByCategories['tag']);
-        this.ticketsByType = DashboardHelpers.GetTicketsByType(this.statsByCategories['violationType']);
-        this.ticketsByWeek = DashboardHelpers.GetTicketsByFolder(this.statsByCategories['verifiedByDay']); //DashboardHelpers.GetTicketsByWeek(res, this.options);  
+        this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.statsByCategories[CountBy.source]);
+        this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.statsByCategories[CountBy.tag]);
+        this.ticketsByType = DashboardHelpers.GetTicketsByType(this.statsByCategories[CountBy.violationType]);
+        this.ticketsByWeek = DashboardHelpers.GetTicketsByFolder(this.statsByCategories[CountBy.verifiedByDay], CountBy.folder); //DashboardHelpers.GetTicketsByWeek(res, this.options);  
         this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.statsByCategories);
-        this.ticketsByFolder = DashboardHelpers.GetTicketsByFolder(this.statsByCategories['folder']);
-        this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['responseVelocity'], this.title);
+        this.ticketsByFolder = DashboardHelpers.GetTicketsByFolder(this.statsByCategories[CountBy.folder], CountBy.folder);
+        this.ticketsByToxicity = DashboardHelpers.GetTicketsByFolder(this.statsByCategories[CountBy.toxicity], CountBy.toxicity);
+        this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories[CountBy.responseVelocity], this.title);
         if (this.isDefaultData) {
           this.ticketsByCurrentStatus = DashboardHelpers.GetTicketsByCurrentStatus(this.statsByCategories);
           this.totalPublished = (this.ticketsByCurrentStatus && this.ticketsByCurrentStatus[2]) ? this.ticketsByCurrentStatus[2].value : 0;
@@ -124,18 +126,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getAllTicketsData() {
     if (this.selectedTimeType === 1) {
-      this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['responseVelocity'], this.title);
+      this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories[CountBy.responseVelocity], this.title);
       this.responseVelocity = 'RESPONSE_TIME';
     } else {
-      this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['resolutionVelocity'], this.title);
+      this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories[CountBy.resolutionVelocity], this.title);
       this.responseVelocity = 'RESOLVE_TIME';
     }
   }
 
   openDetailModal(dataType: CountBy, title: string, chartType: ChartTypeEnum) {
     const data = this.dataResults
-    console.log('statsdata...', this.dataResults)
-
     console.log('data...', data)
     this.dialog.open(ModalComponent, {
       minHeight: '90%',
