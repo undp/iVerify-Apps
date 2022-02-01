@@ -207,6 +207,7 @@ export class CheckStatsService{
             TasksLabels[this.lang].violation_threat,
             TasksLabels[this.lang].violation_violence,
             TasksLabels[this.lang].violation_disinfo,
+            TasksLabels[this.lang].violation_no_threat,
         ];
 
         return from(taskResponses).pipe(
