@@ -83,7 +83,7 @@ export class ApiPublisherHelper{
     }
 
     extractToxicFlag(wpPost: any): boolean{
-        return !!wpPost.toxic;
+        return !!wpPost.acf.toxic;
     }
 
     extractWpId(wpPost: any): number{
