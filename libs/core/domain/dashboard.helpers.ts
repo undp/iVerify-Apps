@@ -1,8 +1,8 @@
 import * as moment from 'moment';
 import { isEmpty, orderBy, uniqBy, uniq, flatten, keyBy, sortBy } from 'lodash';
-import { TicketsByType, TicketResponseTime, BubbleChartFormat, StatusFormatPieChart, StatusFormat } from '../models/dashboard';
+import { TicketsByType, TicketResponseTime, StatusFormatPieChart, StatusFormat } from '../models/dashboard';
 import { environment } from '../environments/environment';
-import { TasksLabels } from '@iverify/common/src';
+import { CountBy, TasksLabels } from '@iverify/common/src';
 
 const showItems = 5;
 let Statuses: any;
@@ -279,17 +279,17 @@ const GetTotalCount = (dataSet: any, category: string) => {
     return (sortedPublished && sortedPublished.length > 0) ? sortedPublished[0].count : 0;
 }
 
-const GetTicketsByFolder = (dataSet: any) => {
+const GetTicketsByFolder = (dataSet: any, type: string) => {
   let folders: any = [];
    if (!isEmpty(dataSet)) {
      dataSet.forEach((item: any) => {
        if (!isEmpty(item[1])) {
          item[1].forEach((cat : any) => {
            let temp = {
-              name: FormatDate(item[0], "MM/DD"),
+              name: (type === CountBy.folder) ? FormatDate(item[0], "MM/DD") : cat.category,
               value: cat.count
             }
-            const folderName = cat.category;
+            const folderName = (type === CountBy.folder) ? cat.category : FormatDate(item[0], "MM/DD");
             if (isEmpty(folders[folderName])) {
               folders[folderName] = [temp];
             } else {

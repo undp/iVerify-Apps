@@ -13,7 +13,8 @@ export enum TicketsByType {
   source = 'source',
   createdVsPublished = 'createdVsPublished', 
   resolutionVelocity = 'resolutionVelocity',
-  responseVelocity = 'resolutionVelocity' 
+  responseVelocity = 'resolutionVelocity',
+  toxicity = 'toxicity'
 }
 
 export interface Tickets extends BaseModelArray<any> {

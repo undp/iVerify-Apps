@@ -123,5 +123,6 @@
   "heat_map": "Heat map",
   "line": "Line",
   "bubble": "Bubble",
-  "BACK": "Espalda"
+  "BACK": "Espalda",
+  "TICKETS_BY_TOXICITY": "ENTRADAS POR TOXICIDAD"
 }

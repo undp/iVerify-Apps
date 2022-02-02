@@ -118,8 +118,22 @@
        {{ 'NO_RECORDS' | translate }}
       </span>
   </mat-grid-tile>
+  <mat-grid-tile style="margin: 10px 0px;">
+    <mat-grid-tile-header>
+      <p class="fontRalewayRegular text-uppercase">
+        {{ 'TICKETS_BY_TOXICITY' | translate }}
+      </p>
+      <i (click)="openDetailModal(CountBy.toxicity, 'TICKETS_BY_TOXICITY', ChartTypeEnum.VERTICAL_BAR_STACKED)" class="fa fa-expand"></i>
+    </mat-grid-tile-header>
+    <div style="margin-top: 5rem">
+    <iverify-charts *ngIf="ticketsByToxicity && ticketsByToxicity.length > 0" [chartType]="ChartTypeEnum.VERTICAL_BAR_STACKED" [data]="ticketsByToxicity"></iverify-charts>
+      <span  *ngIf="ticketsByToxicity && ticketsByToxicity.length === 0" class="fontRalewayRegular text-uppercase">
+       {{ 'NO_RECORDS' | translate }}
+      </span>
+    </div>
+  </mat-grid-tile>  
 </mat-grid-list>
-<div class="row mt-2" *ngIf="this.isData">
+<div class="row mt-4" *ngIf="this.isData">
 <mat-form-field appearance="fill" class="response-label">
       <mat-label>{{'RESPONSE_VELOCITY'|translate}}</mat-label>
         <mat-select

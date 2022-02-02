@@ -124,5 +124,6 @@
   "heat_map": "Heat map",
   "line": "Line",
   "bubble": "Bubble",
-  "BACK": "Back"
+  "BACK": "Back",
+  "TICKETS_BY_TOXICITY": "Toxicity"
 }
