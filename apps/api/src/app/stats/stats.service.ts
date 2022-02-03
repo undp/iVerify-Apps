@@ -193,7 +193,10 @@ export class StatsService{
 
     async getTicketsByViolationType(endDate: string){         
         const results = await this.checkStatsClient.getTicketsByViolationTypes().toPromise();
-        return this.formatService.formatTticketsByViolation(endDate, results);
+        this.logger.log(`Got tickets by type: ${JSON.stringify(results)}`);
+        const formatted = this.formatService.formatTticketsByViolation(endDate, results);
+        this.logger.log(`Formatted tickets by type: ${JSON.stringify(formatted)}`);
+        return formatted;
     }
 
     // async getTicketsByChannel(startDate: string, endDate: string){

@@ -1,5 +1,5 @@
 import { Article } from '@iverify/iverify-common';
-import { Body, Controller, Get, HttpException, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Logger, Post, UseGuards } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
 import { StatsFormatService } from '../stats/stats-format.service';
@@ -10,6 +10,8 @@ import { ArticlesService } from './articles.service';
 @ApiTags('articles')
 @Controller('articles')
 export class ArticlesController {
+  private readonly logger = new Logger('ArticlesController');
+
   constructor(
     private readonly articlesService: ArticlesService, 
     private statsService: StatsService, 
@@ -20,8 +22,12 @@ export class ArticlesController {
   async saveArticle(@Body() body) {
     try{
       const article = body.article;
+      this.logger.log('Received request on save article endpoint');
       await this.articlesService.saveOne(article);
-      if(article && article.dToxicScore) await this.statsService.addToxicPublishedStats(article);
+      if(article && article.dToxicScore) {
+        this.logger.log('Article has a toxic score; updating detoxify indicators...');
+        await this.statsService.addToxicPublishedStats(article);
+      }
       return 'ok';
     } catch(e){
       console.log('Error while saving article...', e.message);
