@@ -125,5 +125,9 @@
   "line": "Line",
   "bubble": "Bubble",
   "BACK": "Back",
-  "TICKETS_BY_TOXICITY": "Toxicity"
+  "TICKETS_BY_TOXICITY": "Toxicity",
+  "DAYS": "days",
+  "DAY": "day",
+  "LESS_THAN_DAY": "less than a day",
+  "TIME": "Time"
 }
