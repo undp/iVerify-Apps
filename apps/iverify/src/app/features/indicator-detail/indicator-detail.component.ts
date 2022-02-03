@@ -51,7 +51,7 @@ import { EnumValues } from 'enum-values';
       chartTypeChanges$: Observable<any> = this.form.controls['chartSelection'].valueChanges;
       chartTypeValues$: Observable<any> = this.dataType$.pipe(filter(t => !!t), map((type: CountBy) => {
         console.log('datatypeeeeee: ', type)
-        if(type === CountBy.agentAllStatuses) return this.chartTypeValues.filter(v => this.chartsForAgentsAllStatuses.includes(v.toString()));
+        if(type === CountBy.agentAllStatuses || type === CountBy.toxicity) return this.chartTypeValues.filter(v => this.chartsForAgentsAllStatuses.includes(v.toString()));
         else return this.chartTypeValues;
       }))
 
