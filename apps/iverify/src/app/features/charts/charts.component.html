@@ -96,6 +96,7 @@
   (deactivate)="onDeactivate($event)">
   <ng-template #tooltipTemplate let-model="model">
     <h1>{{model.series}} : {{model.name}}</h1>
+    <h1>{{model.r}} {{(model.r > 1) ? 'días' : 'día'}}</h1>
 </ng-template>
 </ngx-charts-bubble-chart>
 <ngx-charts-area-chart-stacked
