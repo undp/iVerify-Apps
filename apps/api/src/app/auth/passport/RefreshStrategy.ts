@@ -2,8 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AuthService } from '../auth.service';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
-import { jwtConstants } from '../constants';
-import { Injectable, UnauthorizedException, UseFilters } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { environment } from '../../../environments/environment'
 

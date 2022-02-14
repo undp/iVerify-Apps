@@ -1,14 +1,10 @@
 export const environment = {
   production: false,
   api: {
-    // base: 'http://localhost:8000',
-    // base: 'https://api.iverify.org.zm',
     base: 'https://api-iverify-honduras-js-test.rhone.un-icc.cloud',
     version: 'v3'
   },
   authentication: {
-    client_id: 'ushahidiui',
-    client_secret: '35e7f0bca957836d05ca0492211b0ac707671261',
     token_header: 'authorization'
   },
   ngHttpLoaderConfig: {
@@ -26,13 +22,6 @@ export const environment = {
     time: 'HH:mm:ss',
     dateTime: 'DD/MM/YYYY HH:mm:ss',
     dateTimeWithoutSec: 'DD/MM/YYYY HH:mm'
-  },
-  defaults: {
-    tagColor: '#4282c2',
-    tagIncidentColor: '#3b746b',
-    tagRiskColor: '#27b8ba',
-    tagIcon: 'fa fa-map-marker',
-    tagType: 'incident'
   },
   countryCodes: [
     {
