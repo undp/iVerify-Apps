@@ -1,115 +1,157 @@
-## Iverify Apps
+## **Index**
 
-  *WIP Documentation*
+* [**Overview**](#overview)
+* [**Components**](#components)
+* [**Installation**](#installation)
+	* [Pre-requisites](#prereq)
+	* [Environment variables](#envs)
+	* [Installation and development ](#inst_dev)
+* [**API reference**](#api_ref)
+* [**Release notes**](#rel_notes)
 
--  **Analytic Dashboard**
+<a name="overview"></a>
+## **Overview** 
 
-   - Analitic indicators for the iVerify instance
-   - To run locally: `npx nx serve iverify`
+iVerifyApps is a set of [Node.js](https://nodejs.org/en/) apps responsible for the integration and data analytics layers in the iVerify toolset. 
 
-- **Dashboard API**
+**Integration features:**
+	
+* [Meedan Check](https://meedan.com/check) - WordPress:
+	* Publication on WordPress of [Meedan Check](https://meedan.com/check) reports
+	* Creation of Meedan Check items from WordPress (story suggestion)
 
-  - Backend of the analytic dashboard
-  - To run locally: `npx nx serve api`
+* [CrowdTangle](https://www.crowdtangle.com/) - Detoxify/[Perspective](https://www.perspectiveapi.com/) - [Meedan Check](https://meedan.com/check): 
+	* Based on [CrowdTangle](https://www.crowdtangle.com/) saved searches, the Triage app scans social media content, analyzes it for toxicity using either Detotify or Perspective and finally creates items on [Meedan Check](https://meedan.com/check) if toxicity levels are above the user defined treshold
 
-- **Publisher**
 
-  - Publishes Meedan Check items on iVerify WordPress
-  - To run locally: `npx nx serve publisher`
+**Analytics features:**
 
-- **Triage**
+* The Dashboard front-end offers data visualizations of several indicators giving a pulse of the fact-checking and publication activity	
 
-  - Fetches social media content from CrowdTangle and uploads toxic content on Meeedan Check
-  - To run locally: `npx nx serve triage`
 
-  
+<a name="components"></a>
+## **Components** 
 
-# Configurations
+ 
+ There are 4 different apps, conveniently held in a single [Nrwl/Nx](https://nx.dev/getting-started/intro) monorepo:
+ 
+*  **api**: the backend for the Dashboard, build with [Nest.js](https://nestjs.com/)
+*  **iverify**: the frontend for the Dashboard, built with [Angular](https://angular.io/)
+*  **publisher**: a backend app built with [Nest.js](https://nestjs.com/) responsible for publishing data externally (primarily on WordPress)
+*  **triage**: a backend app built with [Nest.js](https://nestjs.com/) responsible for the triage of toxic social media content 
 
-  
+Additionally, a **MySql database** is required for persistence.
 
-- CHECK_API_URL: url of the Meedan Check instance
+GENERAL DIAGRAM HERE
 
-- CHECK_API_TOKEN: Meedan Check authentication token
+<a name="installation"></a>
+## **Installation** 
 
-- CHECK_API_TEAM: Meedan Check team's slug
+<a name="prereq"></a>
+**Pre-requisites** 
 
-- CHECK_FOLDER_ID: ID of the Meedan Check folder where items from CrowdTangle are loaded
+* A working instance of [Meedan Check](https://meedan.com/check) 
+* On Meedan Check, there must be [webhooks](https://github.com/meedan/check/wiki/Create-Bots-on-Check) configured to hit these endpoints:
+	*  Event `report_published` sends data to the endpoint:  `PUBLISHER_URL/publish/publish-webhook`
+	
+	*  Event `update_annotation_verification_status` sends data to the endpoint:  `API_URL/stats/item-status-changed`
 
-- CHECK_TIPLINE_FOLDER_ID: ID of the Meedan Check folder for items from WordPress tipline
+	Both endpoints receive a minimum payload containing the dbid of the item that triggered the event. iVerifyApps will subsequently fetch the additional data it needs from Meedan Check.
+* A WordPress website with [Advanced Custom Fields](https://www.advancedcustomfields.com/) plugin enabled (see [iVerifyWebSite](https://github.com/undp/iVerify-Website) for detailed instructions on how to set up the WordPress site)
+* A [CrowdTangle](https://www.crowdtangle.com/) account with Saved Searches and an API token
 
-  
+<a name="envs"></a>
+**Environment variables**
 
-- WP_SECRET: secret token for the authentication of iVerify WordPress on Triage
+The apps need a number of environment variables that can be stored in a single `.env` file at the root of the project. This is the list of the variables needed:
 
-- WP_URL: url of iVerify WordPress
+* `CHECK_API_URL`: URL of the Meedan Check instance
 
-- WP_USERNAME: login for iVerify WordPress REST API
+- `CHECK_API_TOKEN`: Meedan Check authentication token
 
-- WP_PASSWORD: login for iVerify WordPress REST API
+- `CHECK_API_TEAM`: Meedan Check team's slug
 
-- WP_PUBLISHED_FOLDER: ID of the Meedan Check folder where published items are moved to
+- `CHECK_FOLDER_ID`: ID of the Meedan Check folder where items from CrowdTangle are loaded
 
-  
+- `CHECK_TIPLINE_FOLDER_ID`: ID of the Meedan Check folder for items from WordPress tipline
 
-- CT_API_URL: CrowdTangle API URL
+- `WP_SECRET`: secret token for the authentication of iVerify WordPress on Triage
 
-- CT_API_KEY: CrowdTangle authentication token
+- `WP_URL`: url of iVerify WordPress
 
-  
+- `WP_USERNAME`: login for iVerify WordPress REST API
 
-- ML_SERVICE_API_BASE: base URL of the Detoxify server
+- `WP_PASSWORD`: login for iVerify WordPress REST API
 
-- DETOXIFY_TRESHOLD: toxicity cutoff
+- `WP_PUBLISHED_FOLDER`: ID of the Meedan Check folder where published items are moved to
 
-  
+- `CT_API_URL`: CrowdTangle API URL
 
-- DB_USER: Database credentials
+- `CT_API_KEY`: CrowdTangle authentication token
 
-- DB_PORT: Database credentials
+- `ML_SERVICE_API_BASE`: base URL of the Detoxify server
 
-- DB_HOST: Database credentials
+- `DETOXIFY_TRESHOLD`: toxicity cutoff
 
-- DB_NAME: Database credentials
+- `DB_USER`: Database credentials
 
-- DB_PASSWORD: Database credentials
+- `DB_PORT`: Database credentials
 
-  
+- `DB_HOST`: Database credentials
 
-- language: language ('en' or 'es')
+- `DB_NAME`: Database credentials
 
-- VIOLATION_TASK_ID: ID for task 'Violation Type' on Meedan Check
+- `DB_PASSWORD`: Database credentials
 
-- UNSTARTED_VALUE: 'value' property of validation statuses on Meedan Check
+- `language`: language ('en' or 'es')
 
-- IN_PROGRESS_VALUE: 'value' property of validation statuses on Meedan Check
+- `VIOLATION_TASK_ID`: ID for task 'Violation Type' on Meedan Check
 
-- FALSE_VALUE: 'value' property of validation statuses on Meedan Check
+- `UNSTARTED_VALUE`: 'value' property of validation statuses on Meedan Check
 
-- TRUE_VALUE: 'value' property of validation statuses on Meedan Check
+- `IN_PROGRESS_VALUE`: 'value' property of validation statuses on Meedan Check
 
-- MISLEADING_VALUE: 'value' property of validation statuses on Meedan Check
+- `FALSE_VALUE`: 'value' property of validation statuses on Meedan Check
 
-- OUT_OF_SCOPE_VALUE: 'value' property of validation statuses on Meedan Check
+- `TRUE_VALUE`: 'value' property of validation statuses on Meedan Check
 
-- PARTLY_FALSE_VALUE: 'value' property of validation statuses on Meedan Check
+- `MISLEADING_VALUE`: 'value' property of validation statuses on Meedan Check
 
-- INCONCLUSIVE_VALUE: 'value' property of validation statuses on Meedan Check
+- `OUT_OF_SCOPE_VALUE`: 'value' property of validation statuses on Meedan Check
 
-- PRE_CHECKED_VALUE=: 'value' property of validation statuses on Meedan Check
+- `PARTLY_FALSE_VALUE`: 'value' property of validation statuses on Meedan Check
 
-  
+- `INCONCLUSIVE_VALUE`: 'value' property of validation statuses on Meedan Check
 
-- API_URL: base url of the Dashboard API
+- `PRE_CHECKED_VALUE`: 'value' property of validation statuses on Meedan Check
 
-  
+- `API_URL`: base url of the Dashboard API
 
-- JWT_SECRET: secrets for Dashboard authentication through iVerify WordPress
+- `JWT_SECRET`: secrets for Dashboard authentication through iVerify WordPress
 
-- WT_SECRET_TOKEN: secrets for Dashboard authentication through iVerify WordPress
+- `WT_SECRET_TOKEN`: secrets for Dashboard authentication through iVerify WordPress
 
-- CLIENT_ID: secrets for Dashboard authentication through iVerify WordPress
+- `CLIENT_ID`: secrets for Dashboard authentication through iVerify WordPress
 
-- CLIENT_SECRET: secrets for Dashboard authentication through iVerify WordPress
+- `CLIENT_SECRET`: secrets for Dashboard authentication through iVerify WordPress
 
-- REDIRECT_URI: secrets for Dashboard authentication through iVerify WordPressation. 
+- `REDIRECT_URI`: secrets for Dashboard authentication through iVerify WordPressation. 
+
+
+
+<a name="inst_dev"></a>
+**Installation and development** 
+
+* To install dependencies: `npm i`
+* To run **api** locally: `npx nx serve api` 
+* To run **iverify** locally: `npx nx serve iverify`
+* To run **publisher** locally: `npx nx serve publisher`
+* To run **triage** locally: `npx nx serve triage`
+
+<a name="api_ref"></a>
+## **Api reference** 
+
+All backend apps have Swagger. To access the API docs go to APP_URL/api.
+
+<a name="rel_notes"></a>
+## **Release notes** 
