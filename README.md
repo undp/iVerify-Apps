@@ -14,6 +14,14 @@
 
 iVerifyApps is a set of [Node.js](https://nodejs.org/en/) apps responsible for the integration and data analytics layers in the iVerify toolset. 
 
+![Image](./docs/publication.drawio.svg)
+
+![Image](./docs/stats.drawio.svg)
+
+![Image](./docs/submit-a-story.drawio.svg)
+
+![Image](./docs/triage.drawio.svg)
+
 **Integration features:**
 	
 * [Meedan Check](https://meedan.com/check) - WordPress:
