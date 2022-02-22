@@ -66,7 +66,7 @@ export class WpPublisherService{
         map(([report, meedanReport, author, media, tags, categories, visualCard]) => this.helper.buildPostFromReport(report, meedanReport, author, media, tags, categories, visualCard)),
         filter(post => !!post.title.length),
         take(1),
-        tap(() => console.log('emitting to publish...')),
+        tap(postDto => console.log('sending to WP publication: ', JSON.stringify(postDto))),
         withLatestFrom(this.wpPostId$),
         map(([postDto, wpPostId]) => ({postDto, wpPostId})),
         switchMap(data => this.wpClient.publishPost(data.postDto, data.wpPostId)),

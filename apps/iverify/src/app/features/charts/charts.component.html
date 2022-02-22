@@ -94,6 +94,13 @@
   (select)="onSelect($event)"
   (activate)="onActivate($event)"
   (deactivate)="onDeactivate($event)">
+  <ng-template #tooltipTemplate let-model="model">
+    <h1>{{model.series}} : {{model.name}}</h1>
+    <h1 *ngIf="(model.r === 0); else days">{{'TIME' | translate}} : {{'LESS_THAN_DAY'| translate}}</h1>
+    <ng-template #days>
+      {{'TIME' | translate}} : {{model.r}} {{((model.r > 1) ? 'DAYS' : 'DAY') | translate}}
+    </ng-template>          
+  </ng-template>
 </ngx-charts-bubble-chart>
 <ngx-charts-area-chart-stacked
   *ngIf="chartType === ChartTypeEnum.AREA_STACKED"
@@ -118,7 +125,7 @@
 <ngx-charts-bar-vertical-stacked
   *ngIf="chartType === ChartTypeEnum.VERTICAL_BAR_STACKED"
   [view]="[300, 200]"
-  [scheme]="colorScheme[2]"
+  [scheme]="colorScheme[1]"
   [legend]="false"
   [showXAxisLabel]="false"
   [showYAxisLabel]="true"
@@ -127,7 +134,7 @@
   [yAxis]="true"
   [curve]="curve"
   [xAxisLabel]=""
-  [yAxisLabel]="'Estados'"
+  [yAxisLabel]=""
   [timeline]="true"
   [results]="data"
   (select)="onSelect($event)"
@@ -135,4 +142,5 @@
   (deactivate)="onDeactivate($event)"
   >
 </ngx-charts-bar-vertical-stacked>
+
 

@@ -124,5 +124,10 @@
   "heat_map": "Heat map",
   "line": "Line",
   "bubble": "Bubble",
-  "BACK": "Back"
+  "BACK": "Back",
+  "TICKETS_BY_TOXICITY": "Toxicity",
+  "DAYS": "days",
+  "DAY": "day",
+  "LESS_THAN_DAY": "less than a day",
+  "TIME": "Time"
 }

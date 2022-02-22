@@ -10,7 +10,7 @@ import { DataRange } from '@iverify/core/models/dashboard';
   templateUrl: 'charts.component.html',
   styleUrls: ['charts.component.scss']
 })
-export class ChartComponent implements  OnDestroy, OnChanges {
+export class ChartComponent implements  OnDestroy, OnChanges  {
 
   subs: Subscription;
 
@@ -47,13 +47,10 @@ export class ChartComponent implements  OnDestroy, OnChanges {
     }
   ];
 
-
   constructor(
     protected translate: TranslateService
   ) {
-    this.subs = new Subscription();
-    
-      
+    this.subs = new Subscription();  
   }
 
   ngOnChanges() {
@@ -94,7 +91,6 @@ export class ChartComponent implements  OnDestroy, OnChanges {
     }
     return tickVal;
   }
-
   
   ngOnDestroy() {
 

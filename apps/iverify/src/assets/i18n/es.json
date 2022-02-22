@@ -123,5 +123,10 @@
   "heat_map": "Heat map",
   "line": "Line",
   "bubble": "Bubble",
-  "BACK": "Espalda"
+  "BACK": "Espalda",
+  "TICKETS_BY_TOXICITY": "ENTRADAS POR TOXICIDAD",
+  "DAYS": "días",
+  "DAY": "día",
+  "LESS_THAN_DAY": "menos de un día",
+  "TIME": "Tiempo"
 }
