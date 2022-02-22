@@ -2,6 +2,7 @@
 
 * [**Overview**](#overview)
 * [**Components**](#components)
+* [**Functionalities**](#funcs)
 * [**Installation**](#installation)
 	* [Pre-requisites](#prereq)
 	* [Environment variables](#envs)
@@ -14,13 +15,7 @@
 
 iVerifyApps is a set of [Node.js](https://nodejs.org/en/) apps responsible for the integration and data analytics layers in the iVerify toolset. 
 
-![Image](./docs/publication.drawio.svg)
 
-![Image](./docs/stats.drawio.svg)
-
-![Image](./docs/submit-a-story.drawio.svg)
-
-![Image](./docs/triage.drawio.svg)
 
 **Integration features:**
 	
@@ -50,7 +45,24 @@ iVerifyApps is a set of [Node.js](https://nodejs.org/en/) apps responsible for t
 
 Additionally, a **MySql database** is required for persistence.
 
-GENERAL DIAGRAM HERE
+<a name="funcs"></a>
+## **Main functionalities** 
+
+**Publication on WordPress**
+
+![Image](./docs/publication.drawio.svg)
+
+**Fact-checking items from WordPress**
+
+![Image](./docs/stats.drawio.svg)
+
+**Triage of toxic content**
+
+![Image](./docs/submit-a-story.drawio.svg)
+
+**Statistics**
+
+![Image](./docs/triage.drawio.svg)
 
 <a name="installation"></a>
 ## **Installation** 
