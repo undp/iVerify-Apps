@@ -44,6 +44,6 @@ export class AppModule {
   constructor(
     library: FaIconLibrary,
   ) {
-    library.addIconPacks(fas);
+    // library.addIconPacks(fas);
   }
 }
