@@ -42,7 +42,6 @@ The system integrates with the fact-checking portal [Meedan Check](https://meeda
 	* Publication on WordPress of Meedan Check reports
 
 		When a fact-checking report is published in Meedan Check, a webhook triggers the publication of a corresponding article on a WordPress site.
-
 		<br></br>
 	
 
