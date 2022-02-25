@@ -1,4 +1,4 @@
-<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="521px" height="201px" viewBox="-0.5 -0.5 521 201" content="&lt;mxfile&gt;&lt;diagram id=&quot;Vdu646TFZDqVMvm0T_QA&quot; name=&quot;Page-1&quot;&gt;5Zbfb5swEMf/Gh47ASlJ9phf3Sa1UqU87PnAF3BrOGRMSPrXz4QDQkmqSNPWSXuJ8Jfz2fe5rx2cySo9fNOQJ08kUDm+Kw7OZO34vhd8tb+1cGyEeSvEWgqO6YWtfEMWXVZLKbAYBBoiZWQ+FCPKMozMQAOtqRqG7UgNV80hxpGwjUCN1Z9SmISr8Ge9/h1lnLQre1OuL4U2mCspEhBUnUmTjTNZaSLTPKWHFaqaXculmfdw5W23MY2ZuWWC30zYgyq5Nt6XObbForC185C0SSimDNSmV5eaykxgndG1oz7mkSi3omfFFzTmyI2E0pCVEpMqflsY0GZRN8YKkYKikFErP0jVhjVbq/dztVqWCip1xFEBGwR0jBw17UhbhyKlaPTRhmhUYOR+mB3YK3EX1+O0D0z0Mt3JiK5tbWaVFwodf3XiDKYsaqsmkNm6fLfCMCF6dfwppJbeMguLvKv9XVseIbQHa4ASlIyzmqJFgtoKe9RGWusu+EUqhWi6hoV8g/CUr+5bTjIzp2KDpROsuzXrBHhwLpwrnty7+bwT/mXGnOjO/eJ6fCj4Erjj5Dd3gZM/1/s+C6HdrrCNft+mbg83de7+vzwXs790LoIR3TUUSUighZUXzz9GsIcoq0Qa3OZwKqWyfzFDbFd9OyJy1Z/e1B2Yc3bP46q/773W9snZXd/O+x080xGeJ0QB9cWxSjB6/XQ6wWfSmX1knn/MNvP5nwNjh/13QnPF9R9bk80v&lt;/diagram&gt;&lt;/mxfile&gt;">
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="521px" height="201px" viewBox="-0.5 -0.5 521 201" content="&lt;mxfile&gt;&lt;diagram id=&quot;Vdu646TFZDqVMvm0T_QA&quot; name=&quot;Page-1&quot;&gt;5Vbfb5tADP5rkLaHTgSapHtM0h+b1EqV+rBnw7lw7YHR3dEk/etnggmhtFWkacqkvaC7D9vYnz/fEcSrYnNjocrvSKEJolBtgvgyiKL4fMbPBti2wMX0ewtkVqsWmvTAg35FAUNBa63QDQw9kfG6GoIplSWmfoCBtbQemj2SGX61ggxHwEMKZoz+0srnUkU07/EfqLO8+/JkJvUV0BlLJS4HResDKL4K4pUl8u2q2KzQNNx1vLR+1x+83SdmsfTHOEStwwuYWmqTvPy2KxYV1y5bsj6njEowVz26tFSXCpuIIe96m1uiisEJg0/o/VYaCbUnhnJfGHnrPFi/aBrDQGrAOZ128LU2ndm4OKnXUW1TSXcqegCboViJ2ppCDtyEkBukAr3dsoFFA16/DJsMopVsb9fTyQth9H124xG73NqSkSdKgmi14xl87Rqp5lByelG4xiQneg6iGRTM3rJMXLWv/U1bbiHhwRpQCUZnZcMic4SWgRe0XrN0F/Ki0Eq1XUOnXyHZxWv6VpEu/a7Y6TKYXr7LdycXjomb90ZN4g3UPOBYvM7Cb+FEhkIOgTOJdHQXJPh9k/eBCT0+Ou782zbtcziqc+f/w1zMTzUX0xG7l+DyhMAqhhf3P1n9hpNcJpZXWbP6klJRaYNOhsZ9HTVkSPc61x4fKtjVv+ZraEjth5yNtP2hhiezcCDg+bns1/2dMOkO+vzgPuj8/oTC2YjCO0QFzeGyyjF9Pjk701OyM/9MYCNpKfDQWGtX8/H5ylqn8t+T18XF3yOQt/0/R3tc9j9u8dVv&lt;/diagram&gt;&lt;/mxfile&gt;">
     <defs/>
     <g>
         <path d="M 126.37 30 L 393.63 30" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
@@ -31,12 +31,14 @@
                         <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
                             <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: all; white-space: normal; overflow-wrap: normal;">
                                 Dashboard API
+                                <br/>
+                                (compiles stats)
                             </div>
                         </div>
                     </div>
                 </foreignObject>
                 <text x="60" y="34" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
-                    Dashboard API
+                    Dashboard API...
                 </text>
             </switch>
         </g>
@@ -65,12 +67,14 @@
                         <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
                             <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: all; white-space: normal; overflow-wrap: normal;">
                                 Dashboard
+                                <br/>
+                                (data visualization)
                             </div>
                         </div>
                     </div>
                 </foreignObject>
                 <text x="60" y="174" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
-                    Dashboard
+                    Dashboard...
                 </text>
             </switch>
         </g>
