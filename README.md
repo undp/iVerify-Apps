@@ -39,6 +39,8 @@ Additionally, a **MySql database** is required for persistence.
 The system integrates with the fact-checking portal [Meedan Check](https://meedan.com/check) and provides extra channels both for the publication of fact-checking reports (on WordPress) and the tipline for incoming stories by allowing the public to submit a story trhough the WordPress website. Additionally, the system provides a triaging workflow of toxic social media content by integrating [CrowdTangle](https://www.crowdtangle.com/), Detoxify/[Perspective](https://www.perspectiveapi.com/) and Meedan Check.
 	
 * **Meedan Check - WordPress:**
+	<br></br>
+
 	* Publication on WordPress of Meedan Check reports:
 		<br></br>
 
@@ -65,6 +67,8 @@ The system integrates with the fact-checking portal [Meedan Check](https://meeda
 
 
 * **CrowdTangle - Detoxify/Perspective - Meedan Check:**
+	<br></br>
+
 
 	* Based on [CrowdTangle](https://www.crowdtangle.com/) saved searches, the Triage app scans social media content, analyzes it for toxicity using either Detotify or Perspective and finally creates items on [Meedan Check](https://meedan.com/check) if toxicity levels are above the user defined treshold.
 	<br></br>
