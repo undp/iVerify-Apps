@@ -14,22 +14,7 @@
 ## **Overview** 
 
 iVerifyApps is a set of [Node.js](https://nodejs.org/en/) apps responsible for the integration and data analytics layers in the iVerify toolset. 
-
-
-
-**Integration features:**
-	
-* [Meedan Check](https://meedan.com/check) - WordPress:
-	* Publication on WordPress of [Meedan Check](https://meedan.com/check) reports
-	* Creation of Meedan Check items from WordPress (story suggestion)
-
-* [CrowdTangle](https://www.crowdtangle.com/) - Detoxify/[Perspective](https://www.perspectiveapi.com/) - [Meedan Check](https://meedan.com/check): 
-	* Based on [CrowdTangle](https://www.crowdtangle.com/) saved searches, the Triage app scans social media content, analyzes it for toxicity using either Detotify or Perspective and finally creates items on [Meedan Check](https://meedan.com/check) if toxicity levels are above the user defined treshold
-
-
-**Analytics features:**
-
-* The Dashboard front-end offers data visualizations of several indicators giving a pulse of the fact-checking and publication activity	
+	<br></br>
 
 
 <a name="components"></a>
@@ -44,25 +29,61 @@ iVerifyApps is a set of [Node.js](https://nodejs.org/en/) apps responsible for t
 *  **triage**: a backend app built with [Nest.js](https://nestjs.com/) responsible for the triage of toxic social media content 
 
 Additionally, a **MySql database** is required for persistence.
+	<br></br>
+
 
 <a name="funcs"></a>
 ## **Main functionalities** 
 
-**Publication on WordPress**
 
-![Image](./docs/publication.drawio.svg)
+**Integration features:**
 
-**Fact-checking items from WordPress**
+The system integrates with the fact-checking portal [Meedan Check](https://meedan.com/check) and provides extra channels both for the publication of fact-checking reports (on WordPress) and the tipline for incoming stories by allowing the public to submit a story trhough the WordPress website. Additionally, the system provides a triaging workflow of toxic social media content by integrating CrowdTangle](https://www.crowdtangle.com/), Detoxify/[Perspective](https://www.perspectiveapi.com/) and Meedan Check.
+	
+* [Meedan Check](https://meedan.com/check) - WordPress:
+	* Publication on WordPress of [Meedan Check](https://meedan.com/check) reports
+	<br></br>
+
+		When a fact-checking report is published in Meedan Check, a webhook triggers the publication of a corresponding article on a WordPress site.
+
+	<br></br>
+	
+
+	![Image](./docs/publication.drawio.svg)
+
+	<br></br>
+
+	* Creation of Meedan Check items from WordPress (story suggestion)
+	<br></br>
+	The WordPress site can also serve as a tipline source for Meedan Check. The public can submit a url for a story to fact-check and a corresponding fact-checking item will be created on Meedan Check. 
+	<br></br>
+
+
+	![Image](./docs/submit-a-story.drawio.svg)
+
+	<br></br>
+
+
+* [CrowdTangle](https://www.crowdtangle.com/) - Detoxify/[Perspective](https://www.perspectiveapi.com/) - [Meedan Check](https://meedan.com/check): 
+	* Based on [CrowdTangle](https://www.crowdtangle.com/) saved searches, the Triage app scans social media content, analyzes it for toxicity using either Detotify or Perspective and finally creates items on [Meedan Check](https://meedan.com/check) if toxicity levels are above the user defined treshold.
+	<br></br>
+
+
+	![Image](./docs/triage.drawio.svg)
+
+
+
+**Data Analytics:**
+
+The Dashboard front-end offers data visualizations of several indicators giving a pulse of the fact-checking and publication activity. This is achieved by a combination of scheduled jobs that interrogate the Meedan Check DB and webhooks that receive data from Check when something happens (e.g. when an item has changed state Check will notify the **api** server so that it can calculate ticket response and resolution velocity).
+	<br></br>
+
 
 ![Image](./docs/stats.drawio.svg)
 
-**Triage of toxic content**
+<br></br>
 
-![Image](./docs/submit-a-story.drawio.svg)
 
-**Statistics**
-
-![Image](./docs/triage.drawio.svg)
 
 <a name="installation"></a>
 ## **Installation** 
