@@ -70,7 +70,7 @@ The system integrates with the fact-checking portal [Meedan Check](https://meeda
 	<br></br>
 
 
-	* Based on [CrowdTangle](https://www.crowdtangle.com/) saved searches, the Triage app scans social media content, analyzes it for toxicity using either Detotify or Perspective and finally creates items on [Meedan Check](https://meedan.com/check) if toxicity levels are above the user defined treshold.
+	* Based on CrowdTangle saved searches, the Triage app scans social media content, analyzes it for toxicity using either Detotify or Perspective and finally creates items on Meedan Check if toxicity levels are above the user defined treshold.
 	<br></br>
 
 
