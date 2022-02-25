@@ -43,15 +43,17 @@ The system integrates with the fact-checking portal [Meedan Check](https://meeda
 
 		When a fact-checking report is published in Meedan Check, a webhook triggers the publication of a corresponding article on a WordPress site.
 
+		<br></br>
 	
 
-	![Image](./docs/publication.drawio.svg)
+		![Image](./docs/publication.drawio.svg)
 
 	<br></br>
 
 	* Creation of Meedan Check items from WordPress (story suggestion)
 
 		The WordPress site can also serve as a tipline source for Meedan Check. The public can submit a url for a story to fact-check and a corresponding fact-checking item will be created on Meedan Check. 
+	<br></br>
 
 
 		![Image](./docs/submit-a-story.drawio.svg)
@@ -62,15 +64,17 @@ The system integrates with the fact-checking portal [Meedan Check](https://meeda
 * CrowdTangle - Detoxify/Perspective - Meedan Check: 
 
 	* Based on [CrowdTangle](https://www.crowdtangle.com/) saved searches, the Triage app scans social media content, analyzes it for toxicity using either Detotify or Perspective and finally creates items on [Meedan Check](https://meedan.com/check) if toxicity levels are above the user defined treshold.
+	<br></br>
 
 
-	![Image](./docs/triage.drawio.svg)
+		![Image](./docs/triage.drawio.svg)
 
 
 
 **Data Analytics:**
 
 The Dashboard front-end offers data visualizations of several indicators giving a pulse of the fact-checking and publication activity. This is achieved by a combination of scheduled jobs that interrogate the Meedan Check DB and webhooks that receive data from Check when something happens (e.g. when an item has changed state Check will notify the **api** server so that it can calculate ticket response and resolution velocity).
+<br></br>
 
 
 ![Image](./docs/stats.drawio.svg)
