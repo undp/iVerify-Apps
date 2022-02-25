@@ -36,7 +36,7 @@ Additionally, a **MySql database** is required for persistence.
 
 **Integration features:**
 
-The system integrates with the fact-checking portal [Meedan Check](https://meedan.com/check) and provides extra channels both for the publication of fact-checking reports (on WordPress) and the tipline for incoming stories by allowing the public to submit a story trhough the WordPress website. Additionally, the system provides a triaging workflow of toxic social media content by integrating [CrowdTangle](https://www.crowdtangle.com/), Detoxify/[Perspective](https://www.perspectiveapi.com/) and Meedan Check.
+The system integrates with the fact-checking portal [Meedan Check](https://meedan.com/check) and provides extra channels for both the publication of fact-checking reports and the tipline for incoming stories. Additionally, the system provides a triaging workflow of toxic social media content by integrating [CrowdTangle](https://www.crowdtangle.com/), Detoxify/[Perspective](https://www.perspectiveapi.com/) and Meedan Check.
 	
 * **Meedan Check - WordPress:**
 	<br></br>
