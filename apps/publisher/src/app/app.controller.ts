@@ -2,10 +2,26 @@ import { MeedanCheckClientService } from '@iverify/meedan-check-client';
 import { Body, Controller, Get, HttpException, HttpService, Logger, Post } from '@nestjs/common';
 import { WpClientService } from 'libs/wp-client/src/lib/wp-client.service';
 import { catchError, tap } from 'rxjs/operators';
-
+import {
+  ApiBody,
+  ApiTags,
+  ApiProperty
+} from '@nestjs/swagger';
 import { AppService } from './app.service';
 
 
+
+class PublishReportDto {
+  @ApiProperty()
+  event: string;
+
+  @ApiProperty()
+  data: {
+    project_media: {
+      dbid: number | string;
+    }
+  };
+}
 
 @Controller()
 export class AppController {
@@ -16,6 +32,8 @@ export class AppController {
     ) {}
 
   @Post('publish-webhook')
+  @ApiTags('Publish Report')
+  @ApiBody({ type: PublishReportDto })
   async punlishReportWebhook(@Body() body){
     try{
       const event = body.event;
