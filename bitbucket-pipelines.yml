@@ -35,6 +35,31 @@ definitions:
       - docker push $IMAGE_NAME_TAG-triage
       - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .
       - docker push $IMAGE_NAME_TAG-publisher
+  iverifybuildFrontDev: &iverifybuildFrontDev
+    name: Build Iverify
+    image:
+        name: node:14.17.1 
+    script:
+      - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
+      - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_BUILD_NUMBER
+      - npm install npm@latest -g
+      - apt-get update 
+      - apt-get install -y libgtk2.0-0   libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb
+      - cd apps/iverify
+      - npm install
+      - npm install font-awesome
+      - export PATH=node_modules/.bin:$PATH
+      - npm install -g @angular/cli
+      - npm install -g nx
+      - ng build iverify
+      - cd ../../
+      - npm install
+      - nx build triage 
+      - nx build publisher
+    artifacts: 
+        - dist/**
+
+
   iverifybuild: &iverifybuild
     name: Build Iverify
     image:
@@ -71,16 +96,27 @@ definitions:
       - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .
 
 pipelines:
-  default:
-    - step: 
-        size: 2x
-        <<: *iverifybuild
-    - step: 
-        services:
-          - docker
-        <<: *build
+  branches:
+    master:
+      - step: 
+          size: 2x
+          <<: *iverifybuildFrontDev
+      - step: 
+          services:
+            - docker
+          <<: *build
   tags:
-    '*':
+    'dev*':
+      - step: 
+          *checkRepo
+      - step: 
+          size: 2x
+          <<: *iverifybuildFrontDev
+      - step: 
+          services:
+            - docker
+          <<: *buildPushTag
+    'v*':
       - step: 
           *checkRepo
       - step: 
