@@ -13,7 +13,7 @@
 <a name="overview"></a>
 ## **Overview** 
 
-iVerifyApps is a set of [Node.js](https://nodejs.org/en/) apps responsible for the integration and data analytics layers in the iVerify toolset. 
+iVerifyApps is a set of [Node.js](https://nodejs.org/en/) apps responsible for the integration and data analytics layers in the iVerify toolset to be used in addressing information pollution (misinformation) and hate speech nationally.
 
 
 <a name="components"></a>
