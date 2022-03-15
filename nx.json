@@ -1,0 +1,72 @@
+{
+  "implicitDependencies": {
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    ".eslintrc.json": "*"
+  },
+  "affected": {
+    "defaultBase": "master"
+  },
+  "npmScope": "iverify",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      }
+    }
+  },
+  "projects": {
+    "iverify": {
+      "tags": []
+    },
+    "iverify-e2e": {
+      "tags": [],
+      "implicitDependencies": ["iverify"]
+    },
+    "api": {
+      "tags": []
+    },
+    "api-interfaces": {
+      "tags": []
+    },
+    "publisher": {
+      "tags": []
+    },
+    "meedan-check-client": {
+      "tags": []
+    },
+    "wp-client": {
+      "tags": []
+    },
+    "triage": {
+      "tags": []
+    },
+    "crowdtangle-client": {
+      "tags": []
+    },
+    "ml-service-client": {
+      "tags": []
+    },
+    "iverify-common": {
+      "tags": []
+    },
+    "api-client": {
+      "tags": []
+    },
+    "email": {
+      "tags": []
+    },
+    "perspective-client": {
+      "tags": []
+    },
+    "shared": {
+      "tags": []
+    },
+    "common": {
+      "tags": []
+    }
+  }
+}

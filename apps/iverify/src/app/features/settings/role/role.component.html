@@ -1,0 +1,89 @@
+<div class="flex-container">
+  <form class="form-signin" [formGroup]="roleForm">
+    <p>
+      <mat-form-field>
+        <mat-label>{{ 'ROLE_NAME' | translate}}</mat-label>
+        <input
+          matInput
+          type="text"
+          id="inputRolename"
+          [placeholder]="'ROLE_NAME' | translate"
+          required
+          autofocus
+          formControlName="name"
+        />
+        <mat-hint>Enter Rolename</mat-hint>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <mat-label>{{ 'DESCRIPTION' | translate }}</mat-label>
+        <input
+          matInput
+          type="text"
+          id="inputDESCRIPTION"
+          [placeholder]="'DESCRIPTION' | translate"
+          required
+          autofocus
+          formControlName="description"
+        />
+        <mat-hint>Enter description</mat-hint>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <mat-label>{{ 'SECTION' | translate }}</mat-label>
+        <mat-select [(ngModel)]="selectedSects" multiple formControlName="resource" style="width: 160px; margin-left: 20px;">
+          <mat-option *ngFor="let sect of sectionList" [value]="sect">{{sect|titlecase}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field class="example-chip-list" appearance="fill">
+        <mat-label>{{'PRIVILEDGES'| translate}}</mat-label>
+          <mat-chip-list #chipList aria-label="Priviledges selection">
+            <mat-chip
+              *ngFor="let item of defaultPriviledges"
+              [selectable]="selectable"
+              [removable]="removable"
+              (removed)="remove(item)">
+              {{item}}
+              <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input
+              placeholder="New Priviledge..."
+              #priviledgeInput
+              [formControl]="priviledgeCtrl"
+              [matAutocomplete]="auto"
+              [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (matChipInputTokenEnd)="add($event)"
+            >
+          </mat-chip-list>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-option *ngFor="let item of filteredPriviledges | async" [value]="item">
+              {{item}}
+            </mat-option>
+          </mat-autocomplete>
+      </mat-form-field>
+    </p>
+    <div class="d-flex justify-content-around">
+      <button
+        mat-raised-button 
+        color="primary"
+        (click)="dialogRef.close(false);"
+        class="mr-2"
+      >
+        {{ 'CANCEL' | translate}}
+      </button>
+      <button
+        mat-raised-button 
+        color="primary"
+        (click)="onRoleClick()"
+        [disabled]="(roleForm.invalid || defaultPriviledges.length === 0)"        
+      >
+        {{ 'SUBMIT' | translate}}
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,62 @@
+.published {
+    margin-top: 1rem;
+    right: 0;
+    color: #7E9E0A;
+    width: 65px;
+    @media (min-width:768px) {
+      margin-top: -4px;
+      width: 5em;
+      right: 11px;
+      position: absolute;
+      text-align: center;
+    }
+}
+
+.custom-report-info {
+  font-size: 1em;
+  margin: 2em;
+}
+
+.custom-select-box {
+  position: relative;
+  left: 0;
+  top: 2rem;
+}
+
+.response-label {
+  @media only screen and (min-width: 400px) {
+    width: 200px !important;
+  }
+}
+
+.bubble-chart {
+  margin: auto;
+  @media only screen and (min-width: 767px) {
+    width: 50%; 
+    margin: auto;
+  }
+}
+
+.dashboard-title {
+  color: #ced4da;
+  height: 20px;
+  word-spacing: 40px;
+  font-size: 35px;
+  -ms-transform: rotate(270deg); /* IE 9 */
+  transform: rotate(270deg);
+  vertical-align: middle;
+}
+
+span {
+  margin: 25px;
+  font-size: 12px;
+}
+.mat-grid-tile-header {
+  i {
+    margin-left: 0.75rem;
+    cursor: pointer;
+  }
+}
+.margin-icon{
+  margin-left: 5px;
+}

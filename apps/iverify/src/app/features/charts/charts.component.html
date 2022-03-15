@@ -1,0 +1,146 @@
+<ngx-charts-bar-horizontal
+  *ngIf="chartType === ChartTypeEnum.BAR"
+  [view]="view"
+  [scheme]="colorScheme[0]"
+  [results]="data"
+  [gradient]="false"
+  [showDataLabel]="true"
+  [xAxis]="showXAxis"
+  [yAxis]="showYAxis"
+  [legend]="false"
+  [showXAxisLabel]="showXAxisLabel"
+  [showYAxisLabel]=""
+  [xAxisLabel]="xAxisLabel"
+  [yAxisLabel]="yAxisLabel"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+>
+</ngx-charts-bar-horizontal>
+<ngx-charts-pie-chart
+  *ngIf="chartType === ChartTypeEnum.PIE"
+  [view]="[300, 200]"
+  [scheme]="colorScheme[2]"
+  [results]="data"
+  [legend]="false"
+  [labels]="true"
+  [animations]="false"
+  [doughnut]="true"
+  [legendPosition] = ""
+  [showDataLabel]="true"
+  [legendTitle]="''"
+  [labelFormatting]="pieChartLabel.bind(this, data)">
+</ngx-charts-pie-chart>
+<ngx-charts-bar-horizontal-stacked
+  *ngIf="chartType === ChartTypeEnum.STACKED"
+  [view]="view"
+  [scheme]="colorScheme[2]"
+  [results]="data"
+  [gradient]="false"
+  [xAxis]="showXAxis"
+  [yAxis]="showYAxis"
+  [legend]="false"
+  [gradient]="true"
+  [showXAxisLabel]="showXAxisLabel"
+  [showYAxisLabel]=""
+  [showDataLabel]="true"
+  [xAxisLabel]="xAxisLabel"
+  [yAxisLabel]="yAxisLabel"
+  (select)="onSelect($event)">
+</ngx-charts-bar-horizontal-stacked>
+
+<ngx-charts-line-chart
+  *ngIf="chartType === ChartTypeEnum.LINE"
+  [view]="[300, 200]"
+  [scheme]="colorScheme[2]"
+  [legend]="false"
+  [showXAxisLabel]="false"
+  [showYAxisLabel]="true"
+  [showDataLabel]="true"
+  [xAxis]="true"
+  [yAxis]="true"
+  [curve]="curve"
+  [xAxisLabel]=""
+  [yAxisLabel]="'Estados'"
+  [timeline]="true"
+  [results]="data"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+  >
+</ngx-charts-line-chart>
+<ngx-charts-bubble-chart
+  *ngIf="chartType === ChartTypeEnum.BUBBLE"
+  [view]="viewVal"
+  [scheme]="colorScheme[3]"
+  [results]="data.data"
+  [xAxis]="true"
+  [yAxis]="true"
+  [showDataLabel]="true"
+  [legend]="false"
+  [showXAxisLabel]="true"
+  [showYAxisLabel]="true"
+  [xAxisLabel]="xAxisLabelBubbleChart | translate"
+  [yScaleMin]="100"
+  [yScaleMax]="100"
+  [xScaleMin]="data.dataRange.min"
+  [xScaleMax]="data.dataRange.max"
+  [showGridLines]="true"
+  [minRadius]="5"
+  [maxRadius]="5"
+  [roundDomains]="true"
+  [xAxisTicks]="[data.dataRange.min, data.dataRange.avg, data.dataRange.max]"
+  [xAxisTickFormatting]="xticksFormatting"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)">
+  <ng-template #tooltipTemplate let-model="model">
+    <h1>{{model.series}} : {{model.name}}</h1>
+    <h1 *ngIf="(model.r === 0); else days">{{'TIME' | translate}} : {{'LESS_THAN_DAY'| translate}}</h1>
+    <ng-template #days>
+      {{'TIME' | translate}} : {{model.r}} {{((model.r > 1) ? 'DAYS' : 'DAY') | translate}}
+    </ng-template>          
+  </ng-template>
+</ngx-charts-bubble-chart>
+<ngx-charts-area-chart-stacked
+  *ngIf="chartType === ChartTypeEnum.AREA_STACKED"
+  [view]="[300, 200]"
+  [scheme]="colorScheme[2]"
+  [legend]="false"
+  [showXAxisLabel]="false"
+  [showYAxisLabel]="true"
+  [showDataLabel]="true"
+  [xAxis]="true"
+  [yAxis]="true"
+  [curve]="curve"
+  [xAxisLabel]=""
+  [yAxisLabel]="'Estados'"
+  [timeline]="true"
+  [results]="data"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+  >
+</ngx-charts-area-chart-stacked>
+<ngx-charts-bar-vertical-stacked
+  *ngIf="chartType === ChartTypeEnum.VERTICAL_BAR_STACKED"
+  [view]="[300, 200]"
+  [scheme]="colorScheme[1]"
+  [legend]="false"
+  [showXAxisLabel]="false"
+  [showYAxisLabel]="true"
+  [showDataLabel]="true"
+  [xAxis]="true"
+  [yAxis]="true"
+  [curve]="curve"
+  [xAxisLabel]=""
+  [yAxisLabel]=""
+  [timeline]="true"
+  [results]="data"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)"
+  >
+</ngx-charts-bar-vertical-stacked>
+
+

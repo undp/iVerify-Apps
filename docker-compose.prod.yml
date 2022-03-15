@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+    iverify:
+        build:
+            context: .
+            dockerfile: apps/iverify/Dockerfile
+        ports:
+            - '8200:8200'
+    publisher:
+        build:
+            context: .
+            dockerfile: apps/publisher/Dockerfile-prod
+        environment: 
+            - apiPath=http://api:3333
+        ports:
+            - '3334:3334'
+    api:
+        build:
+            context: .
+            dockerfile: apps/api/Dockerfile-prod
+        ports:
+            - '3333:3333'
+    triage:
+        build:
+            context: .
+            dockerfile: apps/triage/Dockerfile-prod
+        ports:
+            - '3335:3335'

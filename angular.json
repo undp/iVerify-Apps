@@ -1,0 +1,600 @@
+{
+  "version": 1,
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "defaultProject": "iverify",
+  "schematics": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
+    }
+  },
+  "projects": {
+    "libs": {
+      "root": "libs",
+      "sourceRoot": "libs",
+      "projectType": "library",
+      "prefix": "iverify",
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "testing/test.libs.ts",
+            "tsConfig": "testing/tsconfig.libs.spec.json",
+            "karmaConfig": "testing/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "testing/tsconfig.libs.json",
+              "testing/tsconfig.libs.spec.json",
+              "testing/tsconfig.base.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "iverify": {
+      "projectType": "application",
+      "root": "apps/iverify",
+      "sourceRoot": "apps/iverify/src",
+      "prefix": "iverify",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/iverify",
+            "index": "apps/iverify/src/index.html",
+            "main": "apps/iverify/src/main.ts",
+            "polyfills": "apps/iverify/src/polyfills.ts",
+            "tsConfig": "apps/iverify/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/iverify/src/favicon.ico",
+              "apps/iverify/src/assets"
+            ],
+            "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+              "apps/iverify/src/fonts.scss",
+              "apps/iverify/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "libs/core/environments/environment.ts",
+                  "with": "libs/core/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "optimization": true
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "iverify:build:production"
+            },
+            "development": {
+              "browserTarget": "iverify:build:development"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "proxyConfig": "apps/iverify/proxy.conf.json"
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "iverify:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/iverify/src/**/*.ts",
+              "apps/iverify/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/iverify"],
+          "options": {
+            "jestConfig": "apps/iverify/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "iverify-e2e": {
+      "root": "apps/iverify-e2e",
+      "sourceRoot": "apps/iverify-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/iverify-e2e/cypress.json",
+            "tsConfig": "apps/iverify-e2e/tsconfig.e2e.json",
+            "devServerTarget": "iverify:serve:development"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "iverify:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/iverify-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "api": {
+      "root": "apps/api",
+      "sourceRoot": "apps/api/src",
+      "projectType": "application",
+      "architect": {
+        "deploy": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "nx build api",
+              "docker build -f ./apps/api/Dockerfile . -t api"
+            ],
+            "parallel": false
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/api",
+            "main": "apps/api/src/main.ts",
+            "tsConfig": "apps/api/tsconfig.app.json",
+            "assets": ["apps/api/src/assets"],
+            "generatePackageJson": true
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/api/src/environments/environment.ts",
+                  "with": "apps/api/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "api:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/api/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/api"],
+          "options": {
+            "jestConfig": "apps/api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "api-interfaces": {
+      "root": "libs/api-interfaces",
+      "sourceRoot": "libs/api-interfaces/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/api-interfaces/**/*.ts"]
+          }
+        }
+      }
+    },
+    "publisher": {
+      "root": "apps/publisher",
+      "sourceRoot": "apps/publisher/src",
+      "projectType": "application",
+      "architect": {
+        "deploy": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "nx build publisher",
+              "docker build -f ./apps/publisher/Dockerfile . -t publisher"
+            ],
+            "parallel": false
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/publisher",
+            "main": "apps/publisher/src/main.ts",
+            "tsConfig": "apps/publisher/tsconfig.app.json",
+            "assets": ["apps/publisher/src/assets"],
+            "generatePackageJson": true
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/publisher/src/environments/environment.ts",
+                  "with": "apps/publisher/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "publisher:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/publisher/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/publisher"],
+          "options": {
+            "jestConfig": "apps/publisher/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "meedan-check-client": {
+      "root": "libs/meedan-check-client",
+      "sourceRoot": "libs/meedan-check-client/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/meedan-check-client/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/meedan-check-client"],
+          "options": {
+            "jestConfig": "libs/meedan-check-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "wp-client": {
+      "root": "libs/wp-client",
+      "sourceRoot": "libs/wp-client/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/wp-client/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/wp-client"],
+          "options": {
+            "jestConfig": "libs/wp-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "triage": {
+      "root": "apps/triage",
+      "sourceRoot": "apps/triage/src",
+      "projectType": "application",
+      "architect": {
+        "deploy": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "nx build triage",
+              "docker build -f ./apps/triage/Dockerfile . -t triage"
+            ],
+            "parallel": false
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/triage",
+            "main": "apps/triage/src/main.ts",
+            "tsConfig": "apps/triage/tsconfig.app.json",
+            "assets": ["apps/triage/src/assets"],
+            "generatePackageJson": true
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/triage/src/environments/environment.ts",
+                  "with": "apps/triage/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "triage:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/triage/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/triage"],
+          "options": {
+            "jestConfig": "apps/triage/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "crowdtangle-client": {
+      "root": "libs/crowdtangle-client",
+      "sourceRoot": "libs/crowdtangle-client/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/crowdtangle-client/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/crowdtangle-client"],
+          "options": {
+            "jestConfig": "libs/crowdtangle-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ml-service-client": {
+      "root": "libs/ml-service-client",
+      "sourceRoot": "libs/ml-service-client/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ml-service-client/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ml-service-client"],
+          "options": {
+            "jestConfig": "libs/ml-service-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "iverify-common": {
+      "root": "libs/iverify-common",
+      "sourceRoot": "libs/iverify-common/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/iverify-common/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/iverify-common"],
+          "options": {
+            "jestConfig": "libs/iverify-common/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "api-client": {
+      "root": "libs/api-client",
+      "sourceRoot": "libs/api-client/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/api-client/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api-client"],
+          "options": {
+            "jestConfig": "libs/api-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "email": {
+      "root": "libs/email",
+      "sourceRoot": "libs/email/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/email/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/email"],
+          "options": {
+            "jestConfig": "libs/email/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "perspective-client": {
+      "root": "libs/perspective-client",
+      "sourceRoot": "libs/perspective-client/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/perspective-client/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/perspective-client"],
+          "options": {
+            "jestConfig": "libs/perspective-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "shared": {
+      "projectType": "library",
+      "root": "libs/shared",
+      "sourceRoot": "libs/shared/src",
+      "prefix": "iverify",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/shared"],
+          "options": {
+            "jestConfig": "libs/shared/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/src/**/*.ts",
+              "libs/shared/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "common": {
+      "root": "libs/common",
+      "sourceRoot": "libs/common/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/common/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/common"],
+          "options": {
+            "jestConfig": "libs/common/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  }
+}

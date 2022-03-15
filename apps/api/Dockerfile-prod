@@ -1,0 +1,42 @@
+FROM node:14.17.1 as builder
+
+ARG ENVIRONMENT
+RUN npm install npm@latest -g
+
+RUN apt-get update && \
+  apt-get install -y \
+  libgtk2.0-0 \
+  libnotify-dev \
+  libgconf-2-4 \
+  libnss3 \
+  libxss1 \
+  libasound2 \
+  xvfb
+
+WORKDIR /workspace
+COPY . .
+
+
+RUN npm install
+ENV PATH /workspace/node_modules/.bin:$PATH
+RUN nx build --maxWorkers=1 --memoryLimit=5120 api 
+
+
+FROM node:lts-alpine
+WORKDIR /app
+
+RUN addgroup -g 1001 -S iverify && adduser -u 1001 -S iverify  -G iverify 
+COPY --from=builder /workspace/dist/apps/api .
+RUN chmod 750 -R /app
+RUN chown -R iverify:iverify /app
+
+USER iverify
+
+ENV PORT=3333
+EXPOSE 3333
+RUN npm install --production
+RUN npm install reflect-metadata tslib rxjs @nestjs/platform-express mysql
+
+CMD node ./main.js
+
+

@@ -1,0 +1,293 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'assets/scss/index';
+
+@import "~@angular/material/theming";
+
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$angular-material-v1-primary: mat-palette($mat-blue-grey, 600, 400, 800);
+$angular-material-v1-accent: mat-palette($mat-teal, 800, 900, 500);
+$angular-material-v1-warn: mat-palette($mat-red, 900, 500, A700);
+
+// Create the theme object (a Sass map containing all of the palettes).
+// If you prefer a dark theme, switch to mat-dark-theme and it will switch over to your darker hues
+$angular-material-v1-theme: mat-light-theme(
+  $angular-material-v1-primary,
+  $angular-material-v1-accent,
+  $angular-material-v1-warn
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($angular-material-v1-theme);
+
+$custom-typography: mat-typography-config(
+  $font-family: '"Roboto-Regular", sans-serif;'
+);
+
+// Override typography for all Angular Material, including mat-base-typography and all components.
+@include angular-material-typography($custom-typography);
+
+// Override the typography in the core CSS.
+@include mat-core($custom-typography);
+
+
+html,
+body {
+  height: 100%;
+  padding-top: constant(safe-area-inset-top); //for iOS 11.2
+  padding-top: env(safe-area-inset-top); //for iOS 11.1
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  background-color: #fff;
+  iverify-root {
+    width: 100%;
+  }
+}
+
+.bg-dark {
+  background-color: $undp-jtf-bg-color !important;
+}
+
+.btn {
+  fa-icon {
+    margin-right: 4px;
+  }
+}
+
+// ng2-dragula styles.
+.gu-mirror {
+  position: fixed !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+  opacity: 0.8;
+  -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=80)';
+  filter: alpha(opacity=80);
+  pointer-events: none;
+}
+
+.gu-hide {
+  left: -9999px !important;
+}
+
+.gu-unselectable {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+.gu-transit {
+  opacity: 0.2;
+  -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=20)';
+  filter: alpha(opacity=20);
+}
+
+.color-picker .left {
+  display: none;
+}
+
+.color-picker .type-policy {
+  display: none;
+}
+.icon-picker {
+  left: -170px !important;
+}
+
+#fm-branding-bar > span {
+  display: none;
+}
+
+.font-bold {
+  .nav-tabs .nav-link {
+    font-weight: bold;
+  }
+}
+
+span.switch {
+  background: lightgrey !important;
+}
+
+span.switch-medium {
+  width: 55px !important;
+  small {
+    width: 25px !important;
+    height: 25px !important;
+    margin: 2px 3px;
+  }
+  &.checked small {
+    left: 32px;
+    margin: 2px 0px;
+  }
+}
+
+span.switch-medium.checked {
+  small {
+    left: 27px !important;
+  }
+  background: #ffc107 !important;
+}
+
+.fontRalewayRegular {
+  font-family: 'Raleway-Regular', sans-serif;
+  &.header-text {
+    font-size: 2rem;
+  }
+}
+
+.fontRalewayLight {
+  font-family: 'Raleway-Light' , sans-serif;
+}
+
+.fontRalewayBlack {
+  font-family: "Raleway-Black";
+  &.header-text {
+    font-size: 24px;
+  }
+}
+
+.fontRalewayBold {
+  font-family: 'Raleway-Bold' , sans-serif;
+  &.header-text {
+    font-size: 2rem;
+    padding: 0 .5em;
+  }
+}
+
+.fontRobotoRegular {
+  font-family: "Roboto-Regular";
+}
+
+.main-body {
+  margin: 0px 2rem;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+li.fm-divider {
+  display: none !important;
+}
+
+.font-size-14 {
+  font-size: 14px;
+}
+
+.font-size-16 {
+  font-size: 16px;
+}
+
+.font-size-12 {
+  font-size: 12px;
+}
+
+.flex-header-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 2.5em;
+  margin-right: 1em;
+  align-items: center;
+  max-width: 100%;  
+}
+
+.custom-input-group-text {
+  display: flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 0.25rem;
+}
+
+.flex-custom-date-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: .5em;
+  margin-right: 1em;
+  margin-left: 1em;
+  align-items: center;
+  gap: 1em;
+  min-width: 80%;
+}
+
+.custom-select {
+  position: relative;
+  width: 150px;
+  top: 0;
+  height: 2em;
+  margin-top: 3px;
+}
+
+.custom-report-info {
+  font-size: 14px;
+  color: #000000 !important;
+}
+
+.custom-legend {
+  width: 18px;
+  padding-left:1px;
+  height: 18px;
+  opacity: 0.7;
+  margin-right: 5px;
+  float:left;
+}
+
+.mat-grid-tile-content {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    display: flex;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.mat-grid-tile-header {
+    display: flex;
+    align-items: center;
+    color: $undp-jtf-text-color !important; 
+    background: none !important; 
+    overflow: hidden;
+    padding: 0px 50px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 40px !important;
+    @media (max-width: 767px) {
+      height: 20px !important;
+    }
+}
+
+.mat-button, .mat-raised-button {
+  margin: 5px;
+}
+.mat-form-field-type-mat-date-range-input {
+  width: 200px;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-flex {
+    padding: 1.2em .75em 0 .75em !important;
+}
+
