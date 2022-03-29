@@ -207,4 +207,4 @@ All backend apps have Swagger. To access the API docs go to APP_URL/api.
 
 <a name="support"></a>
 ## **Support** 
-With funding, coordination and support from [United Nations Development Programme](https://www.undp.org) ![undp-logo-blue](https://user-images.githubusercontent.com/109564/160651473-6d8daf4d-77fa-41ff-855c-43a0512353b6.svg)
+![undp-logo-blue](https://user-images.githubusercontent.com/109564/160651473-6d8daf4d-77fa-41ff-855c-43a0512353b6.svg) With funding, coordination and support from [United Nations Development Programme](https://www.undp.org)
