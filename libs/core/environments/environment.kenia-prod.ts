@@ -1,7 +1,8 @@
 export const environment = {
   production: true,
   api: {
-    base: 'https://api-undpjtf-iverify-kenia-js.leman.un-icc.cloud',
+    base: 'https://api-iverify-kenya-js.leman.un-icc.cloud',
+                   
     version: 'v3'
   },
   authentication: {
