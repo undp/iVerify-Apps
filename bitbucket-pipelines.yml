@@ -95,7 +95,7 @@ definitions:
 
 pipelines:
   branches:
-    test-pipe:
+    master:
       - parallel:      
         - step:
             name: Build Kenia
