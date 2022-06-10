@@ -88,6 +88,7 @@ definitions:
       - docker
     script:
       - export IMAGE_NAME_TAG=build
+      - *iverifybuild
       - docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
       - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
       - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/Dockerfile-prod .
