@@ -149,7 +149,7 @@
               "fileReplacements": [
                 {
                   "replace": "libs/core/environments/environment.ts",
-                  "with": "libs/core/environments/honduras-dev.ts"
+                  "with": "libs/core/environments/environment.honduras-dev.ts"
                 }
               ],
               "outputHashing": "all",
@@ -171,7 +171,7 @@
               "fileReplacements": [
                 {
                   "replace": "libs/core/environments/environment.ts",
-                  "with": "libs/core/environments/honduras-prod.ts"
+                  "with": "libs/core/environments/environment.honduras-prod.ts"
                 }
               ],
               "outputHashing": "all",

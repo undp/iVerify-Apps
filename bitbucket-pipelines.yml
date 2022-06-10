@@ -9,6 +9,8 @@ options:
 definitions:
   scripts:
     - script: &buildPushTag
+        apt install curl wget unzip -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip";
+        unzip awscliv2.zip && ./aws/install;
         aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR;
         docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .;
         docker push $IMAGE_NAME_TAG-api;
@@ -22,7 +24,7 @@ definitions:
     - script: &iverifybuild
         npm install npm@latest -g;
         apt-get update;
-        apt-get install -y libgtk2.0-0   libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb;
+        apt-get install -y libgtk2.0-0  libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb;
         cd apps/iverify;
         npm install;
         npm install font-awesome;
@@ -41,8 +43,9 @@ definitions:
       - export IMAGE_NAME_TAG=$IMAGE_NAME:kenia-$BITBUCKET_TAG
       - export CONFIGURATION=kenia-production
       - *iverifybuild
+      - *buildPushTag
 
-  kenia: &kenia-dev
+  kenia-dev: &kenia-dev
     script:  
       - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
       - export IMAGE_NAME_TAG=$IMAGE_NAME:kenia-$BITBUCKET_TAG
@@ -50,15 +53,16 @@ definitions:
       - *iverifybuild
       - *buildPushTag
 
-  kenia: &honduras
+  honduras: &honduras
     script:  
       - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
       - export IMAGE_NAME_TAG=$IMAGE_NAME:honduras-$BITBUCKET_TAG
       - export CONFIGURATION=honduras-production
+      - apt install curl wget unzip -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip";
       - *iverifybuild
       - *buildPushTag
 
-  kenia: &honduras-dev
+  honduras-dev: &honduras-dev
     script:  
       - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
       - export IMAGE_NAME_TAG=$IMAGE_NAME:honduras-$BITBUCKET_TAG
@@ -97,12 +101,12 @@ pipelines:
             name: Build Kenia
             image:
                 name: node:14.17.1 
-            <<: *kenia
+            <<: *build
         - step:
             name: Build Honduras
             image:
                 name: node:14.17.1 
-            <<: *honduras
+            <<: *build
   tags:
     'dev*':
       - step: 
