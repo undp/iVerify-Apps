@@ -89,6 +89,94 @@
           },
           "configurations": {
             "test": {},
+            "kenia-development": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "libs/core/environments/environment.ts",
+                  "with": "libs/core/environments/environment.kenia-dev.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "optimization": true
+            },
+            "kenia-production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "libs/core/environments/environment.ts",
+                  "with": "libs/core/environments/environment.kenia-prod.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "optimization": true
+            },
+            "honduras-development": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "libs/core/environments/environment.ts",
+                  "with": "libs/core/environments/honduras-dev.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "optimization": true
+            },
+            "honduras-production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "libs/core/environments/environment.ts",
+                  "with": "libs/core/environments/honduras-prod.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "optimization": true
+            },
             "production": {
               "budgets": [
                 {
