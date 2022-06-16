@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadGatewayException, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateRoleDto } from "./dto/createRole.dto";
 import { InfoLogger } from "../logger/info-logger.service";
 import { EditRoleDto } from './dto/editRole.dto';
@@ -64,5 +64,26 @@ export class RolesService {
   async deleteRole(id: string): Promise<any> {
     const role: Roles = await this.findByRoleId(id);
     return this.rolesRepository.delete(role);
+  }
+
+  async createDefaultAdminRole(): Promise<any> {
+    const getRoleData :Roles = await this.rolesRepository.findOne({name: 'admin'});
+    if(getRoleData) {
+      return {message: "admin role already present" , roleData : getRoleData };
+    } else {
+      const resourceObj = [{"name":"users","permissions":["read","write","update","delete"]},{"name":"roles","permissions":["read","write","update","delete"]}];
+      const createRoleDto : CreateRoleDto= {name: 'admin', description: "Admin Role", resource: JSON.stringify(resourceObj)};
+      createRoleDto['createdBy'] = 1;
+      createRoleDto['updatedBy'] = 1;
+      try {
+        const role = this.rolesRepository.create(createRoleDto);
+        const adminRole = await this.rolesRepository.save(role);
+        if(adminRole) return { message: roleMessages.roleCreateSucess , roleData : adminRole };
+        else return { message: roleMessages.roleCreateFail , roleData : adminRole };
+      } catch(e) {
+        throw new BadGatewayException(roleMessages.roleCreateFail);
+      }
+     
+    }
   }
 }
