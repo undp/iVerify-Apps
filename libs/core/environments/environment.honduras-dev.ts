@@ -39,5 +39,6 @@ export const environment = {
   ],
   defaultLanguage: 'es',
   defaultCountryCode: 'HN',
-  app_state_key: 'app_storage'
+  app_state_key: 'app_storage',
+  defaultCountryName: 'iVerify Honduras'
 };
