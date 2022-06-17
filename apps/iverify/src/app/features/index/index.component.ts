@@ -40,6 +40,8 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   currentLang: string = this.translate.currentLang;
   isUserAllowedUserMenu: boolean = false;
   isDashboardTextHide: boolean = true;
+  HEADER_TAG_LINE = environment.defaultCountryName ? environment.defaultCountryName : 'HEADER_TAG_LINE';
+
 
   AuthHelpers = AuthHelpers;
 
