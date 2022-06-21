@@ -105,6 +105,8 @@ export class AppService {
   }
 
   private async mlAnalyze(text: string){
+    console.log('--- M Analyze config val');
+    console.log(this.config.mlServiceType);
     switch(this.config.mlServiceType){
       case MlServiceType.UNICC_DETOXIFY_1: return await this.mlClient.analyze([text]).toPromise();
       case MlServiceType.PERSPECTIVE: return await this.perspectiveClient.analyze(text, this.config.toxicTreshold).toPromise();
