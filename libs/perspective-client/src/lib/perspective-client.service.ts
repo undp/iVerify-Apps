@@ -7,12 +7,8 @@ export class PerspectiveClientService{
     constructor(private http: HttpService, private config: PerspectiveConfig){}
     analyze(messages: string, threshold: number){
         const body = this.buildAnalyzeBody(messages, threshold);
-        console.log('--Perspective end point');
-        console.log(this.config.endpoints.analyze);
-        console.log('--Perspective request body');
-        console.log(body);
         return this.http.post(`${this.config.endpoints.analyze}`, body).pipe(
-            retryWhen(errors => errors.pipe(tap(e => console.log('error..', e)), delay(3000), take(10))), //perspective limits to 1 call per second; in case of error this will retry 3 times with a delay of 1.5 seconds
+            retryWhen(errors => errors.pipe(tap(e => console.log('error..', e.message)), delay(3000), take(10))), //perspective limits to 1 call per second; in case of error this will retry 3 times with a delay of 1.5 seconds
             map(res => res.data),
             tap(data => console.log('perspective result: ', data)),
             map(data => this.convertResults(data)),
