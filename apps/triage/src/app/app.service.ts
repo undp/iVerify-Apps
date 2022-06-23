@@ -59,6 +59,7 @@ export class AppService {
         offset - ${pagination.offset}, 
         startDate - ${startDate},
         endDate - ${endDate}`);
+      this.logger.log(`Max post scan limit - ${this.config.postScanLimit}`)
       const res = await this.ctClient.getPosts(listId, pagination.count, pagination.offset, startDate, endDate).toPromise();
       this.logger.log(`Received ${res.posts.length} posts. Analyzing...`)
       let postsCount = 0;
@@ -78,7 +79,12 @@ export class AppService {
       if(res['pagination'] && res.pagination['nextPage']){
         const iterations = pagination.iterations + 1;
         const offset = pagination.count * iterations;
-        return await this.getToxicPostsByList(listId, {...pagination, offset, iterations}, startDate, endDate, posts)
+        if(offset < this.config.postScanLimit) {
+          return await this.getToxicPostsByList(listId, {...pagination, offset, iterations}, startDate, endDate, posts);
+        } else {
+          this.logger.log(`Max post scan limit reached ${this.config.postScanLimit} - skipping other posts`)
+          return posts;
+        }
       } else {
         this.logger.log(`No more pages.`)
         return posts
