@@ -27,10 +27,15 @@ export class ChartComponent implements  OnDestroy, OnChanges  {
   showLegend: boolean = true;
   showXAxisLabel: boolean = false;
   xAxisLabelBubbleChart: string = 'BUBBLE_CHART';
+  yAxisLineChart: string = 'LINE_CHART';
   yAxisLabel: string = '';
   showYAxisLabel: boolean = true;
   xAxisLabel: string = '';  
   tickIndex: number = 0;
+  quickest: string = '';
+  longest: string = '';
+  day: string = '';
+  days: string = '';
   curve: any = curveBasis;
   colorScheme = [
     {
@@ -50,6 +55,10 @@ export class ChartComponent implements  OnDestroy, OnChanges  {
   constructor(
     protected translate: TranslateService
   ) {
+    this.quickest = translate.instant('QUICKEST');
+    this.longest = translate.instant('LONGEST');
+    this.day = translate.instant('DAY');
+    this.days = translate.instant('DAYS');
     this.subs = new Subscription();  
   }
 
@@ -81,13 +90,13 @@ export class ChartComponent implements  OnDestroy, OnChanges  {
 
   xticksFormatting(val: any) {
     let tickVal = '';
-    const text = (val > 1) ? 'días' : 'día';
+    const text = (val > 1) ? this.days : this.day;
     if (val == DataRange.min) {
-      tickVal = `El más rápido ${val} ${text}`;
+      tickVal = `${this.quickest} ${val ? val : ''} ${text}`;
     } else if (val == DataRange.avg) {
-      tickVal = `Media ${val} ${text}`;
+      tickVal = `Media ${val ? val : ''} ${text}`;
     } else if (val == DataRange.max) {
-      tickVal = `El más largo ${val} ${text}`;
+      tickVal = `${this.longest} ${val ? val : ''} ${text}`;
     }
     return tickVal;
   }

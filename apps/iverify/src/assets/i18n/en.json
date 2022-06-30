@@ -97,6 +97,7 @@
   "AVERAGE": "Average",
   "LONGEST": "Longest",
   "BUBBLE_CHART": "Time in days",
+  "LINE_CHART": "state",
   "INPROGRESS": "In progress",
   "UNSTARTED": "Unstarted",
   "COMPLETED": "Completed",
