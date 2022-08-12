@@ -27,10 +27,15 @@ export class DetailChartComponent {
   showLegend: boolean = true;
   showXAxisLabel: boolean = true;
   xAxisLabelBubbleChart: string = 'BUBBLE_CHART';
+  yAxisLineChart: string = 'LINE_CHART';
   yAxisLabel: string = 'Count';
   showYAxisLabel: boolean = true;
   xAxisLabel: string = '';  
   tickIndex: number = 0;
+  quickest: string = '';
+  longest: string = '';
+  day: string = '';
+  days: string = '';
   curve: any = curveBasis;
   colorScheme = [
     {
@@ -51,9 +56,11 @@ export class DetailChartComponent {
   constructor(
     protected translate: TranslateService
   ) {
+    this.quickest = translate.instant('QUICKEST');
+    this.longest = translate.instant('LONGEST');
+    this.day = translate.instant('DAY');
+    this.days = translate.instant('DAYS');
     this.subs = new Subscription();
-    
-      
   }
   ngOnChanges() {
     if (this.chartType === ChartTypeEnum.BUBBLE) {
@@ -77,13 +84,13 @@ export class DetailChartComponent {
 
   xticksFormatting(val: any) {
     let tickVal = '';
-    const text = (val > 1) ? 'days' : 'day';
+    const text = (val > 1) ? this.days : this.day;
     if (val == DataRange.min) {
-      tickVal = `El más rápido ${val} ${text}`;
+      tickVal = `${this.quickest} ${val} ${text}`;
     } else if (val == DataRange.avg) {
       tickVal = `Media ${val} ${text}`;
     } else if (val == DataRange.max) {
-      tickVal = `El más largo ${val} ${text}`;
+      tickVal = `${this.longest} ${val} ${text}`;
     }
     return tickVal;
   }

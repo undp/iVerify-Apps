@@ -43,7 +43,8 @@ export class EmailService {
     // ]
     const csv = await converter.json2csvAsync(data);
     const mailingList = ['chiodigiovanni1@gmail.com', 'benet@unicc.org', 'almadhoun@unicc.org', 'chiodi@unicc.org', 'mark.belinsky@undp.org', 'mathilde.vougny@undp.org']
-    const env = process.env.ENV === 'prod' ? 'Honduras' : 'Honduras - test';
+    let env = process.env.ENV === 'prod' ? 'Honduras' : 'Honduras - test';
+    if(process.env && process.env.EMAIL_SUBJECT_COUNTRY) env = process.env.EMAIL_SUBJECT_COUNTRY;
     await this.mailerService.sendMail({
       to: mailingList,
       from: 'no_reply@un-icc.cloud',

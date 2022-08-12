@@ -5,7 +5,12 @@ import { map } from 'rxjs/operators';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { isEmpty } from 'lodash';
-import { TicketRequest, StatusFormat, StatusFormatPieChart, TicketsByAgentFormat, BubbleChartFormat } from '@iverify/core/models/dashboard';
+import { TranslateService } from '@ngx-translate/core';
+import { TicketRequest, StatusFormat, StatusFormatPieChart, TicketsByAgentFormat, BubbleChartFormat, ChartTypeEnum } from '@iverify/core/models/dashboard';
+import { CountBy } from '@iverify/common/src';
+import { ModalComponent } from '../modal/modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import * as _ from 'lodash';
 
 const BubbleChartViewSize: any = {
   WEB_VIEW_SIZE : [600, 150],
@@ -26,10 +31,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   ticketsByTag: StatusFormat[];
   ticketsByCurrentStatus: StatusFormatPieChart[];
   ticketsByAgents: TicketsByAgentFormat[];
-  ticketsReponseTime: any[];
+  ticketsReponseTime: any = {};
   totalPublished: any;
   ticketsByWeek: any;
   ticketsByFolder: any;
+  ticketsByToxicity: any;
   selectedTimeType: number = 1;
   breakpoint: number = 3;
   range = new FormGroup({
@@ -43,15 +49,24 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   endDate: any = new Date();
   isData: boolean = false;
   isDefaultData: boolean = true;
+  title: string = '';
+
+  CountBy = CountBy;
+  dataResults: any;
+  ChartTypeEnum = ChartTypeEnum
   
   constructor(
-    // private toast: ToastService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private translate: TranslateService,
+    public dialog: MatDialog
   ) {
 
     this.subs = new Subscription();
     this.breakpoint = (window.innerWidth <= 400) ? 1 : 3;
     this.getScreenSizeView(window.innerWidth);    
+    this.translate.get("TITLE").subscribe((title) => {
+      this.title = this.translate.instant(title);
+    });
   }
 
   ngAfterViewInit() { 
@@ -84,14 +99,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(map(res => res.results))
       .subscribe((res) => {
         this.isData = (res && isEmpty(res)) ? false : true;
+        this.dataResults = _.cloneDeep(res);
         this.statsByCategories = DashboardHelpers.SortStatistics(res);
-        this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.statsByCategories['source']);
-        this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.statsByCategories['tag']);
-        this.ticketsByType = DashboardHelpers.GetTicketsByType(this.statsByCategories['violationType']);
-        this.ticketsByWeek = DashboardHelpers.GetTicketsByFolder(this.statsByCategories['verifiedByDay']); //DashboardHelpers.GetTicketsByWeek(res, this.options);  
+        this.ticketsByChannel = DashboardHelpers.GetTicketsByChannel(this.statsByCategories[CountBy.source]);
+        this.ticketsByTag = DashboardHelpers.GetTicketsByTag(this.statsByCategories[CountBy.tag]);
+        this.ticketsByType = DashboardHelpers.GetTicketsByType(this.statsByCategories[CountBy.violationType]);
+        this.ticketsByWeek = DashboardHelpers.GetTicketsByFolder(this.statsByCategories[CountBy.verifiedByDay], CountBy.folder); //DashboardHelpers.GetTicketsByWeek(res, this.options);  
         this.ticketsByAgents = DashboardHelpers.GetTicketsByAgents(this.statsByCategories);
-        this.ticketsByFolder = DashboardHelpers.GetTicketsByFolder(this.statsByCategories['folder']);
-        this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['responseVelocity'], 'Title');
+        this.ticketsByFolder = DashboardHelpers.GetTicketsByFolder(this.statsByCategories[CountBy.folder], CountBy.folder);
+        this.ticketsByToxicity = DashboardHelpers.GetTicketsByFolder(this.statsByCategories[CountBy.toxicity], CountBy.toxicity);
+        this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories[CountBy.responseVelocity], this.title);
         if (this.isDefaultData) {
           this.ticketsByCurrentStatus = DashboardHelpers.GetTicketsByCurrentStatus(this.statsByCategories);
           this.totalPublished = (this.ticketsByCurrentStatus && this.ticketsByCurrentStatus[2]) ? this.ticketsByCurrentStatus[2].value : 0;
@@ -109,12 +126,30 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getAllTicketsData() {
     if (this.selectedTimeType === 1) {
-      this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['responseVelocity'], 'Title');
+      this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories[CountBy.responseVelocity], this.title);
       this.responseVelocity = 'RESPONSE_TIME';
     } else {
-      this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories['resolutionVelocity'], 'Title');
+      this.ticketsReponseTime = DashboardHelpers.GetTicketsReponseTime(this.statsByCategories[CountBy.resolutionVelocity], this.title);
       this.responseVelocity = 'RESOLVE_TIME';
     }
+  }
+
+  openDetailModal(dataType: CountBy, title: string, chartType: ChartTypeEnum) {
+    const data = this.dataResults
+    console.log('data...', data)
+    this.dialog.open(ModalComponent, {
+      minHeight: '90%',
+      minWidth: '90%',
+      height: '90%',
+      data: {
+        data,
+        dataType,
+        title,
+        startDate: this.startDate,
+        endDate: this.endDate,
+        chartType
+      }
+    });
   }
 
   ngOnDestroy() {

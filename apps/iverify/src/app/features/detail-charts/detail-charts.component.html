@@ -312,7 +312,7 @@
   [maxRadius]="5"
   [roundDomains]="true"
   [xAxisTicks]="[data.dataRange.min, data.dataRange.avg, data.dataRange.max]"
-  [xAxisTickFormatting]="xticksFormatting"
+  [xAxisTickFormatting]="xticksFormatting.bind(this)"
   (select)="onSelect($event)"
   (activate)="onActivate($event)"
   (deactivate)="onDeactivate($event)">

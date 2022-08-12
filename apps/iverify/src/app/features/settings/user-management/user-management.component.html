@@ -1,5 +1,118 @@
-<button mat-mini-fab color="accent" (click)="openDialog()" aria-label="">
-  <mat-icon>plus_one</mat-icon>
+<button
+  mat-button
+  color="accent"
+  (click)="openDialog('user')"
+  aria-label=""
+  class="adduser"
+  *ngIf="isUserAllowed('create','users')"
+>
+  <mat-icon>add</mat-icon> {{ 'ADD_USER' | translate }}
 </button>
-
-
+<button
+  mat-button
+  color="accent"
+  (click)="openDialog('role')"
+  aria-label=""
+  class="addrole"
+  *ngIf="isUserAllowed('create','roles')"
+>
+  <mat-icon>add</mat-icon> {{ 'ADD_ROLE' | translate }}
+</button>
+<mat-accordion>
+  <!-- #docregion basic-panel -->
+  <!-- #docregion hide-toggle -->
+  <mat-expansion-panel hideToggle>
+    <!-- #enddocregion hide-toggle -->
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>people</mat-icon>
+        <p class="tab-section">{{ 'USERS' | translate }}</p>
+      </mat-panel-title>
+      <mat-panel-description>
+        Click to see user list
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <!-- Position Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>{{ 'ID' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+      </ng-container>
+      <!-- Name Column -->
+      <ng-container matColumnDef="firstName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'FIRSTNAME' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.firstName }}</td>
+      </ng-container>
+      <!-- Weight Column -->
+      <ng-container matColumnDef="lastName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LASTNAME' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.lastName }}</td>
+      </ng-container>
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>{{ 'EMAIL' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+      </ng-container>
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>{{ 'Action' | translate }}</th>
+        <td mat-cell *matCellDef="let element" style="cursor: pointer;">
+          <button [disabled]="!isUserAllowed('update', 'users')" mat-icon-button (click)="openDialog('user', element)"><mat-icon>edit</mat-icon></button>
+          <button [disabled]="!isUserAllowed('delete', 'users')" mat-icon-button style="margin-left: 5px;" (click)="deleteEntity('user', element.id)"><mat-icon>delete</mat-icon></button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+      ></tr>
+    </table>
+  </mat-expansion-panel>
+  <!-- #enddocregion basic-panel -->
+  <mat-expansion-panel
+    (opened)="panelOpenState = true"
+    (closed)="panelOpenState = false"
+  >
+    <mat-expansion-panel-header *ngIf="isUserAllowed('read','roles')">
+      <mat-panel-title>
+        <mat-icon>perm_identity</mat-icon><p class="tab-section">{{ 'ROLES' | translate }}</p>
+      </mat-panel-title>
+      <mat-panel-description>
+        Click to see role list
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <table mat-table [dataSource]="dataSourceRoles" class="mat-elevation-z8">
+      <!-- Position Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>{{ 'ID' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+      </ng-container>
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>{{ 'NAME' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+      <!-- Weight Column -->
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>{{ 'DESCRIPTION' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+      </ng-container>
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="resource">
+        <th mat-header-cell *matHeaderCellDef>{{ 'PERMISSIONS' | translate }}</th>
+        <td mat-cell *matCellDef="let element" [innerHtml]="element.resource | rolePermissionFormat"></td>
+      </ng-container>
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>{{ 'Action' | translate }}</th>
+        <td mat-cell *matCellDef="let element" style="cursor: pointer;">
+          <button [disabled]="!isUserAllowed('update', 'roles')" mat-icon-button (click)="openDialog('role', element)"><mat-icon>edit</mat-icon></button>
+          <button [disabled]="!isUserAllowed('delete', 'roles')" mat-icon-button style="margin-left: 5px;" (click)="deleteEntity('role', element.id)"><mat-icon>delete</mat-icon></button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsRoles"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumnsRoles"
+      ></tr>
+    </table>
+  </mat-expansion-panel>
+</mat-accordion>

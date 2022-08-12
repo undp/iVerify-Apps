@@ -9,11 +9,10 @@ export interface User extends BaseModel {
   email: string;
   firstName: string;
   lastName: string;
-  createdBy: number;
-  phone?:  number,
-  address? : string,
+  createdBy: Date;
   role: any;
   data?:any;
+  roles?:any;
 }
 
 export interface UserRegistration {
@@ -45,6 +44,7 @@ export interface Contacts {
 
 export interface Users extends BaseModelPagedArray<User> {
   id?: number;
+  data?: any;
 }
 
 export interface ListUserOptions extends BaseModelPagedRequest {

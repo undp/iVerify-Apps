@@ -1,7 +1,7 @@
 export const environment = {
-  production: true,
+  production: false,
   api: {
-    base: 'https://api-undpjtf-iverify-honduras-js.leman.un-icc.cloud',
+    base: 'https://api-iverify-honduras-js-test.rhone.un-icc.cloud',
     version: 'v3'
   },
   authentication: {
@@ -33,12 +33,12 @@ export const environment = {
       countryLanguage: 'Spanish'
     }
   ],
-  availableLanguages: [
+  availableLanguages:[
     "en",
     "es"
   ],
-  defaultLanguage: 'en',
-  defaultCountryCode: 'KE',
+  defaultLanguage: 'es',
+  defaultCountryCode: 'HN',
   app_state_key: 'app_storage',
-  defaultCountryName: 'iVerify kenya'
+  defaultCountryName: 'iVerify Honduras'
 };

@@ -17,11 +17,15 @@ import { map } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { isEmpty } from 'lodash';
 
+
+const ADMIN_ROLE = 'admin';
+const USER_ROLE = 'users';
 @Component({
   selector: 'iverify-index',
-  templateUrl: 'index.component.html',
-  styleUrls: ['index.component.scss']
+  templateUrl: './index.component.html',
+  styleUrls: ['./index.component.scss']
 })
 export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
 
@@ -34,6 +38,10 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   time = { hour: 'Hrs', minute: 'Mins' };
   countryCodes = environment.countryCodes;
   currentLang: string = this.translate.currentLang;
+  isUserAllowedUserMenu: boolean = false;
+  isDashboardTextHide: boolean = true;
+  HEADER_TAG_LINE = environment.defaultCountryName ? environment.defaultCountryName : 'HEADER_TAG_LINE';
+
 
   AuthHelpers = AuthHelpers;
 
@@ -42,7 +50,6 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   protected fromdate: Date;
   protected todate: Date;
   viewportMobileQuery: MediaQueryList;
-  opened: boolean = false;
   
   constructor(
     store: Store<AppState>,
@@ -70,11 +77,17 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
   
 
   ngOnInit() {
+    this.isUserAllowed();
     this.subs.add(
       this.router.events.subscribe(e => {
         if (e instanceof ActivationStart) {
           window.scroll(0, 0);
-          if (e.snapshot.outlet === 'dashboard') this.outlet.deactivate();
+          if (e.snapshot.outlet === 'dashboard') {
+            this.outlet.deactivate();
+            this.isDashboardTextHide = true;
+          } else {
+            this.isDashboardTextHide = false;
+          }
         }
       })
     );
@@ -89,13 +102,26 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
 
   private subs: Subscription;
 
-  footer = {
-    ...environment.footer,
-    year: new Date().getFullYear()
-  };
-
   hasUserPermission(permission: Permission) {
     return AuthHelpers.User.HasUserPermission(this.store, permission);
+  }
+
+  isUserAllowed() {
+    this.user$.subscribe((user) => {
+      if (user) {
+      let role = user.roles[0];
+      if (role && role.resource && role.resource.length > 0) {
+        const resources = JSON.parse(role.resource);
+        if (!isEmpty(resources)) {
+          const roleItem = resources.filter((sect: any) => sect.name === 'users');
+          if (!isEmpty(roleItem)) {
+            const val = roleItem[0].permissions.find((item: string) => item === 'read');
+            this.isUserAllowedUserMenu =  (val !== undefined);            
+          }
+        }
+      }
+    }
+    });
   }
 
   onLogoutClick() {
