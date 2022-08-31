@@ -3,6 +3,8 @@ import { CrowdtangleClientService } from 'libs/crowdtangle-client/src/lib/crowdt
 import { MeedanCheckClientService, ToxicityScores } from '@iverify/meedan-check-client';
 import { MlServiceClientService } from 'libs/ml-service-client/src/lib/ml-service-client.service';
 import { TriageConfig } from './config';
+import { PerspectiveClientService } from '@iverify/perspective-client/src/lib/perspective-client.service';
+import { MlServiceType } from '@iverify/iverify-common';
 
 @Injectable()
 export class AppService {
@@ -12,11 +14,12 @@ export class AppService {
   constructor(
     private ctClient: CrowdtangleClientService, 
     private mlClient: MlServiceClientService,
+    private perspectiveClient: PerspectiveClientService,
     private checkClient: MeedanCheckClientService,
     private config: TriageConfig
     ){}
 
-  async analyze(startDate: string, endDate: string) {
+  async analyze(startDate: string, endDate: string): Promise<number> {
     try{
       const lists = await this.ctClient.getLists().toPromise();
       const savedSearches = lists.filter(list => list.type === 'SAVED_SEARCH');
@@ -29,16 +32,19 @@ export class AppService {
       } 
       if(!toxicPosts.length){
         this.logger.log('No toxic posts found.')
-        return toxicPosts;
+        return 0;
       }
       let createdItems = [];
-      this.logger.log(`${toxicPosts.length} toxic posts found. Creating Meedan Check items...`);
-      for(const post of toxicPosts){
+      const uniqueToxicPosts = [...new Set(toxicPosts)]
+      this.logger.log(`${uniqueToxicPosts.length} toxic posts found. Creating Meedan Check items...`);
+      for(const post of uniqueToxicPosts){
+        this.logger.log('Creating item...')
         const item = await this.checkClient.createItem(post.postUrl, post.toxicScores).toPromise();
-        createdItems = [...createdItems, item];
+        console.log('item: ', item)
+        if(!item.error) createdItems = [...createdItems, item];
       }
       this.logger.log(`Created ${createdItems.length} items.`)
-      return createdItems;
+      return createdItems.length;
     } catch(e){
       this.logger.error('Analyze error: ', e.message);
       throw new HttpException(e.message, 500);
@@ -53,6 +59,7 @@ export class AppService {
         offset - ${pagination.offset}, 
         startDate - ${startDate},
         endDate - ${endDate}`);
+      this.logger.log(`Max post scan limit - ${this.config.postScanLimit}`)
       const res = await this.ctClient.getPosts(listId, pagination.count, pagination.offset, startDate, endDate).toPromise();
       this.logger.log(`Received ${res.posts.length} posts. Analyzing...`)
       let postsCount = 0;
@@ -60,10 +67,10 @@ export class AppService {
         const postMessage = post.message ? post.message : '';
         const postDescription = post.description ? post.description : '';
         const text = `${postMessage}. ${postDescription}`;
-        this.logger.log(`Sending request for text: ${text}`);
-        const toxicScores = await this.mlClient.analyze([text]).toPromise();
-        this.logger.log(`Received response: ${postMessage}`);
-        const isToxic = this.isToxic(toxicScores, post.postUrl, text.length);
+        this.logger.log(`Sending post for analysis...`)
+        const toxicScores = await this.mlAnalyze(text);
+        this.logger.log(`Received toxic score: ${toxicScores}`)
+        const isToxic = toxicScores && toxicScores.toxicity ? this.isToxic(toxicScores, post.postUrl, text.length) : false;
         if(isToxic) posts.push({...post, toxicScores});
         postsCount++;
       }
@@ -72,7 +79,12 @@ export class AppService {
       if(res['pagination'] && res.pagination['nextPage']){
         const iterations = pagination.iterations + 1;
         const offset = pagination.count * iterations;
-        return await this.getToxicPostsByList(listId, {...pagination, offset, iterations}, startDate, endDate, posts)
+        if(offset < this.config.postScanLimit) {
+          return await this.getToxicPostsByList(listId, {...pagination, offset, iterations}, startDate, endDate, posts);
+        } else {
+          this.logger.log(`Max post scan limit reached ${this.config.postScanLimit} - skipping other posts`)
+          return posts;
+        }
       } else {
         this.logger.log(`No more pages.`)
         return posts
@@ -96,5 +108,12 @@ export class AppService {
 
   async createItemFromWp(url: string, content: string){
     return await this.checkClient.createItemFromWp(url.trim(), content);
+  }
+
+  private async mlAnalyze(text: string){
+    switch(this.config.mlServiceType){
+      case MlServiceType.UNICC_DETOXIFY_1: return await this.mlClient.analyze([text]).toPromise();
+      case MlServiceType.PERSPECTIVE: return await this.perspectiveClient.analyze(text, this.config.toxicTreshold).toPromise();
+    }
   }
 }

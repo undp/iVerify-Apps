@@ -13,6 +13,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule} from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { RoleComponent } from './role/role.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ToastModule } from '../toast/toast.module';
+import { DialogComponent } from './dialog.component';
+import { RolePermissionFormatPipe } from '@iverify/core/pipes/role-permission-format.pipe';
+import {MatRadioModule} from '@angular/material/radio';
 
 export const routes: Routes = [
   {
@@ -24,24 +37,36 @@ export const routes: Routes = [
 @NgModule({
   declarations: [
     UsersComponent,
-    UserManagementComponent
+    UserManagementComponent,
+    RoleComponent,
+    DialogComponent,
+    RolePermissionFormatPipe
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    ToastModule,
     TranslateModule,
     MatTableModule,
     MatTabsModule,
     MatFormFieldModule,
+    MatRadioModule,
     ReactiveFormsModule,
     MatInputModule,
     MatIconModule,
     MatRippleModule,
     MatButtonToggleModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSelectModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    ScrollingModule,
+    MatDialogModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    MatExpansionModule
   ],
   exports: [
-
   ]
 })
 export class SettingsModule {

@@ -37,8 +37,8 @@ export const environment = {
     "en",
     "es"
   ],
-  defaultLanguage: 'en',
-  defaultCountryCode: 'KE',
+  defaultLanguage: 'es',
+  defaultCountryCode: 'HN',
   app_state_key: 'app_storage',
-  defaultCountryName: 'iVerify kenya'
+  defaultCountryName: 'iVerify Honduras'
 };

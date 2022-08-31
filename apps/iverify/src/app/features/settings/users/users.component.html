@@ -2,7 +2,7 @@
   <form class="form-signin" [formGroup]="userForm">
     <p>
       <mat-form-field>
-        <mat-label>{{ 'FIRSTNAME' | translate |json}}</mat-label>
+        <mat-label>{{ 'FIRSTNAME' | translate}}</mat-label>
         <input
           matInput
           type="text"
@@ -17,7 +17,7 @@
     </p>
     <p>
       <mat-form-field>
-        <mat-label>{{ 'LASTNAME' | translate |json}}</mat-label>
+        <mat-label>{{ 'LASTNAME' | translate}}</mat-label>
         <input
           matInput
           type="text"
@@ -32,7 +32,7 @@
     </p>
     <p>
       <mat-form-field>
-        <mat-label>{{ 'EMAIL' | translate |json}}</mat-label>
+        <mat-label>{{ 'EMAIL' | translate}}</mat-label>
         <input
           matInput
           type="email"
@@ -46,14 +46,23 @@
       </mat-form-field>
     </p>
     <p>
-      <mat-form-field appearance="fill">
-        <mat-label>{{ 'PASSWORD' | translate |json}}</mat-label>
+      <mat-form-field>
+        <mat-label>{{ 'ROLES' | translate }}</mat-label>
+        <mat-select [(ngModel)]="selectedRole" id="inputRoles" formControlName="roles">
+          <mat-option *ngFor="let sect of rolesList" [value]="sect">{{sect.name|titlecase}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </p>
+    <p *ngIf="!isEditing">
+      <mat-form-field>
+        <mat-label>{{ 'PASSWORD' | translate}}</mat-label>
         <input
           matInput
           type="password"
           id="inputPassword"
           [placeholder]="'PASSWORD' | translate"
           required
+          autofocus
           formControlName="password"
         />
         <mat-hint>Enter password 8 chars long</mat-hint>
@@ -61,7 +70,7 @@
     </p>
     <p>
       <mat-form-field>
-        <mat-label>{{ 'Phone' | translate |json}}</mat-label>
+        <mat-label>{{ 'Phone' | translate}}</mat-label>
         <input
           matInput
           type="text"
@@ -72,12 +81,12 @@
           formControlName="phone"
         />
         <mat-icon matSuffix>phone</mat-icon>
-        <mat-hint>Enter phone number with country code</mat-hint>
+        <mat-hint>{{'INFORMATIVE_TEXT'| translate}}</mat-hint>
       </mat-form-field>
     </p>
     <p>
       <mat-form-field>
-        <mat-label>{{ 'ADDRESS' | translate |json}}</mat-label>
+        <mat-label>{{ 'ADDRESS' | translate}}</mat-label>
         <input
           matInput
           type="text"
@@ -91,11 +100,12 @@
         <mat-hint>Enter complete address</mat-hint>
       </mat-form-field>
     </p>
-    <div class="">
+    <div class="d-flex justify-content-around">
       <button
         mat-raised-button 
         color="primary"
-        (click)="onNoClick()"
+        (click)="dialogRef.close(false);"
+        class="mr-2"
       >
         {{ 'CANCEL' | translate}}
       </button>
@@ -105,7 +115,7 @@
         (click)="onUserClick()"
         [disabled]="userForm.invalid"
       >
-        {{ 'SUBMIT' | translate}}
+        {{ (this.isEditing) ? 'UPDATE' : 'SUBMIT' | translate}}
       </button>
     </div>
   </form>

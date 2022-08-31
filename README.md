@@ -100,13 +100,15 @@ The Dashboard front-end offers data visualizations of several indicators giving 
 <a name="prereq"></a>
 **Pre-requisites** 
 
-* A working instance of [Meedan Check](https://meedan.com/check) 
-* On Meedan Check, there must be [webhooks](https://github.com/meedan/check/wiki/Create-Bots-on-Check) configured to hit these endpoints:
+* A working instance of Meedan Check
+TODO: Meedan check folders and metadata structure
+* On Meedan Check, there must be webhooks configured to hit these endpoints:
 	*  Event `report_published` sends data to the endpoint:  `PUBLISHER_URL/publish/publish-webhook`
 	*  Event `update_annotation_verification_status` sends data to the endpoint:  `API_URL/stats/item-status-changed`
 
-Both endpoints receive a minimum payload containing the dbid of the item that triggered the event. iVerifyApps will subsequently fetch the additional data it needs from Meedan Check.
+	Both endpoints receive a minimum payload containing the dbid of the item that triggered the event. iVerifyApps will subsequently fetch the additional data it needs from Meedan Check. Instructions for how to set up a webhook (or *bot*) are on the [Check Wiki](https://github.com/meedan/check/wiki/Create-Bots-on-Check)
 * A WordPress website with [Advanced Custom Fields](https://www.advancedcustomfields.com/) plugin enabled (see [iVerifyWebSite](https://github.com/undp/iVerify-Website) for detailed instructions on how to set up the WordPress site)
+
 * A [CrowdTangle](https://www.crowdtangle.com/) account with Saved Searches and an API token
 
 <a name="envs"></a>
