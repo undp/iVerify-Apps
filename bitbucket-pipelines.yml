@@ -7,6 +7,70 @@ options:
   docker: true
 
 definitions:
+  scripts:
+    - script: &buildPushTag
+        apt install curl wget unzip -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip";
+        unzip awscliv2.zip && ./aws/install;
+        aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR;
+        docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .;
+        docker push $IMAGE_NAME_TAG-api;
+        docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .;
+        docker push $IMAGE_NAME_TAG-iverify;
+        docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/Dockerfile-prod .;
+        docker push $IMAGE_NAME_TAG-triage;
+        docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .;
+        docker push $IMAGE_NAME_TAG-publisher;
+
+    - script: &iverifybuild
+        npm install npm@latest -g;
+        apt-get update;
+        apt-get install -y libgtk2.0-0  libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb;
+        cd apps/iverify;
+        npm install;
+        npm install font-awesome;
+        export PATH=node_modules/.bin:$PATH;
+        npm install -g @angular/cli;
+        npm install -g nx;
+        ng build iverify --configuration=$CONFIGURATION;
+        cd ../../;
+        npm install;
+        nx build triage;
+        nx build publisher;
+
+  kenia: &kenia
+    script:  
+      - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
+      - export IMAGE_NAME_TAG=$IMAGE_NAME:kenia-$BITBUCKET_TAG
+      - export CONFIGURATION=kenia-production
+      - *iverifybuild
+      - *buildPushTag
+
+  kenia-dev: &kenia-dev
+    script:  
+      - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
+      - export IMAGE_NAME_TAG=$IMAGE_NAME:kenia-$BITBUCKET_TAG
+      - export CONFIGURATION=kenia-development
+      - *iverifybuild
+      - *buildPushTag
+
+  honduras: &honduras
+    script:  
+      - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
+      - export IMAGE_NAME_TAG=$IMAGE_NAME:honduras-$BITBUCKET_TAG
+      - export CONFIGURATION=honduras-production
+      - apt install curl wget unzip -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip";
+      - *iverifybuild
+      - *buildPushTag
+
+  honduras-dev: &honduras-dev
+    script:  
+      - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
+      - export IMAGE_NAME_TAG=$IMAGE_NAME:honduras-$BITBUCKET_TAG
+      - export CONFIGURATION=honduras-development
+      - *iverifybuild
+      - *buildPushTag
+
+
   services:
     docker:
       memory: 4096
@@ -17,47 +81,6 @@ definitions:
       - REPO=$(aws ecr describe-repositories --region eu-west-1 --query "repositories[?repositoryName=='${BITBUCKET_REPO_SLUG}'].repositoryName" --output text)
       - if [[ -z $REPO ]]; then aws ecr create-repository --region eu-west-1 --repository-name $BITBUCKET_REPO_SLUG; fi
 
-  buildPush: &buildPushTag
-    name: Build & Push
-    caches:
-      - docker
-    services:
-      - docker
-    script:
-      - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
-      - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
-      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR
-      - docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
-      - docker push $IMAGE_NAME_TAG-api
-      - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
-      - docker push $IMAGE_NAME_TAG-iverify
-      - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/Dockerfile-prod .
-      - docker push $IMAGE_NAME_TAG-triage
-      - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .
-      - docker push $IMAGE_NAME_TAG-publisher
-  iverifybuild: &iverifybuild
-    name: Build Iverify
-    image:
-        name: node:14.17.1 
-    script:
-      - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
-      - export IMAGE_NAME_TAG=$IMAGE_NAME:$BITBUCKET_TAG
-      - npm install npm@latest -g
-      - apt-get update 
-      - apt-get install -y libgtk2.0-0   libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb
-      - cd apps/iverify
-      - npm install
-      - npm install font-awesome
-      - export PATH=node_modules/.bin:$PATH
-      - npm install -g @angular/cli
-      - npm install -g nx
-      - ng build iverify --configuration=production
-      - cd ../../
-      - npm install
-      - nx build triage 
-      - nx build publisher
-    artifacts: 
-      - dist/**
 
   build: &build
     name: Build
@@ -65,30 +88,57 @@ definitions:
       - docker
     script:
       - export IMAGE_NAME_TAG=build
+      - *iverifybuild
       - docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
       - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
       - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/Dockerfile-prod .
       - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .
 
 pipelines:
-  default:
-    - step: 
-        size: 2x
-        <<: *iverifybuild
-    - step: 
-        services:
-          - docker
-        <<: *build
+  branches:
+    master:
+      - parallel:      
+        - step:
+            name: Build Kenia
+            image:
+                name: node:14.17.1 
+            <<: *build
+        - step:
+            name: Build Honduras
+            image:
+                name: node:14.17.1 
+            <<: *build
   tags:
-    '*':
+    'dev*':
       - step: 
           *checkRepo
+      - parallel: 
+        - step:
+            name: Build Kenia
+            image:
+                name: node:14.17.1 
+            <<: *kenia-dev
+
+        - step:
+            name: Build Honduras
+            image:
+                name: node:14.17.1 
+            <<: *honduras-dev
+
+    'v*':
       - step: 
-          size: 2x
-          <<: *iverifybuild
-      - step: 
-          services:
-            - docker
-          <<: *buildPushTag
+          *checkRepo
+      - parallel: 
+        - step:
+            name: Build Kenia
+            image:
+                name: node:14.17.1 
+            <<: *kenia
+
+        - step:
+            name: Build Honduras
+            image:
+                name: node:14.17.1 
+            <<: *honduras
 
 

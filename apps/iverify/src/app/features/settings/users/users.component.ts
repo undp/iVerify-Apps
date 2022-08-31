@@ -5,9 +5,9 @@ import { Subscription, throwError} from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ToastType } from '../../toast/toast.component';
 import { ToastService } from '../../toast/toast.service';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { RoleItem } from '@iverify/core/models/roles';
-
+import { isEmpty } from 'lodash';
 
 @Component({
   selector: 'iverify-users',
@@ -20,7 +20,8 @@ export class UsersComponent implements OnInit {
   isEditing: boolean = false;
   userForm: FormGroup;
   showPassword: boolean = false;
-  role: RoleItem[];
+  selectedRole: RoleItem[];
+  rolesList: any[];
   
   constructor(
     private userService: UserService, 
@@ -31,120 +32,91 @@ export class UsersComponent implements OnInit {
       this.subs = new Subscription();
       toast.setViewContainerRef(viewContainerRef);
   }
-
-  getFormValidationErrors(form: FormGroup) {
-
-  const result: any = [];
-  Object.keys(form.controls).forEach(key => {
-
-    const controlErrors: any = form.get(key).errors;
-    if (controlErrors) {
-      Object.keys(controlErrors).forEach(keyError => {
-        result.push({
-          'control': key,
-          'error': keyError,
-          'value': controlErrors[keyError]
-        });
-      });
-    }
-  });
-
-  return result;
-}
-
-  
+ 
   ngOnInit(): void {
-    this.role = [
-          {
-            "id": 1,
-            "name": "admin",
-            "description": "string",
-            "resource": [{"name":"users","permissions":["read","write","update","delete"]},{"name":"roles","permissions":["read","write","update","delete"]}]
-          }
-    ];
-
-  this.userForm = new FormGroup({
-      firstName: new FormControl('', Validators.required),
-      lastName: new FormControl('', Validators.required),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', Validators.required),
-      // roles: new FormControl('', Validators.required),
-      phone: new FormControl('', [Validators.required, Validators.pattern('[0-9]*')]),
-      address: new FormControl('')
+    if (!isEmpty(this.data.roles)) {
+      this.rolesList = this.data.roles;
+      if (!isEmpty(this.data.element)) {
+        this.selectedRole = this.rolesList.filter(item => item.name === (this.data && this.data.element.roles[0].name))[0];
+      }
+    }
+    this.userForm = new FormGroup({
+        firstName: new FormControl('', Validators.required),
+        lastName: new FormControl('', Validators.required),
+        email: new FormControl('', [Validators.required, Validators.email]),
+        password: new FormControl('', Validators.required),
+        roles: new FormControl('', Validators.required),
+        phone: new FormControl('', [Validators.required, Validators.pattern('^\\+260(96|76|95|75|97|77)\\d{7}$')]),
+        address: new FormControl('')
     });
-
+    if (this.data.element && this.data.element.id > 0) {
+      this.userForm.controls['password'].setValidators([]);
+      this.userForm.patchValue(this.data.element);  
+      this.isEditing = true;
+    } else {
+      this.isEditing = false;
+    }
   }
 
   onNoClick(): void {
-    this.dialogRef.close();
-  }
-
-  getUsersList() {
-    // this.listOption = {
-    //   offset: this.offset,
-    //   limit: this.limit,
-    //   orderby: 'realname',
-    //   order: OrderSort.Asc,
-    //   active: (this.isApproved) ? 1 : 0
-    // };
-    // this.subs.add(
-    //   this.userService.list(this.listOption).subscribe(data => {
-    //     this.users = data.results;
-    //     if (!this.isApproved) {
-    //       this.users = this.users.filter(item => item.active === false);
-    //     }
-    //     this.total_count = data.total_count;
-    //     if (!this.isApproved) {
-    //       this.updateCount.next(this.total_count);
-    //     }
-    //   })
-    // );
+    this.toast.show(ToastType.Success, (this.isEditing) ? 'TOAST_UPDATE_USER' : 'TOAST_CREATE_USER');
+    setTimeout(() => {
+      this.dialogRef.close(true);
+    }, 500);
   }
 
   onUserClick() {
-
-    let msgTemplate    = 'TOAST_CREATE_USER';
-    let errorTemplate  = 'TOAST_CREATE_USER_ERROR';
+    this.getFormValidationErrors(this.userForm);
+		let reqBody = this.userForm.value;
+    let { roles } = this.userForm.value;
+    
 		if (!this.isEditing) {
-			const reqBody = this.userForm.value;
-      reqBody.roles = this.role;
+      reqBody.roles = [roles];
 			this.subs.add(
 				this.userService.register(reqBody)
 				.pipe(
 					catchError((err) => {
-						if (err && err.statusText) {
-              this.onNoClick();
-							this.toast.show(ToastType.Danger, err.statusText);
-						}
+            this.dialogRef.close();
 						return throwError(err);
 				}))
-				.subscribe(async response => {
+				.subscribe(response => {
           this.onNoClick();
-					this.toast.show(ToastType.Success, msgTemplate);
 				})
 			);
 		} else {
-			// const reqBody 	= this.userForm.value;
-			// msgTemplate 	= 'TOAST_UPDATE_USER';
-			// if (reqBody && isEmpty(reqBody.password)) {
-			// 	delete reqBody.password;
-			// }
-			// if (!this.isApproved) {
-			// 	reqBody.active 	= true;
-			// 	msgTemplate 	= 'TOAST_APPROVE_USER';
-			// }
-			// this.subs.add(
-			// 	this.userService.updateUser(reqBody, this.editId).subscribe(
-			// 		async response => {
-			// 			this.generateUserExtra( { info: { ...response, ...reqBody }, isEditing: this.isEditing });
-			// 			this.onModalClose.next(false);
-			// 		}
-      //   		)
-			// );
-			// this.toast.show(ToastType.Success, msgTemplate);
+      reqBody.roles = [roles];
+      delete reqBody.password;
+			this.subs.add(
+				this.userService.updateUser(reqBody, this.data.element.id)
+        .pipe(
+					catchError((err) => {
+						return throwError(err);
+				}))
+        .subscribe(
+					async response => {
+						this.onNoClick();
+					}
+        )
+			);
 		}
-
   }
+
+  getFormValidationErrors(form: FormGroup) {
+  const result: any = [];
+    Object.keys(form.controls).forEach(key => {
+      const controlErrors: any = form.get(key).errors;
+      if (controlErrors) {
+        Object.keys(controlErrors).forEach(keyError => {
+          result.push({
+            'control': key,
+            'error': keyError,
+            'value': controlErrors[keyError]
+          });
+        });
+      }
+    });
+  return result;
+}
 
 
 }

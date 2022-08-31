@@ -66,11 +66,13 @@ export class UsersService {
     
     async update(id: string, updateDto: UpdateUserDto) {
         if(updateDto['password']) updateDto.password = await this.encryptPassword(updateDto.password);
-        const roles: Roles[] = updateDto['roles'] ?
+        const roles: Roles[] = (updateDto['roles']) ?
         await Promise.all(
-            updateDto.roles.map(role => this.preloadRoleByName(role['name']))
+            updateDto.roles.map((role) => {
+                return this.preloadRoleByName(role['name'])
+            })
         ) :
-        [];
+        [null];
 
         const user = await this.userRepository.preload({
             id: +id,
@@ -95,7 +97,6 @@ export class UsersService {
     }
 
     private async preloadRoleByName(name: string) {
-        console.log(name);
         const existingRole: Roles = await this.rolesRepository.findOne({"name": name});
         if(existingRole) return existingRole;
         return this.rolesRepository.create({name})

@@ -1,162 +1,176 @@
+<div class="published">
+    <p *ngIf="totalPublished">
+      {{ (totalPublished > 0) ? totalPublished : 0}} {{ 'TICKETS_COMPLETED' | translate }}
+    </p>
+</div> 
 <div class="row">
-  
-  <div class="d-flex justify-content-between">
-    <div class="col-sm-8">
+  <div class="d-inline-flex flex-wrap" style="margin-top: -10px;">
     <mat-form-field appearance="fill">
-      <mat-label>{{ 'DATE_TEXT' | translate }}</mat-label>
-      <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-        <input matStartDate formControlName="start" placeholder="Start date" />
-        <input
-          matEndDate
-          formControlName="end"
-          (dateChange)="getStatisticsByDates()"
-          placeholder="End date"
-        />
-      </mat-date-range-input>
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-date-range-picker #picker>
-        <mat-date-range-picker-actions>
-          <button mat-button matDateRangePickerCancel>Cancel</button>
-          <button mat-raised-button color="primary" matDateRangePickerApply>
-            Apply
-          </button>
-        </mat-date-range-picker-actions>
-      </mat-date-range-picker>
-      <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')"
-        >Invalid start date</mat-error
-      >
-      <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')"
-        >Invalid end date</mat-error
-      >
+      <mat-label>{{ 'START' | translate }}</mat-label>
+     <input matInput [matDatepicker]="picker1" [(ngModel)]="startDate">
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
     </mat-form-field>
-    </div>
-    <div class="published col-sm-4">
-      <p *ngIf="totalPublished">
-        {{ totalPublished[0].count }} {{ 'TICKETS_COMPLETED' | translate }}
-      </p>
-    </div>
+    <mat-form-field appearance="fill" style="margin-left: 10px;">
+      <mat-label>{{ 'END' | translate }}</mat-label>
+     <input matInput [matDatepicker]="picker2" [min]="startDate" [(ngModel)]="endDate">
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+     <div style="margin: 20px 0px 0px 10px;"><button  mat-raised-button (click)="getStatisticsByDates()">{{'APPLY'|translate}}</button></div>
   </div>
-</div>
 <mat-grid-list
-  gutterSize="10px"
   [cols]="breakpoint"
-  rowHeight="2:1"
-  *ngIf="statData && (statData.results | json) !== ({} | json)"
+  rowHeight="5:2"
+  *ngIf="isData"
   (window:resize)="onResize($event)"
+  [gutterSize]="'3px'"
 >
   <mat-grid-tile>
-    <mat-card>
-      <mat-card-title>
+    <mat-grid-tile-header>
       <p class="fontRalewayRegular text-uppercase">
         {{ 'ALL_TICKETS_BY_TYPE' | translate }}
       </p>
-      </mat-card-title>    
-    <mat-card-content>
-      <iverify-charts [chartType]="1" [data]="ticketsByType"></iverify-charts>
-    </mat-card-content>
-    </mat-card>
+      <i (click)="openDetailModal(CountBy.violationType, 'ALL_TICKETS_BY_TYPE', ChartTypeEnum.BAR)" class="fa fa-expand"></i>
+    </mat-grid-tile-header>
+    <iverify-charts *ngIf="ticketsByType && ticketsByType.length > 0" [chartType]="ChartTypeEnum.BAR" [data]="ticketsByType"></iverify-charts>
+    <span  *ngIf="ticketsByType && ticketsByType.length === 0" class="fontRalewayRegular text-uppercase">
+       {{ 'NO_RECORDS' | translate }}
+    </span>
   </mat-grid-tile>
   <mat-grid-tile>
-     <mat-card>
-      <mat-card-title>
+    <mat-grid-tile-header>
       <p class="fontRalewayRegular text-uppercase">
         {{ 'ALL_TICKETS_BY_TAG' | translate }}
       </p>
-    </mat-card-title>    
-    <mat-card-content>
-      <iverify-charts [chartType]="1" [data]="ticketsByTag"></iverify-charts>
-      </mat-card-content>
-    </mat-card>
+      <i (click)="openDetailModal(CountBy.tag, 'ALL_TICKETS_BY_TAG', ChartTypeEnum.BAR)" class="fa fa-expand"></i>
+    </mat-grid-tile-header>
+    <iverify-charts *ngIf="ticketsByTag && ticketsByTag.length > 0"  [chartType]="ChartTypeEnum.BAR" [data]="ticketsByTag"></iverify-charts>
+    <span  *ngIf="ticketsByTag && ticketsByTag.length === 0" class="fontRalewayRegular text-uppercase">
+       {{ 'NO_RECORDS' | translate }}
+    </span>
   </mat-grid-tile>
-  <mat-grid-tile>
-    <mat-card>
-      <mat-card-title>
+  <mat-grid-tile >
+    <mat-grid-tile-header >
       <p class="fontRalewayRegular text-uppercase">
         {{ 'ALL_TICKETS_BY_CHANNEL' | translate }}
       </p>
-     </mat-card-title>    
-    <mat-card-content>
-      <iverify-charts [chartType]="1" [data]="ticketsByChannel"></iverify-charts>
-    </mat-card-content>
-    </mat-card>
+    </mat-grid-tile-header>
+    <iverify-charts *ngIf="ticketsByChannel && ticketsByChannel.length > 0" [chartType]="ChartTypeEnum.BAR" [data]="ticketsByChannel"></iverify-charts>
+    <span  *ngIf="ticketsByChannel && ticketsByChannel.length === 0" class="fontRalewayRegular text-uppercase">
+       {{ 'NO_RECORDS' | translate }}
+    </span>
   </mat-grid-tile>
-  <mat-grid-tile>
-    <mat-card>
-      <mat-card-title style="margin-top: 15px;">
+  <!-- <mat-grid-tile>
+    <mat-grid-tile-header>
       <p class="fontRalewayRegular text-uppercase">
         {{ 'CURRENT_STATUS' | translate }}
       </p>
-    </mat-card-title>    
-    <mat-card-content>
+    </mat-grid-tile-header>
+    <div style="margin-top: 3rem">
       <iverify-charts
+        *ngIf="ticketsByCurrentStatus && ticketsByCurrentStatus.length > 0"
         [chartType]="3"
         [data]="ticketsByCurrentStatus"
       ></iverify-charts>
-   </mat-card-content>
-    </mat-card>
+      <span  *ngIf="ticketsByCurrentStatus && ticketsByCurrentStatus.length === 0" class="fontRalewayRegular text-uppercase">
+       {{ 'NO_RECORDS' | translate }}
+      </span>
+    </div>
+  </mat-grid-tile> -->
+  <mat-grid-tile>
+    <mat-grid-tile-header>
+      <p class="fontRalewayRegular text-uppercase">
+        {{ 'TICKETS_FOLDER' | translate }}
+      </p>
+      <i (click)="openDetailModal(CountBy.folder, 'TICKETS_FOLDER', ChartTypeEnum.AREA_STACKED)" class="fa fa-expand"></i>
+    </mat-grid-tile-header>
+    <div style="margin-top: 5rem">
+      <iverify-charts *ngIf="ticketsByFolder && ticketsByFolder.length > 0" [chartType]="ChartTypeEnum.AREA_STACKED" [data]="ticketsByFolder"></iverify-charts>
+      <span  *ngIf="ticketsByFolder && ticketsByFolder.length === 0" class="fontRalewayRegular text-uppercase">
+       {{ 'NO_RECORDS' | translate }}
+      </span>
+    </div>
   </mat-grid-tile>
   <mat-grid-tile>
-    <mat-card>
-      <mat-card-title>
+    <mat-grid-tile-header>
       <p class="fontRalewayRegular text-uppercase">
         {{ 'STATUS_BY_WEEK' | translate }}
       </p>
-    </mat-card-title>    
-    <mat-card-content>
-      <iverify-charts [chartType]="2" [data]="ticketsByWeek"></iverify-charts>
-    </mat-card-content>
-    </mat-card>
+      <i (click)="openDetailModal(CountBy.verifiedByDay, 'STATUS_BY_WEEK', ChartTypeEnum.LINE)" class="fa fa-expand"></i>
+    </mat-grid-tile-header>
+    <div style="margin-top: 5rem">
+      <iverify-charts *ngIf="ticketsByWeek && ticketsByWeek.length > 0" [chartType]="ChartTypeEnum.LINE" [data]="ticketsByWeek"></iverify-charts>
+      <span  *ngIf="ticketsByWeek && ticketsByWeek.length === 0" class="fontRalewayRegular text-uppercase">
+       {{ 'NO_RECORDS' | translate }}
+      </span>
+    </div>
   </mat-grid-tile>
-  <mat-grid-tile>                                       
-     <mat-card>
-      <mat-card-title>
+  <mat-grid-tile>
+    <mat-grid-tile-header>
       <p class="fontRalewayRegular text-uppercase">
         {{ 'TICKETS_BY_AGENT' | translate }}
       </p>
-      </mat-card-title>    
-      <mat-card-content>
-      <iverify-charts [chartType]="4" [data]="ticketsByAgents"></iverify-charts>
-    </mat-card-content>
-    </mat-card>
+      <i (click)="openDetailModal(CountBy.agentAllStatuses, 'TICKETS_BY_AGENT', ChartTypeEnum.STACKED)" class="fa fa-expand"></i>
+    </mat-grid-tile-header>
+    <iverify-charts *ngIf="ticketsByAgents && ticketsByAgents.length > 0" [chartType]="ChartTypeEnum.STACKED" [data]="ticketsByAgents"></iverify-charts>
+    <span  *ngIf="ticketsByAgents && ticketsByAgents.length === 0" class="fontRalewayRegular text-uppercase">
+       {{ 'NO_RECORDS' | translate }}
+      </span>
   </mat-grid-tile>
-  <mat-grid-tile [colspan]="breakpoint" rowspan="1">
+  <mat-grid-tile style="margin: 10px 0px;">
     <mat-grid-tile-header>
-      <mat-form-field appearance="fill">
+      <p class="fontRalewayRegular text-uppercase">
+        {{ 'TICKETS_BY_TOXICITY' | translate }}
+      </p>
+      <i (click)="openDetailModal(CountBy.toxicity, 'TICKETS_BY_TOXICITY', ChartTypeEnum.VERTICAL_BAR_STACKED)" class="fa fa-expand"></i>
+    </mat-grid-tile-header>
+    <div style="margin-top: 5rem">
+    <iverify-charts *ngIf="ticketsByToxicity && ticketsByToxicity.length > 0" [chartType]="ChartTypeEnum.VERTICAL_BAR_STACKED" [data]="ticketsByToxicity"></iverify-charts>
+      <span  *ngIf="ticketsByToxicity && ticketsByToxicity.length === 0" class="fontRalewayRegular text-uppercase">
+       {{ 'NO_RECORDS' | translate }}
+      </span>
+    </div>
+  </mat-grid-tile>  
+</mat-grid-list>
+<div class="row mt-4" *ngIf="this.isData">
+<mat-form-field appearance="fill" class="response-label">
       <mat-label>{{'RESPONSE_VELOCITY'|translate}}</mat-label>
         <mat-select
           (selectionChange)="getAllTicketsData()"
           [(ngModel)]="selectedTimeType"
         >
-          <mat-option [value]="1">
+          <mat-option [value]="1" >
             {{ 'RESPONSE_TIME' | translate }}
           </mat-option>
           <mat-option [value]="2">
             {{ 'RESOLVE_TIME' | translate }}
           </mat-option>
         </mat-select>
+        
       </mat-form-field>
-      <p
-        class="fontRalewayRegular text-uppercase text-center"
-        style="margin: 0 auto"
-      >
+      <mat-label
+        class="fontRalewayRegular text-uppercase text-center">
         {{
           responseVelocity|translate
         }}
-      </p>
-</mat-grid-tile-header>
-    <iverify-charts
-      [chartType]="5"
-      [data]="bubbleData"
-      [responseType]="selectedTimeType"
+      </mat-label>
+    <div class="row mt-3 bubble-chart">
+      <iverify-charts
+      [chartType]="ChartTypeEnum.BUBBLE"
+      [viewVal]="bubbleChartViewSize"
+      [data]="ticketsReponseTime"
     ></iverify-charts>
-
-  </mat-grid-tile>
-</mat-grid-list>
-<div class="">
+    </div>
+</div>   
+</div>
+<div>
   <p
     class="custom-report-info marg-left-1"
-    *ngIf="statData && (statData.results | json) === ({} | json)"
+    *ngIf="!this.isData"
   >
     {{ 'NO_RECORDS' | translate }}
   </p>
 </div>
+
+

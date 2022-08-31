@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Get, BadRequestException, NotFoundException, Put, Query, Delete, UseGuards, Injectable, Scope, Inject, BadGatewayException } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { RolesService } from './roles.service'
 import { CreateRoleDto } from './dto/createRole.dto';
 import { InfoLogger } from '../logger/info-logger.service';
@@ -26,7 +26,7 @@ export class RolesController {
     @Post()
     @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async create(@Body() createRoleDto: CreateRoleDto) {
-        const userId = (this.request.user) ? this.request.user['id'] : 1;
+        const userId = this.request.user && this.request.user['id'] ? this.request.user['id'] : 1;
         if (userId) {
             const userRoles = await this.rolesService.createRole(createRoleDto, userId);
             if (!userRoles) {
@@ -78,5 +78,16 @@ export class RolesController {
         const deletedRole = await this.rolesService.deleteRole(roleId.roleId);
         if (!deletedRole) throw new BadGatewayException(roleMessages.roleDeleteFail);
         return { message: roleMessages.roleDeleteSucess };
+    }
+
+    @Post('createDefaultRole')
+    @ApiExcludeEndpoint()
+    async createDefaultRole() {
+        const adminRole = await this.rolesService.createDefaultAdminRole();
+        if (!adminRole) {
+            this.infoLogger.error(roleMessages.roleCreateFail);
+            throw new BadRequestException(roleMessages.roleCreateFail);
+        }
+        return { message: adminRole.message, data: adminRole.roleData };
     }
 }

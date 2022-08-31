@@ -51,7 +51,7 @@ export const routes: Routes = [
       }
     ]
   },
-  { path: '', redirectTo: '/dashboard/index', pathMatch: 'full' }
+  { path: '',  pathMatch: 'full', redirectTo: '/dashboard/index' }
 ];
 
 @NgModule({
