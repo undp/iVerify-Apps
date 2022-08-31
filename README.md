@@ -14,14 +14,19 @@
 <a name="overview"></a>
 ## **Overview** 
 
-iVerifyApps is a set of [Node.js](https://nodejs.org/en/) apps responsible for the integration and data analytics layers in the iVerify toolset to be used in addressing information pollution (misinformation) and hate speech nationally.
+The solution comprises of 5 custom components (iVerify Dashboard, WordPress website, Dashboard API, Publisher bot, Triage bot) plus 3 external components integrated in the solution (Meedan Check, CrowdTangle, Perspective/Detoxify). Each custom component is deployed as an independent application within a dedicated Docker container. These are
+*	The WordPress website container
+*	The iVerify Dashboard container
+*	The Dashboard API container
+*	The Publisher bot container
+*	The Triage bot container
 
+**This repository**,iVerifyApps is the set of [Node.js](https://nodejs.org/en/) apps responsible for the integration and data analytics layers in the iVerify toolset to be used in addressing information pollution (misinformation) and hate speech nationally.
 
 <a name="components"></a>
 ## **Components** 
-
  
- There are 4 different apps, conveniently held in a single [Nrwl/Nx](https://nx.dev/getting-started/intro) monorepo:
+There are 4 different apps, conveniently held in a single [Nrwl/Nx](https://nx.dev/getting-started/intro) monorepo:
  
 *  **api**: the backend for the Dashboard, build with [Nest.js](https://nestjs.com/)
 *  **iverify**: the frontend for the Dashboard, built with [Angular](https://angular.io/)
@@ -30,10 +35,8 @@ iVerifyApps is a set of [Node.js](https://nodejs.org/en/) apps responsible for t
 
 Additionally, a **MySql database** is required for persistence.
 
-
 <a name="funcs"></a>
 ## **Main functionalities** 
-
 
 **Integration features:**
 
@@ -100,10 +103,9 @@ The Dashboard front-end offers data visualizations of several indicators giving 
 * A working instance of [Meedan Check](https://meedan.com/check) 
 * On Meedan Check, there must be [webhooks](https://github.com/meedan/check/wiki/Create-Bots-on-Check) configured to hit these endpoints:
 	*  Event `report_published` sends data to the endpoint:  `PUBLISHER_URL/publish/publish-webhook`
-	
 	*  Event `update_annotation_verification_status` sends data to the endpoint:  `API_URL/stats/item-status-changed`
 
-	Both endpoints receive a minimum payload containing the dbid of the item that triggered the event. iVerifyApps will subsequently fetch the additional data it needs from Meedan Check.
+Both endpoints receive a minimum payload containing the dbid of the item that triggered the event. iVerifyApps will subsequently fetch the additional data it needs from Meedan Check.
 * A WordPress website with [Advanced Custom Fields](https://www.advancedcustomfields.com/) plugin enabled (see [iVerifyWebSite](https://github.com/undp/iVerify-Website) for detailed instructions on how to set up the WordPress site)
 * A [CrowdTangle](https://www.crowdtangle.com/) account with Saved Searches and an API token
 
@@ -112,7 +114,7 @@ The Dashboard front-end offers data visualizations of several indicators giving 
 
 The apps need a number of environment variables that can be stored in a single `.env` file at the root of the project. This is the list of the variables needed:
 
-* `CHECK_API_URL`: URL of the Meedan Check instance
+- `CHECK_API_URL`: URL of the Meedan Check instance
 
 - `CHECK_API_TOKEN`: Meedan Check authentication token
 
@@ -204,6 +206,7 @@ All backend apps have Swagger. To access the API docs go to APP_URL/api.
 ## **Release notes** 
 * v1.0: Zambia
 * v2.0: Honduras
+* v3.0: Kenya
 
 <a name="support"></a>
 ## **Support** 
