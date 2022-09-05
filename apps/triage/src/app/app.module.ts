@@ -11,7 +11,7 @@ import { TriageConfig } from './config';
 import { CronService } from './cron.service';
 import { PerspectiveClientModule } from '@iverify/perspective-client/src';
 import { ApiClientModule, ApiClientService } from '@iverify/api-client/src';
-
+import { TranslateService } from './TranslateService/TranslateService';
 @Module({
   imports: [
     HttpModule, 
@@ -23,6 +23,6 @@ import { ApiClientModule, ApiClientService } from '@iverify/api-client/src';
     ScheduleModule.forRoot()
   ],
   controllers: [AppController],
-  providers: [AppService, TriageConfig, CronService],
+  providers: [AppService, TriageConfig, CronService, TranslateService],
 })
 export class AppModule {}

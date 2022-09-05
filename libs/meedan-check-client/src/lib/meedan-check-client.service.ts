@@ -74,8 +74,8 @@ export class MeedanCheckClientService {
     );
   }
 
-  createItemFromWp(url: string, content: string): Observable<any>{
-    const query: string = this.helper.buildCreateItemFromWPMutation(url, content);
+  createItemFromWp(url: string, content: string, wp_key='message_from_website'): Observable<any>{
+    const query: string = this.helper.buildCreateItemFromWPMutation(url, content, wp_key);
     console.log('query: ', query)
     const headers = this.config.headers;
     console.log('headers: ', headers)
