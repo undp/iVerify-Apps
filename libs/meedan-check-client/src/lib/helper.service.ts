@@ -72,10 +72,10 @@ export class CheckClientHelperService{
 
     }
 
-    buildCreateItemFromWPMutation(url: string, content: string): string{
+    buildCreateItemFromWPMutation(url: string, content: string, wp_key = 'message_from_website'): string{
       const folderId = +process.env.CHECK_TIPLINE_FOLDER_ID;
       const taskResponse = JSON.stringify({
-        mensaje_del_sitio_web: content
+        [wp_key]: content
       })
       const mutation = `mutation create{
           createProjectMedia(input: {
