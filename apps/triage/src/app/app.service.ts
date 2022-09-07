@@ -5,6 +5,7 @@ import { MlServiceClientService } from 'libs/ml-service-client/src/lib/ml-servic
 import { TriageConfig } from './config';
 import { PerspectiveClientService } from '@iverify/perspective-client/src/lib/perspective-client.service';
 import { MlServiceType } from '@iverify/iverify-common';
+import { TranslateService } from './TranslateService/TranslateService';
 
 @Injectable()
 export class AppService {
@@ -16,7 +17,8 @@ export class AppService {
     private mlClient: MlServiceClientService,
     private perspectiveClient: PerspectiveClientService,
     private checkClient: MeedanCheckClientService,
-    private config: TriageConfig
+    private config: TriageConfig,
+    private translate: TranslateService
     ){}
 
   async analyze(startDate: string, endDate: string): Promise<number> {
@@ -107,7 +109,10 @@ export class AppService {
   }
 
   async createItemFromWp(url: string, content: string){
-    return await this.checkClient.createItemFromWp(url.trim(), content);
+    const lang = process.env && process.env.language ? process.env.language : 'en';
+    let wp_key = this.translate.get('message_from_website', lang);
+    if(!wp_key) wp_key = 'message_from_website';
+    return await this.checkClient.createItemFromWp(url.trim(), content, wp_key);
   }
 
   private async mlAnalyze(text: string){
