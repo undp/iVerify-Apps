@@ -105,7 +105,6 @@ pipelines:
   custom:
     db-dump-production:
       - step:
-          deployment: Leman
           <<: *DBDump
           script:
             - opsctl get dbdump -p $IMAGE_NAME_TAG-api -f dump.sql.gz
