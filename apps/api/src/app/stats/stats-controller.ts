@@ -57,8 +57,7 @@ export class StatsController {
       const data = body.data;
       const id = data.project_media.dbid;
       this.logger.log(`Event: ${event}; Item id: ${id}`);
-      // const day = this.formatService.formatDate(new Date());
-      const day = this.formatService.formatDate(new Date('2022-10-15'));
+      const day = this.formatService.formatDate(new Date());
       if (event !== 'update_annotation_verification_status') {
         this.logger.log(`[${id}] event ${event} is now allowed for this method`);
         return;
