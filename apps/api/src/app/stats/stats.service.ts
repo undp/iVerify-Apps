@@ -11,7 +11,7 @@ import { MeedanCheckClientService } from "@iverify/meedan-check-client";
 import { CountBy } from "@iverify/common";
 
 @Injectable()
-export class StatsService{
+export class StatsService {
     private readonly logger = new Logger('MeedanCheckClient');
     allStatuses = StatusesMap.map(status => status.value);
     resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
@@ -24,37 +24,54 @@ export class StatsService{
         private formatService: StatsFormatService,
         private checkStatsClient: CheckStatsService,
         private checkClient: MeedanCheckClientService
-        ) {
+    ) {
     }
 
-    async processItemStatusChanged(id: string, day: string){
+    async processItemStatusChanged(id: string, day: string) {
+        this.logger.log(`[${id}] Getting velocities`);
         const velocities = await this.processVelocities(id, day);
+        this.logger.log(`[${id}] Getting report`);
         const meedanItem = await this.checkClient.getReport(id).toPromise() as any;
         const status = meedanItem.status;
-        const verification = await this.processVerification(status, day);
-        return {velocities, verification};
+        this.logger.log(`[${id}] status `, status);
+        const verification = await this.processVerification(id, status, day);
+
+        this.logger.log(`[${id}] process status result veloficite ${JSON.stringify(velocities)} verification ${JSON.stringify(verification)}`);
+        return { velocities, verification };
     }
 
-    async processVerification(status: string, day: string){
-        this.logger.log(`Processing verification for status ${status} and day ${day}`);
-        if(this.resolutionStatuses.indexOf(status)===-1) return;
+    async processVerification(id: string, status: string, day: string) {
+        this.logger.log(`[${id}] Processing verification for status ${status} and day ${day}`);
+
+        if (this.resolutionStatuses.indexOf(status) === -1) {
+            this.logger.log(`[${id}] Status ${status} is outside the reselutionStatuses map`);
+            return;
+        };
+
         const statusObj = StatusesMap.find(s => s['value'] === status);
         const statusLabel = statusObj ? statusObj['label'] : '';
+
+
+        const query = {
+            countBy: CountBy.verifiedByDay,
+            category: statusLabel,
+            day
+        };
+
+        this.logger.log(`[${id}] Search stats with query `, JSON.stringify(query));
+
         const stat: Stats = await this.statsRepository.findOne({
-            where: {
-                countBy: CountBy.verifiedByDay,
-                category: statusLabel,
-                day
-            }
+            where: query,
         });
-        this.logger.log(`Found record: ${stat}`);
-        if(stat) stat.count++;
-        const statToSave = stat ? stat : {day, countBy: CountBy.verifiedByDay, category: statusLabel, count: 1};
-        this.logger.log(`Saving stat: ${JSON.stringify(statToSave)}`);
+
+        this.logger.log(`[${id}] Found record: ${stat}`);
+        if (stat) stat.count++;
+        const statToSave = stat ? stat : { day, countBy: CountBy.verifiedByDay, category: statusLabel, count: 1 };
+        this.logger.log(`[${id}] Saving stat: ${JSON.stringify(statToSave)}`);
         return await this.statsRepository.save(statToSave);
     }
 
-    async addToxicityStats(toxicCount: number, day: string){
+    async addToxicityStats(toxicCount: number, day: string) {
         this.logger.log(`Processing toxicity count ${toxicCount} and day ${day}`);
         const category: string = 'toxic';
         const stat: Stats = await this.statsRepository.findOne({
@@ -65,13 +82,13 @@ export class StatsService{
             }
         });
         this.logger.log(`Found record: ${stat}`);
-        if(stat) stat.count+= toxicCount;
-        const statToSave = stat ? stat : {day, countBy: CountBy.toxicity, category, count: toxicCount};
+        if (stat) stat.count += toxicCount;
+        const statToSave = stat ? stat : { day, countBy: CountBy.toxicity, category, count: toxicCount };
         this.logger.log(`Saving stat: ${JSON.stringify(statToSave)}`);
         return await this.statsRepository.save(statToSave);
     }
 
-    async addToxicPublishedStats(article: Article){
+    async addToxicPublishedStats(article: Article) {
         const day: string = this.formatService.formatDate(new Date(article.creationDate));
         this.logger.log(`Processing toxic published article ${JSON.stringify(article)} and day ${day}`);
         const category: string = article.toxicFlag ? 'publishedToxic' : 'publishedNonToxic';
@@ -83,48 +100,77 @@ export class StatsService{
             }
         });
         this.logger.log(`Found record: ${stat}`);
-        if(stat) stat.count++;
-        const statToSave = stat ? stat : {day, countBy: CountBy.toxicity, category, count: 1};
+        if (stat) stat.count++;
+        const statToSave = stat ? stat : { day, countBy: CountBy.toxicity, category, count: 1 };
         this.logger.log(`Saving stat: ${JSON.stringify(statToSave)}`);
         return await this.statsRepository.save(statToSave);
     }
 
-    async processVelocities(id: string, day: string){
+    async processVelocities(id: string, day: string) {
+        this.logger.log(`[${id}] Getting last status`);
         const results = await this.checkStatsClient.getTicketLastStatus(id).toPromise();
+
+        this.logger.verbose(`[${id}] last status result ${JSON.stringify(results)}`);
+
         const creationDate = DateTime.fromSeconds(+results.project_media.created_at);
+        this.logger.verbose(`[${id}] creationDate ${creationDate}`);
+
         const title = results.project_media.title;
+        this.logger.verbose(`[${id}] title ${title}`);
+
         const node = results.project_media.log.edges.find(node => node.node.event_type === 'update_dynamicannotationfield');
-        if(!node) return;
+
+        this.logger.verbose(`[${id}] node filtered ${JSON.stringify(node)}`);
+
+        if (!node) {
+            this.logger.log(`[${id}] node event type is out of the scope of the velocites verification`);
+            return;
+        };
+
         const status_changes_obj = JSON.parse(node.node.object_changes_json);
+
+        this.logger.verbose(`[${id}] status changes obj ${JSON.stringify(status_changes_obj)}`);
+
         const values = status_changes_obj.value.map(val => JSON.parse(val));
-        const resolutionDate =  DateTime.fromSeconds(+node.node.created_at);
+
+        const resolutionDate = DateTime.fromSeconds(+node.node.created_at);
         const initialStates = StatusesMap.filter(status => !status.resolution).map(status => status.value);
         const resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
         const defaultStatuses = StatusesMap.filter(status => status.default).map(status => status.value);
         const activeStatuses = StatusesMap.filter(status => !status.default).map(status => status.value);
-        if(initialStates.indexOf(values[0]) > -1 && resolutionStatuses.indexOf(values[1]) > -1){
+
+        this.logger.verbose(`[${id}] 
+                resolution date ${resolutionDate}
+                initial states ${JSON.stringify(initialStates)}
+                resolution statuses ${JSON.stringify(resolutionStatuses)}
+                default statuses ${JSON.stringify(defaultStatuses)}
+                active statuses ${JSON.stringify(activeStatuses)}`);
+
+        if (initialStates.indexOf(values[0]) > -1 && resolutionStatuses.indexOf(values[1]) > -1) {
             const resolutionTime = Math.round(Interval.fromDateTimes(creationDate, resolutionDate).length('hours'));
             const stats: Partial<Stats> = this.formatService.formatResolutionTime(day, title, resolutionTime);
             return await this.saveOne(stats);
-        }
-        else if(defaultStatuses.indexOf(values[0]) > -1 && activeStatuses.indexOf(values[1]) > -1){
+        } else if (defaultStatuses.indexOf(values[0]) > -1 && activeStatuses.indexOf(values[1]) > -1) {
             const responseTime = Math.round(Interval.fromDateTimes(creationDate, resolutionDate).length('hours'));
             // console.log('response time: ', responseTime)
             const stats: Partial<Stats> = this.formatService.formatResponseTime(day, title, responseTime);
             return await this.saveOne(stats);
-        }
-        else return null;
+        } else {
+
+            this.logger.log(`[${id}] statuses changes do not match any mapped status`);
+            return null;
+        };
     }
 
-    async fetchAndStore(day: Date, allPrevius?: boolean){
-        try{
+    async fetchAndStore(day: Date, allPrevius?: boolean) {
+        try {
             const endDate = this.formatService.formatDate(day);
 
             const previousDay = new Date(day.getTime());
             previousDay.setHours(day.getHours() - 24);
-            
+
             const previousYear = new Date(day.getTime());
-            previousYear.setFullYear(day.getFullYear() -1);
+            previousYear.setFullYear(day.getFullYear() - 1);
 
             const startDate = allPrevius ? this.formatService.formatDate(previousYear) : this.formatService.formatDate(previousDay);
 
@@ -156,42 +202,42 @@ export class StatsService{
             ]
             this.logger.log('Saving to DB...');
             return await this.saveMany(stats);
-        }catch(e){
+        } catch (e) {
             throw new HttpException(e.message, 500);
         }
     }
 
-    async getTicketsByAgent(endDate: string){
+    async getTicketsByAgent(endDate: string) {
         const results = await this.checkStatsClient.getTicketsByAgent(this.allStatuses).toPromise();
         return this.formatService.formatTticketsByAgent(endDate, results);
     }
 
-    async getTicketsByFolder(endDate: string){
+    async getTicketsByFolder(endDate: string) {
         const results = await this.checkStatsClient.getTicketsByProjects().toPromise();
         return this.formatService.formatTticketsByProjects(endDate, results);
     }
-    
-    async getTicketsByTags(endDate: string){
+
+    async getTicketsByTags(endDate: string) {
         const results = await this.checkStatsClient.getTicketsByTags().toPromise();
         return this.formatService.formatTticketsByTags(endDate, results);
     }
 
-    async getTicketsBySource(startDate: string, endDate: string){
+    async getTicketsBySource(startDate: string, endDate: string) {
         const results = await this.checkStatsClient.getTicketsBySource(startDate, endDate).toPromise();
         return this.formatService.formatTticketsBySource(endDate, results)
     }
 
-    async getCreatedVsPublished(endDate: string){
+    async getCreatedVsPublished(endDate: string) {
         const results = await this.checkStatsClient.getCreatedVsPublished().toPromise();
         return this.formatService.formatCreatedVsPublished(endDate, results);
     }
 
-    async getTicketsByStatus(endDate: string){
+    async getTicketsByStatus(endDate: string) {
         const results = await this.checkStatsClient.getTicketsByStatuses(StatusesMap).toPromise();
         return this.formatService.formatTticketsByStatus(endDate, results);
     }
 
-    async getTicketsByViolationType(endDate: string){         
+    async getTicketsByViolationType(endDate: string) {
         const results = await this.checkStatsClient.getTicketsByViolationTypes().toPromise();
         this.logger.log(`Got tickets by type: ${JSON.stringify(results)}`);
         const formatted = this.formatService.formatTticketsByViolation(endDate, results);
@@ -205,24 +251,24 @@ export class StatsService{
 
 
 
-    async saveMany(stats: Stats[]){
+    async saveMany(stats: Stats[]) {
         const results: Stats[] = await Promise.all(
             stats.map(stat => this.saveOne(stat))
         );
-        return results; 
+        return results;
     }
 
-    private async saveOne(stat: Partial<Stats>){
+    private async saveOne(stat: Partial<Stats>) {
         const newRecord = await this.statsRepository.create(stat);
         return this.statsRepository.save(newRecord);
     }
 
-    async getByDate(startDate: Date, endDate: Date): Promise<any>{
+    async getByDate(startDate: Date, endDate: Date): Promise<any> {
         const start = new Date(startDate.getTime());
-        start.setHours(startDate.getHours() -24);
+        start.setHours(startDate.getHours() - 24);
 
         const end = new Date(endDate.getTime());
-        end.setHours(endDate.getHours() +24);
+        end.setHours(endDate.getHours() + 24);
 
         const formattedStart = this.formatService.formatDate(start);
         const formattedEnd = this.formatService.formatDate(end);
@@ -239,7 +285,7 @@ export class StatsService{
         const aggregatedStats = this.aggregate(aggregationStats);
 
         const searchStart = new Date(end.getTime());
-        searchStart.setHours(endDate.getHours() -24);
+        searchStart.setHours(endDate.getHours() - 24);
         const formattedSearchStart = this.formatService.formatDate(searchStart);
 
         const latestStats: Stats[] = await this.statsRepository.find({
@@ -260,12 +306,12 @@ export class StatsService{
                     CountBy.toxicity.toString()
                 ])
             }
-        }); 
+        });
 
         const latest = this.aggregateByCountBy(latestStats);
         //group by date:
         Object.keys(latest).forEach(key => {
-            if(key !== CountBy.responseVelocity && key !== CountBy.resolutionVelocity){
+            if (key !== CountBy.responseVelocity && key !== CountBy.resolutionVelocity) {
                 latest[key] = this.aggregateByDate(latest[key])
             }
         })
@@ -273,40 +319,40 @@ export class StatsService{
 
         return {
             // range: { startDate: formattedStart, endDate: formattedEnd },
-            results: {...aggregatedStats, ...latest} 
+            results: { ...aggregatedStats, ...latest }
         }
 
     }
 
-    async dbIsEmpty(){
+    async dbIsEmpty() {
         const count = await this.statsRepository.count({});
         return count === 0;
     }
 
-    async truncateTable(){
+    async truncateTable() {
         const count = await this.statsRepository.count({});
         return count === 0;
     }
 
-    private aggregateByDate(stats: Stats[]){
+    private aggregateByDate(stats: Stats[]) {
         return stats.reduce((acc, val) => {
-            const obj: Partial<Stats> = {category: val.category, count: val.count};
-            if(!acc[val.day]) acc[val.day] = [obj];
+            const obj: Partial<Stats> = { category: val.category, count: val.count };
+            if (!acc[val.day]) acc[val.day] = [obj];
             else acc[val.day].push(obj)
             return acc;
         }, {});
     }
 
-    private aggregateByCountBy(stats: Stats[]){
+    private aggregateByCountBy(stats: Stats[]) {
         return stats.reduce((acc, val) => {
-            const obj = {category: val.category, count: val.count, day: val.day};
-            if(!acc[val.countBy]) acc[val.countBy] = [obj];
+            const obj = { category: val.category, count: val.count, day: val.day };
+            if (!acc[val.countBy]) acc[val.countBy] = [obj];
             else acc[val.countBy].push(obj)
             return acc;
         }, {});
     }
 
-    private aggregate(stats: Stats[]){
+    private aggregate(stats: Stats[]) {
 
         const aggregateByCountBy = this.aggregateByCountBy(stats);
 
@@ -317,12 +363,12 @@ export class StatsService{
 
     }
 
-    private aggregateByCategory(objArr: {category: string, count: number}[]){
+    private aggregateByCategory(objArr: { category: string, count: number }[]) {
         return objArr.reduce((acc, val) => {
-            if(!acc[val.category]) acc[val.category] = val.count;
+            if (!acc[val.category]) acc[val.category] = val.count;
             else acc[val.category] = acc[val.category] + val.count;
             return acc;
         }, {})
     }
-    
+
 }

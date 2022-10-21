@@ -39,80 +39,49 @@ export class ItemChangedDto {
 export class StatsController {
   private readonly logger = new Logger('StatsController');
 
-  constructor(private readonly statsService: StatsService, private formatService: StatsFormatService) {}
+  constructor(private readonly statsService: StatsService, private formatService: StatsFormatService) { }
 
   @Post('stats-by-range')
   // @UseGuards(JWTTokenAuthGuard)
-  async statsByRange(@Body() body: DateBraket){
+  async statsByRange(@Body() body: DateBraket) {
     const startDate = new Date(body['startDate']);
-    const endDate = new Date(body['endDate']) 
+    const endDate = new Date(body['endDate'])
     return await this.statsService.getByDate(startDate, endDate);
   }
 
   @Post('item-status-changed')
   async itemResolved(@Body() body) {
-    try{
+    try {
       this.logger.log(`Item status changed...`);
       const event = body.event;
       const data = body.data;
       const id = data.project_media.dbid;
       this.logger.log(`Event: ${event}; Item id: ${id}`);
       const day = this.formatService.formatDate(new Date());
-      if(event !== 'update_annotation_verification_status') return;
+      if (event !== 'update_annotation_verification_status') {
+        this.logger.log(`[${id}] event ${event} is now allowed for this method`);
+        return;
+      };
+
       return await this.statsService.processItemStatusChanged(id, day);
-    }catch(e){
+    } catch (e) {
       this.logger.error(e.message)
-      throw new HttpException(e.message, 500); 
+      throw new HttpException(e.message, 500);
     }
   }
 
   @Post('toxicity')
   async addToxicityStats(@Body() body) {
-    try{
+    try {
       const toxicCount = body.toxicCount;
       this.logger.log(`Received request for adding toxicity stat with count: ${toxicCount}`);
       const day = this.formatService.formatDate(new Date());
       return await this.statsService.addToxicityStats(toxicCount, day);
-    }catch(e){
+    } catch (e) {
       this.logger.error(e.message)
-      throw new HttpException(e.message, 500); 
+      throw new HttpException(e.message, 500);
     }
   }
-  
-  @Post('created-vs-published')
-  async createdVsPublished(@Body() body: DayDto) {
-    const endDate = this.formatService.formatDate(new Date(body['endDate']));
-    return await this.statsService.getCreatedVsPublished(endDate);
-  }
 
-  @Post('tickets-by-agent')
-  async getTicketsByAgent(@Body() body: DayDto) {
-    const endDate = this.formatService.formatDate(new Date(body['endDate'])); 
-    return await this.statsService.getTicketsByAgent(endDate);
-  }
 
-  @Post('tickets-by-source')
-  async getTicketsBySource(@Body() body: DateBraket) {
-    const startDate = this.formatService.formatDate(new Date(body['startDate']));
-    const endDate = this.formatService.formatDate(new Date(body['endDate']));
-    return await this.statsService.getTicketsBySource(startDate, endDate);
-  }
-
-  @Post('tickets-by-status')
-  async getTicketsByStatus(@Body() body: DayDto) {
-    const endDate = this.formatService.formatDate(new Date(body['endDate']));
-    return await this.statsService.getTicketsByStatus(endDate);
-  }
-
-  @Post('tickets-by-tags')
-  async getTicketsByTags(@Body() body: DayDto) {
-    const endDate = this.formatService.formatDate(new Date(body['endDate']));
-    return await this.statsService.getTicketsByTags(endDate);
-  }
-
-  @Post('tickets-by-type')
-  async getTicketsByType(@Body() body: DayDto) {
-    const endDate = this.formatService.formatDate(new Date(body['endDate']));
-    return await this.statsService.getTicketsByViolationType(endDate);
-  }
 }
