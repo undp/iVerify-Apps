@@ -29,7 +29,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npx nx format && git add ."
+      "pre-commit": "echo \"husky pre commit...\""
     }
   },
   "private": true,
