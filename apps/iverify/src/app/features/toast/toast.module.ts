@@ -7,6 +7,6 @@ import { TranslateModule } from '@ngx-translate/core';
 @NgModule({
     imports: [TranslateModule, NgbModule, FontAwesomeModule],
     declarations: [ToastComponent],
-    exports: []
+    exports: [],
 })
 export class ToastModule {}

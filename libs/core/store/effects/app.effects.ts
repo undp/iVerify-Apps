@@ -11,27 +11,25 @@ import { PermissionsEffects } from './permissions.effects';
 import { RolesEffects } from './roles.effects';
 import { UsersEffects } from './users.effects';
 
-
-
 @Injectable()
 export class AppEffects {
-  constructor(private actions$: Actions) {}
+    constructor(private actions$: Actions) {}
 
-  // @Effect()
-  // userLoggedIn: Observable<any> = this.actions$.pipe(
-  //   ofType<UserLoggedIn>(EAppActions.UserLoggedIn),
-  //   switchMap(payload => [
-  //     new GetPermissions(),
-  //     new GetRoles(),
-  //     new ListUsers()
-  //   ])
-  // );
+    // @Effect()
+    // userLoggedIn: Observable<any> = this.actions$.pipe(
+    //   ofType<UserLoggedIn>(EAppActions.UserLoggedIn),
+    //   switchMap(payload => [
+    //     new GetPermissions(),
+    //     new GetRoles(),
+    //     new ListUsers()
+    //   ])
+    // );
 }
 
 export const appEffects = [
-  AppEffects,
-  AuthEffects,
-  RolesEffects,
-  PermissionsEffects,
-  UsersEffects,
+    AppEffects,
+    AuthEffects,
+    RolesEffects,
+    PermissionsEffects,
+    UsersEffects,
 ];
