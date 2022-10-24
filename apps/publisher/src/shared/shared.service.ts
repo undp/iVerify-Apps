@@ -3,7 +3,7 @@ import { MeedanCheckClientService } from "@iverify/meedan-check-client/src/lib/m
 import { Observable, Subject } from "rxjs";
 import { shareReplay, switchMap, take } from "rxjs/operators";
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class SharedService{
     private _reportId: Subject<string> = new Subject<string>();
     reportId$: Observable<string> = this._reportId.asObservable().pipe(take(1), shareReplay(1));

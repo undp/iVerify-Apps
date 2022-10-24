@@ -7,7 +7,6 @@ import { UsersService } from '../users/users.service';
 import { TokenGenerationDto } from './dto/TokenGeneration.dto';
 import { RefreshTokenAuthGuard } from '../guards/RefreshToken-auth.guard';
 import { LocalAuthGuard } from '../guards/Local-auth.guard';
-import { WordpressAuthGuard } from '../guards/Wordpress-auth.guard';
 import { userMessages } from '../../constant/messages';
 import { isEmpty } from 'lodash';
 import { catchError } from 'rxjs/operators';
@@ -45,7 +44,7 @@ export class AuthController {
             const result = await this.authService.createTokenByCode(query.code)
                 .pipe(
                     catchError((error) => {
-                        console.log(error);
+                        this.logger.log(error);
                         throw new error;
                     })).toPromise();
             if (result.access_token && result.refresh_token) {

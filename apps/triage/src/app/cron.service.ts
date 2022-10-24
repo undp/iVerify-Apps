@@ -5,7 +5,7 @@ import { AppService } from "./app.service";
 
 @Injectable()
 export class CronService {
-    private readonly logger = new Logger('CronService');
+    private readonly logger = new Logger(CronService.name);
 
     constructor(private appService: AppService, private apiClient: ApiClientService) { }
 
@@ -32,7 +32,7 @@ export class CronService {
     async analyze(startDate, endDate) {
         try {
             const created: number = await this.appService.analyze(startDate, endDate);
-            console.log('Items created: ', created);
+            this.logger.log('Items created: ', created);
             return await this.apiClient.postToxicStats(created).toPromise();
         } catch (e) {
             this.logger.error('Cron job error: ', e.message);

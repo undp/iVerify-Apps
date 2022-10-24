@@ -13,7 +13,7 @@ import { PaginationQueryDto } from '../common/pagination-query.dto';
 @ApiTags('users')
 @ApiBearerAuth()
 @Controller('users')
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class UsersController {
 
   private logger = new Logger(UsersController.name);

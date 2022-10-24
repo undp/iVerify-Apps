@@ -4,7 +4,7 @@ import { ApiPublisherService } from '../api-publisher/api-publisher.service';
 import { SharedService } from '../shared/shared.service';
 import { WpPublisherService } from '../wp-publisher/wp-publisher.service';
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class AppService {
   itemsToBePublished$: Observable<any> = combineLatest(([
     this.wpPublsher.post$,
