@@ -90,3 +90,4 @@ Thumbs.db
 *.mov
 *.wmv
 
+.devcontainer/

@@ -30,7 +30,7 @@ export class ArticlesController {
       }
       return 'ok';
     } catch(e){
-      console.log('Error while saving article...', e.message);
+      this.logger.log('Error while saving article...', e.message);
       throw new HttpException(e.message, 500); 
     }
   }
@@ -40,7 +40,7 @@ export class ArticlesController {
     try{
       return await this.articlesService.getArticles();
     } catch(e){
-      console.log('Error while getting articles...');
+      this.logger.log('Error while getting articles...');
       throw new HttpException(e.message, 500); 
     }
   }

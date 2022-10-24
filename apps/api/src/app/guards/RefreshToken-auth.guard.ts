@@ -1,5 +1,5 @@
 import { AuthGuard } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class RefreshTokenAuthGuard extends AuthGuard('refreshToken') { }

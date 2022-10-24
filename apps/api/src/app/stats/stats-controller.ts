@@ -1,10 +1,10 @@
-import { Body, Controller, HttpException, Logger, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpException, Logger, Post } from '@nestjs/common';
 
 import { StatsService } from './stats.service';
 import { ApiProperty, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { StatsFormatService } from './stats-format.service';
-import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
+
 export class DateBraket {
 
   @ApiProperty()

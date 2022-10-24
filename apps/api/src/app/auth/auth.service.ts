@@ -1,20 +1,21 @@
 import * as jwt from 'jsonwebtoken';
-import { forwardRef, Inject, Injectable, HttpService } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, HttpService, Logger } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
-import { InfoLogger } from '../logger/info-logger.service';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
+
+    private logger = new Logger(AuthService.name);
+
     constructor(
         private http: HttpService,
         @Inject(forwardRef(() => UsersService))
         private readonly usersService: UsersService,
-        private infoLogger: InfoLogger
-        ) {
-        this.infoLogger.setContext('AuthServices');
+    ) {
+
     }
 
     async createToken(user) {
@@ -25,22 +26,24 @@ export class AuthService {
             lastname: user.lastName,
             roles: user.roles
         };
+
         const expiresIn = environment.tokenExpTime;
         const accessToken = jwt.sign(userObj, environment.JWTsecret, { expiresIn });
         const refreshToken = await this.createRefreshToken(user);
-        this.infoLogger.log('return the token', accessToken);
+        this.logger.log('return the token', accessToken);
         return await { accessToken, refreshToken };
     }
 
     async createRefreshToken(user) {
 
         const expiresIn = environment.refreshExpTime;
+
         const accessToken = jwt.sign({
             id: user.id,
             email: user.email
         }, environment.JWTSecretRefreshToken, { expiresIn });
-        return await accessToken;
 
+        return await accessToken;
     }
 
     createTokenByCode(code: string) {
@@ -50,10 +53,10 @@ export class AuthService {
             client_id: environment.ClientID,
             client_secret: environment.ClientSecret,
             redirect_uri: environment.redirect_uri,
-            state:""
+            state: ""
         }
         const url = environment.WordpressUrl + 'oauth/token';
-        return this.http.post(url, queryParams).pipe(map(response => response.data));    
+        return this.http.post(url, queryParams).pipe(map(response => response.data));
     }
 
     getUserByData(token: string) {
