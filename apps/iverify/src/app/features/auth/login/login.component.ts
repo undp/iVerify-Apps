@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '@iverify/core/environments/environment';
 // import { ConfigHelpers } from '@eview/core/config/config.helpers';
@@ -77,9 +77,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   //   map(siteConfig => (siteConfig ? siteConfig.private : true))
   // );
 
-  loginForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', Validators.required)
+  loginForm = new UntypedFormGroup({
+    email: new UntypedFormControl('', [Validators.required, Validators.email]),
+    password: new UntypedFormControl('', Validators.required)
   });
 
   showPassword: boolean = false;

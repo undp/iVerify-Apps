@@ -3,7 +3,7 @@ import { DashboardHelpers } from '@iverify/core/domain/dashboard.helpers';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DashboardService } from '@iverify/core/domain/dashboad.service';
-import { FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { isEmpty } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
 import { TicketRequest, StatusFormat, StatusFormatPieChart, TicketsByAgentFormat, BubbleChartFormat, ChartTypeEnum } from '@iverify/core/models/dashboard';
@@ -38,9 +38,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   ticketsByToxicity: any;
   selectedTimeType: number = 1;
   breakpoint: number = 3;
-  range = new FormGroup({
-    start: new FormControl(),
-    end: new FormControl()
+  range = new UntypedFormGroup({
+    start: new UntypedFormControl(),
+    end: new UntypedFormControl()
   });
   options: TicketRequest = {startDate: '', endDate: ''};
   bubbleChartViewSize: [number, number];

@@ -1,4 +1,4 @@
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
   EAuthActions,
   GetRoles,
@@ -15,8 +15,8 @@ import { Injectable } from '@angular/core';
 export class RolesEffects {
   constructor(private authService: AuthService, private actions$: Actions) {}
 
-  @Effect()
-  get: Observable<any> = this.actions$.pipe(
+  
+  get: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType<GetRoles>(EAuthActions.GetRoles),
     switchMap(() => {
       return this.authService.roles().pipe(
@@ -27,5 +27,5 @@ export class RolesEffects {
       );
     }),
     catchError(error => [new GetRolesFailure()])
-  );
+  ));
 }

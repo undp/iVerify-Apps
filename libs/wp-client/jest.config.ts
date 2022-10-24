@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: 'ml-service-client',
+/* eslint-disable */
+export default {
+  displayName: 'wp-client',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -11,5 +12,5 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/ml-service-client',
+  coverageDirectory: '../../coverage/libs/wp-client',
 };

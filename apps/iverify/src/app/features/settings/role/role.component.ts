@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewContainerRef, Inject, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '@iverify/core/users/user.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Subscription, throwError} from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ToastType } from '../../toast/toast.component';
@@ -26,14 +26,14 @@ export class RoleComponent implements OnInit {
 
   subs: Subscription;
   isEditing: boolean = false;
-  roleForm: FormGroup;
+  roleForm: UntypedFormGroup;
   showPassword: boolean = false;
   role: RoleItem[];
 
   selectable = true;
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  priviledgeCtrl = new FormControl();
+  priviledgeCtrl = new UntypedFormControl();
   filteredPriviledges: Observable<string[]>;
   defaultPriviledges: string[] = ['read'];
   priviledges: string[] = ["read","create","update","delete"];
@@ -57,7 +57,7 @@ export class RoleComponent implements OnInit {
       toast.setViewContainerRef(viewContainerRef);
   }
 
-getFormValidationErrors(form: FormGroup) {
+getFormValidationErrors(form: UntypedFormGroup) {
   const result: any = [];
     Object.keys(form.controls).forEach(key => {
       const controlErrors: any = form.get(key).errors;
@@ -76,10 +76,10 @@ getFormValidationErrors(form: FormGroup) {
 
 
 ngOnInit(): void {
-  this.roleForm = new FormGroup({
-      name: new FormControl('', Validators.required),
-      description: new FormControl('', Validators.required),
-      resource: new FormControl('', Validators.required)
+  this.roleForm = new UntypedFormGroup({
+      name: new UntypedFormControl('', Validators.required),
+      description: new UntypedFormControl('', Validators.required),
+      resource: new UntypedFormControl('', Validators.required)
   });
 
   this.user$.subscribe((currentUser) => {

@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: 'publisher',
+/* eslint-disable */
+export default {
+  displayName: 'api',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -10,5 +11,6 @@ module.exports = {
     '^.+\\.[tj]s$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/apps/publisher',
+  coverageDirectory: '../../coverage/apps/api',
+  testEnvironment: 'node',
 };

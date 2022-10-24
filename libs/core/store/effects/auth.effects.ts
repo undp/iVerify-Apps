@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthHelpers, AuthService } from '@iverify/core/auth';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -29,8 +29,8 @@ export class AuthEffects {
     private store: Store<AppState>
   ) {}
 
-  @Effect()
-  login: Observable<any> = this.actions$.pipe(
+  
+  login: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType<Login>(EAuthActions.Login),
     map(action => action.payload),
     switchMap(payload => {
@@ -44,10 +44,10 @@ export class AuthEffects {
       );
     }),
     catchError(error => [new LoginFailure()])
-  );
+  ));
 
-  @Effect()
-  logout: Observable<any> = this.actions$.pipe(
+  
+  logout: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType<Logout>(EAuthActions.Logout),
     switchMap(() => {
       this.authService.clearToken();
@@ -56,10 +56,10 @@ export class AuthEffects {
         new ClearUserPermissions(),
       ];
     })
-  );
+  ));
 
-  @Effect()
-  getCurrentUser: Observable<any> = this.actions$.pipe(
+  
+  getCurrentUser: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType<GetCurrentUser>(EAuthActions.GetCurrentUser),
     switchMap(() => {
       return this.authService.me().pipe(
@@ -70,10 +70,10 @@ export class AuthEffects {
       );
     }),
     catchError(error => [new GetCurrentUserFailure()])
-  );
+  ));
 
-  @Effect()
-  getUserPermissions: Observable<any> = combineLatest(
+  
+  getUserPermissions: Observable<any> = createEffect(() => combineLatest(
     this.actions$.pipe(
       ofType<GetCurrentUserSuccess>(EAuthActions.GetCurrentUserSuccess)
     ),
@@ -97,5 +97,5 @@ export class AuthEffects {
         )
       ]
     )
-  );
+  ));
 }

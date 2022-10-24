@@ -20,17 +20,16 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forChild(routes),
-    ReactiveFormsModule,
-    TranslateModule,
-    FontAwesomeModule,
-    CommonModule,
-    MatInputModule,
-    MatButtonModule,
-    MatButtonToggleModule
-  ],
-  declarations: [LoginComponent],
-  entryComponents: [LoginComponent]
+    imports: [
+        RouterModule.forChild(routes),
+        ReactiveFormsModule,
+        TranslateModule,
+        FontAwesomeModule,
+        CommonModule,
+        MatInputModule,
+        MatButtonModule,
+        MatButtonToggleModule
+    ],
+    declarations: [LoginComponent]
 })
 export class AuthModule {}

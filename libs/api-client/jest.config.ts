@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: 'iverify-common',
+/* eslint-disable */
+export default {
+  displayName: 'api-client',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -11,5 +12,5 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/iverify-common',
+  coverageDirectory: '../../coverage/libs/api-client',
 };

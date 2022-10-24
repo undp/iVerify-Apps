@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UserService } from '@iverify/core/users/user.service';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import {
@@ -14,8 +14,8 @@ import {
 export class UsersEffects {
   constructor(private userService: UserService, private actions$: Actions) {}
 
-  @Effect()
-  list: Observable<any> = this.actions$.pipe(
+  
+  list: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType<ListUsers>(EUsersActions.ListUsers),
     switchMap(() => {
       const listOption = {
@@ -36,5 +36,5 @@ export class UsersEffects {
       console.error(error);
       return [new ListUsersFailure()];
     })
-  );
+  ));
 }

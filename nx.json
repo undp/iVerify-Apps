@@ -12,64 +12,44 @@
   "npmScope": "iverify",
   "tasksRunnerOptions": {
     "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
+      "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"]
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "parallel": 1
       }
     }
   },
-  "projects": {
-    "iverify": {
-      "tags": []
+  "defaultProject": "iverify",
+  "generators": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
     },
-    "iverify-e2e": {
-      "tags": [],
-      "implicitDependencies": ["iverify"]
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
     },
-    "api": {
-      "tags": []
+    "@nrwl/angular:library": {
+      "linter": "eslint",
+      "unitTestRunner": "jest"
     },
-    "api-interfaces": {
-      "tags": []
-    },
-    "publisher": {
-      "tags": []
-    },
-    "meedan-check-client": {
-      "tags": []
-    },
-    "wp-client": {
-      "tags": []
-    },
-    "triage": {
-      "tags": []
-    },
-    "crowdtangle-client": {
-      "tags": []
-    },
-    "ml-service-client": {
-      "tags": []
-    },
-    "libs": {
-      "tags": []
-    },
-    "iverify-common": {
-      "tags": []
-    },
-    "api-client": {
-      "tags": []
-    },
-    "email": {
-      "tags": []
-    },
-    "perspective-client": {
-      "tags": []
-    },
-    "shared": {
-      "tags": []
-    },
-    "common": {
-      "tags": []
+    "@nrwl/angular:component": {
+      "style": "scss"
+    }
+  },
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"]
     }
   }
 }

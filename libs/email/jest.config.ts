@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: 'crowdtangle-client',
+/* eslint-disable */
+export default {
+  displayName: 'email',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -11,5 +12,5 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/crowdtangle-client',
+  coverageDirectory: '../../coverage/libs/email',
 };

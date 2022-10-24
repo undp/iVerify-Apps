@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewContainerRef, Inject } from '@angular/core';
 import { UserService } from '@iverify/core/users/user.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Subscription, throwError} from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ToastType } from '../../toast/toast.component';
@@ -18,7 +18,7 @@ export class UsersComponent implements OnInit {
 
   subs: Subscription;
   isEditing: boolean = false;
-  userForm: FormGroup;
+  userForm: UntypedFormGroup;
   showPassword: boolean = false;
   selectedRole: RoleItem[];
   rolesList: any[];
@@ -40,14 +40,14 @@ export class UsersComponent implements OnInit {
         this.selectedRole = this.rolesList.filter(item => item.name === (this.data && this.data.element.roles[0].name))[0];
       }
     }
-    this.userForm = new FormGroup({
-        firstName: new FormControl('', Validators.required),
-        lastName: new FormControl('', Validators.required),
-        email: new FormControl('', [Validators.required, Validators.email]),
-        password: new FormControl('', Validators.required),
-        roles: new FormControl('', Validators.required),
-        phone: new FormControl('', [Validators.required, Validators.pattern('^\\+260(96|76|95|75|97|77)\\d{7}$')]),
-        address: new FormControl('')
+    this.userForm = new UntypedFormGroup({
+        firstName: new UntypedFormControl('', Validators.required),
+        lastName: new UntypedFormControl('', Validators.required),
+        email: new UntypedFormControl('', [Validators.required, Validators.email]),
+        password: new UntypedFormControl('', Validators.required),
+        roles: new UntypedFormControl('', Validators.required),
+        phone: new UntypedFormControl('', [Validators.required, Validators.pattern('^\\+260(96|76|95|75|97|77)\\d{7}$')]),
+        address: new UntypedFormControl('')
     });
     if (this.data.element && this.data.element.id > 0) {
       this.userForm.controls['password'].setValidators([]);
@@ -101,7 +101,7 @@ export class UsersComponent implements OnInit {
 		}
   }
 
-  getFormValidationErrors(form: FormGroup) {
+  getFormValidationErrors(form: UntypedFormGroup) {
   const result: any = [];
     Object.keys(form.controls).forEach(key => {
       const controlErrors: any = form.get(key).errors;

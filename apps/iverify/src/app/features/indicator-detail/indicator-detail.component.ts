@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { FormBuilder } from "@angular/forms";
+import { UntypedFormBuilder } from "@angular/forms";
 import { CountBy } from "@iverify/common/src";
 import { ChartTypeEnum } from "@iverify/core/models/dashboard";
 import { TranslateService } from "@ngx-translate/core";
@@ -57,7 +57,7 @@ import { EnumValues } from 'enum-values';
 
       constructor(
         private stateService: IndicatorDetailService, 
-        private fb: FormBuilder, 
+        private fb: UntypedFormBuilder, 
         public translate: TranslateService,
         ){
         this.chartTypeChanges$.subscribe(value => this.stateService.updateChartType(value));

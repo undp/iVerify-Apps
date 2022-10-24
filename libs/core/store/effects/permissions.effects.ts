@@ -1,4 +1,4 @@
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
   EAuthActions,
   GetPermissions,
@@ -15,8 +15,8 @@ import { Observable } from 'rxjs';
 export class PermissionsEffects {
   constructor(private authService: AuthService, private actions$: Actions) {}
 
-  @Effect()
-  get: Observable<any> = this.actions$.pipe(
+  
+  get: Observable<any> = createEffect(() => this.actions$.pipe(
     ofType<GetPermissions>(EAuthActions.GetPermissions),
     switchMap(() => {
       return this.authService.permissions().pipe(
@@ -29,5 +29,5 @@ export class PermissionsEffects {
       );
     }),
     catchError(error => [new GetPermissionsFailure()])
-  );
+  ));
 }

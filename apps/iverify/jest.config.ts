@@ -1,23 +1,19 @@
-module.exports = {
-  displayName: 'shared',
+/* eslint-disable */
+export default {
+  displayName: 'iverify',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.spec.json',
       stringifyContentPathRegex: '\\.(html|svg)$',
-      astTransformers: {
-        before: [
-          'jest-preset-angular/build/InlineFilesTransformer',
-          'jest-preset-angular/build/StripStylesTransformer',
-        ],
-      },
     },
   },
-  coverageDirectory: '../../coverage/libs/shared',
+  coverageDirectory: '../../coverage/apps/iverify',
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',
     'jest-preset-angular/build/serializers/ng-snapshot',
     'jest-preset-angular/build/serializers/html-comment',
   ],
+  transform: { '^.+\\.(ts|js|html)$': 'jest-preset-angular' },
 };

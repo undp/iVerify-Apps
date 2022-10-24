@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@iverify/core/environments/environment';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { EAppActions, UserLoggedIn } from '../actions/app.actions';
