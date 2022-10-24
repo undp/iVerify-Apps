@@ -79,7 +79,7 @@ export class StatsController {
       return await this.statsService.addToxicityStats(toxicCount, day);
     } catch (e) {
       this.logger.error(e.message)
-      throw new HttpException(e.message, 500);
+      throw new HttpException(e.message, 500)
     }
   }
 
