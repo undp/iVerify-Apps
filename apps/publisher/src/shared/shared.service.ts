@@ -1,5 +1,5 @@
 import { Injectable, Scope } from "@nestjs/common";
-import { MeedanCheckClientService } from "libs/meedan-check-client/src/lib/meedan-check-client.service";
+import { MeedanCheckClientService } from "@iverify/meedan-check-client/src/lib/meedan-check-client.service";
 import { Observable, Subject } from "rxjs";
 import { shareReplay, switchMap, take } from "rxjs/operators";
 

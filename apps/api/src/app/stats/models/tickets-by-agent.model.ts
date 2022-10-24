@@ -1,7 +1,7 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class TicketsByAgent{
+export class TicketsByAgent {
     @PrimaryGeneratedColumn()
     id: number
 
@@ -11,7 +11,7 @@ export class TicketsByAgent{
     @Column()
     tickets: number
 
-    
+
 
     // @JoinTable()
     // @ManyToMany(type => Roles, (roles) => roles.users, {cascade: true})
