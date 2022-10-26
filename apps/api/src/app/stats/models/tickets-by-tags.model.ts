@@ -3,18 +3,15 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class TicketsByTag {
     @PrimaryGeneratedColumn()
-    id: number
+    id: number;
 
     @Column()
-    tag: string
+    tag: string;
 
     @Column()
-    tickets: number
-
-
+    tickets: number;
 
     // @JoinTable()
     // @ManyToMany(type => Roles, (roles) => roles.users, {cascade: true})
     // roles: Roles[]
-
 }

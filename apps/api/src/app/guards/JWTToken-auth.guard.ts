@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 // import * as wp_auth from 'wp-auth';
 // import { Observable } from 'rxjs';
 @Injectable()
-export class JWTTokenAuthGuard extends AuthGuard('jwt') { }
+export class JWTTokenAuthGuard extends AuthGuard('jwt') {}
 // export class JWTTokenAuthGuard implements CanActivate  {
 
 //   private authOpts: any = {};
@@ -18,7 +18,7 @@ export class JWTTokenAuthGuard extends AuthGuard('jwt') { }
 //         mysql_pass: 'KKZ1pTyNiRbL',
 //         mysql_port: '3306',
 //         mysql_db: 'iverify',
-//         wp_table_prefix: 'wp_' 
+//         wp_table_prefix: 'wp_'
 //       };
 //       this.handle = wp_auth.create(this.authOpts);
 //   }

@@ -10,27 +10,25 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
-
 export const routes: Routes = [
-  {
-    path: 'login',
-    component: LoginComponent,
-    canActivate: [LoginGuard]
-  }
+    {
+        path: 'login',
+        component: LoginComponent,
+        canActivate: [LoginGuard],
+    },
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forChild(routes),
-    ReactiveFormsModule,
-    TranslateModule,
-    FontAwesomeModule,
-    CommonModule,
-    MatInputModule,
-    MatButtonModule,
-    MatButtonToggleModule
-  ],
-  declarations: [LoginComponent],
-  entryComponents: [LoginComponent]
+    imports: [
+        RouterModule.forChild(routes),
+        ReactiveFormsModule,
+        TranslateModule,
+        FontAwesomeModule,
+        CommonModule,
+        MatInputModule,
+        MatButtonModule,
+        MatButtonToggleModule,
+    ],
+    declarations: [LoginComponent],
 })
 export class AuthModule {}

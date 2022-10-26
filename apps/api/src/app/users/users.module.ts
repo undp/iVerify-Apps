@@ -7,11 +7,10 @@ import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Roles } from '../roles/roles.model';
 
-
 @Module({
     imports: [TypeOrmModule.forFeature([User, Roles])],
     controllers: [UsersController],
     providers: [UsersService, JWTTokenAuthGuard, RefreshTokenAuthGuard],
     exports: [UsersService],
 })
-export class UsersModule { }
+export class UsersModule {}
