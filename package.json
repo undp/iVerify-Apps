@@ -25,7 +25,7 @@
         "workspace-generator": "nx workspace-generator",
         "dep-graph": "nx dep-graph",
         "help": "nx help",
-        "postinstall": "ngcc --properties es2020 browser module main",
+        "postinstall": "npm run prepare && ngcc --properties es2020 browser module main",
         "prepare": "husky install"
     },
     "private": true,
