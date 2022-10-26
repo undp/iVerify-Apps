@@ -1,4 +1,4 @@
-import { HttpModule, HttpService, Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { MeedanCheckClientService } from './meedan-check-client.service';
 import { CheckClientConfig } from './config';
 import { CheckClientHelperService } from './helper.service';
@@ -10,4 +10,4 @@ import { CheckStatsService } from './check-stats.service';
   imports: [HttpModule],
   exports: [MeedanCheckClientService, CheckStatsService],
 })
-export class MeedanCheckClientModule {}
+export class MeedanCheckClientModule { }

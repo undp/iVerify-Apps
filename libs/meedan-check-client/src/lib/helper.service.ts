@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { throwIfEmpty } from "rxjs/operators";
 import { ToxicityScores } from "./interfaces/toxicity-scores";
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { AuthGuard } from '@nestjs/passport';
-import { CanActivate, Injectable, UnauthorizedException, ExecutionContext } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 // import * as wp_auth from 'wp-auth';
 // import { Observable } from 'rxjs';
 @Injectable()

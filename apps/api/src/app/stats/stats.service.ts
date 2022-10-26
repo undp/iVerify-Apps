@@ -5,7 +5,7 @@ import { Stats } from "./models/stats.model";
 import { DateTime, Interval } from 'luxon';
 
 import { StatsFormatService } from "./stats-format.service";
-import { CheckStatsService } from "libs/meedan-check-client/src/lib/check-stats.service";
+import { CheckStatsService } from "@iverify/meedan-check-client/src/lib/check-stats.service";
 import { Article, StatusesMap } from "@iverify/iverify-common";
 import { MeedanCheckClientService } from "@iverify/meedan-check-client";
 import { CountBy } from "@iverify/common";
@@ -15,7 +15,6 @@ export class StatsService {
     private readonly logger = new Logger('MeedanCheckClient');
     allStatuses = StatusesMap.map(status => status.value);
     resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
-
 
 
     constructor(
@@ -73,7 +72,7 @@ export class StatsService {
 
     async addToxicityStats(toxicCount: number, day: string) {
         this.logger.log(`Processing toxicity count ${toxicCount} and day ${day}`);
-        const category: string = 'toxic';
+        const category = 'toxic';
         const stat: Stats = await this.statsRepository.findOne({
             where: {
                 countBy: CountBy.toxicity,
@@ -286,7 +285,6 @@ export class StatsService {
 
         const searchStart = new Date(end.getTime());
         searchStart.setHours(endDate.getHours() - 24);
-        const formattedSearchStart = this.formatService.formatDate(searchStart);
 
         const latestStats: Stats[] = await this.statsRepository.find({
             where: {

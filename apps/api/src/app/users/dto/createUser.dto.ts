@@ -1,4 +1,4 @@
-import { Type } from '@nestjs/common';
+
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 

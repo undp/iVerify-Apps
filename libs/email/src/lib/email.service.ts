@@ -1,7 +1,8 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { Article } from '@iverify/iverify-common';
-let converter = require('json-2-csv');
+// let converter = require('json-2-csv');
+import * as converter from 'json-2-csv'; 
 
 @Injectable()
 export class EmailService {

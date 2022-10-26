@@ -4,7 +4,7 @@ import { catchError, map, retry, tap } from 'rxjs/operators';
 
 @Injectable()
 export class CrowdtangleClientService{
-    private readonly logger = new Logger('CrowdTangleClient');
+    private readonly logger = new Logger(CrowdtangleClientService.name);
 
     constructor(private http: HttpService, private config: CrowdtangleClientConfig){}
 
