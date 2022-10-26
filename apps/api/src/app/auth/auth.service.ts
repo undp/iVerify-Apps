@@ -1,15 +1,10 @@
 import * as jwt from 'jsonwebtoken';
-import {
-    forwardRef,
-    Inject,
-    Injectable,
-    HttpService,
-    Logger,
-} from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class AuthService {

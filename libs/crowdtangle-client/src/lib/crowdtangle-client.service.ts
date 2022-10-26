@@ -14,7 +14,7 @@ export class CrowdtangleClientService {
     getLists() {
         const params = { token: this.config.apiKey };
         return this.http.get(`${this.config.endpoints.lists}`, { params }).pipe(
-            map((res) => res.data.result.lists),
+            map((res: any) => res.data.result.lists),
             retry(3),
             catchError((err) => {
                 this.logger.error(

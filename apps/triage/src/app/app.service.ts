@@ -9,6 +9,7 @@ import { TriageConfig } from './config';
 import { PerspectiveClientService } from '@iverify/perspective-client/src/lib/perspective-client.service';
 import { MlServiceType } from '@iverify/iverify-common';
 import { TranslateService } from './TranslateService/TranslateService';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class AppService {
@@ -25,7 +26,8 @@ export class AppService {
 
     async analyze(startDate: string, endDate: string): Promise<number> {
         try {
-            const lists = await this.ctClient.getLists().toPromise();
+            const lists: any = await lastValueFrom(this.ctClient.getLists());
+
             const savedSearches = lists.filter(
                 (list) => list.type === 'SAVED_SEARCH'
             );
@@ -53,9 +55,10 @@ export class AppService {
             );
             for (const post of uniqueToxicPosts) {
                 this.logger.log('Creating item...');
-                const item = await this.checkClient
-                    .createItem(post.postUrl, post.toxicScores)
-                    .toPromise();
+                const item = await lastValueFrom(
+                    this.checkClient.createItem(post.postUrl, post.toxicScores)
+                );
+
                 console.log('item: ', item);
                 if (!item.error) createdItems = [...createdItems, item];
             }
@@ -84,15 +87,16 @@ export class AppService {
             this.logger.log(
                 `Max post scan limit - ${this.config.postScanLimit}`
             );
-            const res = await this.ctClient
-                .getPosts(
+            const res: any = await lastValueFrom(
+                this.ctClient.getPosts(
                     listId,
                     pagination.count,
                     pagination.offset,
                     startDate,
                     endDate
                 )
-                .toPromise();
+            );
+
             this.logger.log(`Received ${res.posts.length} posts. Analyzing...`);
             let postsCount = 0;
             for (const post of res['posts']) {
@@ -102,7 +106,8 @@ export class AppService {
                     : '';
                 const text = `${postMessage}. ${postDescription}`;
                 this.logger.log(`Sending post for analysis...`);
-                const toxicScores = await this.mlAnalyze(text);
+                const toxicScores: any = await this.mlAnalyze(text);
+
                 this.logger.log(`Received toxic score: ${toxicScores}`);
                 const isToxic =
                     toxicScores && toxicScores.toxicity
@@ -150,7 +155,7 @@ export class AppService {
         toxicScores: ToxicityScores,
         postUrl: string,
         textLength: number
-    ): Boolean {
+    ): boolean {
         if (!toxicScores) {
             this.logger.warn(
                 `Invalid toxicScores for post ${postUrl} with text length ${textLength}, toxicScores: ${toxicScores}. Flagging post as non-toxic.`
@@ -178,11 +183,14 @@ export class AppService {
     private async mlAnalyze(text: string) {
         switch (this.config.mlServiceType) {
             case MlServiceType.UNICC_DETOXIFY_1:
-                return await this.mlClient.analyze([text]).toPromise();
+                return await lastValueFrom(this.mlClient.analyze([text]));
             case MlServiceType.PERSPECTIVE:
-                return await this.perspectiveClient
-                    .analyze(text, this.config.toxicTreshold)
-                    .toPromise();
+                return await lastValueFrom(
+                    this.perspectiveClient.analyze(
+                        text,
+                        this.config.toxicTreshold
+                    )
+                );
         }
     }
 }

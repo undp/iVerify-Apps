@@ -42,14 +42,20 @@ export class RolesService {
     }
 
     async findOne(name: string): Promise<Roles> {
-        const role: Roles = await this.rolesRepository.findOne({ name });
+        const role: Roles = await this.rolesRepository.findOne({
+            where: { name },
+        });
         if (!role)
             throw new NotFoundException(`Role with name ${name} not found`);
         return role;
     }
 
     async findByRoleId(id: string): Promise<Roles> {
-        const role: Roles = await this.rolesRepository.findOne(id);
+        const role: Roles = await this.rolesRepository.findOne({
+            where: {
+                id: Number(id),
+            },
+        });
         if (!role) throw new NotFoundException(`Role with id ${id} not found`);
         return role;
     }
@@ -79,7 +85,9 @@ export class RolesService {
 
     async createDefaultAdminRole(): Promise<any> {
         const getRoleData: Roles = await this.rolesRepository.findOne({
-            name: 'admin',
+            where: {
+                name: 'admin',
+            },
         });
         if (getRoleData) {
             return {

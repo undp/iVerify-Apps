@@ -1,4 +1,5 @@
-import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { catchError, map, retry, tap } from 'rxjs/operators';
 import { CheckClientConfig } from './config';
@@ -22,13 +23,13 @@ export class MeedanCheckClientService {
         return this.http
             .post(this.config.checkApiUrl, { query }, { headers })
             .pipe(
-                tap((res) =>
+                tap((res: any) =>
                     console.log(
                         'Getting report res: ',
                         JSON.stringify(res.data)
                     )
                 ),
-                map((res) => res.data.data.project_media),
+                map((res: any) => res.data.data.project_media),
                 retry(3),
                 catchError((err) => {
                     this.logger.error(
@@ -47,14 +48,14 @@ export class MeedanCheckClientService {
         return this.http
             .post(this.config.checkApiUrl, { query }, { headers })
             .pipe(
-                tap((res) =>
+                tap((res: any) =>
                     console.log(
                         'Getting meedan report res: ',
                         JSON.stringify(res.data)
                     )
                 ),
                 map(
-                    (res) =>
+                    (res: any) =>
                         res.data.data.project_media.annotation.data.options[0]
                 ),
                 retry(3),
@@ -73,7 +74,7 @@ export class MeedanCheckClientService {
         return this.http
             .post(this.config.checkApiUrl, { query }, { headers })
             .pipe(
-                map((res) => res.data.data.project_media),
+                map((res: any) => res.data.data.project_media),
                 retry(3),
                 catchError((err) => {
                     this.logger.error(
@@ -98,7 +99,7 @@ export class MeedanCheckClientService {
         return this.http
             .post(this.config.checkApiUrl, { query }, { headers })
             .pipe(
-                map((res) => res.data),
+                map((res: any) => res.data),
                 retry(3),
                 catchError((err) => {
                     this.logger.error('Error creating item: ', err.message);
@@ -125,7 +126,7 @@ export class MeedanCheckClientService {
         return this.http
             .post(this.config.checkApiUrl, { query }, { headers })
             .pipe(
-                map((res) => res.data),
+                map((res: any) => res.data),
                 retry(3),
                 catchError((err) => {
                     this.logger.error('Error creating item: ', err.message);

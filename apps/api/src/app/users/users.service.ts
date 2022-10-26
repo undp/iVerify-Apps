@@ -27,7 +27,10 @@ export class UsersService {
     }
 
     async findOne(id: string): Promise<User> {
-        const user: User = await this.userRepository.findOne(id, {
+        const user: User = await this.userRepository.findOne({
+            where: {
+                id: Number(id),
+            },
             relations: ['roles'],
         });
 
@@ -38,10 +41,12 @@ export class UsersService {
     }
 
     async findByEmail(email: string): Promise<User> {
-        const user: User = await this.userRepository.findOne(
-            { email },
-            { relations: ['roles'] }
-        );
+        const user: User = await this.userRepository.findOne({
+            where: {
+                email,
+            },
+            relations: ['roles'],
+        });
 
         if (!user) {
             throw new NotFoundException(`User with email ${email} not found`);
@@ -55,10 +60,13 @@ export class UsersService {
         userId: string
     ): Promise<User> {
         const email = userDto.email;
-        const user: User = await this.userRepository.findOne(
-            { email },
-            { relations: ['roles'] }
-        );
+        const user: User = await this.userRepository.findOne({
+            where: {
+                email,
+            },
+            relations: ['roles'],
+        });
+
         if (!user) {
             return await this.registerUser(userDto, userId);
         }
@@ -112,7 +120,9 @@ export class UsersService {
 
     private async preloadRoleByName(name: string) {
         const existingRole: Roles = await this.rolesRepository.findOne({
-            name: name,
+            where: {
+                name: name,
+            },
         });
 
         if (existingRole) {

@@ -1,5 +1,5 @@
 import { TasksLabels } from '@iverify/common/src';
-import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { from, Observable } from 'rxjs';
 import {
     catchError,
@@ -11,6 +11,7 @@ import {
 } from 'rxjs/operators';
 import { CheckClientConfig } from './config';
 import { CheckClientHelperService } from './helper.service';
+import { HttpService } from '@nestjs/axios';
 // import { StatusesMap, TasksLabels } from "@iverify/iverify-common";
 
 @Injectable()

@@ -23,6 +23,8 @@ import { userMessages } from '../../constant/messages';
 import { isEmpty } from 'lodash';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { lastValueFrom } from 'rxjs';
+
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
@@ -52,20 +54,20 @@ export class AuthController {
     @Post('callback')
     async callback(@Body() query: any) {
         if (!isEmpty(query.code)) {
-            const result = await this.authService
-                .createTokenByCode(query.code)
-                .pipe(
+            const result = await lastValueFrom(
+                this.authService.createTokenByCode(query.code).pipe(
                     catchError((error) => {
                         this.logger.log(error);
                         throw new error();
                     })
                 )
-                .toPromise();
+            );
             if (result.access_token && result.refresh_token) {
                 /* Find and create */
-                const wpUserData = await this.authService
-                    .getUserByData(result.access_token)
-                    .toPromise();
+                const wpUserData = await lastValueFrom(
+                    this.authService.getUserByData(result.access_token)
+                );
+
                 if (wpUserData) {
                     const userPostBody = {
                         firstName: wpUserData.user_nicename,

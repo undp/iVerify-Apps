@@ -30,9 +30,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         private store: Store<AppState>,
         private actions$: Actions,
         private toast: ToastService,
-        private router: Router
-    ) // private modalService	: NgbModal
-    {
+        private router: Router // private modalService	: NgbModal
+    ) {
         this.subs = new Subscription();
     }
 

@@ -1,6 +1,7 @@
 import { ApiClientService } from '@iverify/api-client/src';
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { lastValueFrom } from 'rxjs';
 import { AppService } from './app.service';
 
 @Injectable()
@@ -41,7 +42,7 @@ export class CronService {
                 endDate
             );
             this.logger.log('Items created: ', created);
-            return await this.apiClient.postToxicStats(created).toPromise();
+            return await lastValueFrom(this.apiClient.postToxicStats(created));
         } catch (e) {
             this.logger.error('Cron job error: ', e.message);
             throw new HttpException(e.message, 500);
