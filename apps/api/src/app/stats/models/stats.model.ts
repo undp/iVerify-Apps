@@ -1,6 +1,7 @@
 
 
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Locations } from '../../locations/models/locations.model';
 
 @Entity()
 export class Stats{
@@ -18,4 +19,9 @@ export class Stats{
 
     @Column()
     count: number
+
+    @ManyToOne(() => Locations, (location) => location.stats, {
+        nullable: false,
+    })
+    location: Location;
 }

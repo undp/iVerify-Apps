@@ -15,7 +15,6 @@ import { PaginationQueryDto } from '../common/pagination-query.dto';
 @Controller('roles')
 @ApiTags('roles')
 @ApiBearerAuth()
-@Injectable({ scope: Scope.REQUEST })
 export class RolesController {
     constructor(private readonly rolesService: RolesService,
         private infoLogger: InfoLogger,

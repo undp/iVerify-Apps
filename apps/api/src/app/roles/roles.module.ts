@@ -7,9 +7,10 @@ import { RolesGuard } from '../guards/roles.guard';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/user.model';
 import { Roles } from './roles.model';
+import { Locations } from '../locations/models/locations.model';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Roles])],
+  imports: [TypeOrmModule.forFeature([Locations, User, Roles])],
   controllers: [RolesController],
   providers: [RolesService, InfoLogger, JWTTokenAuthGuard,RolesGuard],
   exports: [RolesService, JWTTokenAuthGuard, InfoLogger],

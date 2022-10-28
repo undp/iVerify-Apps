@@ -90,3 +90,5 @@ Thumbs.db
 *.mov
 *.wmv
 
+.angular/cache/
+.devcontainer

@@ -1,7 +1,8 @@
 
 import { Roles } from '../roles/roles.model';
 
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Locations } from '../locations/models/locations.model';
 
 @Entity()
 export class User{
@@ -32,6 +33,11 @@ export class User{
     @JoinTable()
     @ManyToMany(type => Roles, (roles) => roles.users, {cascade: true})
     roles: Roles[]
+
+    @ManyToOne(() => Locations, (location) => location.users, {
+        nullable: false,
+    })
+    location: Location;
 
 }
 // @Schema({timestamps: true})
