@@ -1,8 +1,7 @@
-import { Controller, Post, Body, Get, BadRequestException, NotFoundException, Put, Query, Delete, UseGuards, Injectable, Scope, Inject, BadGatewayException } from '@nestjs/common';
+import { Controller, Post, Body, Get, BadRequestException, NotFoundException, Put, Query, Delete, UseGuards, Injectable, Scope, Inject, BadGatewayException, Logger } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { RolesService } from './roles.service'
 import { CreateRoleDto } from './dto/createRole.dto';
-import { InfoLogger } from '../logger/info-logger.service';
 import { RolesGuard } from '../guards/roles.guard';
 import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
 import { EditRoleDto } from './dto/editRole.dto';
@@ -15,11 +14,13 @@ import { PaginationQueryDto } from '../common/pagination-query.dto';
 @Controller('roles')
 @ApiTags('roles')
 @ApiBearerAuth()
+@Injectable()
 export class RolesController {
+
+    private logger = new Logger(RolesController.name);
+
     constructor(private readonly rolesService: RolesService,
-        private infoLogger: InfoLogger,
         @Inject(REQUEST) private readonly request: Request) {
-        this.infoLogger.setContext('RolesController');
     }
 
     @Post()
@@ -29,7 +30,7 @@ export class RolesController {
         if (userId) {
             const userRoles = await this.rolesService.createRole(createRoleDto, userId);
             if (!userRoles) {
-                this.infoLogger.error(roleMessages.roleCreateFail);
+                this.logger.error(roleMessages.roleCreateFail);
                 throw new BadRequestException(roleMessages.roleCreateFail);
             }
             return { message: roleMessages.roleCreateSucess, data: userRoles, };
@@ -84,7 +85,7 @@ export class RolesController {
     async createDefaultRole() {
         const adminRole = await this.rolesService.createDefaultAdminRole();
         if (!adminRole) {
-            this.infoLogger.error(roleMessages.roleCreateFail);
+            this.logger.error(roleMessages.roleCreateFail);
             throw new BadRequestException(roleMessages.roleCreateFail);
         }
         return { message: adminRole.message, data: adminRole.roleData };

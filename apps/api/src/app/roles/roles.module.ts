@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { RolesController } from './roles.controller';
 import { RolesService } from './roles.service';
-import { InfoLogger } from '../logger/info-logger.service';
 import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,7 +11,7 @@ import { Locations } from '../locations/models/locations.model';
 @Module({
   imports: [TypeOrmModule.forFeature([Locations, User, Roles])],
   controllers: [RolesController],
-  providers: [RolesService, InfoLogger, JWTTokenAuthGuard,RolesGuard],
-  exports: [RolesService, JWTTokenAuthGuard, InfoLogger],
+  providers: [RolesService, JWTTokenAuthGuard, RolesGuard],
+  exports: [RolesService, JWTTokenAuthGuard],
 })
 export class RolesModule { }

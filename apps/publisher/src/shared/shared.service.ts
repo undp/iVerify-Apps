@@ -1,9 +1,9 @@
 import { Injectable, Scope } from "@nestjs/common";
-import { MeedanCheckClientService } from "libs/meedan-check-client/src/lib/meedan-check-client.service";
+import { MeedanCheckClientService } from "@iverify/meedan-check-client/src/lib/meedan-check-client.service";
 import { Observable, Subject } from "rxjs";
 import { shareReplay, switchMap, take } from "rxjs/operators";
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class SharedService{
     private _reportId: Subject<string> = new Subject<string>();
     reportId$: Observable<string> = this._reportId.asObservable().pipe(take(1), shareReplay(1));

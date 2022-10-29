@@ -3,23 +3,23 @@
  * This is only a minimal backend to get started.
  */
 
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 
 async function bootstrap() {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe({ 
-    whitelist: true, 
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
     forbidNonWhitelisted: true,
     transform: true,
     transformOptions: {
       enableImplicitConversion: true
     }
-  })); 
+  }));
 
   const options = new DocumentBuilder()
     .setTitle('iVerify')
