@@ -1,9 +1,9 @@
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
-  EAuthActions,
-  GetPermissions,
-  GetPermissionsFailure,
-  GetPermissionsSuccess
+    EAuthActions,
+    GetPermissions,
+    GetPermissionsFailure,
+    GetPermissionsSuccess,
 } from '../actions/auth.actions';
 import { catchError, switchMap } from 'rxjs/operators';
 
@@ -13,21 +13,22 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class PermissionsEffects {
-  constructor(private authService: AuthService, private actions$: Actions) {}
+    constructor(private authService: AuthService, private actions$: Actions) {}
 
-  @Effect()
-  get: Observable<any> = this.actions$.pipe(
-    ofType<GetPermissions>(EAuthActions.GetPermissions),
-    switchMap(() => {
-      return this.authService.permissions().pipe(
-        switchMap(payload => [
-          payload
-            ? new GetPermissionsSuccess(payload)
-            : new GetPermissionsFailure()
-        ]),
-        catchError(error => [new GetPermissionsFailure()])
-      );
-    }),
-    catchError(error => [new GetPermissionsFailure()])
-  );
+    get: Observable<any> = createEffect(() =>
+        this.actions$.pipe(
+            ofType<GetPermissions>(EAuthActions.GetPermissions),
+            switchMap(() => {
+                return this.authService.permissions().pipe(
+                    switchMap((payload) => [
+                        payload
+                            ? new GetPermissionsSuccess(payload)
+                            : new GetPermissionsFailure(),
+                    ]),
+                    catchError((error) => [new GetPermissionsFailure()])
+                );
+            }),
+            catchError((error) => [new GetPermissionsFailure()])
+        )
+    );
 }

@@ -1,31 +1,37 @@
-
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Column,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Locations } from '../locations/models/locations.model';
 import { User } from '../users/user.model';
 
 @Entity()
-export class Roles{
+export class Roles {
     @PrimaryGeneratedColumn()
-    id: number
+    id: number;
 
     @Column({ unique: true })
-    name: string
+    name: string;
 
     @Column()
-    description: string
+    description: string;
 
     @Column()
-    resource: string
+    resource: string;
 
     @Column()
-    createdBy: string
+    createdBy: string;
 
     @Column()
-    updatedBy: string
+    updatedBy: string;
 
     @JoinTable()
-    @ManyToMany(type => User, user => user.roles)
-    users: User[]
+    @ManyToMany((type) => User, (user) => user.roles)
+    users: User[];
 
     @ManyToOne(() => Locations, (location) => location.roles, {
         nullable: false,
@@ -47,13 +53,12 @@ export class Roles{
 
 //     @Prop({ default: null})
 //     createdBy: string;
-  
+
 //     @Prop({ default: null})
 //     updatedBy: string;
 
-    // @OneToMany('User', 'roles')
-    // user: User[]
+// @OneToMany('User', 'roles')
+// user: User[]
 // }
-
 
 // export const RolesSchema = SchemaFactory.createForClass(Roles);

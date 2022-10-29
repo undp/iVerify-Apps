@@ -1,24 +1,22 @@
-
-
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Locations } from '../../locations/models/locations.model';
 
 @Entity()
-export class Stats{
+export class Stats {
     @PrimaryGeneratedColumn()
-    id: number
+    id: number;
 
-    @Column({type: 'date'})
-    day: string
-
-    @Column()
-    countBy: string // of CountBy enum
+    @Column({ type: 'date' })
+    day: string;
 
     @Column()
-    category: string
+    countBy: string; // of CountBy enum
 
     @Column()
-    count: number
+    category: string;
+
+    @Column()
+    count: number;
 
     @ManyToOne(() => Locations, (location) => location.stats, {
         nullable: false,

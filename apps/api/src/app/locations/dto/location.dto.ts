@@ -1,8 +1,6 @@
-import { IsNotEmpty, IsObject, IsOptional, IsString } from "class-validator";
-
+import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
 
 export class LocationDto {
-
     @IsNotEmpty()
     @IsString()
     description: string;

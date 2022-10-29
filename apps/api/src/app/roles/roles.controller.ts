@@ -1,6 +1,22 @@
-import { Controller, Post, Body, Get, BadRequestException, NotFoundException, Put, Query, Delete, UseGuards, Injectable, Scope, Inject, BadGatewayException, Logger } from '@nestjs/common';
+import {
+    Controller,
+    Post,
+    Body,
+    Get,
+    BadRequestException,
+    NotFoundException,
+    Put,
+    Query,
+    Delete,
+    UseGuards,
+    Injectable,
+    Scope,
+    Inject,
+    BadGatewayException,
+    Logger,
+} from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiExcludeEndpoint } from '@nestjs/swagger';
-import { RolesService } from './roles.service'
+import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/createRole.dto';
 import { RolesGuard } from '../guards/roles.guard';
 import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
@@ -16,24 +32,30 @@ import { PaginationQueryDto } from '../common/pagination-query.dto';
 @ApiBearerAuth()
 @Injectable()
 export class RolesController {
-
     private logger = new Logger(RolesController.name);
 
-    constructor(private readonly rolesService: RolesService,
-        @Inject(REQUEST) private readonly request: Request) {
-    }
+    constructor(
+        private readonly rolesService: RolesService,
+        @Inject(REQUEST) private readonly request: Request
+    ) {}
 
     @Post()
     @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async create(@Body() createRoleDto: CreateRoleDto) {
-        const userId = this.request.user && this.request.user['id'] ? this.request.user['id'] : 1;
+        const userId =
+            this.request.user && this.request.user['id']
+                ? this.request.user['id']
+                : 1;
         if (userId) {
-            const userRoles = await this.rolesService.createRole(createRoleDto, userId);
+            const userRoles = await this.rolesService.createRole(
+                createRoleDto,
+                userId
+            );
             if (!userRoles) {
                 this.logger.error(roleMessages.roleCreateFail);
                 throw new BadRequestException(roleMessages.roleCreateFail);
             }
-            return { message: roleMessages.roleCreateSucess, data: userRoles, };
+            return { message: roleMessages.roleCreateSucess, data: userRoles };
         } else {
             throw new BadRequestException();
         }
@@ -52,7 +74,6 @@ export class RolesController {
         const userRole = await this.rolesService.findByRoleId(roleId.roleId);
         if (!userRole) throw new NotFoundException(roleMessages.roleNotFound);
         return { data: userRole };
-
     }
 
     @Put()
@@ -63,20 +84,28 @@ export class RolesController {
     ) {
         const userId = this.request.user['id'];
         if (userId) {
-            const editedRole = await this.rolesService.updateRole(roleId.roleId, editRoleDto, userId);
-            if (!editedRole) throw new BadGatewayException(roleMessages.roleUpdateFail);
-            return { message: roleMessages.roleUpdateSuccess, data: editedRole }
+            const editedRole = await this.rolesService.updateRole(
+                roleId.roleId,
+                editRoleDto,
+                userId
+            );
+            if (!editedRole)
+                throw new BadGatewayException(roleMessages.roleUpdateFail);
+            return {
+                message: roleMessages.roleUpdateSuccess,
+                data: editedRole,
+            };
         } else {
             throw new BadRequestException();
         }
     }
 
-
     @Delete()
     @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async deleteRole(@Query() roleId: GetRoleDto) {
         const deletedRole = await this.rolesService.deleteRole(roleId.roleId);
-        if (!deletedRole) throw new BadGatewayException(roleMessages.roleDeleteFail);
+        if (!deletedRole)
+            throw new BadGatewayException(roleMessages.roleDeleteFail);
         return { message: roleMessages.roleDeleteSucess };
     }
 

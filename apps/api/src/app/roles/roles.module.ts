@@ -9,9 +9,9 @@ import { Roles } from './roles.model';
 import { Locations } from '../locations/models/locations.model';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Locations, User, Roles])],
-  controllers: [RolesController],
-  providers: [RolesService, JWTTokenAuthGuard, RolesGuard],
-  exports: [RolesService, JWTTokenAuthGuard],
+    imports: [TypeOrmModule.forFeature([Locations, User, Roles])],
+    controllers: [RolesController],
+    providers: [RolesService, JWTTokenAuthGuard, RolesGuard],
+    exports: [RolesService, JWTTokenAuthGuard],
 })
-export class RolesModule { }
+export class RolesModule {}

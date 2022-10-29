@@ -1,39 +1,57 @@
 <mat-toolbar>
-  <!-- <button
+    <!-- <button
     [disabled]="!(isUserAllowedUserMenu)"
     (click)="snav.toggle()"
     mat-icon-button
   >
     <mat-icon>menu</mat-icon>
   </button> -->
-  <span class="fontRalewayBold header-text">{{HEADER_TAG_LINE |translate}}</span>  
-  <span class="example-spacer"></span>
+    <span class="fontRalewayBold header-text">{{
+        HEADER_TAG_LINE | translate
+    }}</span>
+    <span class="example-spacer"></span>
 </mat-toolbar>
 <mat-sidenav-container
-  class="example-sidenav-container"
-  [style.marginTop.px]="viewportMobileQuery.matches ? 0 : 0"
+    class="example-sidenav-container"
+    [style.marginTop.px]="viewportMobileQuery.matches ? 0 : 0"
 >
-  <mat-sidenav #snav [mode]="viewportMobileQuery.matches ? 'over' : 'side'"
-                 [fixedInViewport]="viewportMobileQuery.matches" fixedTopGap="0" (click)="snav.toggle()">
-    <mat-nav-list style="padding: 10px;">
-      <a class="text-capitalize fontRobotoRegular" mat-menu-item [routerLink]="['/dashboard/settings']">
-          <mat-icon>settings</mat-icon><span class="settings">{{'SETTINGS' | translate}}</span>
-      </a>
-      <mat-divider></mat-divider>
-      <a class="text-capitalize fontRobotoRegular" mat-menu-item [routerLink]="['/dashboard/index']">
-          <mat-icon>arrowback</mat-icon>
-          {{'BACK' | translate}}
-      </a>
-    </mat-nav-list>
-  </mat-sidenav>
-  <mat-sidenav-content>
-  <div class="dashboard-title" *ngIf="isDashboardTextHide">
-    <h1 style="left:0; position: absolute;">{{'DASHBOARD_NAME'|translate}}</h1>
-  </div>
-  <div  [class.hideText]="isDashboardTextHide">
-    <main role="main" class="main-body">
-      <router-outlet></router-outlet>
-    </main>
-  </div>
-  </mat-sidenav-content>
+    <mat-sidenav
+        #snav
+        [mode]="viewportMobileQuery.matches ? 'over' : 'side'"
+        [fixedInViewport]="viewportMobileQuery.matches"
+        fixedTopGap="0"
+        (click)="snav.toggle()"
+    >
+        <mat-nav-list style="padding: 10px">
+            <a
+                class="text-capitalize fontRobotoRegular"
+                mat-menu-item
+                [routerLink]="['/dashboard/settings']"
+            >
+                <mat-icon>settings</mat-icon
+                ><span class="settings">{{ 'SETTINGS' | translate }}</span>
+            </a>
+            <mat-divider></mat-divider>
+            <a
+                class="text-capitalize fontRobotoRegular"
+                mat-menu-item
+                [routerLink]="['/dashboard/index']"
+            >
+                <mat-icon>arrowback</mat-icon>
+                {{ 'BACK' | translate }}
+            </a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="dashboard-title" *ngIf="isDashboardTextHide">
+            <h1 style="left: 0; position: absolute">
+                {{ 'DASHBOARD_NAME' | translate }}
+            </h1>
+        </div>
+        <div [class.hideText]="isDashboardTextHide">
+            <main role="main" class="main-body">
+                <router-outlet></router-outlet>
+            </main>
+        </div>
+    </mat-sidenav-content>
 </mat-sidenav-container>

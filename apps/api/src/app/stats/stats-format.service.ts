@@ -1,22 +1,36 @@
-import { Injectable } from "@nestjs/common";
-import { StatusesMap } from "@iverify/iverify-common";
-import { Stats } from "./models/stats.model";
-import { CountBy } from "@iverify/common/src";
+import { Injectable } from '@nestjs/common';
+import { StatusesMap } from '@iverify/iverify-common';
+import { Stats } from './models/stats.model';
+import { CountBy } from '@iverify/common/src';
 
 @Injectable()
 export class StatsFormatService {
-    unstartedStatuses = StatusesMap.filter(status => status.default).map(status => status.value);
-    processingStatuses = StatusesMap.filter(status => !status.default && !status.resolution).map(status => status.value);
-    resolutionStatuses = StatusesMap.filter(status => status.resolution).map(status => status.value);
+    unstartedStatuses = StatusesMap.filter((status) => status.default).map(
+        (status) => status.value
+    );
+    processingStatuses = StatusesMap.filter(
+        (status) => !status.default && !status.resolution
+    ).map((status) => status.value);
+    resolutionStatuses = StatusesMap.filter((status) => status.resolution).map(
+        (status) => status.value
+    );
 
     formatDate(date: Date) {
-        return `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getUTCDate()}`
+        return `${date.getUTCFullYear()}-${
+            date.getUTCMonth() + 1
+        }-${date.getUTCDate()}`;
     }
 
     formatTticketsByAgent(endDate: string, results: any): Stats[] {
-        const unstarted = results.filter(val => this.unstartedStatuses.indexOf(val.status) > -1);
-        const processing = results.filter(val => this.processingStatuses.indexOf(val.status) > -1);
-        const solved = results.filter(val => this.resolutionStatuses.indexOf(val.status) > -1);
+        const unstarted = results.filter(
+            (val) => this.unstartedStatuses.indexOf(val.status) > -1
+        );
+        const processing = results.filter(
+            (val) => this.processingStatuses.indexOf(val.status) > -1
+        );
+        const solved = results.filter(
+            (val) => this.resolutionStatuses.indexOf(val.status) > -1
+        );
 
         const unstartedCount = unstarted.reduce((acc, val) => {
             const user = val.agent ? val.agent : 'undefined';
@@ -39,11 +53,22 @@ export class StatsFormatService {
             return acc;
         }, {});
 
-
         return [
-            ...this.buildStatsFromCount(endDate, unstartedCount, CountBy.agentUnstarted),
-            ...this.buildStatsFromCount(endDate, processingCount, CountBy.agentProcessing),
-            ...this.buildStatsFromCount(endDate, solvedCount, CountBy.agentSolved)
+            ...this.buildStatsFromCount(
+                endDate,
+                unstartedCount,
+                CountBy.agentUnstarted
+            ),
+            ...this.buildStatsFromCount(
+                endDate,
+                processingCount,
+                CountBy.agentProcessing
+            ),
+            ...this.buildStatsFromCount(
+                endDate,
+                solvedCount,
+                CountBy.agentSolved
+            ),
         ];
     }
 
@@ -52,7 +77,6 @@ export class StatsFormatService {
     }
 
     formatTticketsByTags(endDate: string, results): Stats[] {
-
         const count = results.reduce((acc, val) => {
             if (val.search.number_of_results > 0) {
                 const tag: string = val.tag;
@@ -64,7 +88,6 @@ export class StatsFormatService {
     }
 
     formatTticketsByViolation(endDate: string, results): Stats[] {
-
         const count = results.reduce((acc, val) => {
             const violation: string = val.violation;
             acc[violation] = val.count;
@@ -74,16 +97,16 @@ export class StatsFormatService {
     }
 
     formatTticketsByStatus(endDate: string, results: any): Stats[] {
-
         const count = results.reduce((acc, val) => {
-            const status: string = StatusesMap.find(i => i.value === val.status).label;
+            const status: string = StatusesMap.find(
+                (i) => i.value === val.status
+            ).label;
             if (val.search.number_of_results > 0) {
                 acc[status] = val.search.number_of_results;
             }
             return acc;
         }, {});
         return this.buildStatsFromCount(endDate, count, CountBy.status);
-
     }
 
     formatTticketsBySource(endDate: string, results: any): Stats[] {
@@ -99,12 +122,19 @@ export class StatsFormatService {
 
     formatTticketsByType(endDate: string, results: any): Stats[] {
         const edges: any[] = results.search.medias.edges;
-        const solved = edges.filter(val => this.resolutionStatuses.indexOf(val.node.status) > -1);
+        const solved = edges.filter(
+            (val) => this.resolutionStatuses.indexOf(val.node.status) > -1
+        );
 
         const solvedCount = solved.reduce((acc, val) => {
             const tasksEdges = val.node.tasks.edges;
-            const nodeType = tasksEdges.find(taskNode => taskNode.node.label == 'Type of Violation');
-            const violationType = nodeType && nodeType.node ? nodeType.node.first_response_value : null;
+            const nodeType = tasksEdges.find(
+                (taskNode) => taskNode.node.label == 'Type of Violation'
+            );
+            const violationType =
+                nodeType && nodeType.node
+                    ? nodeType.node.first_response_value
+                    : null;
             if (violationType.length > 0) {
                 if (acc && violationType && !acc[violationType]) {
                     acc[violationType] = 1;
@@ -113,7 +143,6 @@ export class StatsFormatService {
                 }
             }
             return acc;
-
         }, {});
 
         return this.buildStatsFromCount(endDate, solvedCount, CountBy.type);
@@ -127,14 +156,17 @@ export class StatsFormatService {
         return this.buildStatsFromCount(endDate, count, CountBy.folder);
     }
 
-
     formatCreatedVsPublished(endDate, results): Stats[] {
         const count = results.reduce((acc, val) => {
             const status: string = val.status;
             acc[status] = val.search.number_of_results;
             return acc;
         }, {});
-        return this.buildStatsFromCount(endDate, count, CountBy.createdVsPublished);
+        return this.buildStatsFromCount(
+            endDate,
+            count,
+            CountBy.createdVsPublished
+        );
     }
 
     formatResponseTime(day, title, responseTime): Partial<Stats> {
@@ -142,8 +174,8 @@ export class StatsFormatService {
             day,
             countBy: CountBy.responseVelocity,
             category: title,
-            count: responseTime
-        }
+            count: responseTime,
+        };
     }
 
     formatResolutionTime(day, title, resolutionTime): Partial<Stats> {
@@ -151,8 +183,8 @@ export class StatsFormatService {
             day,
             countBy: CountBy.resolutionVelocity,
             category: title,
-            count: resolutionTime
-        }
+            count: resolutionTime,
+        };
     }
 
     private buildStatsFromCount(day, count: Object, countBy: CountBy) {
@@ -164,11 +196,11 @@ export class StatsFormatService {
                 day,
                 countBy,
                 category: val,
-                count: count[val]
-            }
+                count: count[val],
+            };
             acc.push(stat);
             return acc;
-        }, [])
+        }, []);
     }
 
     getStartEndDates(day) {
@@ -180,10 +212,6 @@ export class StatsFormatService {
 
         const startDate = this.formatDate(previousDay);
 
-        return { startDate: startDate, endDate: endDate }
-
+        return { startDate: startDate, endDate: endDate };
     }
-
-
-
 }
