@@ -28,6 +28,8 @@ export class ArticlesController {
     @Post('save-article')
     async saveArticle(@Body() body) {
         try {
+            const locationId = null;
+
             const article = body.article;
             this.logger.log('Received request on save article endpoint');
             await this.articlesService.saveOne(article);
@@ -35,7 +37,10 @@ export class ArticlesController {
                 this.logger.log(
                     'Article has a toxic score; updating detoxify indicators...'
                 );
-                await this.statsService.addToxicPublishedStats(article);
+                await this.statsService.addToxicPublishedStats(
+                    locationId,
+                    article
+                );
             }
             return 'ok';
         } catch (e) {

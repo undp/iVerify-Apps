@@ -23,32 +23,45 @@ import { Article } from '@iverify/iverify-common';
 import { ArticlesController } from './articles/articles.controller';
 import { ArticlesModule } from './articles/articles.module';
 import { ArticlesService } from './articles/articles.service';
+import { LocationsModule } from './locations/locations.module';
 
 @Module({
-  imports: [
-    UsersModule, 
-    AuthModule, 
-    RolesModule,
-    StatsModule,
-    ArticlesModule,
-    MeedanCheckClientModule,
-    ConfigModule.forRoot(),
-    ScheduleModule.forRoot(),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      insecureAuth: true,
-      autoLoadEntities: true,
-      synchronize: true
-    }),
-    TypeOrmModule.forFeature([User, Roles, Stats, Article]),
-
-  ],
-  controllers: [AppController, UsersController, StatsController, ArticlesController],
-  providers: [AppService, UsersService, StatsService, StatsFormatService, StatsCronService, ArticlesService],
+    imports: [
+        LocationsModule,
+        UsersModule,
+        AuthModule,
+        RolesModule,
+        StatsModule,
+        ArticlesModule,
+        MeedanCheckClientModule,
+        ConfigModule.forRoot(),
+        ScheduleModule.forRoot(),
+        TypeOrmModule.forRoot({
+            type: 'mysql',
+            host: process.env.DB_HOST,
+            port: +process.env.DB_PORT,
+            username: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
+            insecureAuth: true,
+            autoLoadEntities: true,
+            synchronize: true,
+        }),
+        TypeOrmModule.forFeature([User, Roles, Stats, Article]),
+    ],
+    controllers: [
+        AppController,
+        UsersController,
+        StatsController,
+        ArticlesController,
+    ],
+    providers: [
+        AppService,
+        UsersService,
+        StatsService,
+        StatsFormatService,
+        StatsCronService,
+        ArticlesService,
+    ],
 })
-export class AppModule {} 
+export class AppModule {}

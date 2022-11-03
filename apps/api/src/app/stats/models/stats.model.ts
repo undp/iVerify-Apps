@@ -1,10 +1,24 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    BeforeInsert,
+    Column,
+    Entity,
+    Index,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Locations } from '../../locations/models/locations.model';
+import { StatsDto } from '../dto/stats.dto';
 
 @Entity()
 export class Stats {
+    private readonly lockedDtoFields = [];
+
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Index()
+    @Column({ nullable: false })
+    locationId: string;
 
     @Column({ type: 'date' })
     day: string;
@@ -22,4 +36,12 @@ export class Stats {
         nullable: false,
     })
     location: Location;
+
+    toDto() {
+        const dto = new StatsDto({ ...this });
+
+        this.lockedDtoFields.forEach((field: string) => delete dto[field]);
+
+        return dto;
+    }
 }

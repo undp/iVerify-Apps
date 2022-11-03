@@ -26,6 +26,9 @@ import { Request } from 'express';
 import { GetRoleDto } from './dto/getRole.dto';
 import { roleMessages } from '../../constant/messages';
 import { PaginationQueryDto } from '../common/pagination-query.dto';
+import { RolesDto } from './dto/role.dto';
+import { RolesResponseDto } from './dto/roleResponse.dto';
+import { isEmpty } from 'radash';
 
 @Controller('roles')
 @ApiTags('roles')
@@ -41,7 +44,9 @@ export class RolesController {
 
     @Post()
     @UseGuards(JWTTokenAuthGuard, RolesGuard)
-    async create(@Body() createRoleDto: CreateRoleDto) {
+    async create(
+        @Body() createRoleDto: CreateRoleDto
+    ): Promise<RolesResponseDto> {
         const userId =
             this.request.user && this.request.user['id']
                 ? this.request.user['id']
@@ -63,16 +68,31 @@ export class RolesController {
 
     @Get()
     @UseGuards(JWTTokenAuthGuard, RolesGuard)
-    async getRoles(@Query() paginationDto: PaginationQueryDto) {
-        const roles = await this.rolesService.getRoles(paginationDto);
+    async getRoles(
+        @Query() paginationDto: PaginationQueryDto
+    ): Promise<RolesResponseDto> {
+        const locationId = null;
+
+        const roles = await this.rolesService.getRoles(
+            locationId,
+            paginationDto
+        );
         return { data: roles };
     }
 
     @Get('RoleId')
     @UseGuards(JWTTokenAuthGuard, RolesGuard)
-    async getRole(@Query() roleId: GetRoleDto) {
-        const userRole = await this.rolesService.findByRoleId(roleId.roleId);
-        if (!userRole) throw new NotFoundException(roleMessages.roleNotFound);
+    async getRole(@Query() roleId: GetRoleDto): Promise<RolesResponseDto> {
+        const locationId = null;
+
+        const userRole = await this.rolesService.findByRoleId(
+            locationId,
+            roleId.roleId
+        );
+
+        if (isEmpty(userRole)) {
+            throw new NotFoundException(roleMessages.roleNotFound);
+        }
         return { data: userRole };
     }
 
@@ -81,7 +101,7 @@ export class RolesController {
     async editRole(
         @Query() roleId: GetRoleDto,
         @Body() editRoleDto: EditRoleDto
-    ) {
+    ): Promise<RolesResponseDto> {
         const userId = this.request.user['id'];
         if (userId) {
             const editedRole = await this.rolesService.updateRole(
@@ -89,8 +109,11 @@ export class RolesController {
                 editRoleDto,
                 userId
             );
-            if (!editedRole)
+
+            if (isEmpty(editedRole)) {
                 throw new BadGatewayException(roleMessages.roleUpdateFail);
+            }
+
             return {
                 message: roleMessages.roleUpdateSuccess,
                 data: editedRole,
@@ -102,21 +125,26 @@ export class RolesController {
 
     @Delete()
     @UseGuards(JWTTokenAuthGuard, RolesGuard)
-    async deleteRole(@Query() roleId: GetRoleDto) {
+    async deleteRole(@Query() roleId: GetRoleDto): Promise<RolesResponseDto> {
         const deletedRole = await this.rolesService.deleteRole(roleId.roleId);
-        if (!deletedRole)
+
+        if (!deletedRole) {
             throw new BadGatewayException(roleMessages.roleDeleteFail);
+        }
+
         return { message: roleMessages.roleDeleteSucess };
     }
 
     @Post('createDefaultRole')
     @ApiExcludeEndpoint()
-    async createDefaultRole() {
+    async createDefaultRole(): Promise<RolesResponseDto> {
         const adminRole = await this.rolesService.createDefaultAdminRole();
-        if (!adminRole) {
+
+        if (isEmpty(adminRole)) {
             this.logger.error(roleMessages.roleCreateFail);
             throw new BadRequestException(roleMessages.roleCreateFail);
         }
+
         return { message: adminRole.message, data: adminRole.roleData };
     }
 }

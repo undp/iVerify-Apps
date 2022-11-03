@@ -11,6 +11,8 @@ import { MeedanCheckClientService } from '@iverify/meedan-check-client';
 import { CountBy } from '@iverify/common';
 import { lastValueFrom } from 'rxjs';
 
+import * as pMap from 'p-map';
+
 @Injectable()
 export class StatsService {
     private readonly logger = new Logger(StatsService.name);
@@ -28,7 +30,11 @@ export class StatsService {
         private checkClient: MeedanCheckClientService
     ) {}
 
-    async processItemStatusChanged(id: string, day: string) {
+    async processItemStatusChanged(
+        locationId: string,
+        id: string,
+        day: string
+    ) {
         this.logger.log(`[${id}] Getting velocities`);
         const velocities = await this.processVelocities(id, day);
         this.logger.log(`[${id}] Getting report`);
@@ -37,7 +43,12 @@ export class StatsService {
         );
         const status = meedanItem.status;
         this.logger.log(`[${id}] status `, status);
-        const verification = await this.processVerification(id, status, day);
+        const verification = await this.processVerification(
+            locationId,
+            id,
+            status,
+            day
+        );
 
         this.logger.log(
             `[${id}] process status result veloficite ${JSON.stringify(
@@ -47,7 +58,12 @@ export class StatsService {
         return { velocities, verification };
     }
 
-    async processVerification(id: string, status: string, day: string) {
+    async processVerification(
+        locationId: string,
+        id: string,
+        status: string,
+        day: string
+    ) {
         this.logger.log(
             `[${id}] Processing verification for status ${status} and day ${day}`
         );
@@ -66,6 +82,7 @@ export class StatsService {
             countBy: CountBy.verifiedByDay,
             category: statusLabel,
             day,
+            locationId,
         };
 
         this.logger.log(
@@ -86,12 +103,17 @@ export class StatsService {
                   countBy: CountBy.verifiedByDay,
                   category: statusLabel,
                   count: 1,
+                  locationId,
               };
         this.logger.log(`[${id}] Saving stat: ${JSON.stringify(statToSave)}`);
         return await this.statsRepository.save(statToSave);
     }
 
-    async addToxicityStats(toxicCount: number, day: string) {
+    async addToxicityStats(
+        locationId: string,
+        toxicCount: number,
+        day: string
+    ) {
         this.logger.log(
             `Processing toxicity count ${toxicCount} and day ${day}`
         );
@@ -101,18 +123,28 @@ export class StatsService {
                 countBy: CountBy.toxicity,
                 category,
                 day,
+                locationId,
             },
         });
         this.logger.log(`Found record: ${stat}`);
         if (stat) stat.count += toxicCount;
         const statToSave = stat
             ? stat
-            : { day, countBy: CountBy.toxicity, category, count: toxicCount };
+            : {
+                  day,
+                  countBy: CountBy.toxicity,
+                  category,
+                  count: toxicCount,
+                  locationId,
+              };
         this.logger.log(`Saving stat: ${JSON.stringify(statToSave)}`);
         return await this.statsRepository.save(statToSave);
     }
 
-    async addToxicPublishedStats(article: Article) {
+    async addToxicPublishedStats(
+        locationId: string,
+        article: Article
+    ): Promise<Stats> {
         const day: string = this.formatService.formatDate(
             new Date(article.creationDate)
         );
@@ -124,15 +156,22 @@ export class StatsService {
         const category: string = article.toxicFlag
             ? 'publishedToxic'
             : 'publishedNonToxic';
+
         const stat: Stats = await this.statsRepository.findOne({
             where: {
                 countBy: CountBy.toxicity,
                 category,
                 day,
+                locationId,
             },
         });
+
         this.logger.log(`Found record: ${stat}`);
-        if (stat) stat.count++;
+
+        if (stat) {
+            stat.count++;
+        }
+
         const statToSave = stat
             ? stat
             : { day, countBy: CountBy.toxicity, category, count: 1 };
@@ -368,9 +407,10 @@ export class StatsService {
     // }
 
     async saveMany(stats: Stats[]) {
-        const results: Stats[] = await Promise.all(
-            stats.map((stat) => this.saveOne(stat))
-        );
+        const results = await pMap(stats, async (stat) => this.saveOne(stat), {
+            concurrency: 2,
+        });
+
         return results;
     }
 
@@ -379,7 +419,11 @@ export class StatsService {
         return this.statsRepository.save(newRecord);
     }
 
-    async getByDate(startDate: Date, endDate: Date): Promise<any> {
+    async getByDate(
+        locationId: string,
+        startDate: Date,
+        endDate: Date
+    ): Promise<any> {
         const start = new Date(startDate.getTime());
         start.setHours(startDate.getHours() - 24);
 
@@ -396,6 +440,7 @@ export class StatsService {
                     CountBy.source.toString(),
                     // CountBy.type.toString()
                 ]),
+                locationId,
             },
         });
         const aggregatedStats = this.aggregate(aggregationStats);
@@ -468,7 +513,9 @@ export class StatsService {
                 category: val.category,
                 count: val.count,
                 day: val.day,
+                locationId: val.locationId,
             };
+
             if (!acc[val.countBy]) acc[val.countBy] = [obj];
             else acc[val.countBy].push(obj);
             return acc;

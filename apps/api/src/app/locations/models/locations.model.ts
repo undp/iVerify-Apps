@@ -2,9 +2,12 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Roles } from '../../roles/roles.model';
 import { Stats } from '../../stats/models/stats.model';
 import { User } from '../../users/user.model';
+import { LocationDto } from '../dto/location.dto';
 
 @Entity()
 export class Locations {
+    private readonly lockedDtoFields = [];
+
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -14,7 +17,7 @@ export class Locations {
     @Column({ type: 'json' })
     params: Record<string, unknown>;
 
-    @Column()
+    @Column({ type: 'boolean' })
     deleted = false;
 
     // @OneToMany(() => User, (user) => user.)
@@ -37,5 +40,13 @@ export class Locations {
 
     constructor(params?: Partial<Locations>) {
         Object.assign(this, params);
+    }
+
+    toDto() {
+        const dto = new LocationDto({ ...this });
+
+        this.lockedDtoFields.forEach((field: string) => delete dto[field]);
+
+        return dto;
     }
 }

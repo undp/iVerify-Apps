@@ -1,6 +1,8 @@
 import {
+    BeforeInsert,
     Column,
     Entity,
+    Index,
     JoinTable,
     ManyToMany,
     ManyToOne,
@@ -8,13 +10,20 @@ import {
 } from 'typeorm';
 import { Locations } from '../locations/models/locations.model';
 import { User } from '../users/user.model';
+import { RolesDto } from './dto/role.dto';
 
 @Entity()
 export class Roles {
+    private readonly lockedDtoFields = ['location', 'users', 'uniqueParam'];
+
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ unique: true })
+    @Index()
+    @Column({ nullable: false })
+    locationId: string;
+
+    @Column({})
     name: string;
 
     @Column()
@@ -23,6 +32,9 @@ export class Roles {
     @Column()
     resource: string;
 
+    @Column({ unique: true, nullable: true })
+    uniqueParam: string;
+
     @Column()
     createdBy: string;
 
@@ -30,13 +42,26 @@ export class Roles {
     updatedBy: string;
 
     @JoinTable()
-    @ManyToMany((type) => User, (user) => user.roles)
+    @ManyToMany(() => User, (user) => user.roles)
     users: User[];
 
     @ManyToOne(() => Locations, (location) => location.roles, {
         nullable: false,
     })
     location: Location;
+
+    @BeforeInsert()
+    prepareUniqFieldParam() {
+        this.uniqueParam = `${this.locationId}|${this.name}`;
+    }
+
+    toDto() {
+        const dto = new RolesDto({ ...this });
+
+        this.lockedDtoFields.forEach((field: string) => delete dto[field]);
+
+        return dto;
+    }
 }
 
 // @Schema({timestamps: true})

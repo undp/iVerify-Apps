@@ -1,6 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, Repository, UpdateResult } from 'typeorm';
+import {
+    DeleteResult,
+    FindManyOptions,
+    Repository,
+    UpdateResult,
+} from 'typeorm';
+import { PaginationQueryDto } from '../common/pagination-query.dto';
 import { CreateLocationDto } from './dto/createLocation.dto';
 import { LocationDto } from './dto/location.dto';
 import { Locations } from './models/locations.model';
@@ -14,13 +20,17 @@ export class LocationsService {
         private locationsRepository: Repository<Locations>
     ) {}
 
-    public async create(locationParam: CreateLocationDto): Promise<Locations> {
+    public async create(
+        locationParam: CreateLocationDto
+    ): Promise<LocationDto> {
         try {
             const location = await this.locationsRepository.create(
                 new Locations(locationParam)
             );
 
-            return this.locationsRepository.save(location);
+            const result = await this.locationsRepository.save(location);
+
+            return result.toDto();
         } catch (err) {
             this.logger.error(err);
             throw err;
@@ -29,34 +39,54 @@ export class LocationsService {
 
     public async update(
         locationId: string,
-        locationParam: Partial<CreateLocationDto>
+        locationParam: Partial<LocationDto>
     ): Promise<UpdateResult> {
-        return this.locationsRepository.update(locationId, {
-            ...locationParam,
-        });
+        try {
+            const result = await this.locationsRepository.update(locationId, {
+                ...locationParam,
+            });
+
+            return result;
+        } catch (e) {
+            this.logger.error(e);
+            throw e;
+        }
     }
 
     public async find(
         criteria: FindManyOptions<Locations>
-    ): Promise<Array<Locations>> {
-        return this.locationsRepository.find(criteria);
+    ): Promise<Array<LocationDto>> {
+        try {
+            const locations = await this.locationsRepository.find(criteria);
+
+            return locations.map((location) => location.toDto());
+        } catch (e) {
+            this.logger.error(e);
+            throw e;
+        }
     }
 
-    public async findAll(page = 0, limit = 15): Promise<Array<LocationDto>> {
-        const criteria = {
-            take: page,
-            skp: page * limit,
-        };
+    public async findAll(
+        paginationDto: PaginationQueryDto
+    ): Promise<Array<LocationDto>> {
+        const { limit, offset } = paginationDto;
+        try {
+            const criteria = {
+                take: limit,
+                skp: offset,
+            };
 
-        const queryResult = await this.find(criteria);
+            const queryResult = await this.find(criteria);
 
-        return queryResult.map(
-            (location: Locations) => new LocationDto({ ...location })
-        );
+            return queryResult;
+        } catch (e) {
+            this.logger.error(e);
+            throw e;
+        }
     }
 
-    public async delete(locationId: string): Promise<void> {
-        await this.locationsRepository.update(locationId, { deleted: true });
+    public async delete(locationId: string): Promise<DeleteResult> {
+        return this.locationsRepository.update(locationId, { deleted: true });
         // remove users, stats, roles
     }
 }

@@ -1,9 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-
 export class CreateRoleDto {
-
     @ApiProperty()
     @IsNotEmpty()
     readonly name: string;
@@ -16,4 +14,8 @@ export class CreateRoleDto {
     @IsNotEmpty()
     resource: any;
 
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
+    locationId: string;
 }

@@ -2,6 +2,7 @@ import { Body, Controller, HttpException, Logger, Post } from '@nestjs/common';
 import { catchError, tap } from 'rxjs/operators';
 import { ApiBody, ApiTags, ApiProperty } from '@nestjs/swagger';
 import { AppService } from './app.service';
+import { MeedanItemStatuses } from '@iverify/meedan-check-client/src';
 
 class PublishReportDto {
     @ApiProperty()
@@ -29,9 +30,11 @@ export class AppController {
             const event = body.event;
             this.logger.log(`Received event: ${event}`);
             const data = body.data;
+
             const id = data.project_media.dbid;
             this.logger.log(`project media id: ${id}`);
-            if (event === 'publish_report') {
+
+            if (event === MeedanItemStatuses.PUBLISH_REPORT) {
                 return this.appService.publishReportById(id).pipe(
                     tap(() => this.logger.log('Report published.')),
                     catchError((err) => {
