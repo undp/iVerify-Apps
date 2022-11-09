@@ -31,7 +31,7 @@ export class LocationsController {
         @Body(ValidationPipe) locationDto: CreateLocationDto
     ): Promise<LocationDto> {
         try {
-            return this.locationsService.create(locationDto);
+            return await this.locationsService.create(locationDto);
         } catch (e) {
             this.logger.error(e);
             throw e;
@@ -44,7 +44,7 @@ export class LocationsController {
         @Param('id') locationId: string
     ): Promise<UpdateResult> {
         try {
-            return this.locationsService.update(locationId, locationDto);
+            return await this.locationsService.update(locationId, locationDto);
         } catch (e) {
             this.logger.error(e);
             throw e;
@@ -54,7 +54,7 @@ export class LocationsController {
     @Get(':id')
     async findById(@Param('id') locationId: string): Promise<LocationDto> {
         try {
-            return null;
+            return await this.locationsService.findById(locationId);
         } catch (e) {
             this.logger.error(e);
             throw e;

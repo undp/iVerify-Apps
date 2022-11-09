@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
+import {
+    IsArray,
+    IsNotEmpty,
+    IsObject,
+    IsOptional,
+    IsString,
+} from 'class-validator';
+import { LocationsParam } from '../interfaces/location.params';
 
 export class CreateLocationDto {
     @ApiProperty()
@@ -9,6 +16,6 @@ export class CreateLocationDto {
 
     @ApiProperty()
     @IsOptional()
-    @IsObject()
-    params: Record<string, unknown>;
+    @IsArray({ each: true })
+    params: Array<LocationsParam>;
 }

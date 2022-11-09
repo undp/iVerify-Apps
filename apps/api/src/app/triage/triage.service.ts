@@ -21,9 +21,8 @@ export class TriageService {
         private mlClient: MlServiceClientService,
         private perspectiveClient: PerspectiveClientService,
         private checkClient: MeedanCheckClientService,
-        private config: TriageConfig
-    ) // private translate: TranslateService
-    {}
+        private config: TriageConfig // private translate: TranslateService
+    ) {}
 
     async analyze(startDate: string, endDate: string): Promise<number> {
         try {

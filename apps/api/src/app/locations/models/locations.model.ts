@@ -3,6 +3,7 @@ import { Roles } from '../../roles/roles.model';
 import { Stats } from '../../stats/models/stats.model';
 import { User } from '../../users/user.model';
 import { LocationDto } from '../dto/location.dto';
+import { LocationsParam } from '../interfaces/location.params';
 
 @Entity()
 export class Locations {
@@ -14,8 +15,8 @@ export class Locations {
     @Column()
     description: string;
 
-    @Column({ type: 'json' })
-    params: Record<string, unknown>;
+    @Column({ type: 'json', nullable: true })
+    params?: Array<LocationsParam>;
 
     @Column({ type: 'boolean' })
     deleted = false;
