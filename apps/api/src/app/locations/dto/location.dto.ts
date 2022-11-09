@@ -6,6 +6,11 @@ export class LocationDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
+    id: string;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
     description: string;
 
     @ApiProperty()

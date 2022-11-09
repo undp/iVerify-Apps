@@ -24,6 +24,8 @@ import { ArticlesController } from './articles/articles.controller';
 import { ArticlesModule } from './articles/articles.module';
 import { ArticlesService } from './articles/articles.service';
 import { LocationsModule } from './locations/locations.module';
+import { LocationsInteceptor } from '../interceptors/locations.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
     imports: [
@@ -56,6 +58,10 @@ import { LocationsModule } from './locations/locations.module';
         ArticlesController,
     ],
     providers: [
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: LocationsInteceptor,
+        },
         AppService,
         UsersService,
         StatsService,

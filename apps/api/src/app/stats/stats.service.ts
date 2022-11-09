@@ -12,6 +12,7 @@ import { CountBy } from '@iverify/common';
 import { lastValueFrom } from 'rxjs';
 
 import * as pMap from 'p-map';
+import { LocationsService } from '../locations/locations.service';
 
 @Injectable()
 export class StatsService {
@@ -27,7 +28,8 @@ export class StatsService {
         private readonly statsRepository: Repository<Stats>,
         private formatService: StatsFormatService,
         private checkStatsClient: CheckStatsService,
-        private checkClient: MeedanCheckClientService
+        private checkClient: MeedanCheckClientService,
+        private locationsService: LocationsService
     ) {}
 
     async processItemStatusChanged(
@@ -279,7 +281,11 @@ export class StatsService {
         }
     }
 
-    async fetchAndStore(day: Date, allPrevius?: boolean) {
+    private async processFetchAndStore(
+        locationId: string,
+        day: Date,
+        allPrevius?: boolean
+    ): Promise<any> {
         try {
             const endDate = this.formatService.formatDate(day);
 
@@ -330,9 +336,41 @@ export class StatsService {
                 ...ticketsByFolder,
                 // ...this.formatService.formatTticketsByChannel(ticketsByChannel),
                 // ...this.formatService.formatTticketsByType(ticketsByType),
-            ];
+            ].map((stat) => {
+                return new Stats({ ...stat, locationId });
+            });
+
             this.logger.log('Saving to DB...');
             return await this.saveMany(stats);
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
+    }
+
+    async fetchAndStore(day: Date, allPrevius?: boolean) {
+        try {
+            const locations = await this.locationsService.findAll({
+                limit: 10,
+                offset: 0,
+            });
+
+            const result = await pMap(
+                locations,
+                async (location) => {
+                    return this.processFetchAndStore(
+                        location.id,
+                        day,
+                        allPrevius
+                    );
+                },
+                {
+                    concurrency: 2,
+                    stopOnError: false,
+                }
+            );
+
+            return result;
         } catch (e) {
             throw new HttpException(e.message, 500);
         }

@@ -17,36 +17,50 @@ export class AuthService {
     ) {}
 
     async createToken(user) {
-        const userObj = {
-            id: user.id,
-            email: user.email,
-            firstname: user.firstName,
-            lastname: user.lastName,
-            roles: user.roles,
-        };
+        try {
+            const userObj = {
+                id: user.id,
+                email: user.email,
+                firstname: user.firstName,
+                lastname: user.lastName,
+                roles: user.roles,
+            };
 
-        const expiresIn = environment.tokenExpTime;
-        const accessToken = jwt.sign(userObj, environment.JWTsecret, {
-            expiresIn,
-        });
-        const refreshToken = await this.createRefreshToken(user);
-        this.logger.log('return the token', accessToken);
-        return await { accessToken, refreshToken };
+            const expiresIn = environment.tokenExpTime;
+
+            const accessToken = jwt.sign(userObj, environment.JWTsecret, {
+                expiresIn,
+            });
+
+            const refreshToken = await this.createRefreshToken(user);
+
+            this.logger.log('return the token', accessToken);
+
+            return await { accessToken, refreshToken };
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
     }
 
     async createRefreshToken(user) {
-        const expiresIn = environment.refreshExpTime;
+        try {
+            const expiresIn = environment.refreshExpTime;
 
-        const accessToken = jwt.sign(
-            {
-                id: user.id,
-                email: user.email,
-            },
-            environment.JWTSecretRefreshToken,
-            { expiresIn }
-        );
+            const accessToken = jwt.sign(
+                {
+                    id: user.id,
+                    email: user.email,
+                },
+                environment.JWTSecretRefreshToken,
+                { expiresIn }
+            );
 
-        return await accessToken;
+            return await accessToken;
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
     }
 
     createTokenByCode(code: string) {

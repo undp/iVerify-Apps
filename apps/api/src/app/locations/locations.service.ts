@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { isEmpty } from 'radash';
 import {
     DeleteResult,
     FindManyOptions,
@@ -19,6 +20,23 @@ export class LocationsService {
         @InjectRepository(Locations)
         private locationsRepository: Repository<Locations>
     ) {}
+
+    public async getConfig(locationId: string, key: string): Promise<string> {
+        try {
+            const location = await this.findById(locationId);
+
+            let filteredResult = location.params[key];
+
+            if (isEmpty(filteredResult)) {
+                filteredResult = process.env[key];
+            }
+
+            return filteredResult as unknown as string;
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
+    }
 
     public async create(
         locationParam: CreateLocationDto
@@ -82,6 +100,21 @@ export class LocationsService {
         } catch (e) {
             this.logger.error(e);
             throw e;
+        }
+    }
+
+    public async findById(locationId: string): Promise<Locations> {
+        try {
+            const location = await this.locationsRepository.findOne({
+                where: {
+                    id: locationId,
+                },
+            });
+
+            return location;
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
         }
     }
 

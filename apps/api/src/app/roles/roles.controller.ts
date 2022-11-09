@@ -14,6 +14,7 @@ import {
     Inject,
     BadGatewayException,
     Logger,
+    Req,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { RolesService } from './roles.service';
@@ -69,9 +70,10 @@ export class RolesController {
     @Get()
     @UseGuards(JWTTokenAuthGuard, RolesGuard)
     async getRoles(
-        @Query() paginationDto: PaginationQueryDto
+        @Query() paginationDto: PaginationQueryDto,
+        @Req() request: Request
     ): Promise<RolesResponseDto> {
-        const locationId = null;
+        const locationId = request.headers['locationId'] as string;
 
         const roles = await this.rolesService.getRoles(
             locationId,
@@ -82,8 +84,11 @@ export class RolesController {
 
     @Get('RoleId')
     @UseGuards(JWTTokenAuthGuard, RolesGuard)
-    async getRole(@Query() roleId: GetRoleDto): Promise<RolesResponseDto> {
-        const locationId = null;
+    async getRole(
+        @Query() roleId: GetRoleDto,
+        @Req() request: Request
+    ): Promise<RolesResponseDto> {
+        const locationId = request.headers['locationId'] as string;
 
         const userRole = await this.rolesService.findByRoleId(
             locationId,

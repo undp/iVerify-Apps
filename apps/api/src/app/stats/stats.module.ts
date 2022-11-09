@@ -1,6 +1,7 @@
 import { MeedanCheckClientModule } from '@iverify/meedan-check-client';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { LocationsModule } from '../locations/locations.module';
 import { Locations } from '../locations/models/locations.model';
 import { Stats } from './models/stats.model';
 import { StatsController } from './stats-controller';
@@ -11,6 +12,7 @@ import { StatsService } from './stats.service';
     imports: [
         TypeOrmModule.forFeature([Locations, Stats]),
         MeedanCheckClientModule,
+        LocationsModule,
     ],
     controllers: [StatsController],
     providers: [StatsService, StatsFormatService],

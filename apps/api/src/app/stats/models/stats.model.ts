@@ -44,4 +44,8 @@ export class Stats {
 
         return dto;
     }
+
+    constructor(params?: Partial<Stats>) {
+        Object.assign(this, params);
+    }
 }

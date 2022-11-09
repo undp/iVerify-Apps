@@ -4,6 +4,7 @@ import {
     HttpException,
     Logger,
     Post,
+    Req,
     ValidationPipe,
 } from '@nestjs/common';
 
@@ -52,8 +53,11 @@ export class StatsController {
 
     @Post('stats-by-range')
     // @UseGuards(JWTTokenAuthGuard)
-    async statsByRange(@Body(ValidationPipe) body: DateBraket) {
-        const locationId = null;
+    async statsByRange(
+        @Body(ValidationPipe) body: DateBraket,
+        @Req() request: Request
+    ) {
+        const locationId = request.headers['locationId'];
 
         const startDate = new Date(body['startDate']);
         const endDate = new Date(body['endDate']);
@@ -66,9 +70,12 @@ export class StatsController {
     }
 
     @Post('item-status-changed')
-    async itemResolved(@Body(ValidationPipe) body: ItemChangedRequestDto) {
+    async itemResolved(
+        @Body(ValidationPipe) body: ItemChangedRequestDto,
+        @Req() request: Request
+    ) {
         try {
-            const locationId = null;
+            const locationId = request.headers['locationId'];
 
             this.logger.log(`Item status changed...`);
             const event = body.event;
@@ -95,9 +102,9 @@ export class StatsController {
     }
 
     @Post('toxicity')
-    async addToxicityStats(@Body() body) {
+    async addToxicityStats(@Body() body, @Req() request: Request) {
         try {
-            const locationId = null;
+            const locationId = request.headers['locationId'];
 
             const toxicCount = body.toxicCount;
             this.logger.log(
