@@ -26,6 +26,7 @@ import { ArticlesService } from './articles/articles.service';
 import { LocationsModule } from './locations/locations.module';
 import { LocationsInteceptor } from '../interceptors/locations.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { TriageModule } from './triage/triage.module';
 
 @Module({
     imports: [
@@ -50,6 +51,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
             synchronize: true,
         }),
         TypeOrmModule.forFeature([User, Roles, Stats, Article]),
+        TriageModule,
     ],
     controllers: [
         AppController,

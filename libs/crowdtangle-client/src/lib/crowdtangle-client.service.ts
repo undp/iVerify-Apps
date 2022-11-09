@@ -1,6 +1,7 @@
-import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { CrowdtangleClientConfig } from './config';
 import { catchError, map, retry, tap } from 'rxjs/operators';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class CrowdtangleClientService {

@@ -1,8 +1,9 @@
-import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { ApiClientConfig } from './config';
 import { Article } from '@iverify/iverify-common';
 import { Observable } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class ApiClientService {
