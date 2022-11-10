@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
     Body,
     Controller,
@@ -75,7 +76,8 @@ export class StatsController {
         @Req() request: Request
     ) {
         try {
-            const locationId = request.headers['locationId'];
+            // @ts-ignore
+            const { id: locationId } = request.location;
 
             this.logger.log(`Item status changed...`);
             const event = body.event;

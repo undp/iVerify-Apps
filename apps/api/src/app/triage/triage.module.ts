@@ -13,6 +13,8 @@ import { TriageConfig } from './config';
 import { TriageCronService } from './triage.cron.service';
 import { TriageController } from './triage.controller';
 import { TriageService } from './triage.service';
+import { LocationsModule } from '../locations/locations.module';
+import { CheckClientHandlerService } from '../checkStatsClientHandler.service';
 
 @Module({
     imports: [
@@ -23,13 +25,14 @@ import { TriageService } from './triage.service';
         MeedanCheckClientModule,
         ApiClientModule,
         ScheduleModule.forRoot(),
+        LocationsModule,
     ],
     controllers: [TriageController],
     providers: [
         TriageConfig,
         TriageCronService,
         TriageService,
-        // TranslateService
+        CheckClientHandlerService,
     ],
     exports: [TriageService],
 })

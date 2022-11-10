@@ -15,9 +15,8 @@ export class LocationDto {
     description: string;
 
     @ApiProperty()
-    @IsOptional()
     @IsObject()
-    params?: Array<LocationsParam>;
+    params: Array<LocationsParam>;
 
     constructor(params?: Partial<LocationDto | Locations>) {
         Object.assign(this, params);

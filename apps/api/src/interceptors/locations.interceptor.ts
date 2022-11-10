@@ -1,6 +1,13 @@
-import { CallHandler, ExecutionContext, Inject, Logger } from '@nestjs/common';
+import {
+    CallHandler,
+    ExecutionContext,
+    Inject,
+    Injectable,
+    Logger,
+} from '@nestjs/common';
 import { LocationsService } from '../app/locations/locations.service';
 
+@Injectable()
 export class LocationsInteceptor {
     private logger = new Logger(LocationsInteceptor.name);
 
@@ -23,7 +30,7 @@ export class LocationsInteceptor {
                     const result = await this.locationsService.findById(
                         location
                     );
-                    request.location = { ...location, ...result };
+                    request.location = { ...result };
                 }
             }
 

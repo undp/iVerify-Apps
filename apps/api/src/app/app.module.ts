@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 
@@ -27,6 +27,7 @@ import { LocationsModule } from './locations/locations.module';
 import { LocationsInteceptor } from '../interceptors/locations.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TriageModule } from './triage/triage.module';
+import { CheckClientHandlerService } from './checkStatsClientHandler.service';
 
 @Module({
     imports: [
@@ -52,6 +53,9 @@ import { TriageModule } from './triage/triage.module';
         }),
         TypeOrmModule.forFeature([User, Roles, Stats, Article]),
         TriageModule,
+        CacheModule.register({
+            isGlobal: true,
+        }),
     ],
     controllers: [
         AppController,
@@ -70,6 +74,8 @@ import { TriageModule } from './triage/triage.module';
         StatsFormatService,
         StatsCronService,
         ArticlesService,
+        CheckClientHandlerService,
     ],
+    exports: [CheckClientHandlerService],
 })
 export class AppModule {}

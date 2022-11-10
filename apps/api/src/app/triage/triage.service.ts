@@ -11,6 +11,8 @@ import { MlServiceType } from '@iverify/iverify-common';
 // import { TranslateService } from './TranslateService/TranslateService';
 import { lastValueFrom } from 'rxjs';
 import { TriageConfig } from './config';
+import { CheckClientHandlerService } from '../checkStatsClientHandler.service';
+import * as pMap from 'p-map';
 
 @Injectable()
 export class TriageService {
@@ -20,11 +22,15 @@ export class TriageService {
         private ctClient: CrowdtangleClientService,
         private mlClient: MlServiceClientService,
         private perspectiveClient: PerspectiveClientService,
-        private checkClient: MeedanCheckClientService,
-        private config: TriageConfig // private translate: TranslateService
+        private config: TriageConfig, // private translate: TranslateService
+        private checkClient: CheckClientHandlerService
     ) {}
 
-    async analyze(startDate: string, endDate: string): Promise<number> {
+    async analyze(
+        locationId: string,
+        startDate: string,
+        endDate: string
+    ): Promise<number> {
         try {
             const lists: any = await lastValueFrom(this.ctClient.getLists());
 
@@ -33,35 +39,58 @@ export class TriageService {
             );
             const listsIds = savedSearches.map((list) => list.id);
             let toxicPosts = [];
-            for (const listId of listsIds) {
-                const pagination = { count: 100, offset: 0, iterations: 0 };
-                const toxicPostsByList = await this.getToxicPostsByList(
-                    listId.toString(),
-                    pagination,
-                    startDate,
-                    endDate,
-                    []
-                );
-                toxicPosts = [...toxicPosts, ...toxicPostsByList];
-            }
+
+            await pMap(
+                listsIds,
+                async (listId) => {
+                    const pagination = { count: 100, offset: 0, iterations: 0 };
+                    const toxicPostsByList = await this.getToxicPostsByList(
+                        locationId,
+                        listId.toString(),
+                        pagination,
+                        startDate,
+                        endDate,
+                        []
+                    );
+                    toxicPosts = [...toxicPosts, ...toxicPostsByList];
+                },
+                {
+                    concurrency: 2,
+                    stopOnError: false,
+                }
+            );
+
             if (!toxicPosts.length) {
                 this.logger.log('No toxic posts found.');
                 return 0;
             }
+
             let createdItems = [];
             const uniqueToxicPosts = [...new Set(toxicPosts)];
             this.logger.log(
                 `${uniqueToxicPosts.length} toxic posts found. Creating Meedan Check items...`
             );
-            for (const post of uniqueToxicPosts) {
-                this.logger.log('Creating item...');
-                const item = await lastValueFrom(
-                    this.checkClient.createItem(post.postUrl, post.toxicScores)
-                );
 
-                console.log('item: ', item);
-                if (!item.error) createdItems = [...createdItems, item];
-            }
+            await pMap(
+                uniqueToxicPosts,
+                async (post) => {
+                    this.logger.log('Creating item...');
+                    const item: any = await lastValueFrom(
+                        this.checkClient.createItem(
+                            locationId,
+                            post.postUrl,
+                            post.toxicScores
+                        )
+                    );
+
+                    console.log('item: ', item);
+                    if (!item.error) {
+                        createdItems = [...createdItems, item];
+                    }
+                },
+                { concurrency: 2 }
+            );
+
             this.logger.log(`Created ${createdItems.length} items.`);
             return createdItems.length;
         } catch (e) {
@@ -71,6 +100,7 @@ export class TriageService {
     }
 
     private async getToxicPostsByList(
+        locationId: string,
         listId: string,
         pagination: any,
         startDate: string,
@@ -99,23 +129,36 @@ export class TriageService {
 
             this.logger.log(`Received ${res.posts.length} posts. Analyzing...`);
             let postsCount = 0;
-            for (const post of res['posts']) {
-                const postMessage = post.message ? post.message : '';
-                const postDescription = post.description
-                    ? post.description
-                    : '';
-                const text = `${postMessage}. ${postDescription}`;
-                this.logger.log(`Sending post for analysis...`);
-                const toxicScores: any = await this.mlAnalyze(text);
 
-                this.logger.log(`Received toxic score: ${toxicScores}`);
-                const isToxic =
-                    toxicScores && toxicScores.toxicity
-                        ? this.isToxic(toxicScores, post.postUrl, text.length)
-                        : false;
-                if (isToxic) posts.push({ ...post, toxicScores });
-                postsCount++;
-            }
+            await pMap(
+                res['posts'],
+                async (post: any) => {
+                    const postMessage = post.message ? post.message : '';
+                    const postDescription = post.description
+                        ? post.description
+                        : '';
+                    const text = `${postMessage}. ${postDescription}`;
+                    this.logger.log(`Sending post for analysis...`);
+                    const toxicScores: any = await this.mlAnalyze(text);
+
+                    this.logger.log(`Received toxic score: ${toxicScores}`);
+                    const isToxic =
+                        toxicScores && toxicScores.toxicity
+                            ? this.isToxic(
+                                  toxicScores,
+                                  post.postUrl,
+                                  text.length
+                              )
+                            : false;
+                    if (isToxic) posts.push({ ...post, toxicScores });
+                    postsCount++;
+                },
+                {
+                    concurrency: 2,
+                    stopOnError: false,
+                }
+            );
+
             const totalPostsAnalyzed =
                 pagination.iterations * pagination.count + postsCount;
             this.logger.log(
@@ -126,6 +169,7 @@ export class TriageService {
                 const offset = pagination.count * iterations;
                 if (offset < this.config.postScanLimit) {
                     return await this.getToxicPostsByList(
+                        locationId,
                         listId,
                         { ...pagination, offset, iterations },
                         startDate,

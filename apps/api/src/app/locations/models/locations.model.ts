@@ -16,7 +16,7 @@ export class Locations {
     description: string;
 
     @Column({ type: 'json', nullable: true })
-    params?: Array<LocationsParam>;
+    params: Array<LocationsParam>;
 
     @Column({ type: 'boolean' })
     deleted = false;

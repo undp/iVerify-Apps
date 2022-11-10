@@ -1,4 +1,4 @@
 export interface LocationsParam {
     key: string;
-    value: string;
+    value: string | number;
 }

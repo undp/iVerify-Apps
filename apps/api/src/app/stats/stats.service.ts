@@ -13,6 +13,7 @@ import { lastValueFrom } from 'rxjs';
 
 import * as pMap from 'p-map';
 import { LocationsService } from '../locations/locations.service';
+import { CheckClientHandlerService } from '../checkStatsClientHandler.service';
 
 @Injectable()
 export class StatsService {
@@ -27,8 +28,8 @@ export class StatsService {
         @InjectRepository(Stats)
         private readonly statsRepository: Repository<Stats>,
         private formatService: StatsFormatService,
-        private checkStatsClient: CheckStatsService,
-        private checkClient: MeedanCheckClientService,
+        private checkStatsClient: CheckClientHandlerService,
+        // private checkClient: MeedanCheckClientService,
         private locationsService: LocationsService
     ) {}
 
@@ -38,10 +39,10 @@ export class StatsService {
         day: string
     ) {
         this.logger.log(`[${id}] Getting velocities`);
-        const velocities = await this.processVelocities(id, day);
+        const velocities = await this.processVelocities(locationId, id, day);
         this.logger.log(`[${id}] Getting report`);
         const meedanItem: any = await lastValueFrom(
-            this.checkClient.getReport(id)
+            this.checkStatsClient.getReport(locationId, id)
         );
         const status = meedanItem.status;
         this.logger.log(`[${id}] status `, status);
@@ -181,10 +182,10 @@ export class StatsService {
         return await this.statsRepository.save(statToSave);
     }
 
-    async processVelocities(id: string, day: string) {
+    async processVelocities(locationId: string, id: string, day: string) {
         this.logger.log(`[${id}] Getting last status`);
-        const results = await lastValueFrom(
-            this.checkStatsClient.getTicketLastStatus(id)
+        const results: any = await lastValueFrom(
+            this.checkStatsClient.getTicketLastStatus(locationId, id)
         );
 
         this.logger.verbose(
@@ -301,28 +302,36 @@ export class StatsService {
 
             this.logger.log('Fetching tickes by agent..');
             const ticketsByAgent: Stats[] = await this.getTicketsByAgent(
+                locationId,
                 endDate
             );
             this.logger.log('Fetching tickes by tags..');
-            const ticketsByTag: Stats[] = await this.getTicketsByTags(endDate);
+            const ticketsByTag: Stats[] = await this.getTicketsByTags(
+                locationId,
+                endDate
+            );
             this.logger.log('Fetching tickes by status..');
             const ticketsByStatus: Stats[] = await this.getTicketsByStatus(
+                locationId,
                 endDate
             );
             this.logger.log('Fetching tickes by source..');
             const ticketsBySource: Stats[] = await this.getTicketsBySource(
+                locationId,
                 startDate,
                 endDate
             );
             this.logger.log('Fetching tickes by publication..');
             const createdVsPublished: Stats[] =
-                await this.getCreatedVsPublished(endDate);
+                await this.getCreatedVsPublished(locationId, endDate);
             this.logger.log('Fetching tickes by violation type..');
             const ticketsByType: Stats[] = await this.getTicketsByViolationType(
+                locationId,
                 endDate
             );
             this.logger.log('Fetching tickes by folder..');
             const ticketsByFolder: Stats[] = await this.getTicketsByFolder(
+                locationId,
                 endDate
             );
             // const ticketsByChannel: Stats[] = await this.getTicketsByChannel(startDate, endDate);
@@ -376,57 +385,68 @@ export class StatsService {
         }
     }
 
-    async getTicketsByAgent(endDate: string) {
+    async getTicketsByAgent(locationId: string, endDate: string) {
         const results = await lastValueFrom(
-            this.checkStatsClient.getTicketsByAgent(this.allStatuses)
+            this.checkStatsClient.getTicketsByAgent(
+                locationId,
+                this.allStatuses
+            )
         );
 
         return this.formatService.formatTticketsByAgent(endDate, results);
     }
 
-    async getTicketsByFolder(endDate: string) {
+    async getTicketsByFolder(locationId: string, endDate: string) {
         const results = await lastValueFrom(
-            this.checkStatsClient.getTicketsByProjects()
+            this.checkStatsClient.getTicketsByProjects(locationId)
         );
 
         return this.formatService.formatTticketsByProjects(endDate, results);
     }
 
-    async getTicketsByTags(endDate: string) {
+    async getTicketsByTags(locationId: string, endDate: string) {
         const results = await lastValueFrom(
-            this.checkStatsClient.getTicketsByTags()
+            this.checkStatsClient.getTicketsByTags(locationId)
         );
 
         return this.formatService.formatTticketsByTags(endDate, results);
     }
 
-    async getTicketsBySource(startDate: string, endDate: string) {
+    async getTicketsBySource(
+        locationId: string,
+        startDate: string,
+        endDate: string
+    ) {
         const results = await lastValueFrom(
-            this.checkStatsClient.getTicketsBySource(startDate, endDate)
+            this.checkStatsClient.getTicketsBySource(
+                locationId,
+                startDate,
+                endDate
+            )
         );
 
         return this.formatService.formatTticketsBySource(endDate, results);
     }
 
-    async getCreatedVsPublished(endDate: string) {
+    async getCreatedVsPublished(locationId: string, endDate: string) {
         const results = await lastValueFrom(
-            this.checkStatsClient.getCreatedVsPublished()
+            this.checkStatsClient.getCreatedVsPublished(locationId)
         );
 
         return this.formatService.formatCreatedVsPublished(endDate, results);
     }
 
-    async getTicketsByStatus(endDate: string) {
+    async getTicketsByStatus(locationId: string, endDate: string) {
         const results = await lastValueFrom(
-            this.checkStatsClient.getTicketsByStatuses(StatusesMap)
+            this.checkStatsClient.getTicketsByStatuses(locationId, StatusesMap)
         );
 
         return this.formatService.formatTticketsByStatus(endDate, results);
     }
 
-    async getTicketsByViolationType(endDate: string) {
+    async getTicketsByViolationType(locationId: string, endDate: string) {
         const results = await lastValueFrom(
-            this.checkStatsClient.getTicketsByViolationTypes()
+            this.checkStatsClient.getTicketsByViolationTypes(locationId)
         );
 
         this.logger.log(`Got tickets by type: ${JSON.stringify(results)}`);

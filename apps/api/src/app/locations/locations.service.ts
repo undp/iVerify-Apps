@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { CacheTTL, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isEmpty } from 'radash';
 import {
@@ -21,6 +21,7 @@ export class LocationsService {
         private locationsRepository: Repository<Locations>
     ) {}
 
+    @CacheTTL(100)
     public async getConfig(locationId: string, key: string): Promise<string> {
         try {
             const location = await this.findById(locationId);
@@ -71,6 +72,7 @@ export class LocationsService {
         }
     }
 
+    @CacheTTL(100)
     public async find(
         criteria: FindManyOptions<Locations>
     ): Promise<Array<LocationDto>> {
@@ -84,6 +86,7 @@ export class LocationsService {
         }
     }
 
+    @CacheTTL(100)
     public async findAll(
         paginationDto: PaginationQueryDto
     ): Promise<Array<LocationDto>> {
@@ -103,6 +106,7 @@ export class LocationsService {
         }
     }
 
+    @CacheTTL(100)
     public async findById(locationId: string): Promise<Locations> {
         try {
             const location = await this.locationsRepository.findOne({
