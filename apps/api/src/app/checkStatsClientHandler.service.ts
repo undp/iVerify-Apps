@@ -8,7 +8,7 @@ import {
     MeedanCheckClientService,
     ToxicityScores,
 } from '@iverify/meedan-check-client/src';
-import { from, map, Observable } from 'rxjs';
+import { from, map, Observable, switchMap } from 'rxjs';
 /**
  * @description This class is used to be a bridge between the meedan lib and the service.
  *  It dynamically adds the location config to allow the lib to work in a multi-tenancy approach
@@ -52,15 +52,18 @@ export class CheckClientHandlerService {
 
     getTicketLastStatus(locationId: string, id: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) =>
-                this.checkStatsClient.getTicketLastStatus(requestConfig, id)
-            )
+            switchMap((requestConfig) => {
+                return this.checkStatsClient.getTicketLastStatus(
+                    requestConfig,
+                    id
+                );
+            })
         );
     }
 
     getAllMedias(locationId: string, id: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getAllMedias(requestConfig);
             })
         );
@@ -68,7 +71,7 @@ export class CheckClientHandlerService {
 
     getCreatedOrPublished(locationId: string, status: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getCreatedOrPublished(
                     requestConfig,
                     status
@@ -79,7 +82,7 @@ export class CheckClientHandlerService {
 
     getCreatedVsPublished(locationId: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getCreatedVsPublished(
                     requestConfig
                 );
@@ -93,7 +96,7 @@ export class CheckClientHandlerService {
         endDate: string
     ) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getTicketsByChannel(
                     requestConfig,
                     startDate,
@@ -105,7 +108,7 @@ export class CheckClientHandlerService {
 
     getTicketsByTaskType(locationId: string, taskId: string, value: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getTicketsByTaskType(
                     requestConfig,
                     taskId,
@@ -117,7 +120,7 @@ export class CheckClientHandlerService {
 
     getTicketsByViolationTypes(locationId: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getTicketsByViolationTypes(
                     requestConfig
                 );
@@ -127,7 +130,7 @@ export class CheckClientHandlerService {
 
     getTicketsBySource(locationId: string, startDate: string, endDate: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getTicketsBySource(
                     requestConfig,
                     startDate,
@@ -139,7 +142,7 @@ export class CheckClientHandlerService {
 
     getTicketsByStatuses(locationId: string, statusesMap) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getTicketsByStatuses(
                     requestConfig,
                     statusesMap
@@ -150,7 +153,7 @@ export class CheckClientHandlerService {
 
     getTicketsByTag(locationId: string, tag) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getTicketsByTag(
                     requestConfig,
                     tag
@@ -161,7 +164,7 @@ export class CheckClientHandlerService {
 
     getTicketsByTags(locationId: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getTicketsByTags(requestConfig);
             })
         );
@@ -169,7 +172,7 @@ export class CheckClientHandlerService {
 
     getAllProjects(locationId: string, teamSlug: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getAllProjects(
                     requestConfig,
                     teamSlug
@@ -180,7 +183,7 @@ export class CheckClientHandlerService {
 
     getCountByProject(locationId: string, projectId: number) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getCountByProject(
                     requestConfig,
                     projectId
@@ -191,7 +194,7 @@ export class CheckClientHandlerService {
 
     getTicketsByProjects(locationId: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getTicketsByProjects(
                     requestConfig
                 );
@@ -201,7 +204,7 @@ export class CheckClientHandlerService {
 
     getAllAgents(locationId: string, teamSlug: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getAllAgents(
                     requestConfig,
                     teamSlug
@@ -212,8 +215,8 @@ export class CheckClientHandlerService {
 
     getByAgentAndStatus(locationId: string, agentId: number, status: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
-                this.checkStatsClient.getByAgentAndStatus(
+            switchMap((requestConfig) => {
+                return this.checkStatsClient.getByAgentAndStatus(
                     requestConfig,
                     agentId,
                     status
@@ -224,7 +227,7 @@ export class CheckClientHandlerService {
 
     getByAgentAllStatuses(locationId: string, agent: any, statuses: string[]) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getByAgentAllStatuses(
                     requestConfig,
                     agent,
@@ -236,7 +239,7 @@ export class CheckClientHandlerService {
 
     getTicketsByAgent(locationId: string, statuses: string[]) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkStatsClient.getTicketsByAgent(
                     requestConfig,
                     statuses
@@ -252,7 +255,7 @@ export class CheckClientHandlerService {
         wp_key = 'message_from_website'
     ) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkClient.createItemFromWp(
                     requestConfig,
                     url,
@@ -269,7 +272,7 @@ export class CheckClientHandlerService {
         toxicityScores: ToxicityScores
     ) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkClient.createItem(
                     requestConfig,
                     url,
@@ -281,7 +284,7 @@ export class CheckClientHandlerService {
 
     getReportWithQuery(locationId: string, url: string, query: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkClient.getReportWithQuery(
                     requestConfig,
                     query
@@ -292,7 +295,7 @@ export class CheckClientHandlerService {
 
     getMeedanReport(locationId: string, id: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkClient.getReportWithQuery(requestConfig, id);
             })
         );
@@ -300,7 +303,7 @@ export class CheckClientHandlerService {
 
     getReport(locationId: string, id: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
-            map((requestConfig) => {
+            switchMap((requestConfig) => {
                 return this.checkClient.getReportWithQuery(requestConfig, id);
             })
         );
