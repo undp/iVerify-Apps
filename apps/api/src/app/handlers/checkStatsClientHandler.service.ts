@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { CheckStatsService } from '@iverify/meedan-check-client/src/lib/check-stats.service';
-import { LocationsService } from './locations/locations.service';
+import { LocationsService } from '../locations/locations.service';
 import {
     CheckApiConfig,
     CheckApiConfigHeaders,
@@ -16,7 +16,7 @@ import { from, map, Observable, switchMap } from 'rxjs';
 @Injectable()
 export class CheckClientHandlerService {
     constructor(
-        private readonly locationsService: LocationsService,
+        private locationsService: LocationsService,
         private checkClient: MeedanCheckClientService,
         private checkStatsClient: CheckStatsService
     ) {}
@@ -304,7 +304,7 @@ export class CheckClientHandlerService {
     getReport(locationId: string, id: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
             switchMap((requestConfig) => {
-                return this.checkClient.getReportWithQuery(requestConfig, id);
+                return this.checkClient.getReport(requestConfig, id);
             })
         );
     }

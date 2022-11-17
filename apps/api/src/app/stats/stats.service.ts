@@ -13,7 +13,7 @@ import { lastValueFrom } from 'rxjs';
 
 import * as pMap from 'p-map';
 import { LocationsService } from '../locations/locations.service';
-import { CheckClientHandlerService } from '../checkStatsClientHandler.service';
+import { CheckClientHandlerService } from '../handlers/checkStatsClientHandler.service';
 
 @Injectable()
 export class StatsService {

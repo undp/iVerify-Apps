@@ -6,7 +6,7 @@ import { HttpModule } from '@nestjs/axios';
 @Module({
     imports: [HttpModule],
     controllers: [],
-    providers: [MlServiceConfig, MlServiceClientService],
+    providers: [MlServiceClientService],
     exports: [MlServiceClientService],
 })
 export class MlServiceClientModule {}

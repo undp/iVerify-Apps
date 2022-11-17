@@ -159,7 +159,7 @@ export class RolesService {
     async createDefaultAdminRole(): Promise<any> {
         try {
             const locations = await this.locationsService.findAll({
-                limit: Infinity,
+                limit: Number.MAX_SAFE_INTEGER,
                 offset: 0,
             });
 

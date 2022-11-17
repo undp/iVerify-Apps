@@ -5,6 +5,7 @@ import { lastValueFrom } from 'rxjs';
 import { LocationsService } from '../locations/locations.service';
 import { TriageService } from './triage.service';
 import * as pMap from 'p-map';
+import { ApiClientHandler } from '../apiClientHandler.service';
 // import { AppService } from './app.service';
 
 @Injectable()
@@ -14,7 +15,7 @@ export class TriageCronService {
     constructor(
         // private appService: AppService,
         private triageService: TriageService,
-        private apiClient: ApiClientService,
+        private apiClient: ApiClientHandler,
         private locationsService: LocationsService
     ) {}
 
@@ -28,25 +29,29 @@ export class TriageCronService {
     //     return await this.analyze(startDate, endDate);
     // }
 
-    @Cron(CronExpression.EVERY_2_HOURS)
-    async handleCron() {
+    @Cron(CronExpression.EVERY_30_MINUTES)
+    async preparePostsCron() {
         const endDate = new Date().toISOString();
         const start = new Date();
         start.setHours(new Date().getHours() - 2);
         const startDate = start.toISOString();
         this.logger.log(
-            `Running cron job with startDate ${startDate} and endDate ${endDate}`
+            `Running cron job preparePostsCron with startDate ${startDate} and endDate ${endDate}`
         );
 
         const locations = await this.locationsService.findAll({
-            limit: Infinity,
+            limit: Number.MAX_SAFE_INTEGER,
             offset: 0,
         });
 
         const result = await pMap(
             locations,
             async ({ id: locationId }) => {
-                return this.analyze(locationId, startDate, endDate);
+                return this.triageService.prepareListAndPosts(
+                    locationId,
+                    startDate,
+                    endDate
+                );
             },
             {
                 concurrency: 2,
@@ -57,15 +62,38 @@ export class TriageCronService {
         return result;
     }
 
-    async analyze(locationId: string, startDate, endDate) {
+    @Cron(CronExpression.EVERY_2_HOURS)
+    async processPostsCron() {
+        this.logger.log(`Running cron job processPostsCron`);
+
+        const locations = await this.locationsService.findAll({
+            limit: Number.MAX_SAFE_INTEGER,
+            offset: 0,
+        });
+
+        const result = await pMap(
+            locations,
+            async ({ id: locationId }) => {
+                return this.analyze(locationId);
+            },
+            {
+                concurrency: 2,
+                stopOnError: false,
+            }
+        );
+
+        return result;
+    }
+
+    async analyze(locationId: string) {
         try {
             const created: number = await this.triageService.analyze(
-                locationId,
-                startDate,
-                endDate
+                locationId
             );
             this.logger.log('Items created: ', created);
-            return await lastValueFrom(this.apiClient.postToxicStats(created));
+            return await lastValueFrom(
+                this.apiClient.postToxicStats(locationId, created)
+            );
         } catch (e) {
             this.logger.error('Cron job error: ', e.message);
             throw new HttpException(e.message, 500);

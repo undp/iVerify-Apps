@@ -5,10 +5,10 @@ import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class MlServiceClientService {
-    constructor(private http: HttpService, private config: MlServiceConfig) {}
-    analyze(messages: string[]) {
+    constructor(private http: HttpService) {}
+    analyze(config: MlServiceConfig, messages: string[]) {
         return this.http
-            .post(`${this.config.endpoints.analyze}`, { text: messages })
+            .post(`${config.endpoints.analyze}`, { text: messages })
             .pipe(
                 map((res) => res.data[0]),
                 catchError((err) => {

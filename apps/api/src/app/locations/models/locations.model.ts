@@ -1,4 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 import { Roles } from '../../roles/roles.model';
 import { Stats } from '../../stats/models/stats.model';
 import { User } from '../../users/user.model';
@@ -20,6 +27,12 @@ export class Locations {
 
     @Column({ type: 'boolean' })
     deleted = false;
+
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
 
     // @OneToMany(() => User, (user) => user.)
     // users

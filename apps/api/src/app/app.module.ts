@@ -27,10 +27,19 @@ import { LocationsModule } from './locations/locations.module';
 import { LocationsInteceptor } from '../interceptors/locations.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TriageModule } from './triage/triage.module';
-import { CheckClientHandlerService } from './checkStatsClientHandler.service';
+import { CheckClientHandlerService } from './handlers/checkStatsClientHandler.service';
+import { PublisherModule } from '../publisher/publisher.module';
+
+import { TriagePostControl } from './triage/models/triage.post.control.model';
 
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+        }),
+        CacheModule.register({
+            isGlobal: true,
+        }),
         LocationsModule,
         UsersModule,
         AuthModule,
@@ -51,11 +60,15 @@ import { CheckClientHandlerService } from './checkStatsClientHandler.service';
             autoLoadEntities: true,
             synchronize: true,
         }),
-        TypeOrmModule.forFeature([User, Roles, Stats, Article]),
+        TypeOrmModule.forFeature([
+            User,
+            Roles,
+            Stats,
+            Article,
+            TriagePostControl,
+        ]),
         TriageModule,
-        CacheModule.register({
-            isGlobal: true,
-        }),
+        PublisherModule,
     ],
     controllers: [
         AppController,

@@ -1,10 +1,8 @@
-import { Injectable } from "@nestjs/common";
+export interface MlServiceConfigEndpoints {
+    analyze: string;
+}
 
-@Injectable()
-export class MlServiceConfig{
-    readonly apiBase = process.env.ML_SERVICE_API_BASE;
-
-    readonly endpoints = {
-        analyze: `${this.apiBase}/analyze`
-    }
+export interface MlServiceConfig {
+    apiBase: string;
+    endpoints: MlServiceConfigEndpoints;
 }

@@ -8,12 +8,25 @@ import {
     PostStatus,
 } from '@iverify/wp-client/src/lib/interfaces/create-post.dto';
 import { SharedHelper } from '../shared/helper';
+import { LocationsService } from '../../app/locations/locations.service';
 
 @Injectable()
 export class WpPublisherHelper {
-    lang = process.env.language;
+    constructor(
+        private sharedHelper: SharedHelper,
+        private locationsService: LocationsService
+    ) {}
 
-    constructor(private sharedHelper: SharedHelper) {}
+    private async getConfigByLocation(locationId: string): Promise<string> {
+        const { params } = await this.locationsService.findById(locationId);
+
+        const getParam: any = (param) =>
+            params.find(({ key }) => key === param);
+
+        const lang = getParam('LANGUAGE')?.value;
+
+        return lang;
+    }
 
     extractMedia(report: any): string {
         return report.media.metadata.picture;
@@ -31,7 +44,8 @@ export class WpPublisherHelper {
         media: number,
         tags: number[],
         categories: number[],
-        visualCard: string
+        visualCard: string,
+        lang: string
     ): CreatePostDto {
         const status = PostStatus.publish;
         const comment_status = CommentStatus.open;
@@ -41,21 +55,21 @@ export class WpPublisherHelper {
         const subtitle = meedanReport.description;
         const toxicField = this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].toxic
+            TasksLabels[lang].toxic
         );
         const toxic = !!toxicField ? 1 : 0;
         const factchecking_status = this.extractFactcheckingStatus(report);
         const claim = this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].claim
+            TasksLabels[lang].claim
         );
         const rating_justification = this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].rating_justification
+            TasksLabels[lang].rating_justification
         );
         const evidence = this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].evidences_and_references
+            TasksLabels[lang].evidences_and_references
         );
         const evidence_and_references = this.formatEvidence(evidence);
         const _webdados_fb_open_graph_specific_image = visualCard;

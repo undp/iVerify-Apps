@@ -6,7 +6,7 @@ import { HttpModule } from '@nestjs/axios';
 @Module({
     imports: [HttpModule],
     controllers: [],
-    providers: [CrowdtangleClientService, CrowdtangleClientConfig],
+    providers: [CrowdtangleClientService],
     exports: [CrowdtangleClientService],
 })
 export class CrowdtangleClientModule {}

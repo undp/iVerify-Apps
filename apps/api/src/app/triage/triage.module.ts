@@ -9,15 +9,25 @@ import { PerspectiveClientModule } from '@iverify/perspective-client/src';
 
 import { ApiClientModule, ApiClientService } from '@iverify/api-client/src';
 import { ScheduleModule } from '@nestjs/schedule';
-import { TriageConfig } from './config';
+
 import { TriageCronService } from './triage.cron.service';
 import { TriageController } from './triage.controller';
 import { TriageService } from './triage.service';
 import { LocationsModule } from '../locations/locations.module';
-import { CheckClientHandlerService } from '../checkStatsClientHandler.service';
+import { CheckClientHandlerService } from '../handlers/checkStatsClientHandler.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TriagePostControl } from './models/triage.post.control.model';
+
+import { Locations } from '../locations/models/locations.model';
+
+import { ApiClientHandler } from '../apiClientHandler.service';
+import { CrowdtangleClientHandler } from '../handlers/CrowdtangleClientHandler.service';
+import { MLServiceClientHandler } from '../handlers/mlServiceClientHandler.service';
+import { PerpesctiveClientHandler } from '../handlers/perspectiveClientHandler.service';
 
 @Module({
     imports: [
+        TypeOrmModule.forFeature([TriagePostControl, Locations]),
         HttpModule,
         CrowdtangleClientModule,
         MlServiceClientModule,
@@ -29,10 +39,13 @@ import { CheckClientHandlerService } from '../checkStatsClientHandler.service';
     ],
     controllers: [TriageController],
     providers: [
-        TriageConfig,
         TriageCronService,
         TriageService,
         CheckClientHandlerService,
+        CrowdtangleClientHandler,
+        ApiClientHandler,
+        PerpesctiveClientHandler,
+        MLServiceClientHandler,
     ],
     exports: [TriageService],
 })
