@@ -3,6 +3,7 @@ import { Roles } from '../roles/roles.model';
 import {
     Column,
     Entity,
+    Index,
     JoinTable,
     ManyToMany,
     ManyToOne,
@@ -14,6 +15,10 @@ import { Locations } from '../locations/models/locations.model';
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Index()
+    @Column({ nullable: false })
+    locationId: string;
 
     @Column()
     firstName: string;

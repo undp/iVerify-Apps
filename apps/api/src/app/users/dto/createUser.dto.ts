@@ -31,4 +31,8 @@ export class CreateUserDto {
     @ApiProperty()
     @IsNotEmpty()
     roles: any[];
+
+    @ApiProperty()
+    @IsNotEmpty()
+    locationId: string;
 }

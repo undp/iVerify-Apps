@@ -19,6 +19,7 @@ import { Roles } from '../roles/roles.model';
 import { RolesService } from '../roles/roles.service';
 import { LocationsService } from '../locations/locations.service';
 import { Locations } from '../locations/models/locations.model';
+import { WpConfigHandler } from '../handlers/wpConfigHandler.service';
 
 @Module({
     imports: [
@@ -38,8 +39,9 @@ import { Locations } from '../locations/models/locations.model';
         LocalStrategy,
         JwtRefreshStrategy,
         WordpressAuthGuard,
-        WordpressStrategy,
+        // WordpressStrategy,
         LocationsService,
+        WpConfigHandler,
     ],
     exports: [
         RefreshTokenAuthGuard,
@@ -47,7 +49,7 @@ import { Locations } from '../locations/models/locations.model';
         JwtStrategy,
         LocalStrategy,
         JwtRefreshStrategy,
-        WordpressStrategy,
+        // WordpressStrategy,
     ],
 })
 export class AuthModule {}

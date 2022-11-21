@@ -2,18 +2,23 @@ import { Strategy } from 'passport-wordpress';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { AuthService } from '../auth.service';
-import { environment } from 'apps/api/src/environments/environment';
 
 @Injectable()
 export class WordpressStrategy extends PassportStrategy(Strategy) {
-  constructor(private authService: AuthService) {
-    super(
-      {
-        clientID: environment.ClientID,
-        clientSecret: environment.ClientSecret,
-        callbackURL: environment.redirect_uri,
-        authorizationURL: environment.WordpressUrl + 'oauth/authorize'
-      }
-    );
-  }
+    constructor(private authService: AuthService) {
+        super({
+            secretOrKeyProvider: async (request, jwtToken, done) => {
+                const { id: locationId } = request.location;
+                const { JWTsecret, redirect_uri, ClientID, WordpressUrl } =
+                    await this.wpConfigHandler.getConfigByLocation(locationId);
+                done(
+                    null,
+                    JWTsecret,
+                    redirect_uri,
+                    ClientID,
+                    `${WordpressUrl}oauth/authorize`
+                );
+            },
+        });
+    }
 }
