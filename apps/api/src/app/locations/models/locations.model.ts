@@ -10,6 +10,7 @@ import { Roles } from '../../roles/roles.model';
 import { Stats } from '../../stats/models/stats.model';
 import { User } from '../../users/user.model';
 import { LocationDto } from '../dto/location.dto';
+import { LocationClients } from '../dto/locations.clients.dto';
 import { LocationsParam } from '../interfaces/location.params';
 
 @Entity()
@@ -27,6 +28,9 @@ export class Locations {
 
     @Column({ type: 'boolean' })
     deleted = false;
+
+    @Column({ type: 'json', nullable: true })
+    clients?: Array<LocationClients>;
 
     @CreateDateColumn()
     createdAt: Date;

@@ -1,7 +1,15 @@
 import { MeedanItemStatuses } from '@iverify/meedan-check-client/src';
-import { Body, Controller, HttpException, Logger, Post } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    HttpException,
+    Logger,
+    Post,
+    UseInterceptors,
+} from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { catchError, tap } from 'rxjs';
+import { WebhookAuth } from '../interceptors/webhook.auth.interceptor';
 import { PublishReportDto } from './dto/publisher.report.dto';
 import { PublisherService } from './publisher.service';
 
@@ -12,6 +20,7 @@ export class PublisherController {
     constructor(private publisherService: PublisherService) {}
 
     @Post('publish-webhook')
+    @UseInterceptors(WebhookAuth)
     @ApiTags('Publish Report')
     @ApiBody({ type: PublishReportDto })
     async punlishReportWebhook(@Body() body) {

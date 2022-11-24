@@ -16,6 +16,7 @@ import { PaginationQueryDto } from '../common/pagination-query.dto';
 import { StatsController } from '../stats/stats-controller';
 import { CreateLocationDto } from './dto/createLocation.dto';
 import { LocationDto } from './dto/location.dto';
+import { LocationClients } from './dto/locations.clients.dto';
 import { LocationsService } from './locations.service';
 
 @Controller('locations')
@@ -83,6 +84,38 @@ export class LocationsController {
     async remove(@Param('id') locationId: string): Promise<DeleteResult> {
         try {
             return await this.locationsService.delete(locationId);
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
+    }
+
+    @Post('/:locationId/clients')
+    async addClient(
+        @Param('locationId') locationId: string,
+        @Body(ValidationPipe) locationclient: LocationClients
+    ): Promise<LocationClients> {
+        try {
+            return await this.locationsService.addClient(
+                locationId,
+                locationclient
+            );
+        } catch (e) {
+            this.logger.error(e);
+            throw e;
+        }
+    }
+
+    @Post('/:locationId/clients/:clientId')
+    async removeClient(
+        @Param('locationId') locationId: string,
+        @Param('clientId') clientId: string
+    ): Promise<any> {
+        try {
+            return await this.locationsService.deleteClient(
+                locationId,
+                clientId
+            );
         } catch (err) {
             this.logger.error(err);
             throw err;

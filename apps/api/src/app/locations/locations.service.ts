@@ -10,6 +10,7 @@ import {
 import { PaginationQueryDto } from '../common/pagination-query.dto';
 import { CreateLocationDto } from './dto/createLocation.dto';
 import { LocationDto } from './dto/location.dto';
+import { LocationClients } from './dto/locations.clients.dto';
 import { Locations } from './models/locations.model';
 
 @Injectable()
@@ -125,5 +126,51 @@ export class LocationsService {
     public async delete(locationId: string): Promise<DeleteResult> {
         return this.locationsRepository.update(locationId, { deleted: true });
         // remove users, stats, roles
+    }
+
+    public async addClient(
+        locationId: string,
+        client: LocationClients
+    ): Promise<LocationClients> {
+        try {
+            const location = await this.findById(locationId);
+
+            if (isEmpty(location)) {
+                throw new Error('Invalid location');
+            }
+
+            await this.update(locationId, {
+                clients: [...location.clients, client],
+            });
+
+            return client;
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
+    }
+
+    public async deleteClient(
+        locationId: string,
+        clientId: string
+    ): Promise<void> {
+        try {
+            const location = await this.findById(locationId);
+
+            if (isEmpty(location)) {
+                throw new Error('Invalid location');
+            }
+
+            const itemIndex = location?.clients?.findIndex(
+                (client: LocationClients) => client.clientId === clientId
+            );
+
+            location?.clients?.splice(itemIndex, 1);
+
+            await this.update(locationId, { clients: location.clients });
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
     }
 }

@@ -9,9 +9,8 @@ import { User } from '../../users/user.model';
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
     constructor(
-        private readonly authService: AuthService
-    ) // @InjectModel('User') private readonly userModel: Model<User>
-    {
+        private readonly authService: AuthService // @InjectModel('User') private readonly userModel: Model<User>
+    ) {
         super({
             usernameField: 'email',
             passwordField: 'password',
