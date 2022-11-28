@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
+import {
+    IsArray,
+    IsNotEmpty,
+    IsObject,
+    IsOptional,
+    IsString,
+} from 'class-validator';
 
 import { LocationsParam } from '../interfaces/location.params';
 import { Locations } from '../models/locations.model';

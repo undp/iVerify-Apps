@@ -162,7 +162,7 @@ export class LocationsService {
             }
 
             const itemIndex = location?.clients?.findIndex(
-                (client: LocationClients) => client.clientId === clientId
+                (client: LocationClients) => client.id === clientId
             );
 
             location?.clients?.splice(itemIndex, 1);

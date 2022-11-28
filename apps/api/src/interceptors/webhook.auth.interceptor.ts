@@ -12,7 +12,7 @@ import { LocationClients } from '../app/locations/dto/locations.clients.dto';
 import { Locations } from '../app/locations/models/locations.model';
 
 @Injectable()
-export class WebhookAuth implements NestMiddleware {
+export class WebhookAuth {
     private logger = new Logger(WebhookAuth.name);
 
     constructor(
