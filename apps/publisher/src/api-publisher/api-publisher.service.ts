@@ -4,7 +4,6 @@ import { HttpException, HttpService, Injectable, Scope } from "@nestjs/common";
 import { CreateCategoryDto } from "libs/wp-client/src/lib/interfaces/create-category.dto";
 import { CommentStatus, CreatePostDto, PostFormat, PostStatus } from "libs/wp-client/src/lib/interfaces/create-post.dto";
 import { CreateTagDto } from "libs/wp-client/src/lib/interfaces/create-tag.dto";
-import { WpClientService } from "libs/wp-client/src/lib/wp-client.service";
 import { report } from "node:process";
 import { combineLatest, from, iif, Observable, of, zip } from "rxjs";
 import { catchError, concatMap, filter, map, reduce, scan, shareReplay, switchMap, take, tap } from "rxjs/operators";
