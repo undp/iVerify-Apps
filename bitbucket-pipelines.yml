@@ -22,10 +22,6 @@ definitions:
               docker push $IMAGE_NAME_TAG-api;
               docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .;
               docker push $IMAGE_NAME_TAG-iverify;
-              docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/Dockerfile-prod .;
-              docker push $IMAGE_NAME_TAG-triage;
-              docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .;
-              docker push $IMAGE_NAME_TAG-publisher;
 
         - script: &iverifybuild npm install npm@latest -g;
               apt-get update;
@@ -39,8 +35,7 @@ definitions:
               ng build iverify --configuration=$CONFIGURATION;
               cd ../../;
               npm install;
-              nx build triage;
-              nx build publisher;
+              nx build api;
 
     kenia: &kenia
         script:
@@ -55,23 +50,6 @@ definitions:
             - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
             - export IMAGE_NAME_TAG=$IMAGE_NAME:kenia-$BITBUCKET_TAG
             - export CONFIGURATION=kenia-development
-            - *iverifybuild
-            - *buildPushTag
-
-    honduras: &honduras
-        script:
-            - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
-            - export IMAGE_NAME_TAG=$IMAGE_NAME:honduras-$BITBUCKET_TAG
-            - export CONFIGURATION=honduras-production
-            - apt install curl wget unzip -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip";
-            - *iverifybuild
-            - *buildPushTag
-
-    honduras-dev: &honduras-dev
-        script:
-            - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
-            - export IMAGE_NAME_TAG=$IMAGE_NAME:honduras-$BITBUCKET_TAG
-            - export CONFIGURATION=honduras-development
             - *iverifybuild
             - *buildPushTag
 
@@ -93,9 +71,7 @@ definitions:
             - export IMAGE_NAME_TAG=build
             - *iverifybuild
             - docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
-            - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
-            - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/Dockerfile-prod .
-            - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .
+            - docker build -t $IMAGE_NAME_TAG-iverify -f apps/api/Dockerfile  .
 
 pipelines:
     custom:
@@ -106,7 +82,7 @@ pipelines:
                   script:
                       - opsctl get dbdump -p ${BITBUCKET_REPO_SLUG} -f dump.sql.gz
     branches:
-        master:
+        feature/MISINFORM-288-jsmulti-create-deployment-:
             - parallel:
                   - step:
                         name: Build Kenia
