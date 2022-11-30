@@ -53,6 +53,15 @@ definitions:
             - *iverifybuild
             - *buildPushTag
 
+    honduras-dev: &honduras-dev
+        script:
+            - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
+            - export IMAGE_NAME_TAG=$IMAGE_NAME:kenia-$BITBUCKET_TAG
+            - export CONFIGURATION=kenia-development
+            - *iverifybuild
+            - *buildPushTag
+
+
     services:
         docker:
             memory: 4096
@@ -123,4 +132,4 @@ pipelines:
                         name: Build Honduras
                         image:
                             name: node:14.17.1
-                        <<: *honduras
+                        <<: *kenia-dev
