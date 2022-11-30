@@ -90,7 +90,7 @@ pipelines:
                             name: node:14.17.1
                         <<: *build
                   - step:
-                        name: Build Honduras
+                        name: Build Kenia
                         image:
                             name: node:14.17.1
                         <<: *build
@@ -105,7 +105,7 @@ pipelines:
                         <<: *kenia-dev
 
                   - step:
-                        name: Build Honduras
+                        name: Build Kenia
                         image:
                             name: node:14.17.1
                         <<: *kenia-dev
@@ -120,7 +120,7 @@ pipelines:
                         <<: *kenia
 
                   - step:
-                        name: Build Honduras
+                        name: Build Kenia
                         image:
                             name: node:14.17.1
                         <<: *kenia-dev
