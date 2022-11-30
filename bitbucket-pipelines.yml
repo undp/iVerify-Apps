@@ -82,7 +82,7 @@ pipelines:
                   script:
                       - opsctl get dbdump -p ${BITBUCKET_REPO_SLUG} -f dump.sql.gz
     branches:
-        feature/MISINFORM-288-jsmulti-create-deployment-:
+        master:
             - parallel:
                   - step:
                         name: Build Kenia
