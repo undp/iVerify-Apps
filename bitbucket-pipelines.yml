@@ -121,6 +121,20 @@ pipelines:
             image:
                 name: node:14.17.1
             <<: *build
+
+    feature/MISINFORM-288-jsmulti-create-deployment-:
+      - parallel:
+        - step:
+            name: Build Kenia
+            image:
+                name: node:14.17.1
+            <<: *build
+        - step:
+            name: Build Honduras
+            image:
+                name: node:14.17.1
+            <<: *build
+
   tags:
     'dev*':
       - step:
