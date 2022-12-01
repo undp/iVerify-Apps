@@ -1,4 +1,4 @@
-FROM node:16 as builder
+FROM node:16.3 as builder
 
 ARG ENVIRONMENT
 RUN npm install npm -g
@@ -21,7 +21,7 @@ RUN npm install
 RUN npm run build api
 
 
-FROM node:16
+FROM node:16.3
 WORKDIR /app
 
 # RUN addgroup -g 1001 -S iverify && adduser -u 1001 -S iverify  -G iverify

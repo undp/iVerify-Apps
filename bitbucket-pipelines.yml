@@ -28,8 +28,8 @@ definitions:
         docker push $IMAGE_NAME_TAG-publisher;
 
     - script: &iverifybuild
-        apt-get update;
-        apt-get install -y libgtk2.0-0  libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb;
+        # apt-get update;
+        # apt-get install -y libgtk2.0-0  libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb;
         export PATH=node_modules/.bin:$PATH;
         npm install;
         npx @angular/cli build iverify --configuration=$CONFIGURATION;
@@ -108,19 +108,19 @@ pipelines:
         - step:
             name: Build Kenia
             image:
-                name: node:14.17.1
+                name: node:16.3
             <<: *build
         - step:
             name: Build Honduras
             image:
-                name: node:14.17.1
+                name: node:16.3
             <<: *build
 
     feature/MISINFORM-288-jsmulti-create-deployment-:
         - step:
             name: Build Kenia
             image:
-                name: node:14.17.1
+                name: node:16.3
             <<: *build
 
   tags:
@@ -130,7 +130,7 @@ pipelines:
       - step:
             name: Build Kenia
             image:
-                name: node:14.17.1
+                name: node:16.3
             <<: *kenia-dev
 
     'v*':
@@ -140,11 +140,11 @@ pipelines:
         - step:
             name: Build Kenia
             image:
-                name: node:14.17.1
+                name: node:16.3
             <<: *kenia
 
         - step:
             name: Build Honduras
             image:
-                name: node:14.17.1
+                name: node:16.3
             <<: *honduras
