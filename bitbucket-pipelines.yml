@@ -108,19 +108,19 @@ pipelines:
         - step:
             name: Build Kenia
             image:
-                name: node:16.3
+                name: node:16.10
             <<: *build
         - step:
             name: Build Honduras
             image:
-                name: node:16.3
+                name: node:16.10
             <<: *build
 
     feature/MISINFORM-288-jsmulti-create-deployment-:
         - step:
             name: Build Kenia
             image:
-                name: node:16.3
+                name: node:16.10
             <<: *build
 
   tags:
@@ -130,7 +130,7 @@ pipelines:
       - step:
             name: Build Kenia
             image:
-                name: node:16.3
+                name: node:16.10
             <<: *kenia-dev
 
     'v*':
@@ -140,11 +140,11 @@ pipelines:
         - step:
             name: Build Kenia
             image:
-                name: node:16.3
+                name: node:16.10
             <<: *kenia
 
         - step:
             name: Build Honduras
             image:
-                name: node:16.3
+                name: node:16.10
             <<: *honduras
