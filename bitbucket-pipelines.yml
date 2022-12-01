@@ -20,7 +20,7 @@ definitions:
         aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR;
         docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/application-prod.dockerfile .;
         docker push $IMAGE_NAME_TAG-api;
-        docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .;
+        docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile .;
         docker push $IMAGE_NAME_TAG-iverify;
         docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/application-prod.dockerfile .;
         docker push $IMAGE_NAME_TAG-triage;
@@ -30,17 +30,12 @@ definitions:
     - script: &iverifybuild
         apt-get update;
         apt-get install -y libgtk2.0-0  libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb;
-        cd apps/iverify;
-        npm install;
-        npm install font-awesome;
         export PATH=node_modules/.bin:$PATH;
-        npm install -g @angular/cli;
-        npm install -g nx;
-        ng build iverify --configuration=$CONFIGURATION;
-        cd ../../;
         npm install;
-        nx build triage;
-        nx build publisher;
+        npx @angular/cli build iverify --configuration=$CONFIGURATION;
+        npx nx build api;
+        npx nx build triage;
+        npx nx build publisher;
 
   kenia: &kenia
     script:
