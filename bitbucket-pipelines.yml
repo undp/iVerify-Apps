@@ -101,7 +101,7 @@ pipelines:
           deployment: production
           <<: *DBDump
           script:
-            - opsctl get dbdump -p ${BITBUCKET_REPO_SLUG} -f dump.sql.gz
+          - opsctl get dbdump -p ${BITBUCKET_REPO_SLUG} -f dump.sql.gz
   branches:
     master:
       - parallel:
