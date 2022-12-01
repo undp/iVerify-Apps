@@ -18,13 +18,13 @@ definitions:
         apt install curl wget unzip -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip";
         unzip awscliv2.zip && ./aws/install;
         aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR;
-        docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .;
+        docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/application-prod.dockerfile .;
         docker push $IMAGE_NAME_TAG-api;
         docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .;
         docker push $IMAGE_NAME_TAG-iverify;
-        docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/Dockerfile-prod .;
+        docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/application-prod.dockerfile .;
         docker push $IMAGE_NAME_TAG-triage;
-        docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .;
+        docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/application-prod.dockerfile .;
         docker push $IMAGE_NAME_TAG-publisher;
 
     - script: &iverifybuild
@@ -95,10 +95,10 @@ definitions:
     script:
       - export IMAGE_NAME_TAG=build
       - *iverifybuild
-      - docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/Dockerfile-prod .
+      - docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/application-prod.dockerfile .
       - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
-      - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/Dockerfile-prod .
-      - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/Dockerfile-prod .
+      - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/application-prod.dockerfile .
+      - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/application-prod.dockerfile .
 
 pipelines:
   custom:
@@ -123,14 +123,8 @@ pipelines:
             <<: *build
 
     feature/MISINFORM-288-jsmulti-create-deployment-:
-      - parallel:
         - step:
             name: Build Kenia
-            image:
-                name: node:14.17.1
-            <<: *build
-        - step:
-            name: Build Honduras
             image:
                 name: node:14.17.1
             <<: *build
@@ -139,18 +133,11 @@ pipelines:
     'dev*':
       - step:
           *checkRepo
-      - parallel:
-        - step:
+      - step:
             name: Build Kenia
             image:
                 name: node:14.17.1
             <<: *kenia-dev
-
-        - step:
-            name: Build Honduras
-            image:
-                name: node:14.17.1
-            <<: *honduras-dev
 
     'v*':
       - step:

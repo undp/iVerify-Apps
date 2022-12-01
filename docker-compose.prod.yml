@@ -9,20 +9,20 @@ services:
     publisher:
         build:
             context: .
-            dockerfile: apps/publisher/Dockerfile-prod
-        environment: 
+            dockerfile: apps/publisher/application-prod.dockerfile
+        environment:
             - apiPath=http://api:3333
         ports:
             - '3334:3334'
     api:
         build:
             context: .
-            dockerfile: apps/api/Dockerfile-prod
+            dockerfile: apps/api/application-prod.dockerfile
         ports:
             - '3333:3333'
     triage:
         build:
             context: .
-            dockerfile: apps/triage/Dockerfile-prod
+            dockerfile: apps/triage/application-prod.dockerfile
         ports:
             - '3335:3335'
