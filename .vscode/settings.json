@@ -2,5 +2,8 @@
     "search.useIgnoreFiles": false,
     "search.exclude": {
         "**/node_modules": false
-    }
+    },
+    "i18n-ally.localesPaths": [
+        "apps/iverify/src/assets/i18n"
+    ]
 }

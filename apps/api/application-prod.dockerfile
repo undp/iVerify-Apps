@@ -3,15 +3,15 @@ FROM node:16 as builder
 ARG ENVIRONMENT
 RUN npm install npm -g
 
-RUN apt-get update && \
-  apt-get install -y \
-  libgtk2.0-0 \
-  libnotify-dev \
-  libgconf-2-4 \
-  libnss3 \
-  libxss1 \
-  libasound2 \
-  xvfb
+# RUN apt-get update && \
+#   apt-get install -y \
+#   libgtk2.0-0 \
+#   libnotify-dev \
+#   libgconf-2-4 \
+#   libnss3 \
+#   libxss1 \
+#   libasound2 \
+#   xvfb
 
 WORKDIR /workspace
 COPY . .
@@ -21,15 +21,15 @@ RUN npm install
 RUN npm run build api
 
 
-FROM node:node:16
+FROM node:16
 WORKDIR /app
 
-RUN addgroup -g 1001 -S iverify && adduser -u 1001 -S iverify  -G iverify
+# RUN addgroup -g 1001 -S iverify && adduser -u 1001 -S iverify  -G iverify
 COPY --from=builder /workspace/dist/apps/api .
-RUN chmod 750 -R /app
-RUN chown -R iverify:iverify /app
+# RUN chmod 750 -R /app
+# RUN chown -R iverify:iverify /app
 
-USER iverify
+# USER iverify
 
 ENV PORT=3333
 EXPOSE 3333
