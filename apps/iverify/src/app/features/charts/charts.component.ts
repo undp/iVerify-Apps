@@ -7,7 +7,7 @@ import { DataRange } from '@iverify/core/models/dashboard';
 
 @Component({
     selector: 'iverify-charts',
-    templateUrl: 'charts.component.html',
+    templateUrl: './charts.component.html',
     styleUrls: ['charts.component.scss'],
 })
 export class ChartComponent implements OnDestroy, OnChanges {
@@ -20,23 +20,23 @@ export class ChartComponent implements OnDestroy, OnChanges {
     view: [number, number] = [300, 100];
     ChartTypeEnum = ChartTypeEnum;
     // options
-    showXAxis: boolean = false;
-    showYAxis: boolean = true;
-    gradient: boolean = false;
-    showLegend: boolean = true;
-    showXAxisLabel: boolean = false;
-    xAxisLabelBubbleChart: string = 'BUBBLE_CHART';
-    yAxisLineChart: string = 'LINE_CHART';
-    yAxisLabel: string = '';
-    showYAxisLabel: boolean = true;
-    xAxisLabel: string = '';
-    tickIndex: number = 0;
-    quickest: string = '';
-    longest: string = '';
-    day: string = '';
-    days: string = '';
+    showXAxis = false;
+    showYAxis = true;
+    gradient = false;
+    showLegend = true;
+    showXAxisLabel = false;
+    xAxisLabelBubbleChart = 'BUBBLE_CHART';
+    yAxisLineChart = 'LINE_CHART';
+    yAxisLabel = '';
+    showYAxisLabel = true;
+    xAxisLabel = '';
+    tickIndex = 0;
+    quickest = '';
+    longest = '';
+    day = '';
+    days = '';
     curve: any = curveBasis;
-    colorScheme = [
+    colorScheme: any = [
         {
             domain: ['#D3D3D3'],
         },

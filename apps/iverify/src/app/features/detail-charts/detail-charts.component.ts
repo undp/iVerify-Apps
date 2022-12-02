@@ -7,7 +7,7 @@ import { DataRange } from '@iverify/core/models/dashboard';
 
 @Component({
     selector: 'iverify-detail-charts',
-    templateUrl: 'detail-charts.component.html',
+    templateUrl: './detail-charts.component.html',
     styleUrls: ['./detail-charts.component.scss'],
 })
 export class DetailChartComponent {
@@ -20,23 +20,23 @@ export class DetailChartComponent {
     single: any[];
     ChartTypeEnum = ChartTypeEnum;
     // options
-    showXAxis: boolean = true;
-    showYAxis: boolean = true;
-    gradient: boolean = false;
-    showLegend: boolean = true;
-    showXAxisLabel: boolean = true;
-    xAxisLabelBubbleChart: string = 'BUBBLE_CHART';
-    yAxisLineChart: string = 'LINE_CHART';
-    yAxisLabel: string = 'Count';
-    showYAxisLabel: boolean = true;
-    xAxisLabel: string = '';
-    tickIndex: number = 0;
-    quickest: string = '';
-    longest: string = '';
-    day: string = '';
-    days: string = '';
+    showXAxis = true;
+    showYAxis = true;
+    gradient = false;
+    showLegend = true;
+    showXAxisLabel = true;
+    xAxisLabelBubbleChart = 'BUBBLE_CHART';
+    yAxisLineChart = 'LINE_CHART';
+    yAxisLabel = 'Count';
+    showYAxisLabel = true;
+    xAxisLabel = '';
+    tickIndex = 0;
+    quickest = '';
+    longest = '';
+    day = '';
+    days = '';
     curve: any = curveBasis;
-    colorScheme = [
+    colorScheme: any = [
         {
             domain: ['#D3D3D3'],
         },
