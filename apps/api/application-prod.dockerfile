@@ -1,7 +1,7 @@
 FROM node:16.10 as builder
 
 ARG ENVIRONMENT
-# RUN npm install npm -g
+RUN npm install npm@8 -g
 
 # RUN apt-get update && \
 #   apt-get install -y \
