@@ -22,10 +22,10 @@ definitions:
         docker push $IMAGE_NAME_TAG-api;
         docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile .;
         docker push $IMAGE_NAME_TAG-iverify;
-        docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/application-prod.dockerfile .;
-        docker push $IMAGE_NAME_TAG-triage;
-        docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/application-prod.dockerfile .;
-        docker push $IMAGE_NAME_TAG-publisher;
+        # docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/application-prod.dockerfile .;
+        # docker push $IMAGE_NAME_TAG-triage;
+        # docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/application-prod.dockerfile .;
+        # docker push $IMAGE_NAME_TAG-publisher;
 
     - script: &iverifybuild
         # apt-get update;
@@ -34,8 +34,8 @@ definitions:
         npm install;
         npx @angular/cli build iverify --configuration=$CONFIGURATION;
         npx nx build api;
-        npx nx build triage;
-        npx nx build publisher;
+        # npx nx build triage;
+        # npx nx build publisher;
 
   kenia: &kenia
     script:
@@ -91,8 +91,8 @@ definitions:
       - *iverifybuild
       - docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/application-prod.dockerfile .
       - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
-      - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/application-prod.dockerfile .
-      - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/application-prod.dockerfile .
+      # - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/application-prod.dockerfile .
+      # - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/application-prod.dockerfile .
 
 pipelines:
   custom:
