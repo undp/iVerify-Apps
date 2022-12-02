@@ -6,6 +6,7 @@ import {
     Logger,
     Post,
     UseInterceptors,
+    ValidationPipe,
 } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { catchError, tap } from 'rxjs';
@@ -23,7 +24,7 @@ export class PublisherController {
     @UseInterceptors(WebhookAuth)
     @ApiTags('Publish Report')
     @ApiBody({ type: PublishReportDto })
-    async punlishReportWebhook(@Body() body) {
+    async punlishReportWebhook(@Body(ValidationPipe) body: PublishReportDto) {
         try {
             const event = body.event;
             this.logger.log(`Received event: ${event}`);

@@ -44,7 +44,7 @@ export class CheckClientHandlerService {
             checkApiTeam: getParam('CHECK_API_TEAM')?.value,
             checkPublishFolder: getParam('WP_PUBLISHED_FOLDER')?.value,
             uploadFolderId: getParam('CHECK_FOLDER_ID')?.value,
-            lang: getParam('LANGUAE')?.value ?? 'es',
+            lang: getParam('LANGUAGE')?.value ?? 'es',
         };
 
         return requestConfig;

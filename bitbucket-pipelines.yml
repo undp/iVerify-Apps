@@ -1,150 +1,135 @@
 image:
-  name: atlassian/pipelines-awscli:1.18.190
+    name: atlassian/pipelines-awscli:1.18.190
 
 options:
-  size: 2x
-  docker: true
-
-  DBDump: &DBDump
-    image: public.ecr.aws/unicc/opsctl:1.5
-    name: DB dump
     size: 2x
-    artifacts:
-      - '*.sql.gz'
+    docker: true
+
+    DBDump: &DBDump
+        image: public.ecr.aws/unicc/opsctl:1.5
+        name: DB dump
+        size: 2x
+        artifacts:
+            - '*.sql.gz'
 
 definitions:
-  scripts:
-    - script: &buildPushTag
-        apt install curl wget unzip -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip";
-        unzip awscliv2.zip && ./aws/install;
-        aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR;
-        docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/application-prod.dockerfile .;
-        docker push $IMAGE_NAME_TAG-api;
-        docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile .;
-        docker push $IMAGE_NAME_TAG-iverify;
-        # docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/application-prod.dockerfile .;
-        # docker push $IMAGE_NAME_TAG-triage;
-        # docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/application-prod.dockerfile .;
-        # docker push $IMAGE_NAME_TAG-publisher;
+    scripts:
+        - script:
+              &buildPushTag apt install curl wget unzip -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip";
+              unzip awscliv2.zip && ./aws/install;
+              aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $CWH_ECR;
+              docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/application-prod.dockerfile .;
+              docker push $IMAGE_NAME_TAG-api;
+              docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile .;
+              docker push $IMAGE_NAME_TAG-iverify;
 
-    - script: &iverifybuild
-        # apt-get update;
-        # apt-get install -y libgtk2.0-0  libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 xvfb;
-        export PATH=node_modules/.bin:$PATH;
-        npm install;
-        npx @angular/cli build iverify --configuration=$CONFIGURATION;
-        npx nx build api;
-        # npx nx build triage;
-        # npx nx build publisher;
+        - script: &iverifybuild export PATH=node_modules/.bin:$PATH;
+              npm install;
+              npx @angular/cli build iverify --configuration=$CONFIGURATION;
+              npx nx build api;
 
-  kenia: &kenia
-    script:
-      - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
-      - export IMAGE_NAME_TAG=$IMAGE_NAME:kenia-$BITBUCKET_TAG
-      - export CONFIGURATION=kenia-production
-      - *iverifybuild
-      - *buildPushTag
+    kenia: &kenia
+        script:
+            - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
+            - export IMAGE_NAME_TAG=$IMAGE_NAME:kenia-$BITBUCKET_TAG
+            - export CONFIGURATION=kenia-production
+            - *iverifybuild
+            - *buildPushTag
 
-  kenia-dev: &kenia-dev
-    script:
-      - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
-      - export IMAGE_NAME_TAG=$IMAGE_NAME:kenia-$BITBUCKET_TAG
-      - export CONFIGURATION=kenia-development
-      - *iverifybuild
-      - *buildPushTag
+    kenia-dev: &kenia-dev
+        script:
+            - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
+            - export IMAGE_NAME_TAG=$IMAGE_NAME:kenia-$BITBUCKET_TAG
+            - export CONFIGURATION=kenia-development
+            - *iverifybuild
+            - *buildPushTag
 
-  honduras: &honduras
-    script:
-      - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
-      - export IMAGE_NAME_TAG=$IMAGE_NAME:honduras-$BITBUCKET_TAG
-      - export CONFIGURATION=honduras-production
-      - apt install curl wget unzip -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip";
-      - *iverifybuild
-      - *buildPushTag
+    honduras: &honduras
+        script:
+            - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
+            - export IMAGE_NAME_TAG=$IMAGE_NAME:honduras-$BITBUCKET_TAG
+            - export CONFIGURATION=honduras-production
+            - apt install curl wget unzip -y && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip";
+            - *iverifybuild
+            - *buildPushTag
 
-  honduras-dev: &honduras-dev
-    script:
-      - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
-      - export IMAGE_NAME_TAG=$IMAGE_NAME:honduras-$BITBUCKET_TAG
-      - export CONFIGURATION=honduras-development
-      - *iverifybuild
-      - *buildPushTag
+    honduras-dev: &honduras-dev
+        script:
+            - export IMAGE_NAME=$CWH_ECR/$BITBUCKET_REPO_SLUG
+            - export IMAGE_NAME_TAG=$IMAGE_NAME:honduras-$BITBUCKET_TAG
+            - export CONFIGURATION=honduras-development
+            - *iverifybuild
+            - *buildPushTag
 
+    services:
+        docker:
+            memory: 4096
 
-  services:
-    docker:
-      memory: 4096
+    checkRepo: &checkRepo
+        name: Check & create repo
+        script:
+            - REPO=$(aws ecr describe-repositories --region eu-west-1 --query "repositories[?repositoryName=='${BITBUCKET_REPO_SLUG}'].repositoryName" --output text)
+            - if [[ -z $REPO ]]; then aws ecr create-repository --region eu-west-1 --repository-name $BITBUCKET_REPO_SLUG; fi
 
-  checkRepo: &checkRepo
-    name: Check & create repo
-    script:
-      - REPO=$(aws ecr describe-repositories --region eu-west-1 --query "repositories[?repositoryName=='${BITBUCKET_REPO_SLUG}'].repositoryName" --output text)
-      - if [[ -z $REPO ]]; then aws ecr create-repository --region eu-west-1 --repository-name $BITBUCKET_REPO_SLUG; fi
-
-
-  build: &build
-    name: Build
-    caches:
-      - docker
-    script:
-      - export IMAGE_NAME_TAG=build
-      - *iverifybuild
-      - docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/application-prod.dockerfile .
-      - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
-      # - docker build -t $IMAGE_NAME_TAG-triage -f apps/triage/application-prod.dockerfile .
-      # - docker build -t $IMAGE_NAME_TAG-publisher -f apps/publisher/application-prod.dockerfile .
+    build: &build
+        name: Build
+        caches:
+            - docker
+        script:
+            - export IMAGE_NAME_TAG=build
+            - *iverifybuild
+            - docker build --memory 2G  --memory-swap 4G -t $IMAGE_NAME_TAG-api -f apps/api/application-prod.dockerfile .
+            - docker build -t $IMAGE_NAME_TAG-iverify -f apps/iverify/Dockerfile  .
 
 pipelines:
-  custom:
-    db-dump-production:
-      - step:
-          deployment: production
-          <<: *DBDump
-          script:
-          - opsctl get dbdump -p ${BITBUCKET_REPO_SLUG} -f dump.sql.gz
-  branches:
-    master:
-      - parallel:
-        - step:
-            name: Build Kenia
-            image:
-                name: node:16.10
-            <<: *build
-        - step:
-            name: Build Honduras
-            image:
-                name: node:16.10
-            <<: *build
+    custom:
+        db-dump-production:
+            - step:
+                  deployment: production
+                  <<: *DBDump
+                  script:
+                      - opsctl get dbdump -p ${BITBUCKET_REPO_SLUG} -f dump.sql.gz
+    branches:
+        master:
+            - parallel:
+                  - step:
+                        name: Build Kenia
+                        image:
+                            name: node:16.10
+                        <<: *build
+                  - step:
+                        name: Build Honduras
+                        image:
+                            name: node:16.10
+                        <<: *build
 
-    feature/MISINFORM-288-jsmulti-create-deployment-:
-        - step:
-            name: Build Kenia
-            image:
-                name: node:16.10
-            <<: *build
+        feature/MISINFORM-288-jsmulti-create-deployment-:
+            - step:
+                  name: Build Kenia
+                  image:
+                      name: node:16.10
+                  <<: *build
 
-  tags:
-    'dev*':
-      - step:
-          *checkRepo
-      - step:
-            name: Build Kenia
-            image:
-                name: node:16.10
-            <<: *kenia-dev
+    tags:
+        'dev*':
+            - step: *checkRepo
+            - step:
+                  name: Build Kenia
+                  image:
+                      name: node:16.10
+                  <<: *kenia-dev
 
-    'v*':
-      - step:
-          *checkRepo
-      - parallel:
-        - step:
-            name: Build Kenia
-            image:
-                name: node:16.10
-            <<: *kenia
+        'v*':
+            - step: *checkRepo
+            - parallel:
+                  - step:
+                        name: Build Kenia
+                        image:
+                            name: node:16.10
+                        <<: *kenia
 
-        - step:
-            name: Build Honduras
-            image:
-                name: node:16.10
-            <<: *honduras
+                  - step:
+                        name: Build Honduras
+                        image:
+                            name: node:16.10
+                        <<: *honduras

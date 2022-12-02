@@ -6,15 +6,17 @@ import {
     Logger,
     Post,
     Req,
+    UseInterceptors,
     ValidationPipe,
 } from '@nestjs/common';
 
 import { StatsService } from './stats.service';
-import { ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { StatsFormatService } from './stats-format.service';
 import { MeedanItemStatuses } from '@iverify/meedan-check-client/src';
 import { ItemChangedRequestDto } from './dto/itemChangedRequest.dto';
+import { WebhookAuth } from '../../interceptors/webhook.auth.interceptor';
 
 export class DateBraket {
     @ApiProperty()
@@ -71,6 +73,9 @@ export class StatsController {
     }
 
     @Post('item-status-changed')
+    @UseInterceptors(WebhookAuth)
+    @ApiTags('Item Status Changed')
+    @ApiBody({ type: ItemChangedRequestDto })
     async itemResolved(
         @Body(ValidationPipe) body: ItemChangedRequestDto,
         @Req() request: Request
