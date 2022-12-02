@@ -34,7 +34,7 @@ export class PublisherController {
             this.logger.log(`project media id: ${id}`);
 
             if (event === MeedanItemStatuses.PUBLISH_REPORT) {
-                return this.publisherService.publishReportById(id).pipe(
+                return this.publisherService.publishReportById(`${id}`).pipe(
                     tap(() => this.logger.log('Report published.')),
                     catchError((err) => {
                         this.logger.error(err);
