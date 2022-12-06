@@ -15,6 +15,11 @@ export class CreateLocationDto {
     description: string;
 
     @ApiProperty()
-    @IsArray({ each: true })
+    @IsOptional()
+    @IsArray()
     params: Array<LocationsParam>;
+
+    constructor(params?: Partial<CreateLocationDto>) {
+        Object.apply(this, params);
+    }
 }

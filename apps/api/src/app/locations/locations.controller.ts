@@ -28,11 +28,9 @@ export class LocationsController {
     constructor(private readonly locationsService: LocationsService) {}
 
     @Post()
-    async create(
-        @Body(ValidationPipe) locationDto: CreateLocationDto
-    ): Promise<LocationDto> {
+    async create(@Body() body): Promise<LocationDto> {
         try {
-            return await this.locationsService.create(locationDto);
+            return await this.locationsService.create(body);
         } catch (e) {
             this.logger.error(e);
             throw e;
