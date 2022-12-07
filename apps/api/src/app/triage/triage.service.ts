@@ -322,7 +322,7 @@ export class TriageService {
                     postsCount++;
                 },
                 {
-                    concurrency: 2,
+                    concurrency: 1,
                     stopOnError: false,
                 }
             );

@@ -6,8 +6,8 @@ import { HttpService } from '@nestjs/axios';
 @Injectable()
 export class PerspectiveClientService {
     constructor(private http: HttpService) {}
-    analyze(config: PerspectiveConfig, messages: string, threshold: number) {
-        const body = this.buildAnalyzeBody(messages, threshold);
+    analyze(config: PerspectiveConfig, message: string, threshold: number) {
+        const body = this.buildAnalyzeBody(message, threshold);
         return this.http.post(`${config.endpoints.analyze}`, body).pipe(
             retryWhen((errors) =>
                 errors.pipe(
