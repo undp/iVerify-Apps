@@ -7,6 +7,7 @@ import {
     IsString,
 } from 'class-validator';
 import { LocationsParam } from '../interfaces/location.params';
+import { LocationClients } from './locations.clients.dto';
 
 export class CreateLocationDto {
     @ApiProperty()
@@ -18,6 +19,10 @@ export class CreateLocationDto {
     @IsOptional()
     @IsArray()
     params: Array<LocationsParam>;
+
+    @ApiProperty()
+    @IsOptional()
+    clients?: Array<Partial<LocationClients>>;
 
     constructor(params?: Partial<CreateLocationDto>) {
         Object.apply(this, params);

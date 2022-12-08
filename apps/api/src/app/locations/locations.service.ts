@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { CacheTTL, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { isEmpty } from 'radash';
@@ -44,7 +45,14 @@ export class LocationsService {
         locationParam: CreateLocationDto
     ): Promise<LocationDto> {
         try {
+            if (!isEmpty(locationParam.clients)) {
+                locationParam.clients = locationParam.clients.map(
+                    (client) => new LocationClients(client.name)
+                );
+            }
+
             const location = await this.locationsRepository.create(
+                // @ts-ignore
                 new Locations(locationParam)
             );
 
@@ -62,6 +70,12 @@ export class LocationsService {
         locationParam: Partial<LocationDto>
     ): Promise<UpdateResult> {
         try {
+            if (!isEmpty(locationParam.clients)) {
+                locationParam.clients = locationParam.clients.map(
+                    (client) => new LocationClients(client.name)
+                );
+            }
+
             const result = await this.locationsRepository.update(locationId, {
                 ...locationParam,
             });

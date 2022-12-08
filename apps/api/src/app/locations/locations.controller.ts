@@ -43,7 +43,10 @@ export class LocationsController {
         @Param('id') locationId: string
     ): Promise<UpdateResult> {
         try {
-            return await this.locationsService.update(locationId, locationDto);
+            return await this.locationsService.update(
+                locationId,
+                locationDto as any
+            );
         } catch (e) {
             this.logger.error(e);
             throw e;

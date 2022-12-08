@@ -9,13 +9,13 @@ export class LocationClients {
 
     @IsString()
     @IsOptional()
-    id: string = uuidv4();
+    id?: string = uuidv4();
 
     @IsString()
     @IsOptional()
-    key: string = uuidv4();
+    key?: string = uuidv4();
 
-    constructor(params?: Partial<LocationClients>) {
-        Object.apply(this, { ...params });
+    constructor(name?: string) {
+        this.name = name;
     }
 }
