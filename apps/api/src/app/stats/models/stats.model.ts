@@ -9,7 +9,7 @@ import {
 import { Locations } from '../../locations/models/locations.model';
 import { StatsDto } from '../dto/stats.dto';
 
-@Entity()
+@Entity('statistics')
 export class Stats {
     private readonly lockedDtoFields = [];
 

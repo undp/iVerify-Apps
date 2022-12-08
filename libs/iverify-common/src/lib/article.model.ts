@@ -1,98 +1,97 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
-export class Article{
+@Entity('articles')
+export class Article {
     @PrimaryGeneratedColumn()
-    id: number
+    id: number;
 
     @Column()
-    meedanId: number
+    meedanId: number;
 
-    @Column({type: 'date', nullable: true})
-    creationDate: string
-
-    @Column()
-    wpId: number
+    @Column({ type: 'date', nullable: true })
+    creationDate: string;
 
     @Column()
-    toxicFlag: boolean
+    wpId: number;
 
     @Column()
-    title: string 
+    toxicFlag: boolean;
 
     @Column()
-    content: string
+    title: string;
 
     @Column()
-    wpUrl: string
-
-    @Column({type: 'date'})
-    publishDate: string
+    content: string;
 
     @Column()
-    tags: string
+    wpUrl: string;
+
+    @Column({ type: 'date' })
+    publishDate: string;
 
     @Column()
-    threatLevel: string
+    tags: string;
 
     @Column()
-    violationType: string
+    threatLevel: string;
 
     @Column()
-    claim: string
+    violationType: string;
 
     @Column()
-    justification: string
+    claim: string;
 
     @Column()
-    evidence: string
+    justification: string;
 
     @Column()
-    misinfoType: string
+    evidence: string;
 
     @Column()
-    hateSpeechType: string
+    misinfoType: string;
 
     @Column()
-    toxicScore: number
+    hateSpeechType: string;
 
     @Column()
-    obsceneScore: number
+    toxicScore: number;
 
     @Column()
-    identityScore: number
+    obsceneScore: number;
 
     @Column()
-    threatScore: number
+    identityScore: number;
 
     @Column()
-    explicitScore: number
+    threatScore: number;
 
     @Column()
-    dToxicScore: number
+    explicitScore: number;
 
     @Column()
-    dObsceneScore: number
+    dToxicScore: number;
 
     @Column()
-    dIdentityScore: number
+    dObsceneScore: number;
 
     @Column()
-    dThreatScore: number
+    dIdentityScore: number;
 
     @Column()
-    dExplicitScore: number
+    dThreatScore: number;
 
     @Column()
-    dInsultScore: number
+    dExplicitScore: number;
 
     @Column()
-    sourceName: string
+    dInsultScore: number;
 
     @Column()
-    sourceUrl: string
+    sourceName: string;
 
     @Column()
-    notes: string
+    sourceUrl: string;
 
+    @Column()
+    notes: string;
 }

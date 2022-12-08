@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { TriageControlStatuses } from '../enum/triage.control.statuses.enum';
 
-@Entity('triage-post-control')
+@Entity('triage-posts-control')
 export class TriagePostControl {
     @PrimaryGeneratedColumn('uuid')
     id: string;

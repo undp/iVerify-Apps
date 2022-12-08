@@ -13,7 +13,7 @@ import { LocationDto } from '../dto/location.dto';
 import { LocationClients } from '../dto/locations.clients.dto';
 import { LocationsParam } from '../interfaces/location.params';
 
-@Entity()
+@Entity('tenants')
 export class Locations {
     private readonly lockedDtoFields = [];
 

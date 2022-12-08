@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('channels_tickets')
 export class TicketsByChannel {
     @PrimaryGeneratedColumn()
     id: number;

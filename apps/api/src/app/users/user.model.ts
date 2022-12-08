@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { Locations } from '../locations/models/locations.model';
 
-@Entity()
+@Entity('users')
 export class User {
     @PrimaryGeneratedColumn()
     id: number;

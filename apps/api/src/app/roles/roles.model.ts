@@ -12,7 +12,7 @@ import { Locations } from '../locations/models/locations.model';
 import { User } from '../users/user.model';
 import { RolesDto } from './dto/role.dto';
 
-@Entity()
+@Entity('profiles')
 export class Roles {
     private readonly lockedDtoFields = ['location', 'users', 'uniqueParam'];
 
