@@ -76,8 +76,20 @@ export class LocationsService {
                 );
             }
 
-            const result = await this.locationsRepository.update(locationId, {
+            let location: any = await this.findById(locationId);
+
+            let { params } = location;
+
+            location = {
                 ...locationParam,
+            };
+
+            params = { ...params, ...locationParam.params };
+
+            location = { ...location, params };
+
+            const result = await this.locationsRepository.update(locationId, {
+                ...location,
             });
 
             return result;
