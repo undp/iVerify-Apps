@@ -16,9 +16,6 @@ RUN npm install npm@8 -g
 WORKDIR /workspace
 COPY . .
 
-COPY ../entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
 ENV PATH /workspace/node_modules/.bin:$PATH
 RUN npm install
 RUN npm run build api
@@ -38,7 +35,5 @@ ENV PORT=3333
 EXPOSE 3333
 RUN npm install --production
 RUN npm install reflect-metadata tslib rxjs @nestjs/platform-express mysql
-
-ENTRYPOINT ["/entrypoint.sh"]
 
 CMD node ./main.js
