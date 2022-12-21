@@ -1,4 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { toArray } from 'lodash';
+import { isEmpty } from 'radash';
 import { LocationsService } from '../locations/locations.service';
 
 export interface WpCredentialConfigs {
@@ -16,12 +18,24 @@ export interface WpCredentialConfigs {
 
 @Injectable()
 export class WpConfigHandler {
+    private logger = new Logger(WpConfigHandler.name);
+
     constructor(private locationsService: LocationsService) {}
 
     public async getConfigByLocation(
         locationId: string
     ): Promise<WpCredentialConfigs> {
-        const { params } = await this.locationsService.findById(locationId);
+        let { params } = await this.locationsService.findById(locationId);
+
+        if (isEmpty(params)) {
+            const error = `Params not found for location ${locationId}`;
+            this.logger.error(error);
+            throw new Error(error);
+        }
+
+        if (!Array.isArray(params)) {
+            params = toArray(params);
+        }
 
         const getParam: any = (param) =>
             params.find(({ key }) => key === param);

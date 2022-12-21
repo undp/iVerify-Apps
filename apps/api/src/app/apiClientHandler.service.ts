@@ -1,11 +1,15 @@
 import { ApiClientConfig, ApiClientService } from '@iverify/api-client/src';
 import { Article } from '@iverify/iverify-common/src';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { toArray } from 'lodash';
+import { isEmpty } from 'radash';
 import { from, switchMap } from 'rxjs';
 import { LocationsService } from './locations/locations.service';
 
 @Injectable()
 export class ApiClientHandler {
+    private logger = new Logger(ApiClientHandler.name);
+
     constructor(
         private locationsService: LocationsService,
         private apiClientService: ApiClientService
@@ -14,7 +18,17 @@ export class ApiClientHandler {
     private async getConfigByLocation(
         locationId: string
     ): Promise<ApiClientConfig> {
-        const { params } = await this.locationsService.findById(locationId);
+        let { params } = await this.locationsService.findById(locationId);
+
+        if (isEmpty(params)) {
+            const error = `Params not found for location ${locationId}`;
+            this.logger.error(error);
+            throw new Error(error);
+        }
+
+        if (!Array.isArray(params)) {
+            params = toArray(params);
+        }
 
         const getParam: any = (param) =>
             params.find(({ key }) => key === param);

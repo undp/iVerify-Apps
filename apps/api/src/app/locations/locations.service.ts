@@ -142,6 +142,12 @@ export class LocationsService {
                 },
             });
 
+            if (isEmpty(location)) {
+                const err = `Location not found with id ${locationId}`;
+                this.logger.error(err);
+                throw new Error(err);
+            }
+
             return location;
         } catch (err) {
             this.logger.error(err);

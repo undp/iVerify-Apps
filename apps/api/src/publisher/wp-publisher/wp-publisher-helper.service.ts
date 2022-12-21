@@ -1,5 +1,5 @@
 import { TasksLabels } from '@iverify/common/src';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
     CommentStatus,
     CreatePostDto,
@@ -9,16 +9,30 @@ import {
 } from '@iverify/wp-client/src/lib/interfaces/create-post.dto';
 import { SharedHelper } from '../shared/helper';
 import { LocationsService } from '../../app/locations/locations.service';
+import { isEmpty } from 'radash';
+import { toArray } from 'lodash';
 
 @Injectable()
 export class WpPublisherHelper {
+    private logger = new Logger(WpPublisherHelper.name);
+
     constructor(
         private sharedHelper: SharedHelper,
         private locationsService: LocationsService
     ) {}
 
     private async getConfigByLocation(locationId: string): Promise<string> {
-        const { params } = await this.locationsService.findById(locationId);
+        let { params } = await this.locationsService.findById(locationId);
+
+        if (isEmpty(params)) {
+            const error = `Params not found for location ${locationId}`;
+            this.logger.error(error);
+            throw new Error(error);
+        }
+
+        if (!Array.isArray(params)) {
+            params = toArray(params);
+        }
 
         const getParam: any = (param) =>
             params.find(({ key }) => key === param);

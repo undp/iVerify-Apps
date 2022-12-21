@@ -6,11 +6,15 @@ import { LocationsService } from '../locations/locations.service';
 import { TriageService } from './triage.service';
 import * as pMap from 'p-map';
 import { ApiClientHandler } from '../apiClientHandler.service';
+import { isEmpty } from 'radash';
+import { Locations } from '../locations/models/locations.model';
 // import { AppService } from './app.service';
 
 @Injectable()
 export class TriageCronService {
     private readonly logger = new Logger(TriageCronService.name);
+
+    private lastCalledLocation: Locations;
 
     constructor(
         // private appService: AppService,
@@ -29,6 +33,29 @@ export class TriageCronService {
     //     return await this.analyze(startDate, endDate);
     // }
 
+    private getNextLocation(locations: Array<Locations>): Locations {
+        if (isEmpty(locations)) {
+            return null;
+        }
+
+        if (isEmpty(this.lastCalledLocation)) {
+            this.lastCalledLocation = locations[0];
+        } else {
+            const currentIndex = locations.findIndex(
+                (location: Locations) =>
+                    location.id === this.lastCalledLocation.id
+            );
+
+            if (currentIndex <= locations.length) {
+                this.lastCalledLocation = locations[currentIndex];
+            } else {
+                this.lastCalledLocation = locations[0];
+            }
+        }
+
+        return this.lastCalledLocation;
+    }
+
     @Cron(CronExpression.EVERY_30_MINUTES)
     async preparePostsCron() {
         const endDate = new Date().toISOString();
@@ -39,50 +66,52 @@ export class TriageCronService {
             `Running cron job preparePostsCron with startDate ${startDate} and endDate ${endDate}`
         );
 
-        const locations = await this.locationsService.findAll({
+        const locations = (await this.locationsService.findAll({
             limit: Number.MAX_SAFE_INTEGER,
             offset: 0,
-        });
+        })) as unknown as Array<Locations>;
 
-        const result = await pMap(
-            locations,
-            async ({ id: locationId }) => {
-                return this.triageService.prepareListAndPosts(
-                    locationId,
+        let process = true;
+
+        while (process) {
+            try {
+                const { id } = this.getNextLocation(locations);
+
+                await this.triageService.prepareListAndPosts(
+                    id,
                     startDate,
                     endDate
                 );
-            },
-            {
-                concurrency: 2,
-                stopOnError: false,
+            } catch (err) {
+                process = false;
+                this.logger.error(err);
+                throw err;
             }
-        );
-
-        return result;
+        }
     }
 
     @Cron(CronExpression.EVERY_2_HOURS)
     async processPostsCron() {
         this.logger.log(`Running cron job processPostsCron`);
 
-        const locations = await this.locationsService.findAll({
+        const locations = (await this.locationsService.findAll({
             limit: Number.MAX_SAFE_INTEGER,
             offset: 0,
-        });
+        })) as unknown as Array<Locations>;
 
-        const result = await pMap(
-            locations,
-            async ({ id: locationId }) => {
-                return this.analyze(locationId);
-            },
-            {
-                concurrency: 2,
-                stopOnError: false,
+        let process = true;
+
+        while (process) {
+            try {
+                const { id } = this.getNextLocation(locations);
+
+                await this.analyze(id);
+            } catch (err) {
+                process = false;
+                this.logger.error(err);
+                throw err;
             }
-        );
-
-        return result;
+        }
     }
 
     async analyze(locationId: string) {
