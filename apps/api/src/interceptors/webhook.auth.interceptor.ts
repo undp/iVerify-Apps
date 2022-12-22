@@ -30,7 +30,7 @@ export class WebhookAuth {
 
             if (request.headers) {
                 const locationId = request?.headers['location'];
-                const clientId = request?.headers['clientId'];
+                const clientId = request?.headers['clientid'];
                 const key = request?.headers['key'];
 
                 if (!clientId) {
