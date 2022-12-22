@@ -48,31 +48,29 @@ export class WebhookAuth {
                     return response.send('Location ID is required');
                 }
 
-                if (location) {
-                    const location: Locations =
-                        await this.locationsService.findById(locationId);
+                const location: Locations =
+                    await this.locationsService.findById(locationId);
 
-                    if (isEmpty(location)) {
-                        response.status = 403;
-                        return response.send('Invalid location');
-                    }
-
-                    const client = location.clients.find(
-                        (client: LocationClients) => client.id === clientId
-                    );
-
-                    if (isEmpty(client)) {
-                        response.status = 403;
-                        return response.send('Invalid clientId');
-                    }
-
-                    if (client.key !== key) {
-                        response.status = 403;
-                        return response.send('Invalid credentials');
-                    }
-
-                    return next.handle();
+                if (isEmpty(location)) {
+                    response.status = 403;
+                    return response.send('Invalid location');
                 }
+
+                const client = location.clients.find(
+                    (client: LocationClients) => client.id === clientId
+                );
+
+                if (isEmpty(client)) {
+                    response.status = 403;
+                    return response.send('Invalid clientId');
+                }
+
+                if (client.key !== key) {
+                    response.status = 403;
+                    return response.send('Invalid credentials');
+                }
+
+                return next.handle();
             }
         } catch (err) {
             this.logger.error(err);
