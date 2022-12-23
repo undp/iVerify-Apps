@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { CacheTTL, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { toArray } from 'lodash';
 import { isEmpty } from 'radash';
 import {
     DeleteResult,
@@ -47,7 +48,7 @@ export class LocationsService {
         try {
             if (!isEmpty(locationParam.clients)) {
                 locationParam.clients = locationParam.clients.map(
-                    (client) => new LocationClients(client.name)
+                    (client) => new LocationClients(client)
                 );
             }
 
@@ -72,7 +73,7 @@ export class LocationsService {
         try {
             if (!isEmpty(locationParam.clients)) {
                 locationParam.clients = locationParam.clients.map(
-                    (client) => new LocationClients(client.name)
+                    (client) => new LocationClients(client)
                 );
             }
 
@@ -84,7 +85,15 @@ export class LocationsService {
                 ...locationParam,
             };
 
-            params = { ...params, ...locationParam.params };
+            if (Array.isArray(locationParam.params)) {
+                const tempObj = {};
+
+                locationParam.params.forEach(({ key, value }) => {
+                    tempObj[key] = value;
+                });
+
+                params = toArray({ ...params, ...tempObj });
+            }
 
             location = { ...location, params };
 
