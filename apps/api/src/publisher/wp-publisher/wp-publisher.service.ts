@@ -20,6 +20,8 @@ import { WpPublisherHelper } from './wp-publisher-helper.service';
 import { HttpService } from '@nestjs/axios';
 import { WpClientHandler } from '../../app/handlers/wpClientHandler.service';
 import { LocationsService } from '../../app/locations/locations.service';
+import { isEmpty } from 'radash';
+import { toArray } from 'lodash';
 
 @Injectable()
 export class WpPublisherService {
@@ -57,6 +59,16 @@ export class WpPublisherService {
     language$: Observable<string> = this.locationId$.pipe(
         switchMap((locationId) => this.locationsService.findById(locationId)),
         map(({ params }) => {
+            if (isEmpty(params)) {
+                const error = `Params not found for location ${location}`;
+                this.logger.error(error);
+                throw new Error(error);
+            }
+
+            if (!Array.isArray(params)) {
+                params = toArray(params);
+            }
+
             const getParam: any = (param) =>
                 params.find(({ key }) => key === param);
 

@@ -1,3 +1,4 @@
+import { isEmpty } from 'radash';
 import {
     BeforeInsert,
     Column,
@@ -58,7 +59,9 @@ export class Roles {
     toDto() {
         const dto = new RolesDto({ ...this });
 
-        this.lockedDtoFields.forEach((field: string) => delete dto[field]);
+        if (!isEmpty(this.lockedDtoFields)) {
+            this.lockedDtoFields.forEach((field: string) => delete dto[field]);
+        }
 
         return dto;
     }

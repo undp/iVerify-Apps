@@ -1,3 +1,4 @@
+import { isEmpty } from 'radash';
 import {
     Column,
     CreateDateColumn,
@@ -63,7 +64,9 @@ export class Locations {
     toDto() {
         const dto = new LocationDto({ ...this });
 
-        this.lockedDtoFields.forEach((field: string) => delete dto[field]);
+        if (!isEmpty(this.lockedDtoFields)) {
+            this.lockedDtoFields.forEach((field: string) => delete dto[field]);
+        }
 
         return dto;
     }
