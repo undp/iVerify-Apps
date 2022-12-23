@@ -88,6 +88,8 @@ export class LocationsService {
 
             location = { ...location, params };
 
+            delete location.lockedDtoFields;
+
             const result = await this.locationsRepository.update(locationId, {
                 ...location,
             });
