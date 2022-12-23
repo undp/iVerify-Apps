@@ -61,12 +61,20 @@ export class CheckClientHandlerService {
             lang: getParam('LANGUAGE')?.value ?? 'es',
         };
 
+        this.logger.log(
+            `getConfigByLocation ${locationId} ${JSON.stringify(requestConfig)}`
+        );
         return requestConfig;
     }
 
     getTicketLastStatus(locationId: string, id: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
             switchMap((requestConfig) => {
+                this.logger.log(
+                    `getTicketLastStatus ${locationId} ${JSON.stringify(
+                        requestConfig
+                    )}`
+                );
                 return this.checkStatsClient.getTicketLastStatus(
                     requestConfig,
                     id
