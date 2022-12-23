@@ -415,7 +415,9 @@ export class CheckStatsService {
 
         const headers = config.headers;
 
-        this.logger.log(`Requesting ticket last status: ${id}`, config);
+        this.logger.log(
+            `Requesting ticket last status: ${id} ${JSON.stringify(config)}`
+        );
 
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) => res.data.data),
