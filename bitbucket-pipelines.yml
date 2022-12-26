@@ -103,13 +103,6 @@ pipelines:
                             name: node:16.10
                         <<: *build
 
-        feature/MISINFORM-288-jsmulti-create-deployment-:
-            - step:
-                  name: Build Kenia
-                  image:
-                      name: node:16.10
-                  <<: *build
-
     tags:
         'dev*':
             - step: *checkRepo
