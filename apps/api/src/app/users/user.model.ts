@@ -1,38 +1,54 @@
-
 import { Roles } from '../roles/roles.model';
 
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Column,
+    Entity,
+    Index,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Locations } from '../locations/models/locations.model';
 
 @Entity()
-export class User{
+export class User {
     @PrimaryGeneratedColumn()
-    id: number
+    id: number;
+
+    @Index()
+    @Column({ nullable: false })
+    locationId: string;
 
     @Column()
-    firstName: string
+    firstName: string;
 
     @Column()
-    lastName: string
+    lastName: string;
 
     @Column()
-    email: string
+    email: string;
 
     @Column()
-    phone: string
+    phone: string;
 
     @Column()
-    address: string
+    address: string;
 
     @Column()
-    password: string
+    password: string;
 
-    @Column({default: null})
-    createdBy: string
+    @Column({ default: null })
+    createdBy: string;
 
     @JoinTable()
-    @ManyToMany(type => Roles, (roles) => roles.users, {cascade: true})
-    roles: Roles[]
+    @ManyToMany((type) => Roles, (roles) => roles.users, { cascade: true })
+    roles: Roles[];
 
+    @ManyToOne(() => Locations, (location) => location.users, {
+        nullable: false,
+    })
+    location: Location;
 }
 // @Schema({timestamps: true})
 // export class User extends Document {
@@ -56,7 +72,7 @@ export class User{
 
 //     @Prop({ default: null})
 //     createdBy: string;
-  
+
 //     @Prop({ default: null})
 //     updatedBy: string;
 

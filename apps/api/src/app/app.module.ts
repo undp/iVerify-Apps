@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 
@@ -23,32 +23,72 @@ import { Article } from '@iverify/iverify-common';
 import { ArticlesController } from './articles/articles.controller';
 import { ArticlesModule } from './articles/articles.module';
 import { ArticlesService } from './articles/articles.service';
+import { LocationsModule } from './locations/locations.module';
+import { LocationsInteceptor } from '../interceptors/locations.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { TriageModule } from './triage/triage.module';
+import { CheckClientHandlerService } from './handlers/checkStatsClientHandler.service';
+import { PublisherModule } from '../publisher/publisher.module';
+
+import { TriagePostControl } from './triage/models/triage.post.control.model';
 
 @Module({
-  imports: [
-    UsersModule, 
-    AuthModule, 
-    RolesModule,
-    StatsModule,
-    ArticlesModule,
-    MeedanCheckClientModule,
-    ConfigModule.forRoot(),
-    ScheduleModule.forRoot(),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      insecureAuth: true,
-      autoLoadEntities: true,
-      synchronize: true
-    }),
-    TypeOrmModule.forFeature([User, Roles, Stats, Article]),
-
-  ],
-  controllers: [AppController, UsersController, StatsController, ArticlesController],
-  providers: [AppService, UsersService, StatsService, StatsFormatService, StatsCronService, ArticlesService],
+    imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+        }),
+        CacheModule.register({
+            isGlobal: true,
+        }),
+        LocationsModule,
+        UsersModule,
+        AuthModule,
+        RolesModule,
+        StatsModule,
+        ArticlesModule,
+        MeedanCheckClientModule,
+        ConfigModule.forRoot(),
+        ScheduleModule.forRoot(),
+        TypeOrmModule.forRoot({
+            type: 'mysql',
+            host: process.env.DB_HOST,
+            port: +process.env.DB_PORT,
+            username: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
+            insecureAuth: true,
+            autoLoadEntities: true,
+            synchronize: true,
+        }),
+        TypeOrmModule.forFeature([
+            User,
+            Roles,
+            Stats,
+            Article,
+            TriagePostControl,
+        ]),
+        TriageModule,
+        PublisherModule,
+    ],
+    controllers: [
+        AppController,
+        UsersController,
+        StatsController,
+        ArticlesController,
+    ],
+    providers: [
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: LocationsInteceptor,
+        },
+        AppService,
+        UsersService,
+        StatsService,
+        StatsFormatService,
+        StatsCronService,
+        ArticlesService,
+        CheckClientHandlerService,
+    ],
+    exports: [CheckClientHandlerService],
 })
-export class AppModule {} 
+export class AppModule {}

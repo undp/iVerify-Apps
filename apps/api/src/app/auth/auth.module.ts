@@ -17,10 +17,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/user.model';
 import { Roles } from '../roles/roles.model';
 import { RolesService } from '../roles/roles.service';
+import { LocationsService } from '../locations/locations.service';
+import { Locations } from '../locations/models/locations.model';
+import { WpConfigHandler } from '../handlers/wpConfigHandler.service';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, Roles]),
+        TypeOrmModule.forFeature([User, Roles, Locations]),
         UsersModule,
         HttpModule,
         PassportModule.register({ defaultStrategy: 'bearer' }),
@@ -36,7 +39,9 @@ import { RolesService } from '../roles/roles.service';
         LocalStrategy,
         JwtRefreshStrategy,
         WordpressAuthGuard,
-        WordpressStrategy,
+        // WordpressStrategy,
+        LocationsService,
+        WpConfigHandler,
     ],
     exports: [
         RefreshTokenAuthGuard,
@@ -44,7 +49,7 @@ import { RolesService } from '../roles/roles.service';
         JwtStrategy,
         LocalStrategy,
         JwtRefreshStrategy,
-        WordpressStrategy,
+        // WordpressStrategy,
     ],
 })
 export class AuthModule {}

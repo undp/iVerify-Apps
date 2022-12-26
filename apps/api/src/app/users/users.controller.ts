@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
     Controller,
     UseGuards,
@@ -14,6 +15,7 @@ import {
     Scope,
     Inject,
     Logger,
+    Req,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
@@ -66,8 +68,14 @@ export class UsersController {
 
     @Get('UserId')
     @UseGuards(JWTTokenAuthGuard)
-    async getUser(@Query() getUser: GetUserDto) {
-        const user = await this.usersService.findByEmail(getUser.userId);
+    async getUser(@Query() getUser: GetUserDto, @Req() request: Request) {
+        // @ts-ignore
+        const { id: locationId } = request.location;
+
+        const user = await this.usersService.findByEmail(
+            locationId,
+            getUser.userId
+        );
         if (!user) throw new NotFoundException(userMessages.userNotFound);
         return { data: user };
     }

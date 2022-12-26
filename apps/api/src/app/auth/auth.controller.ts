@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
     Controller,
     UseGuards,
@@ -10,6 +11,7 @@ import {
     Inject,
     forwardRef,
     Logger,
+    Req,
 } from '@nestjs/common';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { AuthService } from './auth.service';
@@ -22,7 +24,7 @@ import { LocalAuthGuard } from '../guards/Local-auth.guard';
 import { userMessages } from '../../constant/messages';
 import { isEmpty } from 'lodash';
 import { catchError } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+
 import { lastValueFrom } from 'rxjs';
 
 @ApiTags('auth')
@@ -38,13 +40,23 @@ export class AuthController {
 
     @Post('login')
     @UseGuards(LocalAuthGuard)
-    public async login(@Body() login: LoginUserDto) {
-        const userData = await this.usersService.findByEmail(login.email);
+    public async login(@Body() login: LoginUserDto, @Req() request: Request) {
+        // @ts-ignore
+        const { id: locationId } = request.location;
+
+        const userData = await this.usersService.findByEmail(
+            locationId,
+            login.email
+        );
+
         if (!userData) {
             this.logger.error(userMessages.userNotFound);
             throw new NotFoundException(userMessages.userNotFound);
         } else {
-            const token = await this.authService.createToken(userData);
+            const token = await this.authService.createToken(
+                locationId,
+                userData
+            );
             if (!token) throw new BadGatewayException();
             this.logger.log('Token Generated');
             return { token, userData };
@@ -52,10 +64,13 @@ export class AuthController {
     }
 
     @Post('callback')
-    async callback(@Body() query: any) {
+    async callback(@Body() query: any, @Req() request: Request) {
+        // @ts-ignore
+        const { id: locationId } = request.location;
+
         if (!isEmpty(query.code)) {
             const result = await lastValueFrom(
-                this.authService.createTokenByCode(query.code).pipe(
+                this.authService.createTokenByCode(locationId, query.code).pipe(
                     catchError((error) => {
                         this.logger.log(error);
                         throw new error();
@@ -65,7 +80,10 @@ export class AuthController {
             if (result.access_token && result.refresh_token) {
                 /* Find and create */
                 const wpUserData = await lastValueFrom(
-                    this.authService.getUserByData(result.access_token)
+                    this.authService.getUserByData(
+                        locationId,
+                        result.access_token
+                    )
                 );
 
                 if (wpUserData) {
@@ -73,16 +91,20 @@ export class AuthController {
                         firstName: wpUserData.user_nicename,
                         lastName: wpUserData.display_name,
                         email: wpUserData.user_email,
-                        password: environment.WPPassword,
+                        password: '', // environment.WPPassword why ?,
                         roles: [{ name: 'admin' }],
                         phone: '',
                         address: '',
                     };
                     const userData = await this.usersService.findOrRegister(
-                        userPostBody,
+                        { ...userPostBody, locationId },
                         null
                     );
-                    const token = await this.authService.createToken(userData);
+                    const token = await this.authService.createToken(
+                        locationId,
+                        userData
+                    );
+
                     if (!token)
                         throw new BadGatewayException({
                             message: 'Token not present...',
@@ -101,13 +123,18 @@ export class AuthController {
     @Post('generateToken')
     @ApiBearerAuth()
     @UseGuards(RefreshTokenAuthGuard)
-    public async generateToken(@Body() userData: TokenGenerationDto) {
+    public async generateToken(
+        @Body() userData: TokenGenerationDto,
+        @Req() request: Request
+    ) {
+        // @ts-ignore
+        const { id: locationId } = request.location;
         return await this.usersService.findOne(userData.email).then((user) => {
             if (!user) {
                 this.logger.error(userMessages.userNotFound);
                 throw new BadRequestException(userMessages.userNotFound);
             } else {
-                const token = this.authService.createToken(user);
+                const token = this.authService.createToken(locationId, user);
                 if (!token) throw new BadGatewayException();
                 this.logger.log('Token Generated');
                 return token;

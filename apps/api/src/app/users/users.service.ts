@@ -7,6 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Roles } from '../roles/roles.model';
 import { PaginationQueryDto } from '../common/pagination-query.dto';
+import * as pMap from 'p-map';
+import { isEmpty } from 'radash';
 
 @Injectable()
 export class UsersService {
@@ -40,10 +42,11 @@ export class UsersService {
         return user;
     }
 
-    async findByEmail(email: string): Promise<User> {
+    async findByEmail(locationId: string, email: string): Promise<User> {
         const user: User = await this.userRepository.findOne({
             where: {
                 email,
+                locationId,
             },
             relations: ['roles'],
         });
@@ -63,6 +66,7 @@ export class UsersService {
         const user: User = await this.userRepository.findOne({
             where: {
                 email,
+                locationId: userDto.locationId,
             },
             relations: ['roles'],
         });
@@ -76,11 +80,17 @@ export class UsersService {
     async registerUser(userDto: CreateUserDto, userId: string) {
         userDto.password = await this.encryptPassword(userDto.password);
         userDto['createdBy'] = userId;
-        const roles: Roles[] = await Promise.all(
-            userDto.roles.map((role) => {
-                return this.preloadRoleByName(role['name']);
-            })
+
+        const roles: Roles[] = await pMap(
+            userDto.roles,
+            async (role) => {
+                return this.preloadRoleByName(userDto.locationId, role.name);
+            },
+            {
+                concurrency: 4,
+            }
         );
+
         const user = await this.userRepository.create({ ...userDto, roles });
         return this.userRepository.save(user);
     }
@@ -88,13 +98,24 @@ export class UsersService {
     async update(id: string, updateDto: UpdateUserDto) {
         if (updateDto['password'])
             updateDto.password = await this.encryptPassword(updateDto.password);
-        const roles: Roles[] = updateDto['roles']
-            ? await Promise.all(
-                  updateDto.roles.map((role) => {
-                      return this.preloadRoleByName(role['name']);
-                  })
-              )
-            : [null];
+        let roles: Roles[];
+
+        if (!isEmpty(updateDto.roles)) {
+            roles = await pMap(
+                updateDto.roles,
+                async (role) => {
+                    return this.preloadRoleByName(
+                        updateDto.locationId,
+                        role.name
+                    );
+                },
+                {
+                    concurrency: 4,
+                }
+            );
+        } else {
+            roles = [];
+        }
 
         const user = await this.userRepository.preload({
             id: +id,
@@ -118,10 +139,11 @@ export class UsersService {
         return await compare(passport, comparePassword);
     }
 
-    private async preloadRoleByName(name: string) {
+    private async preloadRoleByName(locationId: string, name: string) {
         const existingRole: Roles = await this.rolesRepository.findOne({
             where: {
                 name: name,
+                locationId,
             },
         });
 
@@ -129,6 +151,6 @@ export class UsersService {
             return existingRole;
         }
 
-        return this.rolesRepository.create({ name });
+        return this.rolesRepository.create({ name, locationId });
     }
 }

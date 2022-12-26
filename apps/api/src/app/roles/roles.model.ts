@@ -1,30 +1,67 @@
-
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    BeforeInsert,
+    Column,
+    Entity,
+    Index,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Locations } from '../locations/models/locations.model';
 import { User } from '../users/user.model';
+import { RolesDto } from './dto/role.dto';
 
 @Entity()
-export class Roles{
+export class Roles {
+    private readonly lockedDtoFields = ['location', 'users', 'uniqueParam'];
+
     @PrimaryGeneratedColumn()
-    id: number
+    id: number;
 
-    @Column({ unique: true })
-    name: string
+    @Index()
+    @Column({ nullable: false })
+    locationId: string;
 
-    @Column()
-    description: string
-
-    @Column()
-    resource: string
+    @Column({})
+    name: string;
 
     @Column()
-    createdBy: string
+    description: string;
 
     @Column()
-    updatedBy: string
+    resource: string;
+
+    @Column({ unique: true, nullable: true })
+    uniqueParam: string;
+
+    @Column()
+    createdBy: string;
+
+    @Column()
+    updatedBy: string;
 
     @JoinTable()
-    @ManyToMany(type => User, user => user.roles)
-    users: User[]
+    @ManyToMany(() => User, (user) => user.roles)
+    users: User[];
+
+    @ManyToOne(() => Locations, (location) => location.roles, {
+        nullable: false,
+    })
+    location: Location;
+
+    @BeforeInsert()
+    prepareUniqFieldParam() {
+        this.uniqueParam = `${this.locationId}|${this.name}`;
+    }
+
+    toDto() {
+        const dto = new RolesDto({ ...this });
+
+        this.lockedDtoFields.forEach((field: string) => delete dto[field]);
+
+        return dto;
+    }
 }
 
 // @Schema({timestamps: true})
@@ -41,13 +78,12 @@ export class Roles{
 
 //     @Prop({ default: null})
 //     createdBy: string;
-  
+
 //     @Prop({ default: null})
 //     updatedBy: string;
 
-    // @OneToMany('User', 'roles')
-    // user: User[]
+// @OneToMany('User', 'roles')
+// user: User[]
 // }
-
 
 // export const RolesSchema = SchemaFactory.createForClass(Roles);

@@ -1,23 +1,19 @@
-import { Injectable } from "@nestjs/common";
+export interface WpConfigEndpoints {
+    posts?: string;
+    tags?: string;
+    categories?: string;
+    media?: string;
+    currentUser?: string;
+}
 
-@Injectable()
-export class WpConfig{
-    readonly WP_URL = process.env.WP_URL;
-    readonly apiBase = this.WP_URL + '/wp-json/wp/v2'
+export interface WpConfigAuthParams {
+    username: string;
+    password: string;
+}
 
-    readonly endpoints = {
-        posts: `${this.apiBase}/posts`,
-        tags: `${this.apiBase}/tags`,
-        categories: `${this.apiBase}/categories`,
-        media: `${this.apiBase}/media`,
-        currentUser: `${this.apiBase}/users/me`
-
-    }
-
-    readonly authParams = {
-        username: process.env.WP_USERNAME,
-        password: process.env.WP_PASSWORD
-
-    }
-
+export interface WpConfig {
+    WP_URL: string;
+    apiBase: string;
+    endpoints: WpConfigEndpoints;
+    authParams: WpConfigAuthParams;
 }

@@ -1,14 +1,10 @@
-import { Injectable } from "@nestjs/common";
+export interface CrowdtangleClientConfigEndpoints {
+    posts: string;
+    lists: string;
+}
 
-@Injectable()
-export class CrowdtangleClientConfig{
-    readonly apiBase = process.env.CT_API_URL;
-
-    readonly endpoints = {
-        posts: `${this.apiBase}/posts`,
-        lists: `${this.apiBase}/lists`
-    }
-
-    readonly apiKey = process.env.CT_API_KEY;
-    
+export interface CrowdtangleClientConfig {
+    apiBase: string;
+    endpoints: CrowdtangleClientConfigEndpoints;
+    apiKey: string;
 }

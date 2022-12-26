@@ -9,27 +9,34 @@ import {
     reduce,
     retry,
 } from 'rxjs/operators';
-import { CheckClientConfig } from './config';
+
 import { CheckClientHelperService } from './helper.service';
 import { HttpService } from '@nestjs/axios';
+import { CheckApiConfig } from './interfaces/check-api.config';
+import { MeedanCheckClientService } from './meedan-check-client.service';
 // import { StatusesMap, TasksLabels } from "@iverify/iverify-common";
 
 @Injectable()
 export class CheckStatsService {
     private readonly logger = new Logger(CheckStatsService.name);
-    lang = process.env.language;
+    // lang = process.env.language;
 
     constructor(
         private http: HttpService,
-        private config: CheckClientConfig,
-        private helper: CheckClientHelperService
+        private helper: CheckClientHelperService,
+        private checkClient: MeedanCheckClientService
     ) {}
 
-    getTicketsByAgent(statuses: string[]): Observable<any> {
-        const teamSlug = this.config.checkApiTeam;
-        return this.getAllAgents(teamSlug).pipe(
+    getTicketsByAgent(
+        config: CheckApiConfig,
+        statuses: string[]
+    ): Observable<any> {
+        const teamSlug = config.checkApiTeam;
+        return this.getAllAgents(config, teamSlug).pipe(
             concatMap((agents) => from(agents)),
-            concatMap((agent) => this.getByAgentAllStatuses(agent, statuses)),
+            concatMap((agent) =>
+                this.getByAgentAllStatuses(config, agent, statuses)
+            ),
             reduce((acc, val) => [...acc, ...val], []),
             catchError((err) => {
                 this.logger.error(
@@ -41,10 +48,14 @@ export class CheckStatsService {
         );
     }
 
-    getByAgentAllStatuses(agent: any, statuses: string[]) {
+    getByAgentAllStatuses(
+        config: CheckApiConfig,
+        agent: any,
+        statuses: string[]
+    ) {
         return from(statuses).pipe(
             concatMap((status) =>
-                this.getByAgentAndStatus(agent.id, status).pipe(
+                this.getByAgentAndStatus(config, agent.id, status).pipe(
                     map((count) => ({ agent: agent.name, status, count }))
                 )
             ),
@@ -59,54 +70,51 @@ export class CheckStatsService {
         );
     }
 
-    getByAgentAndStatus(agentId: number, status: string) {
+    getByAgentAndStatus(
+        config: CheckApiConfig,
+        agentId: number,
+        status: string
+    ) {
         const query: string = this.helper.buildGetByAgentAndStatus(
             agentId,
             status
         );
-        const headers = this.config.headers;
+        const headers = config.headers;
 
-        return this.http
-            .post(this.config.checkApiUrl, { query }, { headers })
-            .pipe(
-                map((res) => res.data.data.search.number_of_results),
-                retry(3),
-                catchError((err) => {
-                    this.logger.error(
-                        `Error getting tickets for agentId ${agentId} and status ${status}: `,
-                        err.message
-                    );
-                    throw new HttpException(err.message, 500);
-                })
-            );
+        return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
+            map((res) => res.data.data.search.number_of_results),
+            retry(3),
+            catchError((err) => {
+                this.logger.error(
+                    `Error getting tickets for agentId ${agentId} and status ${status}: `,
+                    err.message
+                );
+                throw new HttpException(err.message, 500);
+            })
+        );
     }
 
-    getAllAgents(teamSlug: string) {
+    getAllAgents(config: CheckApiConfig, teamSlug: string) {
         const query: string = this.helper.buildAllAgentsQuery(teamSlug);
-        const headers = this.config.headers;
-        return this.http
-            .post(this.config.checkApiUrl, { query }, { headers })
-            .pipe(
-                map((res) => res.data.data),
-                map((res) => this.helper.formatAllAgentsResponse(res)),
-                retry(3),
-                catchError((err) => {
-                    this.logger.error(
-                        'Error getting all agents: ',
-                        err.message
-                    );
-                    throw new HttpException(err.message, 500);
-                })
-            );
+        const headers = config.headers;
+        return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
+            map((res) => res.data.data),
+            map((res) => this.helper.formatAllAgentsResponse(res)),
+            retry(3),
+            catchError((err) => {
+                this.logger.error('Error getting all agents: ', err.message);
+                throw new HttpException(err.message, 500);
+            })
+        );
     }
 
-    getTicketsByInputProjects() {
-        const team = this.config.checkApiTeam;
-        return this.getAllProjects(team).pipe(
+    getTicketsByInputProjects(config: CheckApiConfig) {
+        const team = config.checkApiTeam;
+        return this.getAllProjects(config, team).pipe(
             concatMap((projects) => from(projects)),
             filter((project) => project['title'].startsWith('1 ')),
             concatMap((project) =>
-                this.getCountByProject(project['id']).pipe(
+                this.getCountByProject(config, project['id']).pipe(
                     map((count) => ({ project: project['title'], count }))
                 )
             ),
@@ -121,12 +129,12 @@ export class CheckStatsService {
         );
     }
 
-    getTicketsByProjects() {
-        const team = this.config.checkApiTeam;
-        return this.getAllProjects(team).pipe(
+    getTicketsByProjects(config: CheckApiConfig) {
+        const team = config.checkApiTeam;
+        return this.getAllProjects(config, team).pipe(
             concatMap((projects) => from(projects)),
             concatMap((project) =>
-                this.getCountByProject(project['id']).pipe(
+                this.getCountByProject(config, project['id']).pipe(
                     map((count) => ({ project: project['title'], count }))
                 )
             ),
@@ -141,151 +149,147 @@ export class CheckStatsService {
         );
     }
 
-    getCountByProject(projectId: number) {
+    getCountByProject(config: CheckApiConfig, projectId: number) {
         const query: string = this.helper.buildCountByProjectQuery(projectId);
-        const headers = this.config.headers;
+        const headers = config.headers;
 
-        return this.http
-            .post(this.config.checkApiUrl, { query }, { headers })
-            .pipe(
-                map((res) => res.data.data.search.number_of_results),
-                retry(3),
-                catchError((err) => {
-                    this.logger.error(
-                        `Error getting tickets for projectId ${projectId}: `,
-                        err.message
-                    );
-                    throw new HttpException(err.message, 500);
-                })
-            );
+        return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
+            map((res) => res.data.data.search.number_of_results),
+            retry(3),
+            catchError((err) => {
+                this.logger.error(
+                    `Error getting tickets for projectId ${projectId}: `,
+                    err.message
+                );
+                throw new HttpException(err.message, 500);
+            })
+        );
     }
 
-    getAllProjects(teamSlug: string) {
+    getAllProjects(config: CheckApiConfig, teamSlug: string) {
         const query: string = this.helper.buildAllProjectsQuery(teamSlug);
-        const headers = this.config.headers;
-        return this.http
-            .post(this.config.checkApiUrl, { query }, { headers })
-            .pipe(
-                map((res) => res.data.data),
-                map((res) => this.helper.formatAllProjectsResponse(res)),
-                retry(3),
-                catchError((err) => {
-                    this.logger.error(
-                        'Error getting all agents: ',
-                        err.message
-                    );
-                    throw new HttpException(err.message, 500);
-                })
-            );
+        const headers = config.headers;
+        return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
+            map((res) => res.data.data),
+            map((res) => this.helper.formatAllProjectsResponse(res)),
+            retry(3),
+            catchError((err) => {
+                this.logger.error('Error getting all agents: ', err.message);
+                throw new HttpException(err.message, 500);
+            })
+        );
     }
 
-    getTicketsByTags(): Observable<any> {
-        const team = this.config.checkApiTeam;
-        const headers = this.config.headers;
+    getTicketsByTags(config: CheckApiConfig): Observable<any> {
+        const team = config.checkApiTeam;
+        const headers = config.headers;
         const query = this.helper.buildTeamTagsQuery(team);
-        return this.http
-            .post(this.config.checkApiUrl, { query }, { headers })
-            .pipe(
-                map((res) =>
-                    res.data.data.team.tag_texts.edges.map(
-                        (node) => node.node.text
-                    )
-                ),
-                retry(3),
-                concatMap((tags) => from(tags)),
-                concatMap((tag) => this.getTicketsByTag(tag)),
-                reduce((acc, val) => [...acc, val], []),
-                catchError((err) => {
-                    this.logger.error(
-                        'Error getting tickets by agent: ',
-                        err.message
-                    );
-                    throw new HttpException(err.message, 500);
-                })
-            );
+        return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
+            map((res) =>
+                res.data.data.team.tag_texts.edges.map((node) => node.node.text)
+            ),
+            retry(3),
+            concatMap((tags) => from(tags)),
+            concatMap((tag) => this.getTicketsByTag(config, tag)),
+            reduce((acc, val) => [...acc, val], []),
+            catchError((err) => {
+                this.logger.error(
+                    'Error getting tickets by agent: ',
+                    err.message
+                );
+                throw new HttpException(err.message, 500);
+            })
+        );
     }
 
-    getTicketsByTag(tag): Observable<any> {
+    getTicketsByTag(config: CheckApiConfig, tag): Observable<any> {
         const query: string = this.helper.buildTicketsByTagQuery(tag);
-        const headers = this.config.headers;
-        return this.http
-            .post(this.config.checkApiUrl, { query }, { headers })
-            .pipe(
-                map((res) => ({ ...res.data.data, tag })),
-                retry(3),
-                catchError((err) => {
-                    this.logger.error(
-                        'Error getting tickets by tag: ',
-                        err.message
-                    );
-                    throw new HttpException(err.message, 500);
-                })
-            );
+        const headers = config.headers;
+        return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
+            map((res) => ({ ...res.data.data, tag })),
+            retry(3),
+            catchError((err) => {
+                this.logger.error(
+                    'Error getting tickets by tag: ',
+                    err.message
+                );
+                throw new HttpException(err.message, 500);
+            })
+        );
     }
 
-    getTicketsByStatuses(statusesMap): Observable<any> {
+    getTicketsByStatuses(config: CheckApiConfig, statusesMap): Observable<any> {
         const statuses = statusesMap.map((i) => i.value);
         return from(statuses).pipe(
-            concatMap((status: string) => this.getTicketsByStatus(status)),
+            concatMap((status: string) =>
+                this.getTicketsByStatus(config, status)
+            ),
             reduce((acc, val) => [...acc, val], [])
         );
     }
 
-    getTicketsByStatus(status: string): Observable<any> {
+    getTicketsByStatus(
+        config: CheckApiConfig,
+        status: string
+    ): Observable<any> {
         const query: string = this.helper.buildTicketsByStatusQuery(status);
-        const headers = this.config.headers;
-        return this.http
-            .post(this.config.checkApiUrl, { query }, { headers })
-            .pipe(
-                map((res) => ({ ...res.data.data, status })),
-                retry(3),
-                catchError((err) => {
-                    this.logger.error(
-                        'Error getting tickets by status: ',
-                        err.message
-                    );
-                    throw new HttpException(err.message, 500);
-                })
-            );
+        const headers = config.headers;
+        return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
+            map((res) => ({ ...res.data.data, status })),
+            retry(3),
+            catchError((err) => {
+                this.logger.error(
+                    'Error getting tickets by status: ',
+                    err.message
+                );
+                throw new HttpException(err.message, 500);
+            })
+        );
     }
 
-    getTicketsBySource(startDate: string, endDate: string): Observable<any> {
+    getTicketsBySource(
+        config: CheckApiConfig,
+        startDate: string,
+        endDate: string
+    ): Observable<any> {
         const query: string = this.helper.buildTicketsBySourceQuery(
             startDate,
             endDate
         );
-        const headers = this.config.headers;
-        return this.http
-            .post(this.config.checkApiUrl, { query }, { headers })
-            .pipe(
-                map((res) => res.data.data),
-                retry(3),
-                catchError((err) => {
-                    this.logger.error(
-                        'Error getting tickets by source: ',
-                        err.message
-                    );
-                    throw new HttpException(err.message, 500);
-                })
-            );
+        const headers = config.headers;
+        return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
+            map((res) => res.data.data),
+            retry(3),
+            catchError((err) => {
+                this.logger.error(
+                    'Error getting tickets by source: ',
+                    err.message
+                );
+                throw new HttpException(err.message, 500);
+            })
+        );
     }
 
-    getTicketsByViolationTypes() {
+    getTicketsByViolationTypes(config: CheckApiConfig) {
         // const violationTaskId = '7766';
         const violationTaskId = process.env.VIOLATION_TASK_ID;
         const taskResponses = [
-            TasksLabels[this.lang].violation_disinfo,
-            TasksLabels[this.lang].violation_misinfo,
-            TasksLabels[this.lang].violation_hate_speech,
-            TasksLabels[this.lang].violation_threat,
-            TasksLabels[this.lang].violation_violence,
-            TasksLabels[this.lang].violation_disinfo,
-            TasksLabels[this.lang].violation_no_threat,
+            TasksLabels[config.lang].violation_disinfo,
+            TasksLabels[config.lang].violation_misinfo,
+            TasksLabels[config.lang].violation_hate_speech,
+            TasksLabels[config.lang].violation_threat,
+            TasksLabels[config.lang].violation_violence,
+            TasksLabels[config.lang].violation_disinfo,
+            TasksLabels[config.lang].violation_no_threat,
         ];
 
         return from(taskResponses).pipe(
             concatMap((violation) =>
-                this.getTicketsByTaskType(violationTaskId, violation).pipe(
+                this.getTicketsByTaskType(
+                    config,
+                    violationTaskId,
+                    violation
+                ).pipe(
                     map((result) => {
                         console.log(
                             'Tickets by type results: ',
@@ -312,52 +316,56 @@ export class CheckStatsService {
         );
     }
 
-    getTicketsByTaskType(taskId: string, value: string): Observable<any> {
+    getTicketsByTaskType(
+        config: CheckApiConfig,
+        taskId: string,
+        value: string
+    ): Observable<any> {
         const query: string = this.helper.buildTicketsByTaskTypeQuery(
             taskId,
             value
         );
         console.log('Tickets by type query: ', query);
-        const headers = this.config.headers;
-        return this.http
-            .post(this.config.checkApiUrl, { query }, { headers })
-            .pipe(
-                map((res) => res.data.data),
-                retry(3),
-                catchError((err) => {
-                    this.logger.error(
-                        'Error getting tickets by type: ',
-                        err.message
-                    );
-                    throw new HttpException(err.message, 500);
-                })
-            );
+        const headers = config.headers;
+        return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
+            map((res) => res.data.data),
+            retry(3),
+            catchError((err) => {
+                this.logger.error(
+                    'Error getting tickets by type: ',
+                    err.message
+                );
+                throw new HttpException(err.message, 500);
+            })
+        );
     }
 
-    getTicketsByChannel(startDate: string, endDate: string): Observable<any> {
+    getTicketsByChannel(
+        config: CheckApiConfig,
+        startDate: string,
+        endDate: string
+    ): Observable<any> {
         const query: string = this.helper.buildTicketsByChannelQuery(
             startDate,
             endDate
         );
-        const headers = this.config.headers;
-        return this.http
-            .post(this.config.checkApiUrl, { query }, { headers })
-            .pipe(
-                map((res) => res.data.data),
-                retry(3),
-                catchError((err) => {
-                    this.logger.error(
-                        'Error getting tickets by channel: ',
-                        err.message
-                    );
-                    throw new HttpException(err.message, 500);
-                })
-            );
+        const headers = config.headers;
+        return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
+            map((res) => res.data.data),
+            retry(3),
+            catchError((err) => {
+                this.logger.error(
+                    'Error getting tickets by channel: ',
+                    err.message
+                );
+                throw new HttpException(err.message, 500);
+            })
+        );
     }
 
-    getCreatedVsPublished(): Observable<any> {
+    getCreatedVsPublished(config: CheckApiConfig): Observable<any> {
         return from(['published', 'unpublished']).pipe(
-            concatMap((status) => this.getCreatedOrPublished(status)),
+            concatMap((status) => this.getCreatedOrPublished(config, status)),
             reduce((acc, val) => [...acc, val], [])
         );
     }
@@ -369,58 +377,57 @@ export class CheckStatsService {
     //     )
     // }
 
-    getCreatedOrPublished(status: string): Observable<any> {
+    getCreatedOrPublished(
+        config: CheckApiConfig,
+        status: string
+    ): Observable<any> {
         const query: string = this.helper.buildCreatedVsPublishedQuery(status);
-        const headers = this.config.headers;
-        return this.http
-            .post(this.config.checkApiUrl, { query }, { headers })
-            .pipe(
-                map((res) => ({ ...res.data.data, status })),
-                retry(3),
-                catchError((err) => {
-                    this.logger.error(
-                        'Error getting tickets created vs published: ',
-                        err.message
-                    );
-                    throw new HttpException(err.message, 500);
-                })
-            );
+        const headers = config.headers;
+        return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
+            map((res) => ({ ...res.data.data, status })),
+            retry(3),
+            catchError((err) => {
+                this.logger.error(
+                    'Error getting tickets created vs published: ',
+                    err.message
+                );
+                throw new HttpException(err.message, 500);
+            })
+        );
     }
 
-    getAllMedias(): Observable<any> {
-        const team = this.config.checkApiTeam;
+    getAllMedias(config: CheckApiConfig): Observable<any> {
+        const team = config.checkApiTeam;
         const query: string = this.helper.buildAllMediaQuery(team);
-        const headers = this.config.headers;
-        return this.http
-            .post(this.config.checkApiUrl, { query }, { headers })
-            .pipe(
-                map((res) => res.data.data.team.medias_count),
-                retry(3),
-                catchError((err) => {
-                    this.logger.error(
-                        'Error getting tickets created vs published: ',
-                        err.message
-                    );
-                    throw new HttpException(err.message, 500);
-                })
-            );
+        const headers = config.headers;
+        return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
+            map((res) => res.data.data.team.medias_count),
+            retry(3),
+            catchError((err) => {
+                this.logger.error(
+                    'Error getting tickets created vs published: ',
+                    err.message
+                );
+                throw new HttpException(err.message, 500);
+            })
+        );
     }
 
-    getTicketLastStatus(id: string) {
+    getTicketLastStatus(config: CheckApiConfig, id: string) {
         const query: string = this.helper.buildTicketLastStatusQuery(id);
-        const headers = this.config.headers;
-        return this.http
-            .post(this.config.checkApiUrl, { query }, { headers })
-            .pipe(
-                map((res) => res.data.data),
-                retry(3),
-                catchError((err) => {
-                    this.logger.error(
-                        'Error getting ticket last status: ',
-                        err.message
-                    );
-                    throw new HttpException(err.message, 500);
-                })
-            );
+
+        const headers = config.headers;
+
+        return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
+            map((res) => res.data.data),
+            retry(3),
+            catchError((err) => {
+                this.logger.error(
+                    'Error getting ticket last status: ',
+                    err.message
+                );
+                throw new HttpException(err.message, 500);
+            })
+        );
     }
 }

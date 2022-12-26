@@ -1,19 +1,17 @@
-import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { CrowdtangleClientConfig } from './config';
 import { catchError, map, retry, tap } from 'rxjs/operators';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class CrowdtangleClientService {
     private readonly logger = new Logger(CrowdtangleClientService.name);
 
-    constructor(
-        private http: HttpService,
-        private config: CrowdtangleClientConfig
-    ) {}
+    constructor(private http: HttpService) {}
 
-    getLists() {
-        const params = { token: this.config.apiKey };
-        return this.http.get(`${this.config.endpoints.lists}`, { params }).pipe(
+    getLists(config: CrowdtangleClientConfig) {
+        const params = { token: config.apiKey };
+        return this.http.get(`${config.endpoints.lists}`, { params }).pipe(
             map((res: any) => res.data.result.lists),
             retry(3),
             catchError((err) => {
@@ -27,6 +25,7 @@ export class CrowdtangleClientService {
     }
 
     getPosts(
+        config: CrowdtangleClientConfig,
         listIds: string,
         count: number,
         offset: number,
@@ -34,7 +33,7 @@ export class CrowdtangleClientService {
         endDate: string
     ) {
         const params = {
-            token: this.config.apiKey,
+            token: config.apiKey,
             count,
             offset,
             startDate,
@@ -42,7 +41,7 @@ export class CrowdtangleClientService {
             endDate,
             listIds,
         };
-        return this.http.get(`${this.config.endpoints.posts}`, { params }).pipe(
+        return this.http.get(`${config.endpoints.posts}`, { params }).pipe(
             map((res) => res.data.result),
             retry(3),
             catchError((err) => {

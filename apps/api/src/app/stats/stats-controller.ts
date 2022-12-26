@@ -1,9 +1,20 @@
-import { Body, Controller, HttpException, Logger, Post } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import {
+    Body,
+    Controller,
+    HttpException,
+    Logger,
+    Post,
+    Req,
+    ValidationPipe,
+} from '@nestjs/common';
 
 import { StatsService } from './stats.service';
 import { ApiProperty, ApiTags } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { StatsFormatService } from './stats-format.service';
+import { MeedanItemStatuses } from '@iverify/meedan-check-client/src';
+import { ItemChangedRequestDto } from './dto/itemChangedRequest.dto';
 
 export class DateBraket {
     @ApiProperty()
@@ -34,7 +45,7 @@ export class ItemChangedDto {
 @ApiTags('stats')
 @Controller('stats')
 export class StatsController {
-    private readonly logger = new Logger('StatsController');
+    private readonly logger = new Logger(StatsController.name);
 
     constructor(
         private readonly statsService: StatsService,
@@ -43,29 +54,49 @@ export class StatsController {
 
     @Post('stats-by-range')
     // @UseGuards(JWTTokenAuthGuard)
-    async statsByRange(@Body() body: DateBraket) {
+    async statsByRange(
+        @Body(ValidationPipe) body: DateBraket,
+        @Req() request: Request
+    ) {
+        const locationId = request.headers['locationId'];
+
         const startDate = new Date(body['startDate']);
         const endDate = new Date(body['endDate']);
-        return await this.statsService.getByDate(startDate, endDate);
+
+        return await this.statsService.getByDate(
+            locationId,
+            startDate,
+            endDate
+        );
     }
 
     @Post('item-status-changed')
-    async itemResolved(@Body() body) {
+    async itemResolved(
+        @Body(ValidationPipe) body: ItemChangedRequestDto,
+        @Req() request: Request
+    ) {
         try {
+            // @ts-ignore
+            const { id: locationId } = request.location;
+
             this.logger.log(`Item status changed...`);
             const event = body.event;
             const data = body.data;
             const id = data.project_media.dbid;
             this.logger.log(`Event: ${event}; Item id: ${id}`);
             const day = this.formatService.formatDate(new Date());
-            if (event !== 'update_annotation_verification_status') {
+            if (event !== MeedanItemStatuses.ITEM_CHANGED) {
                 this.logger.log(
                     `[${id}] event ${event} is now allowed for this method`
                 );
                 return;
             }
 
-            return await this.statsService.processItemStatusChanged(id, day);
+            return await this.statsService.processItemStatusChanged(
+                locationId,
+                id,
+                day
+            );
         } catch (e) {
             this.logger.error(e.message);
             throw new HttpException(e.message, 500);
@@ -73,14 +104,20 @@ export class StatsController {
     }
 
     @Post('toxicity')
-    async addToxicityStats(@Body() body) {
+    async addToxicityStats(@Body() body, @Req() request: Request) {
         try {
+            const locationId = request.headers['locationId'];
+
             const toxicCount = body.toxicCount;
             this.logger.log(
                 'Received request for adding toxicity stat with count: ${toxicCount}'
             );
             const day = this.formatService.formatDate(new Date());
-            return await this.statsService.addToxicityStats(toxicCount, day);
+            return await this.statsService.addToxicityStats(
+                locationId,
+                toxicCount,
+                day
+            );
         } catch (e) {
             this.logger.error(e.message);
             throw new HttpException(e.message, 500);
