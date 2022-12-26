@@ -39,10 +39,7 @@ export class CheckStatsService {
             ),
             reduce((acc, val) => [...acc, ...val], []),
             catchError((err) => {
-                this.logger.error(
-                    `Error getting tickets by agents: `,
-                    err.message
-                );
+                this.logger.error(`Error getting tickets by agents: `, err);
                 throw new HttpException(err.message, 500);
             })
         );
@@ -418,14 +415,15 @@ export class CheckStatsService {
 
         const headers = config.headers;
 
+        this.logger.log(
+            `Requesting ticket last status: ${id} ${JSON.stringify(config)}`
+        );
+
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) => res.data.data),
             retry(3),
             catchError((err) => {
-                this.logger.error(
-                    'Error getting ticket last status: ',
-                    err.message
-                );
+                this.logger.error('Error getting ticket last status: ', err);
                 throw new HttpException(err.message, 500);
             })
         );

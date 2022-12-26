@@ -1,3 +1,4 @@
+import { isEmpty } from 'radash';
 import {
     BeforeInsert,
     Column,
@@ -40,7 +41,9 @@ export class Stats {
     toDto() {
         const dto = new StatsDto({ ...this });
 
-        this.lockedDtoFields.forEach((field: string) => delete dto[field]);
+        if (!isEmpty(this.lockedDtoFields)) {
+            this.lockedDtoFields.forEach((field: string) => delete dto[field]);
+        }
 
         return dto;
     }

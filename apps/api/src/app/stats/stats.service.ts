@@ -183,102 +183,121 @@ export class StatsService {
     }
 
     async processVelocities(locationId: string, id: string, day: string) {
-        this.logger.log(`[${id}] Getting last status`);
-        const results: any = await lastValueFrom(
-            this.checkStatsClient.getTicketLastStatus(locationId, id)
-        );
-
-        this.logger.verbose(
-            `[${id}] last status result ${JSON.stringify(results)}`
-        );
-
-        const creationDate = DateTime.fromSeconds(
-            +results.project_media.created_at
-        );
-        this.logger.verbose(`[${id}] creationDate ${creationDate}`);
-
-        const title = results.project_media.title;
-        this.logger.verbose(`[${id}] title ${title}`);
-
-        const node = results.project_media.log.edges.find(
-            (node) => node.node.event_type === 'update_dynamicannotationfield'
-        );
-
-        this.logger.verbose(`[${id}] node filtered ${JSON.stringify(node)}`);
-
-        if (!node) {
-            this.logger.log(
-                `[${id}] node event type is out of the scope of the velocites verification`
+        try {
+            this.logger.log(`[${id}] Getting last status`);
+            const results: any = await lastValueFrom(
+                this.checkStatsClient.getTicketLastStatus(locationId, id)
             );
-            return;
-        }
 
-        const status_changes_obj = JSON.parse(node.node.object_changes_json);
+            this.logger.verbose(
+                `[${id}] last status result ${JSON.stringify(results)}`
+            );
 
-        this.logger.verbose(
-            `[${id}] status changes obj ${JSON.stringify(status_changes_obj)}`
-        );
+            const creationDate = DateTime.fromSeconds(
+                +results.project_media.created_at
+            );
+            this.logger.verbose(`[${id}] creationDate ${creationDate}`);
 
-        const values = status_changes_obj.value.map((val) => JSON.parse(val));
+            const title = results.project_media.title;
+            this.logger.verbose(`[${id}] title ${title}`);
 
-        const resolutionDate = DateTime.fromSeconds(+node.node.created_at);
-        const initialStates = StatusesMap.filter(
-            (status) => !status.resolution
-        ).map((status) => status.value);
-        const resolutionStatuses = StatusesMap.filter(
-            (status) => status.resolution
-        ).map((status) => status.value);
-        const defaultStatuses = StatusesMap.filter(
-            (status) => status.default
-        ).map((status) => status.value);
-        const activeStatuses = StatusesMap.filter(
-            (status) => !status.default
-        ).map((status) => status.value);
+            const node = results.project_media.log.edges.find(
+                (node) =>
+                    node.node.event_type === 'update_dynamicannotationfield'
+            );
 
-        this.logger.verbose(`[${id}] 
+            this.logger.verbose(
+                `[${id}] node filtered ${JSON.stringify(node)}`
+            );
+
+            if (!node) {
+                this.logger.log(
+                    `[${id}] node event type is out of the scope of the velocites verification`
+                );
+                return;
+            }
+
+            const status_changes_obj = JSON.parse(
+                node.node.object_changes_json
+            );
+
+            this.logger.verbose(
+                `[${id}] status changes obj ${JSON.stringify(
+                    status_changes_obj
+                )}`
+            );
+
+            const values = status_changes_obj.value.map((val) =>
+                JSON.parse(val)
+            );
+
+            const resolutionDate = DateTime.fromSeconds(+node.node.created_at);
+            const initialStates = StatusesMap.filter(
+                (status) => !status.resolution
+            ).map((status) => status.value);
+            const resolutionStatuses = StatusesMap.filter(
+                (status) => status.resolution
+            ).map((status) => status.value);
+            const defaultStatuses = StatusesMap.filter(
+                (status) => status.default
+            ).map((status) => status.value);
+            const activeStatuses = StatusesMap.filter(
+                (status) => !status.default
+            ).map((status) => status.value);
+
+            this.logger.verbose(`[${id}] 
                 resolution date ${resolutionDate}
                 initial states ${JSON.stringify(initialStates)}
                 resolution statuses ${JSON.stringify(resolutionStatuses)}
                 default statuses ${JSON.stringify(defaultStatuses)}
                 active statuses ${JSON.stringify(activeStatuses)}`);
 
-        if (
-            initialStates.indexOf(values[0]) > -1 &&
-            resolutionStatuses.indexOf(values[1]) > -1
-        ) {
-            const resolutionTime = Math.round(
-                Interval.fromDateTimes(creationDate, resolutionDate).length(
-                    'hours'
-                )
-            );
-            const stats: Partial<Stats> =
-                this.formatService.formatResolutionTime(
-                    day,
-                    title,
-                    resolutionTime
+            if (
+                initialStates.indexOf(values[0]) > -1 &&
+                resolutionStatuses.indexOf(values[1]) > -1
+            ) {
+                const resolutionTime = Math.round(
+                    Interval.fromDateTimes(creationDate, resolutionDate).length(
+                        'hours'
+                    )
                 );
-            return await this.saveOne(stats);
-        } else if (
-            defaultStatuses.indexOf(values[0]) > -1 &&
-            activeStatuses.indexOf(values[1]) > -1
-        ) {
-            const responseTime = Math.round(
-                Interval.fromDateTimes(creationDate, resolutionDate).length(
-                    'hours'
-                )
+                const stats: Partial<Stats> =
+                    this.formatService.formatResolutionTime(
+                        day,
+                        title,
+                        resolutionTime
+                    );
+                return await this.saveOne(stats);
+            } else if (
+                defaultStatuses.indexOf(values[0]) > -1 &&
+                activeStatuses.indexOf(values[1]) > -1
+            ) {
+                const responseTime = Math.round(
+                    Interval.fromDateTimes(creationDate, resolutionDate).length(
+                        'hours'
+                    )
+                );
+                // console.log('response time: ', responseTime)
+                const stats: Partial<Stats> =
+                    this.formatService.formatResponseTime(
+                        day,
+                        title,
+                        responseTime
+                    );
+                return await this.saveOne(stats);
+            } else {
+                this.logger.log(
+                    `[${id}] statuses changes do not match any mapped status`
+                );
+                return null;
+            }
+        } catch (err) {
+            this.logger.error(
+                `Failed trying to processVelocities ${locationId} ${JSON.stringify(
+                    err
+                )}`
             );
-            // console.log('response time: ', responseTime)
-            const stats: Partial<Stats> = this.formatService.formatResponseTime(
-                day,
-                title,
-                responseTime
-            );
-            return await this.saveOne(stats);
-        } else {
-            this.logger.log(
-                `[${id}] statuses changes do not match any mapped status`
-            );
-            return null;
+            throw err;
         }
     }
 

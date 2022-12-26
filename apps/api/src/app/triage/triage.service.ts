@@ -24,10 +24,11 @@ import { MLServiceClientHandler } from '../handlers/mlServiceClientHandler.servi
 import { CrowdtangleClientHandler } from '../handlers/CrowdtangleClientHandler.service';
 import { PerpesctiveClientHandler } from '../handlers/perspectiveClientHandler.service';
 import { TriageConfig } from './config';
+import { toArray } from 'lodash';
 
 @Injectable()
 export class TriageService {
-    private readonly logger = new Logger('TriageAppService');
+    private readonly logger = new Logger(TriageService.name);
 
     constructor(
         private mlClient: MLServiceClientHandler,
@@ -47,7 +48,17 @@ export class TriageService {
     private async getConfigByLocation(
         locationId: string
     ): Promise<TriageConfig> {
-        const { params } = await this.locationsService.findById(locationId);
+        let { params } = await this.locationsService.findById(locationId);
+
+        if (isEmpty(params)) {
+            const error = `Params not found for location ${locationId}`;
+            this.logger.error(error);
+            throw new Error(error);
+        }
+
+        if (!Array.isArray(params)) {
+            params = toArray(params);
+        }
 
         const getParam: any = (param) =>
             params.find(({ key }) => key === param);

@@ -22,5 +22,7 @@ export class PublisherService {
     publishReportById(id: string) {
         this.shared.updateReportId(id);
         return this.itemsToBePublished$;
+        // return this.wpPublsher.post$
+        // return this.apiPublisher.postToApi$
     }
 }

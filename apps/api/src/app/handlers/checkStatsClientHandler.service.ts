@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import { CheckStatsService } from '@iverify/meedan-check-client/src/lib/check-stats.service';
 import { LocationsService } from '../locations/locations.service';
@@ -9,12 +9,16 @@ import {
     ToxicityScores,
 } from '@iverify/meedan-check-client/src';
 import { from, map, Observable, switchMap } from 'rxjs';
+import { isEmpty } from 'radash';
+import { toArray } from 'lodash';
 /**
  * @description This class is used to be a bridge between the meedan lib and the service.
  *  It dynamically adds the location config to allow the lib to work in a multi-tenancy approach
  */
 @Injectable()
 export class CheckClientHandlerService {
+    private logger = new Logger(CheckClientHandlerService.name);
+
     constructor(
         private locationsService: LocationsService,
         private checkClient: MeedanCheckClientService,
@@ -24,15 +28,25 @@ export class CheckClientHandlerService {
     private async getConfigByLocation(
         locationId: string
     ): Promise<CheckApiConfig> {
-        const { params } = await this.locationsService.findById(locationId);
+        let { params } = await this.locationsService.findById(locationId);
+
+        if (isEmpty(params)) {
+            const error = `Params not found for location ${locationId}`;
+            this.logger.error(error);
+            throw new Error(error);
+        }
+
+        if (!Array.isArray(params)) {
+            params = toArray(params);
+        }
 
         const getParam: any = (param) =>
             params.find(({ key }) => key === param);
 
         const requestConfigHeaders: CheckApiConfigHeaders = {
             'Content-Type': 'application/json',
-            'X-Check-Token': getParam('CHECK_API_TOKEN')?.value,
-            'X-Check-Team': getParam('CHECK_API_TEAM')?.value,
+            'X-Check-Token': getParam('CHECK_API_TOKEN')?.value ?? '',
+            'X-Check-Team': getParam('CHECK_API_TEAM')?.value ?? '',
             'Cache-Control': 'no-cache',
         };
 
@@ -40,19 +54,27 @@ export class CheckClientHandlerService {
             headers: requestConfigHeaders,
             checkApiUrl:
                 getParam('CHECK_API_URL')?.value ?? process.env.CHECK_API_URL,
-            checkApiToken: getParam('CHECK_API_TOKEN')?.value,
-            checkApiTeam: getParam('CHECK_API_TEAM')?.value,
-            checkPublishFolder: getParam('WP_PUBLISHED_FOLDER')?.value,
-            uploadFolderId: getParam('CHECK_FOLDER_ID')?.value,
+            checkApiToken: getParam('CHECK_API_TOKEN')?.value ?? '',
+            checkApiTeam: getParam('CHECK_API_TEAM')?.value ?? '',
+            checkPublishFolder: getParam('WP_PUBLISHED_FOLDER')?.value ?? '',
+            uploadFolderId: getParam('CHECK_FOLDER_ID')?.value ?? '',
             lang: getParam('LANGUAGE')?.value ?? 'es',
         };
 
+        this.logger.log(
+            `getConfigByLocation ${locationId} ${JSON.stringify(requestConfig)}`
+        );
         return requestConfig;
     }
 
     getTicketLastStatus(locationId: string, id: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
             switchMap((requestConfig) => {
+                this.logger.log(
+                    `getTicketLastStatus ${locationId} ${JSON.stringify(
+                        requestConfig
+                    )}`
+                );
                 return this.checkStatsClient.getTicketLastStatus(
                     requestConfig,
                     id
