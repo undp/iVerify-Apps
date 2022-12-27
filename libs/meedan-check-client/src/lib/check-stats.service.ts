@@ -416,7 +416,13 @@ export class CheckStatsService {
         const headers = config.headers;
 
         this.logger.log(
-            `Requesting ticket last status: ${id} ${JSON.stringify(config)}`
+            ` Requesting ticket last status: ${id} ${JSON.stringify(config)}`
+        );
+
+        this.logger.log(
+            ` Requesting ticket last status query: ${id} ${JSON.stringify(
+                query
+            )}`
         );
 
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
@@ -424,7 +430,7 @@ export class CheckStatsService {
             retry(3),
             catchError((err) => {
                 this.logger.error(
-                    `Error getting ticket last status: ${JSON.stringify(err)}`
+                    ` Error getting ticket last status: ${JSON.stringify(err)}`
                 );
                 throw err;
             })
