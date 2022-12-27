@@ -40,7 +40,7 @@ export class CheckStatsService {
             reduce((acc, val) => [...acc, ...val], []),
             catchError((err) => {
                 this.logger.error(`Error getting tickets by agents: `, err);
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -62,7 +62,7 @@ export class CheckStatsService {
                     `Error getting tickets by status for agent ${agent.name}: `,
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -86,7 +86,7 @@ export class CheckStatsService {
                     `Error getting tickets for agentId ${agentId} and status ${status}: `,
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -100,7 +100,7 @@ export class CheckStatsService {
             retry(3),
             catchError((err) => {
                 this.logger.error('Error getting all agents: ', err.message);
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -121,7 +121,7 @@ export class CheckStatsService {
                     `Error getting tickets by input projects: `,
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -141,7 +141,7 @@ export class CheckStatsService {
                     `Error getting tickets by input projects: `,
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -158,7 +158,7 @@ export class CheckStatsService {
                     `Error getting tickets for projectId ${projectId}: `,
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -172,7 +172,7 @@ export class CheckStatsService {
             retry(3),
             catchError((err) => {
                 this.logger.error('Error getting all agents: ', err.message);
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -194,7 +194,7 @@ export class CheckStatsService {
                     'Error getting tickets by agent: ',
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -210,7 +210,7 @@ export class CheckStatsService {
                     'Error getting tickets by tag: ',
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -239,7 +239,7 @@ export class CheckStatsService {
                     'Error getting tickets by status: ',
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -262,7 +262,7 @@ export class CheckStatsService {
                     'Error getting tickets by source: ',
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -308,7 +308,7 @@ export class CheckStatsService {
                     'Error getting tickets by type: ',
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -332,7 +332,7 @@ export class CheckStatsService {
                     'Error getting tickets by type: ',
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -355,7 +355,7 @@ export class CheckStatsService {
                     'Error getting tickets by channel: ',
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -388,7 +388,7 @@ export class CheckStatsService {
                     'Error getting tickets created vs published: ',
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -405,7 +405,7 @@ export class CheckStatsService {
                     'Error getting tickets created vs published: ',
                     err.message
                 );
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
@@ -424,7 +424,7 @@ export class CheckStatsService {
             retry(3),
             catchError((err) => {
                 this.logger.error('Error getting ticket last status: ', err);
-                throw new HttpException(err.message, 500);
+                throw err;
             })
         );
     }
