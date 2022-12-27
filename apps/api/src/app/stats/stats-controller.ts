@@ -60,7 +60,8 @@ export class StatsController {
         @Body(ValidationPipe) body: DateBraket,
         @Req() request: Request
     ) {
-        const locationId = request.headers['locationId'];
+        // @ts-ignore
+        const { id: locationId } = request.location;
 
         const startDate = new Date(body['startDate']);
         const endDate = new Date(body['endDate']);

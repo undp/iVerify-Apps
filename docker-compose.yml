@@ -1,7 +1,8 @@
 version: '3.3'
 services:
     db:
-        image: mysql:8.0
+        platform: linux/x86_64
+        image: public.ecr.aws/docker/library/mysql:debian
         command: --default-authentication-plugin=mysql_native_password
         restart: always
         ports:

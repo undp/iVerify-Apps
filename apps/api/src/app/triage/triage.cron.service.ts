@@ -1,5 +1,10 @@
 import { ApiClientService } from '@iverify/api-client/src';
-import { HttpException, Injectable, Logger } from '@nestjs/common';
+import {
+    HttpException,
+    Injectable,
+    Logger,
+    OnModuleInit,
+} from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { lastValueFrom } from 'rxjs';
 import { LocationsService } from '../locations/locations.service';
@@ -11,7 +16,7 @@ import { Locations } from '../locations/models/locations.model';
 // import { AppService } from './app.service';
 
 @Injectable()
-export class TriageCronService {
+export class TriageCronService implements OnModuleInit {
     private readonly logger = new Logger(TriageCronService.name);
 
     private lastCalledLocation: Locations;
@@ -32,6 +37,10 @@ export class TriageCronService {
     //     this.logger.log(`Running initial job with startDate ${startDate} and endDate ${endDate}`)
     //     return await this.analyze(startDate, endDate);
     // }
+
+    onModuleInit() {
+        this.preparePostsCron();
+    }
 
     private getNextLocation(locations: Array<Locations>): Locations {
         if (isEmpty(locations)) {
@@ -60,7 +69,7 @@ export class TriageCronService {
     async preparePostsCron() {
         const endDate = new Date().toISOString();
         const start = new Date();
-        start.setHours(new Date().getHours() - 2);
+        start.setMinutes(new Date().getMinutes() - 30);
         const startDate = start.toISOString();
         this.logger.log(
             `Running cron job preparePostsCron with startDate ${startDate} and endDate ${endDate}`

@@ -19,8 +19,8 @@ export class PublisherService {
         private apiPublisher: ApiPublisherService
     ) {}
 
-    publishReportById(id: string) {
-        this.shared.updateReportId(id);
+    publishReportById(locationId: string, id: string) {
+        this.shared.updateReportIdWithLocation(locationId, id);
         return this.itemsToBePublished$;
         // return this.wpPublsher.post$
         // return this.apiPublisher.postToApi$

@@ -1,6 +1,14 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { CrowdtangleClientConfig } from './config';
-import { catchError, map, retry, tap } from 'rxjs/operators';
+import {
+    catchError,
+    delay,
+    map,
+    retry,
+    retryWhen,
+    take,
+    tap,
+} from 'rxjs/operators';
 import { HttpService } from '@nestjs/axios';
 
 @Injectable()
@@ -42,8 +50,15 @@ export class CrowdtangleClientService {
             listIds,
         };
         return this.http.get(`${config.endpoints.posts}`, { params }).pipe(
+            retryWhen((errors) =>
+                errors.pipe(
+                    tap((e) => console.log('error..', e.message)),
+                    delay(90000),
+                    take(10)
+                )
+            ),
             map((res) => res.data.result),
-            retry(3),
+            // retry(3),
             catchError((err) => {
                 this.logger.error(`Error fetching posts: `, err.message);
                 throw new HttpException(err.message, 500);
