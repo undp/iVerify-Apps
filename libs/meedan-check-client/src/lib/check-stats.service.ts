@@ -423,7 +423,9 @@ export class CheckStatsService {
             map((res) => res.data.data),
             retry(3),
             catchError((err) => {
-                this.logger.error('Error getting ticket last status: ', err);
+                this.logger.error(
+                    `Error getting ticket last status: ${JSON.stringify(err)}`
+                );
                 throw err;
             })
         );
