@@ -2,6 +2,7 @@
 import {
     Body,
     Controller,
+    Get,
     HttpException,
     Logger,
     Post,
@@ -17,7 +18,8 @@ import { StatsFormatService } from './stats-format.service';
 import { MeedanItemStatuses } from '@iverify/meedan-check-client/src';
 import { ItemChangedRequestDto } from './dto/itemChangedRequest.dto';
 import { WebhookAuth } from '../../interceptors/webhook.auth.interceptor';
-
+import { HttpService } from '@nestjs/axios';
+import { lastValueFrom } from 'rxjs';
 export class DateBraket {
     @ApiProperty()
     @IsNotEmpty()
@@ -51,7 +53,8 @@ export class StatsController {
 
     constructor(
         private readonly statsService: StatsService,
-        private formatService: StatsFormatService
+        private formatService: StatsFormatService,
+        private http: HttpService
     ) {}
 
     @Post('stats-by-range')
@@ -107,6 +110,15 @@ export class StatsController {
             this.logger.error(e.message);
             throw new HttpException(e.message, 500);
         }
+    }
+
+    @Get('test')
+    async testConnection() {
+        const result = await lastValueFrom(
+            this.http.get('https://api.publicapis.org/entries')
+        );
+
+        return result.data;
     }
 
     @Post('toxicity')

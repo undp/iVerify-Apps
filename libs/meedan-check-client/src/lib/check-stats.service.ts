@@ -420,9 +420,9 @@ export class CheckStatsService {
         );
 
         this.logger.log(
-            ` Requesting ticket last status query: ${id} ${JSON.stringify(
-                query
-            )}`
+            ` Requesting ticket last status query: ${id} 
+            ${query}
+            `
         );
 
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(

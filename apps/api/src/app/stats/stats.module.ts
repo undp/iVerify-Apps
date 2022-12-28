@@ -8,12 +8,14 @@ import { Stats } from './models/stats.model';
 import { StatsController } from './stats-controller';
 import { StatsFormatService } from './stats-format.service';
 import { StatsService } from './stats.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Locations, Stats]),
         MeedanCheckClientModule,
         LocationsModule,
+        HttpModule,
     ],
     controllers: [StatsController],
     providers: [StatsService, StatsFormatService, CheckClientHandlerService],
