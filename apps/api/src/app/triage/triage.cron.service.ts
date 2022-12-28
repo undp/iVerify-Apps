@@ -39,7 +39,7 @@ export class TriageCronService implements OnModuleInit {
     // }
 
     onModuleInit() {
-        this.preparePostsCron();
+        // this.preparePostsCron();
     }
 
     private getNextLocation(locations: Array<Locations>): Locations {
