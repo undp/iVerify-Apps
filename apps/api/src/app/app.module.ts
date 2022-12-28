@@ -31,6 +31,7 @@ import { CheckClientHandlerService } from './handlers/checkStatsClientHandler.se
 import { PublisherModule } from '../publisher/publisher.module';
 
 import { TriagePostControl } from './triage/models/triage.post.control.model';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
     imports: [
@@ -69,6 +70,7 @@ import { TriagePostControl } from './triage/models/triage.post.control.model';
         ]),
         TriageModule,
         PublisherModule,
+        HttpModule,
     ],
     controllers: [
         AppController,
