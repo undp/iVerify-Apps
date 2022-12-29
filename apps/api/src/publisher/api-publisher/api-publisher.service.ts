@@ -20,16 +20,11 @@ export class ApiPublisherService {
 
     private report$: Observable<any> = this.shared.report$;
     private wpPost$: Observable<any> = this.shared.wpPost$;
-
-    private _locationId: Subject<string> = new Subject<string>();
+    private locationId$: Observable<any> = this.shared.locationId$;
 
     meedanId$: Observable<number> = this.report$.pipe(
         map((report) => report.dbid)
     );
-
-    locationId$: Observable<string> = this._locationId
-        .asObservable()
-        .pipe(take(1), shareReplay(1));
 
     wpId$: Observable<number> = this.wpPost$.pipe(map((wpPost) => wpPost.id));
 

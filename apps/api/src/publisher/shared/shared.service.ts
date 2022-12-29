@@ -60,6 +60,5 @@ export class SharedService {
 
     updateWpPost(locationId: string, wpPost: any) {
         this._wpPost.next(wpPost);
-        this._locationId.next(locationId);
     }
 }

@@ -318,7 +318,7 @@ export class CheckClientHandlerService {
     getMeedanReport(locationId: string, id: string) {
         return from(this.getConfigByLocation(locationId)).pipe(
             switchMap((requestConfig) => {
-                return this.checkClient.getReportWithQuery(requestConfig, id);
+                return this.checkClient.getMeedanReport(requestConfig, id);
             })
         );
     }

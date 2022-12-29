@@ -28,16 +28,11 @@ export class WpPublisherService {
     private logger = new Logger(WpPublisherService.name);
 
     private reportId$: Observable<string> = this.shared.reportId$;
-
-    private _locationId: Subject<string> = new Subject<string>();
+    private locationId$: Observable<string> = this.shared.locationId$;
 
     private report$: Observable<any> = this.shared.report$.pipe(
         tap((report) => this.logger.log('Report: ', JSON.stringify(report)))
     );
-
-    locationId$: Observable<string> = this._locationId
-        .asObservable()
-        .pipe(take(1), shareReplay(1));
 
     private meedanReport$: Observable<any> = this.shared.meedanReport$.pipe(
         tap((report) =>
@@ -83,7 +78,7 @@ export class WpPublisherService {
         this.locationId$,
     ]).pipe(
         map(([report, locationId]) => ({
-            ...this.helper.extractFactcheckingStatus(report),
+            category: this.helper.extractFactcheckingStatus(report),
             locationId,
         })),
         switchMap((data) =>
@@ -115,9 +110,20 @@ export class WpPublisherService {
     );
 
     private mediaId$: Observable<number> = this.meedanReport$.pipe(
-        map((report) => report.image),
-        switchMap((url) => this.http.get(url, { responseType: 'arraybuffer' })),
-        map((res) => Buffer.from(res.data, 'binary')),
+        map((report) => report?.image),
+        switchMap((url) => {
+            if (!url) {
+                url =
+                    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png';
+            }
+
+            return this.http.get(url, { responseType: 'arraybuffer' });
+
+            // return Promise.resolve({ data: null });
+        }),
+        map((res) => {
+            return Buffer.from(res?.data, 'binary');
+        }),
         withLatestFrom(this.locationId$),
         map(([binary, locationId]) => ({ binary, locationId })),
         switchMap((data) =>

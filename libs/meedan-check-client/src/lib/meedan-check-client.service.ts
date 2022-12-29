@@ -45,7 +45,7 @@ export class MeedanCheckClientService {
             ),
             map(
                 (res: any) =>
-                    res.data.data.project_media.annotation.data.options[0]
+                    res.data.data.project_media.annotation.data.options
             ),
             retry(3),
             catchError((err) => {
@@ -61,7 +61,7 @@ export class MeedanCheckClientService {
     getReportWithQuery(config: CheckApiConfig, query: string): Observable<any> {
         const headers = config.headers;
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
-            map((res: any) => res.data.data.project_media),
+            map((res: any) => res.data?.data?.project_media),
             retry(3),
             catchError((err) => {
                 this.logger.error('Error getting report by id: ', err.message);
