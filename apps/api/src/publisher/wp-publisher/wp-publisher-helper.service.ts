@@ -75,7 +75,7 @@ export class WpPublisherHelper {
             report,
             TasksLabels[lang].toxic
         );
-        const toxic = !!toxicField ? 1 : 0;
+        const toxic = toxicField ? 1 : 0;
         const factchecking_status = this.extractFactcheckingStatus(report);
         const claim = this.sharedHelper.extractTask(
             report,

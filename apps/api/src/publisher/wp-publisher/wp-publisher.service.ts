@@ -43,7 +43,7 @@ export class WpPublisherService {
         switchMap((data: any) =>
             this.wpClient.getPostByCheckId(data.locationId, data)
         ),
-        map((res) => (res && res.length ? res[0].id : null))
+        map(({ data: res }) => (res && res.length ? res[0].id : null))
     );
 
     // language$: Observable<string> = this.locationId$.pipe(
@@ -69,9 +69,9 @@ export class WpPublisherService {
     // );
 
     categoriesIds$: Observable<number[]> = this.reportObject$.pipe(
-        map(([report, locationId]) => ({
-            category: this.helper.extractFactcheckingStatus(report),
-            locationId,
+        map((report: any) => ({
+            category: this.helper.extractFactcheckingStatus(report.report),
+            locationId: report.locationId,
         })),
         switchMap((data) =>
             this.categoriesIds(data.locationId, [data.category])
@@ -82,9 +82,9 @@ export class WpPublisherService {
     );
 
     tagsIds$: Observable<number[]> = this.reportObject$.pipe(
-        map(([report, locationId]) => ({
-            ...this.helper.extractTags(report),
-            locationId,
+        map((report: any) => ({
+            ...this.helper.extractTags(report.report),
+            locationId: report.locationId,
         })),
         switchMap((data: any) =>
             iif(
@@ -101,7 +101,7 @@ export class WpPublisherService {
     private mediaId$: Observable<number> = this.meedanReport$.pipe(
         map((report) => {
             return {
-                url: report?.image,
+                url: report?.report?.image,
                 locationId: report.locationId,
             };
         }),
@@ -151,6 +151,25 @@ export class WpPublisherService {
             // throw err;
         })
     );
+
+    private getLocationLanguage(locationId: string) {
+        const getLocation = async (locationId) => {
+            let { params } = await this.locationsService.findById(locationId);
+
+            if (!isEmpty(params) && !Array.isArray(params)) {
+                params = toArray(params);
+            }
+
+            const getParam: any = (param) =>
+                params.find(({ key }) => key === param);
+
+            const language = getParam('LANGUAGE')?.value ?? 'es';
+
+            return language;
+        };
+
+        return of(getLocation);
+    }
 
     post$: Observable<any> = combineLatest([
         this.reportObject$,
@@ -202,9 +221,7 @@ export class WpPublisherService {
                 data.wpPostId
             )
         ),
-        tap(([wpPost, locationId]) =>
-            this.shared.updateWpPost(locationId, wpPost)
-        ),
+        tap((res) => this.shared.updateWpPost(res.locationId, res.data)),
         // tap((wpPost) =>
         //     this.shared.updateWpPost({ ...wpPost, locationId })
         // ),

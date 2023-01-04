@@ -16,4 +16,5 @@ export interface WpConfig {
     apiBase: string;
     endpoints: WpConfigEndpoints;
     authParams: WpConfigAuthParams;
+    locationId: string;
 }

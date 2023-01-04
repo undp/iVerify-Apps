@@ -59,6 +59,7 @@ export class WpClientHandler {
             apiBase,
             endpoints,
             authParams,
+            locationId,
         };
 
         return requestConfig;

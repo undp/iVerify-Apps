@@ -23,50 +23,102 @@ export class WpClientService {
         const endPoint = id
             ? `${config.endpoints.posts}/${id}`
             : config.endpoints.posts;
-        return this.http.post(endPoint, post, { auth: config.authParams }).pipe(
-            map((res) => res.data),
-            catchError((err) => {
-                this.logger.error('Error publishing post', err);
-                throw new HttpException(err.message, 500);
+        return this.http
+            .post(endPoint, post, {
+                auth: config.authParams,
+                headers: {
+                    locationId: config.locationId,
+                },
             })
-        );
+            .pipe(
+                map((res) => {
+                    return {
+                        data: res.data,
+                        locationId: res.config.headers.locationId,
+                    };
+                }),
+                catchError((err) => {
+                    this.logger.error('Error publishing post', err);
+                    throw new HttpException(err.message, 500);
+                })
+            );
     }
 
     getPost(config: WpConfig, postId: number) {
-        return this.http.get(config.endpoints.posts + '/' + postId).pipe(
-            map((res) => res.data),
-            catchError((err) => {
-                this.logger.log('Error getting post', err);
-                throw new HttpException(err.message, 500);
+        return this.http
+            .get(config.endpoints.posts + '/' + postId, {
+                headers: {
+                    locationId: config.locationId,
+                },
             })
-        );
+            .pipe(
+                map((res) => {
+                    return {
+                        data: res.data,
+                        locationId: res.config.headers.locationId,
+                    };
+                }),
+                catchError((err) => {
+                    this.logger.log('Error getting post', err);
+                    throw new HttpException(err.message, 500);
+                })
+            );
     }
 
     getPostByTitle(config: WpConfig, title: string) {
         const params = { title };
-        return this.http.get(config.endpoints.posts, { params }).pipe(
-            map((res) => res.data),
-            catchError((err) => {
-                this.logger.error('Error getting post', err);
-                throw new HttpException(err.message, 500);
+        return this.http
+            .get(config.endpoints.posts, {
+                params,
+                headers: {
+                    locationId: config.locationId,
+                },
             })
-        );
+            .pipe(
+                map((res) => {
+                    return {
+                        data: res.data,
+                        locationId: res.config.headers.locationId,
+                    };
+                }),
+                catchError((err) => {
+                    this.logger.error('Error getting post', err);
+                    throw new HttpException(err.message, 500);
+                })
+            );
     }
 
     getPostByCheckId(config: WpConfig, check_id: string) {
         const params = { check_id };
-        return this.http.get(config.endpoints.posts, { params }).pipe(
-            map((res) => res.data),
-            catchError((err) => {
-                this.logger.error('Error getting post by check id', err);
-                throw new HttpException(err.message, 500);
+        return this.http
+            .get(config.endpoints.posts, {
+                params,
+                headers: {
+                    locationId: config.locationId,
+                },
             })
-        );
+            .pipe(
+                map((res) => {
+                    return {
+                        data: res.data,
+                        locationId: res.config.headers.locationId,
+                    };
+                }),
+                catchError((err) => {
+                    this.logger.error('Error getting post by check id', err);
+                    throw new HttpException(err.message, 500);
+                })
+            );
     }
 
     createTag(config: WpConfig, tag: CreateTagDto): Observable<any> {
         return this.http
-            .post(config.endpoints.tags, tag, { auth: config.authParams })
+            .post(config.endpoints.tags, tag, {
+                auth: config.authParams,
+                headers: {
+                    locationId: config.locationId,
+                },
+            })
             .pipe(
                 map((res) => res.data.id),
                 catchError((err) => {
@@ -88,13 +140,25 @@ export class WpClientService {
         const params = {
             per_page: 100,
         };
-        return this.http.get(config.endpoints.tags, { params }).pipe(
-            map((res) => res.data),
-            catchError((err) => {
-                this.logger.error('Error listing tags: ', err);
-                throw new HttpException(err.message, 500);
+        return this.http
+            .get(config.endpoints.tags, {
+                params,
+                headers: {
+                    locationId: config.locationId,
+                },
             })
-        );
+            .pipe(
+                map((res) => {
+                    return {
+                        data: res.data,
+                        locationId: res.config.headers.locationId,
+                    };
+                }),
+                catchError((err) => {
+                    this.logger.error('Error listing tags: ', err);
+                    throw new HttpException(err.message, 500);
+                })
+            );
     }
 
     createCategory(
