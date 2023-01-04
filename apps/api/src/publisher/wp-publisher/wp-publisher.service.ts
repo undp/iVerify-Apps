@@ -27,11 +27,10 @@ import { toArray } from 'lodash';
 export class WpPublisherService {
     private logger = new Logger(WpPublisherService.name);
 
-    private reportId$: Observable<string> = this.shared.reportId$;
-    private locationId$: Observable<string> = this.shared.locationId$;
+    // private report$: Observable<any> = this.shared.report$;
 
-    private report$: Observable<any> = this.shared.report$.pipe(
-        tap((report) => this.logger.log('Report: ', JSON.stringify(report)))
+    private reportObject$: Observable<any> = this.shared.report$.pipe(
+        tap(({ report }) => this.logger.log('Report: ', JSON.stringify(report)))
     );
 
     private meedanReport$: Observable<any> = this.shared.meedanReport$.pipe(
@@ -40,43 +39,36 @@ export class WpPublisherService {
         )
     );
 
-    wpPostId$: Observable<number> = combineLatest([
-        this.reportId$,
-        this.locationId$,
-    ]).pipe(
-        map(([reportId, locationId]) => ({ reportId, locationId })),
+    wpPostId$: Observable<number> = this.reportObject$.pipe(
         switchMap((data: any) =>
-            this.wpClient.getPostByCheckId(data.locationId, data.reportId)
+            this.wpClient.getPostByCheckId(data.locationId, data)
         ),
         map((res) => (res && res.length ? res[0].id : null))
     );
 
-    language$: Observable<string> = this.locationId$.pipe(
-        switchMap((locationId) => this.locationsService.findById(locationId)),
-        map(({ params }) => {
-            if (isEmpty(params)) {
-                const error = `Params not found for location ${location}`;
-                this.logger.error(error);
-                throw new Error(error);
-            }
+    // language$: Observable<string> = this.locationId$.pipe(
+    //     switchMap((locationId) => this.locationsService.findById(locationId)),
+    //     map(({ params }) => {
+    //         if (isEmpty(params)) {
+    //             const error = `Params not found for location ${location}`;
+    //             this.logger.error(error);
+    //             throw new Error(error);
+    //         }
 
-            if (!Array.isArray(params)) {
-                params = toArray(params);
-            }
+    //         if (!Array.isArray(params)) {
+    //             params = toArray(params);
+    //         }
 
-            const getParam: any = (param) =>
-                params.find(({ key }) => key === param);
+    //         const getParam: any = (param) =>
+    //             params.find(({ key }) => key === param);
 
-            const language = getParam('LANGUAGE')?.value;
+    //         const language = getParam('LANGUAGE')?.value;
 
-            return language;
-        })
-    );
+    //         return language;
+    //     })
+    // );
 
-    categoriesIds$: Observable<number[]> = combineLatest([
-        this.report$,
-        this.locationId$,
-    ]).pipe(
+    categoriesIds$: Observable<number[]> = this.reportObject$.pipe(
         map(([report, locationId]) => ({
             category: this.helper.extractFactcheckingStatus(report),
             locationId,
@@ -85,14 +77,11 @@ export class WpPublisherService {
             this.categoriesIds(data.locationId, [data.category])
         ),
         catchError((err) => {
-            throw new HttpException(err.message, 500);
+            throw err;
         })
     );
 
-    tagsIds$: Observable<number[]> = combineLatest([
-        this.report$,
-        this.locationId$,
-    ]).pipe(
+    tagsIds$: Observable<number[]> = this.reportObject$.pipe(
         map(([report, locationId]) => ({
             ...this.helper.extractTags(report),
             locationId,
@@ -105,62 +94,73 @@ export class WpPublisherService {
             )
         ),
         catchError((err) => {
-            throw new HttpException(err.message, 500);
+            throw err;
         })
     );
 
     private mediaId$: Observable<number> = this.meedanReport$.pipe(
-        map((report) => report?.image),
-        switchMap((url) => {
-            if (!url) {
-                url =
+        map((report) => {
+            return {
+                url: report?.image,
+                locationId: report.locationId,
+            };
+        }),
+        switchMap((report) => {
+            if (!report.url) {
+                report.url =
                     'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png';
             }
 
-            return this.http.get(url, { responseType: 'arraybuffer' });
+            return combineLatest(
+                this.http.get(report.url, { responseType: 'arraybuffer' }),
+                of(report.locationId)
+            );
 
             // return Promise.resolve({ data: null });
         }),
-        map((res) => {
-            return Buffer.from(res?.data, 'binary');
+        map(([image, locationId]) => {
+            return {
+                binary: Buffer.from(image?.data, 'binary'),
+                locationId,
+            };
         }),
-        withLatestFrom(this.locationId$),
-        map(([binary, locationId]) => ({ binary, locationId })),
+        // withLatestFrom(this.reportObject$),
         switchMap((data) =>
             this.wpClient.createMedia(data.locationId, data.binary)
         ),
         map((res) => res['id']),
         catchError((err) => {
             return of(null);
-            // throw new HttpException(err.message, 500);
+            // throw err;
         })
     );
 
-    private author$: Observable<number> = this.locationId$.pipe(
-        switchMap((locationId) => this.wpClient.getAppUser(locationId)),
+    private author$: Observable<number> = this.reportObject$.pipe(
+        switchMap(({ locationId }) => this.wpClient.getAppUser(locationId)),
         map((user) => user.id),
         catchError((err) => {
-            throw new HttpException(err.message, 500);
+            // throw err;
+            throw err;
         })
     );
 
     private visualCard$: Observable<string> = this.meedanReport$.pipe(
-        map((report) => report.visual_card_url),
+        map(({ report }) => report.visual_card_url),
         catchError((err) => {
             return of(null);
-            // throw new HttpException(err.message, 500);
+            // throw err;
         })
     );
 
     post$: Observable<any> = combineLatest([
-        this.report$,
+        this.reportObject$,
         this.meedanReport$,
         this.author$,
         this.mediaId$,
         this.tagsIds$,
         this.categoriesIds$,
         this.visualCard$,
-        this.language$,
+        // this.language$,
     ]).pipe(
         map(
             ([
@@ -171,7 +171,7 @@ export class WpPublisherService {
                 tags,
                 categories,
                 visualCard,
-                language,
+                // language,
             ]) =>
                 this.helper.buildPostFromReport(
                     report,
@@ -181,7 +181,8 @@ export class WpPublisherService {
                     tags,
                     categories,
                     visualCard,
-                    language
+                    // language
+                    'es'
                 )
         ),
         filter((post) => !!post.title.length),
@@ -194,26 +195,22 @@ export class WpPublisherService {
         ),
         withLatestFrom(this.wpPostId$),
         map(([postDto, wpPostId]) => ({ postDto, wpPostId })),
-        withLatestFrom(this.locationId$),
-        map(([{ postDto, wpPostId }, locationId]) => ({
-            postDto,
-            wpPostId,
-            locationId,
-        })),
         switchMap((data) =>
             this.wpClient.publishPost(
-                data.locationId,
+                data.postDto.locationId,
                 data.postDto,
                 data.wpPostId
             )
         ),
-        withLatestFrom(this.locationId$),
-        map(([post, locationId]) => ({ post: { ...post }, locationId })),
         tap(([wpPost, locationId]) =>
             this.shared.updateWpPost(locationId, wpPost)
         ),
+        // tap((wpPost) =>
+        //     this.shared.updateWpPost({ ...wpPost, locationId })
+        // ),
         catchError((err) => {
-            throw new HttpException(err.message, 500);
+            // throw err;
+            throw err;
         })
     );
 
@@ -262,7 +259,7 @@ export class WpPublisherService {
         // const tagsIds$: Observable<number[]> = combineLatest([existingTagsIds$, newTagsIds$]).pipe(
         //   map(([existingIds, newIds]) => [...existingIds, ...newIds]),
         //   catchError(err => {
-        //     throw new HttpException(err.message, 500);
+        //     throw err;
         //   })
         // )
 

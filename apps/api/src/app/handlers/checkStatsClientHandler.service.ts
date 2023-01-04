@@ -48,6 +48,7 @@ export class CheckClientHandlerService {
             'X-Check-Token': getParam('CHECK_API_TOKEN')?.value ?? '',
             'X-Check-Team': getParam('CHECK_API_TEAM')?.value ?? '',
             'Cache-Control': 'no-cache',
+            locationId,
         };
 
         const requestConfig: CheckApiConfig = {

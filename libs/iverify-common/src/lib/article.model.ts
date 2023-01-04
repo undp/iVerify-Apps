@@ -94,4 +94,7 @@ export class Article {
 
     @Column()
     notes: string;
+
+    @Column()
+    locationId: string;
 }

@@ -10,7 +10,7 @@ export class PublisherService {
 
     itemsToBePublished$: Observable<any> = combineLatest([
         this.wpPublsher.post$,
-        this.apiPublisher.postToApi$,
+        this.apiPublisher.savePost$,
     ]);
 
     constructor(

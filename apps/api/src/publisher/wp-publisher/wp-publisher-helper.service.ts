@@ -61,6 +61,10 @@ export class WpPublisherHelper {
         visualCard: string,
         lang: string
     ): CreatePostDto {
+        if (meedanReport.report) {
+            meedanReport = meedanReport.report;
+        }
+
         const status = PostStatus.publish;
         const comment_status = CommentStatus.open;
         const format = PostFormat.standard;
@@ -112,6 +116,7 @@ export class WpPublisherHelper {
             fields,
             categories,
             _webdados_fb_open_graph_specific_image,
+            locationId: report.locationId,
         };
 
         if (!post.featured_media) delete post.featured_media;
@@ -124,7 +129,7 @@ export class WpPublisherHelper {
     }
 
     formatEvidence(evidence: string) {
-        let blocksArr = evidence.split('DESCRIPTION');
+        const blocksArr = evidence.split('DESCRIPTION');
         blocksArr.shift();
         const lis = blocksArr.reduce((acc, val) => {
             if (val.length) {

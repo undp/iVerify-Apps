@@ -6,7 +6,7 @@ import * as pMap from 'p-map';
 
 @Injectable()
 export class ArticlesService {
-    private readonly logger = new Logger('ArticlesService');
+    private readonly logger = new Logger(ArticlesService.name);
 
     constructor(
         @InjectRepository(Article)
@@ -34,9 +34,14 @@ export class ArticlesService {
     }
 
     async saveOne(article: Partial<Article>) {
-        this.logger.log(`Saving article ${JSON.stringify(article)}`);
-        const newRecord = await this.articleRepository.create(article);
-        return await this.articleRepository.save(newRecord);
+        try {
+            this.logger.log(`Saving article ${JSON.stringify(article)}`);
+            const newRecord = await this.articleRepository.create(article);
+            return await this.articleRepository.save(newRecord);
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
     }
 
     async getArticles() {

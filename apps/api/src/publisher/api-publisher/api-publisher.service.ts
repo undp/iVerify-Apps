@@ -1,7 +1,7 @@
 import { ApiClientService } from '@iverify/api-client/src';
 import { Article } from '@iverify/iverify-common';
 import { Injectable, Logger } from '@nestjs/common';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { combineLatest, from, Observable, of, Subject } from 'rxjs';
 import {
     catchError,
     map,
@@ -11,6 +11,7 @@ import {
     tap,
     withLatestFrom,
 } from 'rxjs/operators';
+import { ArticlesService } from '../../app/articles/articles.service';
 import { SharedService } from '../shared/shared.service';
 import { ApiPublisherHelper } from './helper';
 
@@ -20,7 +21,6 @@ export class ApiPublisherService {
 
     private report$: Observable<any> = this.shared.report$;
     private wpPost$: Observable<any> = this.shared.wpPost$;
-    private locationId$: Observable<any> = this.shared.locationId$;
 
     meedanId$: Observable<number> = this.report$.pipe(
         map((report) => report.dbid)
@@ -43,21 +43,12 @@ export class ApiPublisherService {
         })
     );
 
-    postToApi$: Observable<any> = this.article$.pipe(
-        tap((article) =>
-            this.logger.log('posting article...', JSON.stringify(article))
+    savePost$: Observable<any> = this.article$.pipe(
+        switchMap((article: any) =>
+            from(this.articlesService.saveOne({ ...article }))
         ),
-        withLatestFrom(this.locationId$),
-        map(([article, locationId]) => ({ article, locationId })),
-        switchMap((data: any) =>
-            this.apiClient.postArticle(data.locationId, data.article)
-        ),
-        map((res) => res.data),
         catchError((err) => {
-            this.logger.error(
-                'Problems posting article to api....',
-                err.message
-            );
+            this.logger.error(`Problems saving article ${JSON.stringify(err)}`);
             return of(null);
         })
     );
@@ -65,6 +56,7 @@ export class ApiPublisherService {
     constructor(
         private shared: SharedService,
         private apiClient: ApiClientService,
-        private helper: ApiPublisherHelper
+        private helper: ApiPublisherHelper,
+        private readonly articlesService: ArticlesService
     ) {}
 }

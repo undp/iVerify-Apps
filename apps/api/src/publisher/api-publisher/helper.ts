@@ -71,6 +71,7 @@ export class ApiPublisherHelper {
             sourceName,
             sourceUrl,
             notes,
+            locationId: wpPost.locationId,
         };
     }
 
