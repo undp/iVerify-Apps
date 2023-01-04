@@ -152,25 +152,6 @@ export class WpPublisherService {
         })
     );
 
-    private getLocationLanguage(locationId: string) {
-        const getLocation = async (locationId) => {
-            let { params } = await this.locationsService.findById(locationId);
-
-            if (!isEmpty(params) && !Array.isArray(params)) {
-                params = toArray(params);
-            }
-
-            const getParam: any = (param) =>
-                params.find(({ key }) => key === param);
-
-            const language = getParam('LANGUAGE')?.value ?? 'es';
-
-            return language;
-        };
-
-        return of(getLocation);
-    }
-
     post$: Observable<any> = combineLatest([
         this.reportObject$,
         this.meedanReport$,

@@ -5,10 +5,9 @@ import { SharedHelper } from '../shared/helper';
 
 @Injectable()
 export class ApiPublisherHelper {
-    lang = process.env.language;
     constructor(private sharedHelper: SharedHelper) {}
 
-    buildArticle(report: any, wpPost: any): Partial<Article> {
+    buildArticle(report: any, wpPost: any, language: string): Partial<Article> {
         const meedanId = this.extractMeedanId(report);
         const creationDate = this.extractCreationDate(report);
         const toxicFlag = this.extractToxicFlag(wpPost);
@@ -18,24 +17,44 @@ export class ApiPublisherHelper {
         const wpUrl = this.extractWpUrl(wpPost);
         const publishDate = this.extractPublishDate(wpPost);
         const tags = this.extractTags(report);
-        const threatLevel = this.extractThreathLevel(report);
-        const violationType = this.extractViolationType(report);
-        const claim = this.extractClaim(report);
-        const justification = this.extractJustification(report);
-        const evidence = this.extractEvidence(report);
-        const misinfoType = this.extractMisinfoType(report);
-        const hateSpeechType = this.extractHateSpeechType(report);
-        const toxicScore = this.extractToxicScore(report);
-        const obsceneScore = this.extractObsceneScore(report);
-        const identityScore = this.extractIdentityScore(report);
-        const threatScore = this.extractThreatScore(report);
-        const explicitScore = this.extractexplicitScore(report);
-        const dToxicScore = this.extractDToxicScore(report);
-        const dObsceneScore = this.extractDObsceneScore(report);
-        const dIdentityScore = this.extractDIdentityScore(report);
-        const dThreatScore = this.extractDThreatScore(report);
-        const dExplicitScore = this.extractDExplicitScore(report);
-        const dInsultScore = this.extractDInsultScore(report);
+        const threatLevel = this.extractThreathLevel(report, language);
+        const violationType = this.extractViolationType(report, language);
+        const claim = this.extractClaim(report, language);
+        const justification = this.extractJustification(report, language);
+        const evidence = this.extractEvidence(report, language);
+        const misinfoType = this.extractMisinfoType(report, language);
+        const hateSpeechType = this.extractHateSpeechType(report, language);
+        const toxicScore = this.extractToxicScore(report, language);
+        const obsceneScore = Number(
+            this.extractObsceneScore(report, language) ?? 0
+        );
+        const identityScore = Number(
+            this.extractIdentityScore(report, language) ?? 0
+        );
+        const threatScore = Number(
+            this.extractThreatScore(report, language) ?? 0
+        );
+        const explicitScore = Number(
+            this.extractexplicitScore(report, language) ?? 0
+        );
+        const dToxicScore = Number(
+            this.extractDToxicScore(report, language) ?? 0
+        );
+        const dObsceneScore = Number(
+            this.extractDObsceneScore(report, language) ?? 0
+        );
+        const dIdentityScore = Number(
+            this.extractDIdentityScore(report, language) ?? 0
+        );
+        const dThreatScore = Number(
+            this.extractDThreatScore(report, language) ?? 0
+        );
+        const dExplicitScore = Number(
+            this.extractDExplicitScore(report, language) ?? 0
+        );
+        const dInsultScore = Number(
+            this.extractDInsultScore(report, language) ?? 0
+        );
         const sourceName = this.extractSourceName(report);
         const sourceUrl = this.extractSourceUrl(report);
         const notes = this.extractNotes(report);
@@ -115,129 +134,128 @@ export class ApiPublisherHelper {
         }, '');
     }
 
-    extractThreathLevel(report: any) {
+    extractThreathLevel(report: any, lang: string) {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].threat_level
+            TasksLabels[lang].threat_level
         );
     }
 
-    extractViolationType(report: any) {
+    extractViolationType(report: any, lang: string) {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].violation_type
+            TasksLabels[lang].violation_type
         );
     }
 
-    extractClaim(report: any) {
+    extractClaim(report: any, lang: string) {
+        return this.sharedHelper.extractTask(report, TasksLabels[lang].claim);
+    }
+
+    extractJustification(report: any, lang: string) {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].claim
+            TasksLabels[lang].rating_justification
         );
     }
 
-    extractJustification(report: any) {
+    extractEvidence(report: any, lang: string) {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].rating_justification
+            TasksLabels[lang].evidences_and_references
         );
     }
 
-    extractEvidence(report: any) {
+    extractMisinfoType(report: any, lang: string) {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].evidences_and_references
+            TasksLabels[lang].disinfo_type
         );
     }
 
-    extractMisinfoType(report: any) {
+    extractHateSpeechType(report: any, lang: string) {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].disinfo_type
+            TasksLabels[lang].hate_speech_type
         );
     }
 
-    extractHateSpeechType(report: any) {
+    extractToxicScore(report: any, lang: string): number {
+        const value = this.sharedHelper.extractTask(
+            report,
+            TasksLabels[lang].toxic_score
+        );
+
+        return Number(value) ?? 0;
+    }
+
+    extractObsceneScore(report: any, lang: string): number {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].hate_speech_type
+            TasksLabels[lang].obscene_score
         );
     }
 
-    extractToxicScore(report: any): number {
+    extractIdentityScore(report: any, lang: string): number {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].toxic_score
+            TasksLabels[lang].identity_score
         );
     }
 
-    extractObsceneScore(report: any): number {
+    extractThreatScore(report: any, lang: string): number {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].obscene_score
+            TasksLabels[lang].threat_score
         );
     }
 
-    extractIdentityScore(report: any): number {
+    extractexplicitScore(report: any, lang: string): number {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].identity_score
+            TasksLabels[lang].sexually_explicit_score
         );
     }
 
-    extractThreatScore(report: any): number {
+    extractDToxicScore(report: any, lang: string): number {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].threat_score
+            TasksLabels[lang].d_toxic_score
         );
     }
 
-    extractexplicitScore(report: any): number {
+    extractDObsceneScore(report: any, lang: string): number {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].sexually_explicit_score
+            TasksLabels[lang].d_obscene_score
         );
     }
 
-    extractDToxicScore(report: any): number {
+    extractDIdentityScore(report: any, lang: string): number {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].d_toxic_score
+            TasksLabels[lang].d_identity_score
         );
     }
 
-    extractDObsceneScore(report: any): number {
+    extractDThreatScore(report: any, lang: string): number {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].d_obscene_score
+            TasksLabels[lang].d_threat_score
         );
     }
 
-    extractDIdentityScore(report: any): number {
+    extractDExplicitScore(report: any, lang: string): number {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].d_identity_score
+            TasksLabels[lang].sexually_explicit_score
         );
     }
 
-    extractDThreatScore(report: any): number {
+    extractDInsultScore(report: any, lang: string): number {
         return this.sharedHelper.extractTask(
             report,
-            TasksLabels[this.lang].d_threat_score
-        );
-    }
-
-    extractDExplicitScore(report: any): number {
-        return this.sharedHelper.extractTask(
-            report,
-            TasksLabels[this.lang].sexually_explicit_score
-        );
-    }
-
-    extractDInsultScore(report: any): number {
-        return this.sharedHelper.extractTask(
-            report,
-            TasksLabels[this.lang].d_insult_score
+            TasksLabels[lang].d_insult_score
         );
     }
 

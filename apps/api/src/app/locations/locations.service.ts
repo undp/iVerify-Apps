@@ -19,10 +19,14 @@ import { Locations } from './models/locations.model';
 export class LocationsService {
     private logger = new Logger(LocationsService.name);
 
+    private static locationsRepositoryStatic;
+
     constructor(
         @InjectRepository(Locations)
         private locationsRepository: Repository<Locations>
-    ) {}
+    ) {
+        LocationsService.locationsRepositoryStatic = this.locationsRepository;
+    }
 
     @CacheTTL(100)
     public async getConfig(locationId: string, key: string): Promise<string> {
@@ -40,6 +44,26 @@ export class LocationsService {
             this.logger.error(err);
             throw err;
         }
+    }
+
+    public static async getLocationLanguage(locationId: string) {
+        let { params } =
+            await LocationsService.locationsRepositoryStatic.findOne({
+                where: {
+                    id: locationId,
+                },
+            });
+
+        if (!isEmpty(params) && !Array.isArray(params)) {
+            params = toArray(params);
+        }
+
+        const getParam: any = (param) =>
+            params.find(({ key }) => key === param);
+
+        const language = getParam('LANGUAGE')?.value ?? 'es';
+
+        return language;
     }
 
     public async create(

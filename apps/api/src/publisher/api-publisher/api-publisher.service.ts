@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { ApiClientService } from '@iverify/api-client/src';
 import { Article } from '@iverify/iverify-common';
 import { Injectable, Logger } from '@nestjs/common';
-import { combineLatest, from, Observable, of, Subject } from 'rxjs';
+import { combineLatest, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import {
     catchError,
+    combineLatestAll,
     map,
     shareReplay,
     switchMap,
@@ -12,6 +14,7 @@ import {
     withLatestFrom,
 } from 'rxjs/operators';
 import { ArticlesService } from '../../app/articles/articles.service';
+import { LocationsService } from '../../app/locations/locations.service';
 import { SharedService } from '../shared/shared.service';
 import { ApiPublisherHelper } from './helper';
 
@@ -23,7 +26,9 @@ export class ApiPublisherService {
     private wpPost$: Observable<any> = this.shared.wpPost$;
 
     meedanId$: Observable<number> = this.report$.pipe(
-        map((report) => report.dbid)
+        map((report) => {
+            return report.dbid;
+        })
     );
 
     wpId$: Observable<number> = this.wpPost$.pipe(map((wpPost) => wpPost.id));
@@ -33,7 +38,16 @@ export class ApiPublisherService {
         this.wpPost$,
     ]).pipe(
         tap(() => this.logger.log('generating article...')),
-        map(([report, wpPost]) => this.helper.buildArticle(report, wpPost)),
+        // switchMap(([report, wpPost]) => combineLatest(
+        //     report,
+        //     wpPost,
+        //     LocationsService.getLocationLanguage(report.locationId)
+        // )),
+        //@ts-ignore
+        // map(([{report}, wpPost, lang]) => this.helper.buildArticle(report.report, wpPost, lang)),
+        map(([{ report }, wpPost]) =>
+            this.helper.buildArticle(report, wpPost, 'es')
+        ),
         catchError((err) => {
             this.logger.error(
                 'Problems converting report and post to article....',
@@ -57,6 +71,7 @@ export class ApiPublisherService {
         private shared: SharedService,
         private apiClient: ApiClientService,
         private helper: ApiPublisherHelper,
-        private readonly articlesService: ArticlesService
+        private readonly articlesService: ArticlesService,
+        locationsService: LocationsService
     ) {}
 }
