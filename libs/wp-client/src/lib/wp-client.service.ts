@@ -13,8 +13,6 @@ export class WpClientService {
 
     constructor(private http: HttpService) {}
 
-    // private readonly auth = { auth: this.config.authParams };
-
     publishPost(
         config: WpConfig,
         post: CreatePostDto,

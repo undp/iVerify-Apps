@@ -2,7 +2,6 @@ import * as jwt from 'jsonwebtoken';
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
-// import { environment } from '../../environments/environment';
 import { map, switchMap } from 'rxjs/operators';
 import { HttpService } from '@nestjs/axios';
 import { WpConfigHandler } from '../handlers/wpConfigHandler.service';

@@ -10,7 +10,6 @@ import {
     Delete,
     UseGuards,
     Injectable,
-    Scope,
     Inject,
     BadGatewayException,
     Logger,
@@ -27,7 +26,6 @@ import { Request } from 'express';
 import { GetRoleDto } from './dto/getRole.dto';
 import { roleMessages } from '../../constant/messages';
 import { PaginationQueryDto } from '../common/pagination-query.dto';
-import { RolesDto } from './dto/role.dto';
 import { RolesResponseDto } from './dto/roleResponse.dto';
 import { isEmpty } from 'radash';
 

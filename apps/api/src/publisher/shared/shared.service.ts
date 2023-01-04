@@ -1,7 +1,6 @@
-import { Injectable, Scope } from '@nestjs/common';
-import { MeedanCheckClientService } from '@iverify/meedan-check-client/src/lib/meedan-check-client.service';
-import { Observable, Subject, combineLatest } from 'rxjs';
-import { map, share, shareReplay, switchMap, take } from 'rxjs/operators';
+import { Injectable } from '@nestjs/common';
+import { Observable, Subject } from 'rxjs';
+import { shareReplay, switchMap, take } from 'rxjs/operators';
 import { CheckClientHandlerService } from '../../app/handlers/checkStatsClientHandler.service';
 
 @Injectable()

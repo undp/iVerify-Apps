@@ -5,8 +5,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
-import * as jwt from 'jsonwebtoken';
-import { LocationsService } from '../../locations/locations.service';
 import { WpConfigHandler } from '../../handlers/wpConfigHandler.service';
 
 @Injectable()
