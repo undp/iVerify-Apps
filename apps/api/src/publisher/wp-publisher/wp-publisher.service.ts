@@ -41,7 +41,7 @@ export class WpPublisherService {
 
     wpPostId$: Observable<number> = this.reportObject$.pipe(
         switchMap((data: any) =>
-            this.wpClient.getPostByCheckId(data.locationId, data)
+            this.wpClient.getPostByCheckId(data.locationId, data.report.dbid)
         ),
         map(({ data: res }) => (res && res.length ? res[0].id : null))
     );

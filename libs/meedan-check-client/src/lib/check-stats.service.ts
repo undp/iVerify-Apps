@@ -76,7 +76,10 @@ export class CheckStatsService {
             agentId,
             status
         );
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
 
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) => res.data.data.search.number_of_results),
@@ -93,7 +96,10 @@ export class CheckStatsService {
 
     getAllAgents(config: CheckApiConfig, teamSlug: string) {
         const query: string = this.helper.buildAllAgentsQuery(teamSlug);
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) => res.data.data),
             map((res) => this.helper.formatAllAgentsResponse(res)),
@@ -148,7 +154,10 @@ export class CheckStatsService {
 
     getCountByProject(config: CheckApiConfig, projectId: number) {
         const query: string = this.helper.buildCountByProjectQuery(projectId);
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
 
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) => res.data.data.search.number_of_results),
@@ -165,7 +174,10 @@ export class CheckStatsService {
 
     getAllProjects(config: CheckApiConfig, teamSlug: string) {
         const query: string = this.helper.buildAllProjectsQuery(teamSlug);
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) => res.data.data),
             map((res) => this.helper.formatAllProjectsResponse(res)),
@@ -179,7 +191,10 @@ export class CheckStatsService {
 
     getTicketsByTags(config: CheckApiConfig): Observable<any> {
         const team = config.checkApiTeam;
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         const query = this.helper.buildTeamTagsQuery(team);
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) =>
@@ -201,7 +216,10 @@ export class CheckStatsService {
 
     getTicketsByTag(config: CheckApiConfig, tag): Observable<any> {
         const query: string = this.helper.buildTicketsByTagQuery(tag);
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) => ({ ...res.data.data, tag })),
             retry(3),
@@ -230,7 +248,10 @@ export class CheckStatsService {
         status: string
     ): Observable<any> {
         const query: string = this.helper.buildTicketsByStatusQuery(status);
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) => ({ ...res.data.data, status })),
             retry(3),
@@ -253,7 +274,10 @@ export class CheckStatsService {
             startDate,
             endDate
         );
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) => res.data.data),
             retry(3),
@@ -323,7 +347,10 @@ export class CheckStatsService {
             value
         );
         console.log('Tickets by type query: ', query);
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) => res.data.data),
             retry(3),
@@ -346,7 +373,10 @@ export class CheckStatsService {
             startDate,
             endDate
         );
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) => res.data.data),
             retry(3),
@@ -379,7 +409,10 @@ export class CheckStatsService {
         status: string
     ): Observable<any> {
         const query: string = this.helper.buildCreatedVsPublishedQuery(status);
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) => ({ ...res.data.data, status })),
             retry(3),
@@ -396,7 +429,11 @@ export class CheckStatsService {
     getAllMedias(config: CheckApiConfig): Observable<any> {
         const team = config.checkApiTeam;
         const query: string = this.helper.buildAllMediaQuery(team);
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
+
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res) => res.data.data.team.medias_count),
             retry(3),
@@ -413,7 +450,10 @@ export class CheckStatsService {
     getTicketLastStatus(config: CheckApiConfig, id: string) {
         const query: string = this.helper.buildTicketLastStatusQuery(id);
 
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
 
         this.logger.log(
             ` Requesting ticket last status: ${id} ${JSON.stringify(config)}`
