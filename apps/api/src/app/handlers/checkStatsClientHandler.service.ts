@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Injectable, Logger } from '@nestjs/common';
 
 import { CheckStatsService } from '@iverify/meedan-check-client/src/lib/check-stats.service';
@@ -43,6 +44,7 @@ export class CheckClientHandlerService {
         const getParam: any = (param) =>
             params.find(({ key }) => key === param);
 
+        // @ts-ignore
         const requestConfigHeaders: CheckApiConfigHeaders = {
             'Content-Type': 'application/json',
             'X-Check-Token': getParam('CHECK_API_TOKEN')?.value ?? '',

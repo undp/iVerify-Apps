@@ -68,6 +68,7 @@
         "@ngx-translate/http-loader": "^6.0.0",
         "@nrwl/angular": "14.5.0",
         "@swimlane/ngx-charts": "^20.0.0",
+        "axios": "^1.2.2",
         "bcryptjs": "^2.4.3",
         "bootstrap": "^5.0.2",
         "cache-manager": "^5.1.3",
