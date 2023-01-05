@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { AxiosRequestHeaders } from 'axios';
 
-export interface CheckApiConfigHeaders extends AxiosRequestHeaders {
+// @ts-ignore
+export type CheckApiConfigHeaders = AxiosRequestHeaders & {
     'Content-Type': string;
     'X-Check-Token': string;
     'X-Check-Team': string;
     'Cache-Control': string;
     locationId: string;
-}
+};
 
 export interface CheckApiConfig {
     checkApiUrl: string;
