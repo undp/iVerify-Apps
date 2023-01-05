@@ -1,4 +1,3 @@
-import { Article } from '@iverify/iverify-common';
 import {
     Body,
     Controller,
@@ -6,11 +5,9 @@ import {
     HttpException,
     Logger,
     Post,
-    UseGuards,
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
-import { StatsFormatService } from '../stats/stats-format.service';
 import { StatsService } from '../stats/stats.service';
 import { ArticlesService } from './articles.service';
 
@@ -21,8 +18,7 @@ export class ArticlesController {
 
     constructor(
         private readonly articlesService: ArticlesService,
-        private statsService: StatsService,
-        private formatService: StatsFormatService
+        private statsService: StatsService
     ) {}
 
     @Post('save-article')

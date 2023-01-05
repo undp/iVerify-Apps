@@ -1,22 +1,22 @@
-export enum PostStatus{
+export enum PostStatus {
     publish = 'publish',
     future = 'future',
     draft = 'draft',
     pending = 'pending',
-    private = 'private'
+    private = 'private',
 }
 
-export enum CommentStatus{
+export enum CommentStatus {
     open = 'open',
-    closed = 'closed'
+    closed = 'closed',
 }
 
-export enum PingStatus{
+export enum PingStatus {
     open = 'open',
-    closed = 'closed'
+    closed = 'closed',
 }
 
-export enum PostFormat{
+export enum PostFormat {
     standard = 'standard',
     aside = 'aside',
     chat = 'chat',
@@ -26,38 +26,39 @@ export enum PostFormat{
     quote = 'quote',
     status = 'status',
     video = 'video',
-    audio = 'audio'
+    audio = 'audio',
 }
 
-export interface PostFields{
-    claim: string
-    rating_justification: string
-    evidence_and_references: string
-    check_id: number
-    factchecking_status: string
-    toxic: number
-    subtitle: string
-    _webdados_fb_open_graph_specific_image?: string
+export interface PostFields {
+    claim: string;
+    rating_justification: string;
+    evidence_and_references: string;
+    check_id: number;
+    factchecking_status: string;
+    toxic: number;
+    subtitle: string;
+    _webdados_fb_open_graph_specific_image?: string;
 }
-export interface CreatePostDto{
-    date?: string
-    date_gmt?: string
-    slug?: string
-    status?: PostStatus
-    password?: string
-    title?: string
-    content?: string
-    author?: number
-    excerpt?: string
-    comment_status?: CommentStatus
-    ping_status?: PingStatus
-    format?: PostFormat
-    sticky?: boolean
-    template?: string
-    categories?: number[]
-    tags?: number[]
-    featured_media?: number
-    fields?: PostFields,
-    meta?: any
-    _webdados_fb_open_graph_specific_image?: string
+export interface CreatePostDto {
+    date?: string;
+    date_gmt?: string;
+    slug?: string;
+    status?: PostStatus;
+    password?: string;
+    title?: string;
+    content?: string;
+    author?: number;
+    excerpt?: string;
+    comment_status?: CommentStatus;
+    ping_status?: PingStatus;
+    format?: PostFormat;
+    sticky?: boolean;
+    template?: string;
+    categories?: number[];
+    tags?: number[];
+    featured_media?: number;
+    fields?: PostFields;
+    meta?: any;
+    _webdados_fb_open_graph_specific_image?: string;
+    locationId: string;
 }

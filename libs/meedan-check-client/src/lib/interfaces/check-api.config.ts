@@ -5,6 +5,7 @@ export interface CheckApiConfigHeaders extends AxiosRequestHeaders {
     'X-Check-Token': string;
     'X-Check-Team': string;
     'Cache-Control': string;
+    locationId: string;
 }
 
 export interface CheckApiConfig {

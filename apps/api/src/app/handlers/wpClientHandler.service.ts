@@ -39,7 +39,7 @@ export class WpClientHandler {
             params.find(({ key }) => key === param);
 
         const wpUrl = getParam('WP_URL')?.value;
-        const apiBase = `${wpUrl}//wp-json/wp/v2`;
+        const apiBase = `${wpUrl}wp-json/wp/v2`;
 
         const endpoints: WpConfigEndpoints = {
             posts: `${apiBase}/posts`,
@@ -59,6 +59,7 @@ export class WpClientHandler {
             apiBase,
             endpoints,
             authParams,
+            locationId,
         };
 
         return requestConfig;

@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { CheckStatsService } from '@iverify/meedan-check-client/src/lib/check-stats.service';
 import { LocationsService } from '../locations/locations.service';
@@ -8,7 +8,7 @@ import {
     MeedanCheckClientService,
     ToxicityScores,
 } from '@iverify/meedan-check-client/src';
-import { from, map, Observable, switchMap } from 'rxjs';
+import { from, switchMap } from 'rxjs';
 import { isEmpty } from 'radash';
 import { toArray } from 'lodash';
 /**
@@ -48,6 +48,7 @@ export class CheckClientHandlerService {
             'X-Check-Token': getParam('CHECK_API_TOKEN')?.value ?? '',
             'X-Check-Team': getParam('CHECK_API_TEAM')?.value ?? '',
             'Cache-Control': 'no-cache',
+            locationId,
         };
 
         const requestConfig: CheckApiConfig = {

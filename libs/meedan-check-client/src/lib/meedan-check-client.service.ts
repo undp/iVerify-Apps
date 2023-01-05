@@ -23,7 +23,12 @@ export class MeedanCheckClientService {
             tap((res: any) =>
                 console.log('Getting report res: ', JSON.stringify(res.data))
             ),
-            map((res: any) => res.data.data.project_media),
+            map((res: any) => {
+                return {
+                    report: res.data.data.project_media,
+                    locationId: res.config.headers.locationId,
+                };
+            }),
             retry(3),
             catchError((err) => {
                 this.logger.error('Error getting report by id: ', err.message);
@@ -43,10 +48,12 @@ export class MeedanCheckClientService {
                     JSON.stringify(res.data)
                 )
             ),
-            map(
-                (res: any) =>
-                    res.data.data.project_media.annotation.data.options
-            ),
+            map((res: any) => {
+                return {
+                    locationId: res.config.headers.locationId,
+                    report: res.data.data.project_media.annotation.data.options,
+                };
+            }),
             retry(3),
             catchError((err) => {
                 this.logger.error(

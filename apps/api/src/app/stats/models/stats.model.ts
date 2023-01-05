@@ -1,6 +1,5 @@
 import { isEmpty } from 'radash';
 import {
-    BeforeInsert,
     Column,
     Entity,
     Index,

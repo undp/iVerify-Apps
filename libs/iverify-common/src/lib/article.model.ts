@@ -8,7 +8,7 @@ export class Article {
     @Column()
     meedanId: number;
 
-    @Column({ type: 'date', nullable: true })
+    @Column({ type: 'datetime', nullable: true })
     creationDate: string;
 
     @Column()
@@ -94,4 +94,7 @@ export class Article {
 
     @Column()
     notes: string;
+
+    @Column()
+    locationId: string;
 }

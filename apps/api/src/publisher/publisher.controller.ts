@@ -47,7 +47,8 @@ export class PublisherController {
                         tap(() => this.logger.log('Report published.')),
                         catchError((err) => {
                             this.logger.error(err);
-                            throw new HttpException(err.message, 500);
+                            throw err;
+                            // throw new HttpException(err.message, 500);
                         })
                     );
             }

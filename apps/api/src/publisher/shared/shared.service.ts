@@ -1,21 +1,16 @@
-import { Injectable, Scope } from '@nestjs/common';
-import { MeedanCheckClientService } from '@iverify/meedan-check-client/src/lib/meedan-check-client.service';
-import { Observable, Subject, combineLatest } from 'rxjs';
-import { map, shareReplay, switchMap, take } from 'rxjs/operators';
+import { Injectable } from '@nestjs/common';
+import { Observable, Subject } from 'rxjs';
+import { shareReplay, switchMap, take } from 'rxjs/operators';
 import { CheckClientHandlerService } from '../../app/handlers/checkStatsClientHandler.service';
 
 @Injectable()
 export class SharedService {
     private _reportId: Subject<string> = new Subject<string>();
-    private _locationId: Subject<string> = new Subject<string>();
+    private _report: Subject<{ locationId: string; reportId: string }> =
+        new Subject<{ locationId: string; reportId: string }>();
 
-    reportId$: Observable<string> = this._reportId
-        .asObservable()
-        .pipe(take(1), shareReplay(1));
-
-    locationId$: Observable<string> = this._locationId
-        .asObservable()
-        .pipe(take(1), shareReplay(1));
+    reportObject$: Observable<{ locationId: string; reportId: string }> =
+        this._report.asObservable().pipe(take(1), shareReplay(1));
 
     private _wpPost: Subject<any> = new Subject<any>();
 
@@ -23,22 +18,14 @@ export class SharedService {
         .asObservable()
         .pipe(take(1), shareReplay(1));
 
-    report$: Observable<any> = combineLatest([
-        this.reportId$,
-        this.locationId$,
-    ]).pipe(
-        map(([reportId, locationId]) => ({ reportId, locationId })),
+    report$: Observable<any> = this.reportObject$.pipe(
         switchMap((data: any) =>
             this.checkClient.getReport(data.locationId, data.reportId)
         ),
         shareReplay(1)
     );
 
-    meedanReport$: Observable<any> = combineLatest([
-        this.reportId$,
-        this.locationId$,
-    ]).pipe(
-        map(([reportId, locationId]) => ({ reportId, locationId })),
+    meedanReport$: Observable<any> = this.reportObject$.pipe(
         switchMap((data: any) =>
             this.checkClient.getMeedanReport(data.locationId, data.reportId)
         ),
@@ -53,12 +40,11 @@ export class SharedService {
         this._reportId.next(id);
     }
 
-    updateReportIdWithLocation(locationId: string, id: string) {
-        this._reportId.next(id);
-        this._locationId.next(locationId);
+    updateReportIdWithLocation(locationId: string, reportId: string) {
+        this._report.next({ locationId, reportId });
     }
 
     updateWpPost(locationId: string, wpPost: any) {
-        this._wpPost.next(wpPost);
+        this._wpPost.next({ ...wpPost, locationId });
     }
 }

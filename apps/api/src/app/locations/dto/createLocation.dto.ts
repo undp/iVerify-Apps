@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-    IsArray,
-    IsNotEmpty,
-    IsObject,
-    IsOptional,
-    IsString,
-} from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { LocationsParam } from '../interfaces/location.params';
 import { LocationClients } from './locations.clients.dto';
 
