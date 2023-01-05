@@ -17,8 +17,12 @@ export class MeedanCheckClientService {
 
     getReport(config: CheckApiConfig, id: string): Observable<any> {
         const query: string = this.helper.buildGetReportQuery(id);
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         console.log('Getting report query: ', query);
+
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             tap((res: any) =>
                 console.log('Getting report res: ', JSON.stringify(res.data))
@@ -39,7 +43,10 @@ export class MeedanCheckClientService {
 
     getMeedanReport(config: CheckApiConfig, id: string): Observable<any> {
         const query: string = this.helper.buildGetMeedanReportQuery(id);
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         console.log('Getting meedan report query: ', query);
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             tap((res: any) =>
@@ -66,7 +73,10 @@ export class MeedanCheckClientService {
     }
 
     getReportWithQuery(config: CheckApiConfig, query: string): Observable<any> {
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res: any) => res.data?.data?.project_media),
             retry(3),
@@ -90,7 +100,10 @@ export class MeedanCheckClientService {
             folderId,
             set_tasks_responses
         );
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
             map((res: any) => res.data),
             retry(3),
@@ -114,7 +127,10 @@ export class MeedanCheckClientService {
             wp_key
         );
         console.log('query: ', query);
-        const headers = config.headers;
+        const headers: any = {
+            ...config.headers,
+            'Accept-Encoding': 'gzip,deflate,compress',
+        };
         console.log('headers: ', headers);
 
         return this.http.post(config.checkApiUrl, { query }, { headers }).pipe(
