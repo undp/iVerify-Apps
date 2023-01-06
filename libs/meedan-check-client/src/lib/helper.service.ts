@@ -378,7 +378,7 @@ export class CheckClientHelperService {
     }
 
     buildTicketLastStatusQuery(id: string) {
-        return `query {
+        return `{
         project_media(ids: "${id}") {
           title
           created_at
