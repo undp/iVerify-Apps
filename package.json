@@ -76,7 +76,7 @@
     "handlebars": "^4.7.7",
     "json-2-csv": "^3.14.4",
     "lodash": "^4.17.21",
-    "luxon": "^1.27.0",
+    "luxon": "^2.5.2",
     "moment": "^2.29.4",
     "mysql2": "^2.2.5",
     "ng-http-loader": "^10.0.0",
