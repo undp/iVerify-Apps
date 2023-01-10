@@ -1,11 +1,18 @@
 import * as jwt from 'jsonwebtoken';
-import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import {
+    forwardRef,
+    Inject,
+    Injectable,
+    Logger,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { map, switchMap } from 'rxjs/operators';
 import { HttpService } from '@nestjs/axios';
 import { WpConfigHandler } from '../handlers/wpConfigHandler.service';
 import { from } from 'rxjs';
+import { isEmpty } from 'radash';
 
 @Injectable()
 export class AuthService {
@@ -114,14 +121,21 @@ export class AuthService {
     }
 
     async validate(locationId: string, email, password): Promise<any> {
-        const user = await this.usersService.findByEmail(locationId, email);
-        if (user) {
-            return await this.usersService.comparePassword(
-                password,
-                user.password
-            );
-        } else {
-            return null;
+        try {
+            const user = await this.usersService.findByEmail(locationId, email);
+            if (!isEmpty(user)) {
+                await this.usersService.comparePassword(
+                    password,
+                    user.password
+                );
+
+                return user;
+            }
+
+            throw new UnauthorizedException();
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
         }
     }
 }

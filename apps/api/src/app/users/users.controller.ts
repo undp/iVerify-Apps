@@ -16,6 +16,7 @@ import {
     Inject,
     Logger,
     Req,
+    Param,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
@@ -66,16 +67,16 @@ export class UsersController {
         return { data: result };
     }
 
-    @Get('UserId')
+    @Get('/email/:email')
     @UseGuards(JWTTokenAuthGuard)
-    async getUser(@Query() getUser: GetUserDto, @Req() request: Request) {
+    async getUser(@Param('email') email: string, @Req() request: Request) {
         // @ts-ignore
         const { id: locationId } = request.location;
 
-        const user = await this.usersService.findByEmail(
-            locationId,
-            getUser.userId
-        );
+        const user = await this.usersService.findByEmail(locationId, email);
+
+        delete user.password;
+
         if (!user) throw new NotFoundException(userMessages.userNotFound);
         return { data: user };
     }
