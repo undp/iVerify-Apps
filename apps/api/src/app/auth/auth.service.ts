@@ -51,8 +51,6 @@ export class AuthService {
                 user
             );
 
-            this.logger.log('return the token', accessToken);
-
             return await { accessToken, refreshToken };
         } catch (err) {
             this.logger.error(err);
@@ -117,12 +115,29 @@ export class AuthService {
     }
 
     async validateUser(payload: JwtPayload): Promise<any> {
-        return await this.usersService.findOne(payload.id);
+        try {
+            if (payload.email === process.env.DEFAULT_USER_EMAIL) {
+                return await this.usersService.findByEmail(null, payload.email);
+            }
+
+            return await this.usersService.findOne(payload.id);
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
     }
 
     async validate(locationId: string, email, password): Promise<any> {
         try {
             const user = await this.usersService.findByEmail(locationId, email);
+
+            if (
+                email === process.env.DEFAULT_USER_EMAIL &&
+                password === process.env.DEFAULT_USER_PASSWORD
+            ) {
+                return user;
+            }
+
             if (!isEmpty(user)) {
                 await this.usersService.comparePassword(
                     password,

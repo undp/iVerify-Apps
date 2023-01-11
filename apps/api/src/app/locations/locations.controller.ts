@@ -8,11 +8,13 @@ import {
     Post,
     Put,
     Query,
+    UseGuards,
     ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { PaginationQueryDto } from '../common/pagination-query.dto';
+import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
 import { StatsController } from '../stats/stats-controller';
 import { CreateLocationDto } from './dto/createLocation.dto';
 import { LocationDto } from './dto/location.dto';
@@ -28,6 +30,7 @@ export class LocationsController {
     constructor(private readonly locationsService: LocationsService) {}
 
     @Post()
+    @UseGuards(JWTTokenAuthGuard)
     async create(@Body() body): Promise<LocationDto> {
         try {
             return await this.locationsService.create(body);
@@ -38,6 +41,7 @@ export class LocationsController {
     }
 
     @Put(':id')
+    @UseGuards(JWTTokenAuthGuard)
     async update(
         @Body() locationDto: Partial<CreateLocationDto>,
         @Param('id') locationId: string
@@ -54,6 +58,7 @@ export class LocationsController {
     }
 
     @Get(':id')
+    @UseGuards(JWTTokenAuthGuard)
     async findById(@Param('id') locationId: string): Promise<LocationDto> {
         try {
             return await this.locationsService.findById(locationId);
@@ -64,6 +69,7 @@ export class LocationsController {
     }
 
     @Get()
+    @UseGuards(JWTTokenAuthGuard)
     async findAll(@Query() query): Promise<Array<LocationDto>> {
         const paginationQueryDto: PaginationQueryDto = {
             limit: Number(query.limit || 10),
@@ -82,6 +88,7 @@ export class LocationsController {
     }
 
     @Delete(':id')
+    @UseGuards(JWTTokenAuthGuard)
     async remove(@Param('id') locationId: string): Promise<DeleteResult> {
         try {
             return await this.locationsService.delete(locationId);
@@ -92,6 +99,7 @@ export class LocationsController {
     }
 
     @Post('/:locationId/clients')
+    @UseGuards(JWTTokenAuthGuard)
     async addClient(
         @Param('locationId') locationId: string,
         @Body(ValidationPipe) locationclient: LocationClients
@@ -108,6 +116,7 @@ export class LocationsController {
     }
 
     @Post('/:locationId/clients/:clientId')
+    @UseGuards(JWTTokenAuthGuard)
     async removeClient(
         @Param('locationId') locationId: string,
         @Param('clientId') clientId: string

@@ -43,6 +43,14 @@ export class UsersService {
     }
 
     async findByEmail(locationId: string, email: string): Promise<User> {
+        if (email === process.env.DEFAULT_USER_EMAIL) {
+            const defaultUserData = JSON.parse(
+                process.env.DEFAULT_USER_DATA ?? ''
+            );
+
+            return defaultUserData as unknown as User;
+        }
+
         const user: User = await this.userRepository.findOne({
             where: {
                 email,
