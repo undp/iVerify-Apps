@@ -42,7 +42,7 @@ export class UsersController {
     ) {}
 
     @Post()
-    // @UseGuards(JWTTokenAuthGuard)
+    @UseGuards(JWTTokenAuthGuard)
     public async register(@Body() createUserDto: CreateUserDto) {
         const userId =
             this.request.user && this.request.user['id']
