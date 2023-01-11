@@ -1,7 +1,7 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AuthService } from '../auth.service';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 
 import { WpConfigHandler } from '../../handlers/wpConfigHandler.service';
@@ -15,9 +15,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             secretOrKeyProvider: async (request, jwtToken, done) => {
-                const { id: locationId } = request.location;
+                const locationId = request?.headers['location'];
+
                 const { JWTsecret } =
                     await this.wpConfigHandler.getConfigByLocation(locationId);
+
                 done(null, JWTsecret);
             },
         });

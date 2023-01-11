@@ -44,8 +44,10 @@ export class WpConfigHandler {
             production: Boolean(getParam('PRODUCTION')?.value ?? false),
             tokenExpTime: Number(getParam('TOKEN_EXP_TIME')?.value ?? 1200),
             refreshExpTime: Number(getParam('REFRESH_EXP_TIME')?.value ?? 2400),
-            JWTsecret: getParam('JTW_SECRET')?.value,
-            JWTSecretRefreshToken: getParam('JWT_SECRET_TOKEN')?.value,
+            JWTsecret: getParam('JTW_SECRET')?.value ?? process.env.JWT_SECRET,
+            JWTSecretRefreshToken:
+                getParam('JWT_SECRET_TOKEN')?.value ??
+                process.env.JWT_SECRET_TOKEN,
             ClientID: getParam('CLIENT_ID')?.value,
             ClientSecret: getParam('CLIENT_SECRET')?.value,
             redirect_uri: getParam('REDIRECT_URI')?.value,

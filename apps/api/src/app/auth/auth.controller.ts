@@ -11,6 +11,7 @@ import {
     forwardRef,
     Logger,
     Req,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { AuthService } from './auth.service';
@@ -21,7 +22,7 @@ import { TokenGenerationDto } from './dto/TokenGeneration.dto';
 import { RefreshTokenAuthGuard } from '../guards/RefreshToken-auth.guard';
 import { LocalAuthGuard } from '../guards/Local-auth.guard';
 import { userMessages } from '../../constant/messages';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'radash';
 import { catchError } from 'rxjs/operators';
 
 import { lastValueFrom } from 'rxjs';
@@ -38,27 +39,31 @@ export class AuthController {
     ) {}
 
     @Post('login')
-    @UseGuards(LocalAuthGuard)
     public async login(@Body() login: LoginUserDto, @Req() request: Request) {
-        // @ts-ignore
-        const { id: locationId } = request.location;
+        try {
+            // @ts-ignore
+            const { id: locationId } = request.location;
 
-        const userData = await this.usersService.findByEmail(
-            locationId,
-            login.email
-        );
+            const userData = await this.authService.validate(
+                locationId,
+                login.email,
+                login.password
+            );
 
-        if (!userData) {
-            this.logger.error(userMessages.userNotFound);
-            throw new NotFoundException(userMessages.userNotFound);
-        } else {
             const token = await this.authService.createToken(
                 locationId,
                 userData
             );
-            if (!token) throw new BadGatewayException();
+
+            if (isEmpty(token)) {
+                throw new BadGatewayException();
+            }
+
             this.logger.log('Token Generated');
             return { token, userData };
+        } catch (err) {
+            this.logger.error(err);
+            throw new UnauthorizedException();
         }
     }
 
