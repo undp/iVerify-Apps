@@ -115,7 +115,16 @@ export class AuthService {
     }
 
     async validateUser(payload: JwtPayload): Promise<any> {
-        return await this.usersService.findOne(payload.id);
+        try {
+            if (payload.email === process.env.DEFAULT_USER_EMAIL) {
+                return await this.usersService.findByEmail(null, payload.email);
+            }
+
+            return await this.usersService.findOne(payload.id);
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
     }
 
     async validate(locationId: string, email, password): Promise<any> {
