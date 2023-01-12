@@ -6,23 +6,35 @@ services:
             dockerfile: apps/iverify/Dockerfile
         ports:
             - '8200:8200'
+    db: 
+        image: mysql:8.0
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        ports:
+            - '3306:3306'
+        env_file: 
+            - .env
     publisher:
         build:
             context: .
             dockerfile: apps/publisher/Dockerfile-prod
-        environment: 
-            - apiPath=http://api:3333
         ports:
             - '3334:3334'
+        env_file: 
+            - .env
     api:
         build:
             context: .
             dockerfile: apps/api/Dockerfile-prod
         ports:
             - '3333:3333'
+        env_file: 
+            - .env
     triage:
         build:
             context: .
             dockerfile: apps/triage/Dockerfile-prod
         ports:
             - '3335:3335'
+        env_file: 
+            - .env
