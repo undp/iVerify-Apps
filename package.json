@@ -93,6 +93,7 @@
         "passport-local": "^1.0.0",
         "passport-wordpress": "^0.0.4",
         "passport-wordpress-oauth-server": "^0.2.0",
+        "popper.js": "^1.16.1",
         "postcss": "^8.3.5",
         "postcss-flexbugs-fixes": "^5.0.2",
         "postcss-preset-env": "7.5.0",

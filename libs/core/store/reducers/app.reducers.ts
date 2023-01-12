@@ -7,6 +7,7 @@ import { userPermissionsReducers } from './user-permissions.reducers';
 import { userReducers } from './user.reducers';
 import { usersReducers } from './users.reducers';
 import { apiErrorReducer } from './error.reducers';
+import { locationsReducers } from './locations.reducers';
 
 export const appReducers: ActionReducerMap<AppState, any> = {
   router: routerReducer,
@@ -16,4 +17,5 @@ export const appReducers: ActionReducerMap<AppState, any> = {
   permissions: permissionsReducers,
   users: usersReducers,
   apiError: apiErrorReducer,
+  location: locationsReducers,
 };

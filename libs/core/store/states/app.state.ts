@@ -8,6 +8,7 @@ import { UserState, initialUserState } from './user.state';
 import { RouterReducerState } from '@ngrx/router-store';
 import { UsersState, initialUsersState } from './users.state';
 import { ErrorState, initialErrorState } from './error.state';
+import { initialLocationState, LocationState } from './locations.state';
 
 export interface AppState {
   router?: RouterReducerState;
@@ -17,6 +18,7 @@ export interface AppState {
   permissions: PermissionsState;
   users: UsersState;
   apiError: ErrorState;
+  location: LocationState;
 }
 
 export const initialAppState: AppState = {
@@ -25,7 +27,8 @@ export const initialAppState: AppState = {
   roles: initialRolesState,
   permissions: initialPermissionsState,
   users: initialUsersState,
-  apiError: initialErrorState
+  apiError: initialErrorState,
+  location: initialLocationState,
 };
 
 export function getInitialState(): AppState {
