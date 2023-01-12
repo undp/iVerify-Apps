@@ -33,6 +33,9 @@ export class Locations {
     @Column({ type: 'json', nullable: true })
     clients?: Array<LocationClients>;
 
+    @Column()
+    filterMap?: string;
+
     @CreateDateColumn()
     createdAt: Date;
 

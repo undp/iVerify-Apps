@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
     BadGatewayException,
     forwardRef,
@@ -165,6 +166,7 @@ export class RolesService {
 
             const result = await pMap(
                 locations,
+                // @ts-ignore
                 async ({ id }: Locations) => {
                     let scopedResult: any;
 
