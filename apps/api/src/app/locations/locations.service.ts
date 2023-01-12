@@ -123,6 +123,10 @@ export class LocationsService {
 
             delete location.lockedDtoFields;
 
+            if (location.filterMap) {
+                location.filterMap = location.filterMap.toLowerCase();
+            }
+
             const result = await this.locationsRepository.update(locationId, {
                 ...location,
             });
@@ -235,6 +239,23 @@ export class LocationsService {
             location?.clients?.splice(itemIndex, 1);
 
             await this.update(locationId, { clients: location.clients });
+        } catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
+    }
+
+    public async findIdByFilterMap(filter) {
+        try {
+            const location = await this.locationsRepository.findOne({
+                where: {
+                    filterMap: filter.toLowerCase(),
+                },
+            });
+
+            return {
+                id: location?.id ?? '',
+            };
         } catch (err) {
             this.logger.error(err);
             throw err;

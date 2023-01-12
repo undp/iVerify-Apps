@@ -61,7 +61,19 @@ export class LocationsController {
     @UseGuards(JWTTokenAuthGuard)
     async findById(@Param('id') locationId: string): Promise<LocationDto> {
         try {
-            return await this.locationsService.findById(locationId);
+            return (await this.locationsService.findById(
+                locationId
+            )) as LocationDto;
+        } catch (e) {
+            this.logger.error(e);
+            throw e;
+        }
+    }
+
+    @Get('/map/:filter')
+    async findByFilterMap(@Param('filter') filter: string) {
+        try {
+            return await this.locationsService.findIdByFilterMap(filter);
         } catch (e) {
             this.logger.error(e);
             throw e;
