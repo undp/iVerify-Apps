@@ -30,7 +30,7 @@ export class LocationsController {
     constructor(private readonly locationsService: LocationsService) {}
 
     @Post()
-    // @UseGuards(JWTTokenAuthGuard)
+    @UseGuards(JWTTokenAuthGuard)
     async create(@Body() body): Promise<LocationDto> {
         try {
             return await this.locationsService.create(body);
