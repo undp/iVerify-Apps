@@ -13,7 +13,7 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
  * @interface QueryParams
  */
 export interface QueryParams {
-  [param: string]: string | string[] | number;
+    [param: string]: string | string[] | number;
 }
 
 /**
@@ -34,20 +34,20 @@ export interface QueryParams {
  * @interface RequestOptions
  */
 export interface RequestOptions {
-  headers?:
-    | HttpHeaders
-    | {
-        [header: string]: string | string[];
-      };
-  observe?: 'body';
-  params?:
-    | HttpParams
-    | {
-        [param: string]: string | string[];
-      };
-  reportProgress?: boolean;
-  responseType?: 'json';
-  withCredentials?: boolean;
+    headers?:
+        | HttpHeaders
+        | {
+              [header: string]: string | string[];
+          };
+    observe?: 'body';
+    params?:
+        | HttpParams
+        | {
+              [param: string]: string | string[];
+          };
+    reportProgress?: boolean;
+    responseType?: 'json';
+    withCredentials?: boolean;
 }
 
 /**
@@ -65,9 +65,9 @@ export interface RequestOptions {
  * @interface PrequestOptions
  */
 export interface PrequestOptions {
-  queryParams?: QueryParams;
-  opt?: APIoptions;
-  body?: any;
+    queryParams?: QueryParams;
+    opt?: APIoptions;
+    body?: any;
 }
 
 /**
@@ -84,6 +84,6 @@ export interface PrequestOptions {
  * @interface APIoptions
  */
 export interface APIoptions {
-  responseType?: 'arraybuffer' | 'blob' | 'json' | 'text';
-  headers?: any;
+    responseType?: 'arraybuffer' | 'blob' | 'json' | 'text';
+    headers?: any;
 }

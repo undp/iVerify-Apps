@@ -1,7 +1,7 @@
 export const environment = {
     production: false,
     api: {
-        base: 'https://api-iverify-honduras-js-test.rhone.un-icc.cloud',
+        base: 'http://localhost:8000',
         version: 'v3',
     },
     authentication: {

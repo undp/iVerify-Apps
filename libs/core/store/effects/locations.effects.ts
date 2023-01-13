@@ -6,10 +6,8 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { LocationsService } from '../../locations/location.service';
 import {
     APILocationByDomain,
-    APILocationList,
     ELocationsActions,
     LocationFailure,
-    LocationListSuccess,
     LocationSuccess,
 } from '../actions/locations.actions';
 

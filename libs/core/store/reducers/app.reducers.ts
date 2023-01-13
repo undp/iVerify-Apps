@@ -10,12 +10,12 @@ import { apiErrorReducer } from './error.reducers';
 import { locationsReducers } from './locations.reducers';
 
 export const appReducers: ActionReducerMap<AppState, any> = {
-  router: routerReducer,
-  user: userReducers,
-  userPermissions: userPermissionsReducers,
-  roles: rolesReducers,
-  permissions: permissionsReducers,
-  users: usersReducers,
-  apiError: apiErrorReducer,
-  location: locationsReducers,
+    router: routerReducer,
+    user: userReducers,
+    userPermissions: userPermissionsReducers,
+    roles: rolesReducers,
+    permissions: permissionsReducers,
+    users: usersReducers,
+    apiError: apiErrorReducer,
+    domainLocation: locationsReducers,
 };

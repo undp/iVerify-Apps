@@ -19,14 +19,14 @@ export function locationsReducers(
         case ELocationsActions.LocationSuccess: {
             return {
                 ...state,
-                location: action.payload,
+                locationData: action.payload,
             };
         }
 
         case ELocationsActions.LocationFailure: {
             return {
                 ...state,
-                location: null,
+                locationData: null,
             };
         }
 
