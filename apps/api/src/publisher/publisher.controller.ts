@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { MeedanItemStatuses } from '@iverify/meedan-check-client/src';
 import {
     Body,

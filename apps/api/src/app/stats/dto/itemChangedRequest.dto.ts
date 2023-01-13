@@ -1,6 +1,6 @@
 import { MeedanItemStatuses } from '@iverify/meedan-check-client/src';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class StatusProjectMedia {
     @ApiProperty()
@@ -16,6 +16,21 @@ export class ItemChangedData {
 }
 
 export class ItemChangedRequestDto {
+    @IsOptional()
+    team: any;
+
+    @IsOptional()
+    object: any;
+
+    @IsOptional()
+    time: any;
+
+    @IsOptional()
+    user_id: any;
+
+    @IsOptional()
+    settings: any;
+
     @ApiProperty()
     @IsNotEmpty()
     data: ItemChangedData;
