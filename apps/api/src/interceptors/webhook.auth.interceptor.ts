@@ -28,6 +28,12 @@ export class WebhookAuth {
             const request = context.switchToHttp().getRequest();
             const response = context.switchToHttp().getResponse();
 
+            this.logger.log(
+                `receiving request ${request.method} params ${JSON.stringify(
+                    request
+                )}`
+            );
+
             if (request.headers) {
                 const locationId = request?.headers['location'];
                 const clientId = request?.headers['clientid'];
