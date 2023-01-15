@@ -9,6 +9,7 @@ import { Roles } from '../roles/roles.model';
 import { PaginationQueryDto } from '../common/pagination-query.dto';
 import * as pMap from 'p-map';
 import { isEmpty } from 'radash';
+import { DEFAULT_USER_DATA, DEFAULT_USER_EMAIL } from '../auth/auth.service';
 
 @Injectable()
 export class UsersService {
@@ -43,10 +44,8 @@ export class UsersService {
     }
 
     async findByEmail(locationId: string, email: string): Promise<User> {
-        if (email === process.env.DEFAULT_USER_EMAIL) {
-            const defaultUserData = JSON.parse(
-                process.env.DEFAULT_USER_DATA ?? ''
-            );
+        if (email === DEFAULT_USER_EMAIL) {
+            const defaultUserData = JSON.parse(DEFAULT_USER_DATA ?? '');
 
             return defaultUserData as unknown as User;
         }

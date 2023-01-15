@@ -14,6 +14,14 @@ import { WpConfigHandler } from '../handlers/wpConfigHandler.service';
 import { from } from 'rxjs';
 import { isEmpty } from 'radash';
 
+export const DEFAULT_USER_EMAIL =
+    process.env.DEFAULT_USER_EMAIL ?? 'iverify-admin@unicc.org';
+export const DEFAULT_USER_DATA =
+    process.env.DEFAULT_USER_DATA ??
+    '{ "locationId": "0977c708-cff2-4695-bd69-a4a57fe46e2a", "firstName": "Default", "lastName": "User", "email": "iverify-admin@unicc.org", "phone": "0000000000", "address": "test test test", "createdBy": null, "roles": [ { "lockedDtoFields": [ "location", "users", "uniqueParam" ], "id": 1, "locationId": "0977c708-cff2-4695-bd69-a4a57fe46e2a", "name": "admin", "description": "Admin Role", "resource": "[{"name":"users","permissions":["read","write","update","delete"]},{"name":"roles","permissions":["read","write","update","delete"]}]", "uniqueParam": "0977c708-cff2-4695-bd69-a4a57fe46e2a|admin", "createdBy": "1", "updatedBy": "1" } ] }';
+export const DEFAULT_USER_PASSWORD =
+    process.env.DEFAULT_USER_PASSWORD ?? '5e331a7d8423940970a8e2301c958680';
+
 @Injectable()
 export class AuthService {
     private logger = new Logger(AuthService.name);
@@ -116,7 +124,7 @@ export class AuthService {
 
     async validateUser(payload: JwtPayload): Promise<any> {
         try {
-            if (payload.email === process.env.DEFAULT_USER_EMAIL) {
+            if (payload.email === DEFAULT_USER_EMAIL) {
                 return await this.usersService.findByEmail(null, payload.email);
             }
 
@@ -132,8 +140,8 @@ export class AuthService {
             const user = await this.usersService.findByEmail(locationId, email);
 
             if (
-                email === process.env.DEFAULT_USER_EMAIL &&
-                password === process.env.DEFAULT_USER_PASSWORD
+                email === DEFAULT_USER_EMAIL &&
+                password === DEFAULT_USER_PASSWORD
             ) {
                 return user;
             }
