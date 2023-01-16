@@ -8,8 +8,11 @@ import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
 import { StorageService } from '../storage/storage.service';
 import { of, Observable, Subscription } from 'rxjs';
-import { selectLocation } from '@iverify/core/store/selectors/locations.selector';
-import { Location as LocationData } from '@iverify/core/models/location';
+import { selectLocationData } from '@iverify/core/store/selectors/locations.selector';
+import {
+    Location as LocationData,
+    LocationId,
+} from '@iverify/core/models/location';
 import { AppState } from '../store/states/app.state';
 import { Store } from '@ngrx/store';
 
@@ -19,7 +22,7 @@ const APP_STATE_KEY = environment.app_state_key;
     providedIn: 'root',
 })
 export class BaseService {
-    location$: Observable<LocationData>;
+    location$: Observable<LocationId>;
     locationId: string;
     subLocation: Subscription;
     headers: HttpHeaders | { [header: string]: string | string[] };
@@ -29,7 +32,7 @@ export class BaseService {
         public storageService?: StorageService,
         private store?: Store<AppState>
     ) {
-        this.location$ = this.store.select(selectLocation);
+        this.location$ = this.store.select(selectLocationData);
 
         this.subLocation = this.location$.subscribe((locationId) => {
             this.locationId = locationId.id;

@@ -6,12 +6,14 @@
   >
     <mat-icon>menu</mat-icon>
   </button> -->
-    <span class="fontRalewayBold header-text">{{
-        HEADER_TAG_LINE | translate
-    }}</span>
+    <span class="fontRalewayBold header-text">
+        <!-- {{ HEADER_TAG_LINE | translate }}  -->
+        iVerify {{ (location$ | async).description }}</span
+    >
     <span class="example-spacer"></span>
 </mat-toolbar>
 <mat-sidenav-container
+    style="margin-top: 10px"
     class="example-sidenav-container"
     [style.marginTop.px]="viewportMobileQuery.matches ? 0 : 0"
 >

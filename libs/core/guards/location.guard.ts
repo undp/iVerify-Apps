@@ -12,13 +12,14 @@ import { AppState } from '../store/states/app.state';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { selectLocation } from '../store/selectors/location.selector';
+import { selectLocationData } from '../store/selectors/location.selector';
 import { Location } from '../models/location';
 @Injectable({
     providedIn: 'root',
 })
 export class LocationGuard implements CanActivate, CanActivateChild {
-    location$: Observable<Location | null> = this.store.select(selectLocation);
+    location$: Observable<Location | null> =
+        this.store.select(selectLocationData);
 
     constructor(private store: Store<AppState>, private router: Router) {}
 

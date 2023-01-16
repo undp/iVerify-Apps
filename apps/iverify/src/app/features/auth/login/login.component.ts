@@ -14,13 +14,12 @@ import { AppState } from '@iverify/core/store/states/app.state';
 import { Actions, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { ToastType } from '../../toast/toast.component';
 import { ToastService } from '../../toast/toast.service';
 
 // import { ListUsers 						} from '@eview/core/store/actions/users.actions';
-import { selectLocation } from '@iverify/core/store/selectors/locations.selector';
-import { Location as LocationData } from '@iverify/core/models/location';
+import { selectLocationData } from '@iverify/core/store/selectors/locations.selector';
+import { LocationId } from '@iverify/core/models/location';
 
 @Component({
     selector: 'iverify-login',
@@ -28,7 +27,7 @@ import { Location as LocationData } from '@iverify/core/models/location';
     styleUrls: ['login.component.scss'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-    location$: Observable<LocationData>;
+    location$: Observable<LocationId>;
     locationId: string;
     subLocation: Subscription;
 
@@ -51,7 +50,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         private router: Router // private modalService	: NgbModal
     ) {
         this.subs = new Subscription();
-        this.location$ = this.store.select(selectLocation);
+        this.location$ = this.store.select(selectLocationData);
 
         this.subLocation = this.location$.subscribe((locationId) => {
             this.locationId = locationId.id;

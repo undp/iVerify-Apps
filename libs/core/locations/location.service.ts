@@ -19,4 +19,10 @@ export class LocationsService extends BaseService {
             `${this.getUrl(this.uris.base)}/${location}`
         );
     }
+
+    getLocationById(id: string): Observable<Location> {
+        return this.http.get<Location>(`${this.getUrl(this.uris.base)}/${id}`, {
+            headers: this.headers,
+        });
+    }
 }

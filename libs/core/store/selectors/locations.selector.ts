@@ -4,9 +4,14 @@ import { LocationState } from '../states/locations.state';
 
 const locationState = (state: AppState) => state.domainLocation;
 
-export const selectLocation = createSelector(
+export const selectLocationData = createSelector(
     locationState,
     (state: LocationState) => state.locationData
+);
+
+export const selectLocation = createSelector(
+    locationState,
+    (state: LocationState) => state.locationById
 );
 
 export const selectLocationLoading = createSelector(

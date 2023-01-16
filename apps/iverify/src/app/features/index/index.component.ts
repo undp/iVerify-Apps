@@ -24,9 +24,13 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SpinnerVisibilityService } from 'ng-http-loader';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { isEmpty } from 'lodash';
+import { APILocationById } from '@iverify/core/store/actions/locations.actions';
+import {
+    selectLocation,
+    selectLocationData,
+} from '@iverify/core/store/selectors/locations.selector';
+import { Location, LocationId } from '@iverify/core/models/location';
 
-const ADMIN_ROLE = 'admin';
-const USER_ROLE = 'users';
 @Component({
     selector: 'iverify-index',
     templateUrl: './index.component.html',
@@ -42,8 +46,8 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
     time = { hour: 'Hrs', minute: 'Mins' };
     countryCodes = environment.countryCodes;
     currentLang: string = this.translate.currentLang;
-    isUserAllowedUserMenu: boolean = false;
-    isDashboardTextHide: boolean = true;
+    isUserAllowedUserMenu = false;
+    isDashboardTextHide = true;
     HEADER_TAG_LINE = environment.defaultCountryName
         ? environment.defaultCountryName
         : 'HEADER_TAG_LINE';
@@ -55,6 +59,16 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
     protected fromdate: Date;
     protected todate: Date;
     viewportMobileQuery: MediaQueryList;
+
+    @ViewChild(RouterOutlet, { static: false }) outlet: RouterOutlet;
+
+    private subs: Subscription;
+
+    locationId$: Observable<LocationId>;
+    subLocationId: Subscription;
+    location$: Observable<Location>;
+
+    private _viewportQueryListener: () => void;
 
     constructor(
         store: Store<AppState>,
@@ -77,9 +91,13 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
             'change',
             this._viewportQueryListener
         );
-    }
 
-    private _viewportQueryListener: () => void;
+        this.location$ = this.store.select(selectLocation);
+        this.locationId$ = this.store.select(selectLocationData);
+        this.subLocationId = this.locationId$.subscribe((location) => {
+            this.store.dispatch(new APILocationById(location.id));
+        });
+    }
 
     ngOnInit() {
         this.isUserAllowed();
@@ -97,18 +115,6 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
             })
         );
     }
-
-    ngOnDestroy() {
-        this.viewportMobileQuery.removeEventListener(
-            'change',
-            this._viewportQueryListener
-        );
-        this.subs.unsubscribe();
-    }
-
-    @ViewChild(RouterOutlet, { static: false }) outlet: RouterOutlet;
-
-    private subs: Subscription;
 
     hasUserPermission(permission: Permission) {
         return AuthHelpers.User.HasUserPermission(this.store, permission);
@@ -138,5 +144,14 @@ export class IndexComponent extends BaseComponent implements OnInit, OnDestroy {
 
     onLogoutClick() {
         this.store.dispatch(new Logout());
+    }
+
+    ngOnDestroy() {
+        this.viewportMobileQuery.removeEventListener(
+            'change',
+            this._viewportQueryListener
+        );
+        this.subs.unsubscribe();
+        this.subLocationId.unsubscribe();
     }
 }

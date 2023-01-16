@@ -10,7 +10,7 @@ import { AuthEffects } from './auth.effects';
 import { PermissionsEffects } from './permissions.effects';
 import { RolesEffects } from './roles.effects';
 import { UsersEffects } from './users.effects';
-
+import { LocationsEffects } from './locations.effects';
 @Injectable()
 export class AppEffects {
     constructor(private actions$: Actions) {}
@@ -32,4 +32,5 @@ export const appEffects = [
     RolesEffects,
     PermissionsEffects,
     UsersEffects,
+    LocationsEffects,
 ];

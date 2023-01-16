@@ -16,10 +16,17 @@ export function locationsReducers(
             };
         }
 
-        case ELocationsActions.LocationSuccess: {
+        case ELocationsActions.LocationIdSuccess: {
             return {
                 ...state,
                 locationData: action.payload,
+            };
+        }
+
+        case ELocationsActions.LocationSuccess: {
+            return {
+                ...state,
+                locationById: action.payload,
             };
         }
 
