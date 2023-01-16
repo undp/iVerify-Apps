@@ -45,7 +45,7 @@ export class ArticlesController {
         }
     }
 
-    @Get('articles')
+    @Get('')
     async getArticles() {
         try {
             return await this.articlesService.getArticles();
