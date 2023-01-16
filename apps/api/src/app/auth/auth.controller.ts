@@ -42,7 +42,7 @@ export class AuthController {
     public async login(@Body() login: LoginUserDto, @Req() request: Request) {
         try {
             // @ts-ignore
-            const { id: locationId } = request.location;
+            const locationId = request?.headers['location'];
 
             const userData = await this.authService.validate(
                 locationId,

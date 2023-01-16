@@ -17,8 +17,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             secretOrKeyProvider: async (request, jwtToken, done) => {
                 const locationId = request?.headers['location'];
 
-                const { JWTsecret } =
-                    await this.wpConfigHandler.getConfigByLocation(locationId);
+                const config = await this.wpConfigHandler.getConfigByLocation(
+                    locationId
+                );
+
+                const JWTsecret = config.JWTsecret ?? process.env.JWT_SECRET;
 
                 done(null, JWTsecret);
             },

@@ -1,7 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class PublishReportDto {
+    @IsOptional()
+    team: any;
+
+    @IsOptional()
+    object: any;
+
+    @IsOptional()
+    time: any;
+
+    @IsOptional()
+    user_id: any;
+
+    @IsOptional()
+    settings: any;
+
     @ApiProperty()
     @IsNotEmpty()
     @IsString()

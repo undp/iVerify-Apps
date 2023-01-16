@@ -7,6 +7,7 @@ import {
     Logger,
     Post,
     Req,
+    UseGuards,
     UseInterceptors,
     ValidationPipe,
 } from '@nestjs/common';
@@ -20,6 +21,7 @@ import { ItemChangedRequestDto } from './dto/itemChangedRequest.dto';
 import { WebhookAuth } from '../../interceptors/webhook.auth.interceptor';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
+import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
 export class DateBraket {
     @ApiProperty()
     @IsNotEmpty()
@@ -58,7 +60,7 @@ export class StatsController {
     ) {}
 
     @Post('stats-by-range')
-    // @UseGuards(JWTTokenAuthGuard)
+    @UseGuards(JWTTokenAuthGuard)
     async statsByRange(
         @Body(ValidationPipe) body: DateBraket,
         @Req() request: Request
@@ -112,16 +114,8 @@ export class StatsController {
         }
     }
 
-    @Get('test')
-    async testConnection() {
-        const result = await lastValueFrom(
-            this.http.get('https://api.publicapis.org/entries')
-        );
-
-        return result.data;
-    }
-
     @Post('toxicity')
+    @UseGuards(JWTTokenAuthGuard)
     async addToxicityStats(@Body() body, @Req() request: Request) {
         try {
             const locationId = request.headers['locationId'];
