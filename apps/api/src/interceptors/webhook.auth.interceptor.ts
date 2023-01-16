@@ -30,7 +30,7 @@ export class WebhookAuth {
 
             this.logger.log(
                 `receiving request ${request.method} params ${JSON.stringify(
-                    request
+                    request.headers
                 )}`
             );
 
