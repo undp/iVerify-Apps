@@ -5,7 +5,7 @@ import {
     Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { environment } from '@iverify/core/environments/environment';
+
 // import { ConfigHelpers } from '@eview/core/config/config.helpers';
 // import { SiteConfigItem } from '@eview/core/models/config';
 import { EAuthActions, Login } from '@iverify/core/store/actions/auth.actions';
@@ -17,8 +17,10 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ToastType } from '../../toast/toast.component';
 import { ToastService } from '../../toast/toast.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 // import { ListUsers 						} from '@eview/core/store/actions/users.actions';
+import { selectLocation } from '@iverify/core/store/selectors/locations.selector';
+import { Location as LocationData } from '@iverify/core/models/location';
 
 @Component({
     selector: 'iverify-login',
@@ -26,6 +28,22 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
     styleUrls: ['login.component.scss'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
+    location$: Observable<LocationData>;
+    locationId: string;
+    subLocation: Subscription;
+
+    loginForm = new UntypedFormGroup({
+        email: new UntypedFormControl('', [
+            Validators.required,
+            Validators.email,
+        ]),
+        password: new UntypedFormControl('', Validators.required),
+    });
+
+    showPassword = false;
+
+    private subs: Subscription;
+
     constructor(
         private store: Store<AppState>,
         private actions$: Actions,
@@ -33,6 +51,11 @@ export class LoginComponent implements OnInit, OnDestroy {
         private router: Router // private modalService	: NgbModal
     ) {
         this.subs = new Subscription();
+        this.location$ = this.store.select(selectLocation);
+
+        this.subLocation = this.location$.subscribe((locationId) => {
+            this.locationId = locationId.id;
+        });
     }
 
     ngOnInit() {
@@ -56,6 +79,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subs.unsubscribe();
+        this.subLocation.unsubscribe();
     }
 
     // siteConfig$: Observable<SiteConfigItem> = this.store
@@ -81,18 +105,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     // private$: Observable<boolean> = this.siteConfig$.pipe(
     //   map(siteConfig => (siteConfig ? siteConfig.private : true))
     // );
-
-    loginForm = new UntypedFormGroup({
-        email: new UntypedFormControl('', [
-            Validators.required,
-            Validators.email,
-        ]),
-        password: new UntypedFormControl('', Validators.required),
-    });
-
-    showPassword: boolean = false;
-
-    private subs: Subscription;
 
     onLoginClick() {
         this.showPassword = false;

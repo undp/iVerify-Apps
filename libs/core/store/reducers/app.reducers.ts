@@ -7,13 +7,15 @@ import { userPermissionsReducers } from './user-permissions.reducers';
 import { userReducers } from './user.reducers';
 import { usersReducers } from './users.reducers';
 import { apiErrorReducer } from './error.reducers';
+import { locationsReducers } from './locations.reducers';
 
 export const appReducers: ActionReducerMap<AppState, any> = {
-  router: routerReducer,
-  user: userReducers,
-  userPermissions: userPermissionsReducers,
-  roles: rolesReducers,
-  permissions: permissionsReducers,
-  users: usersReducers,
-  apiError: apiErrorReducer,
+    router: routerReducer,
+    user: userReducers,
+    userPermissions: userPermissionsReducers,
+    roles: rolesReducers,
+    permissions: permissionsReducers,
+    users: usersReducers,
+    apiError: apiErrorReducer,
+    domainLocation: locationsReducers,
 };
