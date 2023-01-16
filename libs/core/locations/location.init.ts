@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { AppState } from '../store/states/app.state';
-import { LocationSuccess } from '../store/actions/locations.actions';
+import { LocationIdSuccess } from '../store/actions/locations.actions';
 import { BaseService } from '../base/base-service';
 import { HttpClient } from '@angular/common/http';
 
@@ -31,7 +31,7 @@ export class LocationInitService {
             );
             this.http.get<Location>(apiURL).subscribe({
                 next: (location: any) => {
-                    this.store.dispatch(new LocationSuccess(location));
+                    this.store.dispatch(new LocationIdSuccess(location));
                     this.locationData = location;
                     resolve();
                 },

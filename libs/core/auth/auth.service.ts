@@ -17,8 +17,8 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../store/states/app.state';
 
-import { selectLocation } from '@iverify/core/store/selectors/locations.selector';
-import { Location as LocationData } from '@iverify/core/models/location';
+import { selectLocationData } from '@iverify/core/store/selectors/locations.selector';
+import { LocationId } from '@iverify/core/models/location';
 
 const STORAGE_TOKEN_KEY = 'token';
 const APP_STATE_KEY = environment.app_state_key;
@@ -27,7 +27,7 @@ const APP_STATE_KEY = environment.app_state_key;
     providedIn: 'root',
 })
 export class AuthService {
-    location$: Observable<LocationData>;
+    location$: Observable<LocationId>;
     locationId: string;
     subLocation: Subscription;
     headers: HttpHeaders | { [header: string]: string | string[] };
@@ -38,7 +38,7 @@ export class AuthService {
         private router: Router,
         private store: Store<AppState>
     ) {
-        this.location$ = this.store.select(selectLocation);
+        this.location$ = this.store.select(selectLocationData);
 
         this.subLocation = this.location$.subscribe((locationId) => {
             this.locationId = locationId.id;
