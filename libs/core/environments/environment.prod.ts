@@ -35,7 +35,5 @@ export const environment = {
     ],
     availableLanguages: ['en', 'es'],
     defaultLanguage: 'en',
-    defaultCountryCode: 'KE',
     app_state_key: 'app_storage',
-    defaultCountryName: 'iVerify kenya',
 };
