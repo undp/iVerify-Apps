@@ -24,7 +24,7 @@ definitions:
               docker push $IMAGE_NAME_TAG-iverify;
 
         - script: &iverifybuild export PATH=node_modules/.bin:$PATH;
-              npm install;
+              npm ci;
               npx @angular/cli build iverify --configuration=$CONFIGURATION;
               npx nx build api;
 
@@ -95,12 +95,12 @@ pipelines:
                   - step:
                         name: Build Kenia
                         image:
-                            name: node:16.10
+                            name: node:16.17.1
                         <<: *build
                   - step:
                         name: Build Honduras
                         image:
-                            name: node:16.10
+                            name: node:16.17.1
                         <<: *build
 
     tags:
