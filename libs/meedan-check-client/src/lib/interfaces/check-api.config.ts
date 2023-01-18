@@ -18,4 +18,5 @@ export interface CheckApiConfig {
     headers: CheckApiConfigHeaders;
     uploadFolderId: string | number;
     lang: string;
+    violationTaskId: string;
 }
