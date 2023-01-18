@@ -26,6 +26,7 @@ import { isEmpty } from 'radash';
 import { catchError } from 'rxjs/operators';
 
 import { lastValueFrom } from 'rxjs';
+import { WpConfigHandler } from '../handlers/wpConfigHandler.service';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -35,7 +36,9 @@ export class AuthController {
     constructor(
         private readonly authService: AuthService,
         @Inject(forwardRef(() => UsersService))
-        private readonly usersService: UsersService
+        private readonly usersService: UsersService,
+
+        private readonly wpConfigHandler: WpConfigHandler
     ) {}
 
     @Post('login')
@@ -91,11 +94,16 @@ export class AuthController {
                 );
 
                 if (wpUserData) {
+                    const wpConfig =
+                        await this.wpConfigHandler.getConfigByLocation(
+                            locationId
+                        );
+
                     const userPostBody = {
                         firstName: wpUserData.user_nicename,
                         lastName: wpUserData.display_name,
                         email: wpUserData.user_email,
-                        password: '', // environment.WPPassword why ?,
+                        password: wpConfig.SSOWPPassword,
                         roles: [{ name: 'admin' }],
                         phone: '',
                         address: '',

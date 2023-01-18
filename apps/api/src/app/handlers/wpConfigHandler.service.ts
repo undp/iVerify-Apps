@@ -14,6 +14,7 @@ export interface WpCredentialConfigs {
     redirect_uri: string;
     WordpressUrl: string;
     WPPassword: string;
+    SSOWPPassword: string;
 }
 
 @Injectable()
@@ -53,6 +54,7 @@ export class WpConfigHandler {
             redirect_uri: getParam('REDIRECT_URI')?.value,
             WordpressUrl: getParam('WP_URL')?.value,
             WPPassword: getParam('WP_PASSWORD')?.value,
+            SSOWPPassword: getParam('SSO_WP_PASSWORD')?.value,
         };
 
         return authParams;
