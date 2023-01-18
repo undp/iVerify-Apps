@@ -12,7 +12,10 @@ import { Stats } from '../../stats/models/stats.model';
 import { User } from '../../users/user.model';
 import { LocationDto } from '../dto/location.dto';
 import { LocationClients } from '../dto/locations.clients.dto';
-import { LocationsParam } from '../interfaces/location.params';
+import {
+    LocationResources,
+    LocationsParam,
+} from '../interfaces/location.params';
 
 @Entity('tenants')
 export class Locations {
@@ -26,6 +29,9 @@ export class Locations {
 
     @Column({ type: 'json', nullable: true })
     params: Array<LocationsParam>;
+
+    @Column({ type: 'json', nullable: true })
+    resources: Array<LocationResources>;
 
     @Column({ type: 'boolean' })
     deleted = false;

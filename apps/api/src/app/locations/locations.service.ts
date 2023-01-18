@@ -28,7 +28,7 @@ export class LocationsService {
         LocationsService.locationsRepositoryStatic = this.locationsRepository;
     }
 
-    // @CacheTTL(100)
+    @CacheTTL(100)
     public async getConfig(locationId: string, key: string): Promise<string> {
         try {
             const location = await this.findById(locationId);
@@ -103,25 +103,21 @@ export class LocationsService {
 
             let location: any = await this.findById(locationId);
 
-            let { params } = location;
+            let { params, resources } = location;
 
             location = {
                 ...locationParam,
             };
 
             if (Array.isArray(locationParam.params)) {
-                // const tempObj = {};
-
-                // locationParam.params.forEach(({ key, value }) => {
-                //     tempObj[key] = value;
-                // });
-
-                // params = toArray({ ...params, ...tempObj });
-
                 params = locationParam.params;
             }
 
-            location = { ...location, params };
+            if (Array.isArray(locationParam.resources)) {
+                resources = locationParam.resources;
+            }
+
+            location = { ...location, params, resources };
 
             delete location.lockedDtoFields;
 

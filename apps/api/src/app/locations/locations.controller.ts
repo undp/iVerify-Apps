@@ -12,6 +12,7 @@ import {
     ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { isEmpty } from 'radash';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { PaginationQueryDto } from '../common/pagination-query.dto';
 import { JWTTokenAuthGuard } from '../guards/JWTToken-auth.guard';
@@ -19,6 +20,7 @@ import { StatsController } from '../stats/stats-controller';
 import { CreateLocationDto } from './dto/createLocation.dto';
 import { LocationDto } from './dto/location.dto';
 import { LocationClients } from './dto/locations.clients.dto';
+import { LocationResources } from './interfaces/location.params';
 import { LocationsService } from './locations.service';
 
 @Controller('locations')
@@ -64,6 +66,24 @@ export class LocationsController {
             return (await this.locationsService.findById(
                 locationId
             )) as LocationDto;
+        } catch (e) {
+            this.logger.error(e);
+            throw e;
+        }
+    }
+
+    @Get(':id/resources')
+    @UseGuards(JWTTokenAuthGuard)
+    async findResourcesByLocationId(
+        @Param('id') locationId: string
+    ): Promise<Partial<LocationDto>> {
+        try {
+            const location = await this.locationsService.findById(locationId);
+
+            delete location.params;
+            delete location.clients;
+
+            return location;
         } catch (e) {
             this.logger.error(e);
             throw e;

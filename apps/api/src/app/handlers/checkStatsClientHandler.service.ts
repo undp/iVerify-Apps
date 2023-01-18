@@ -59,9 +59,11 @@ export class CheckClientHandlerService {
                 getParam('CHECK_API_URL')?.value ?? process.env.CHECK_API_URL,
             checkApiToken: getParam('CHECK_API_TOKEN')?.value ?? '',
             checkApiTeam: getParam('CHECK_API_TEAM')?.value ?? '',
-            checkPublishFolder: getParam('WP_PUBLISHED_FOLDER')?.value ?? '',
+            checkPublishFolder:
+                getParam('CHECK_API_PUBLISHED_FOLDER')?.value ?? '',
             uploadFolderId: getParam('CHECK_FOLDER_ID')?.value ?? '',
             lang: getParam('LANGUAGE')?.value ?? 'es',
+            violationTaskId: getParam('VIOLATION_TASK_ID')?.value ?? '',
         };
 
         this.logger.log(

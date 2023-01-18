@@ -7,7 +7,10 @@ import {
     IsString,
 } from 'class-validator';
 
-import { LocationsParam } from '../interfaces/location.params';
+import {
+    LocationResources,
+    LocationsParam,
+} from '../interfaces/location.params';
 import { Locations } from '../models/locations.model';
 import { LocationClients } from './locations.clients.dto';
 
@@ -23,8 +26,14 @@ export class LocationDto {
     description: string;
 
     @ApiProperty()
-    @IsObject()
+    @IsOptional()
+    @IsArray()
     params: Array<LocationsParam>;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsArray()
+    resources: Array<LocationResources>;
 
     @ApiProperty()
     @IsArray()

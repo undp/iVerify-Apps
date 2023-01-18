@@ -293,7 +293,7 @@ export class CheckStatsService {
 
     getTicketsByViolationTypes(config: CheckApiConfig) {
         // const violationTaskId = '7766';
-        const violationTaskId = process.env.VIOLATION_TASK_ID;
+        const violationTaskId = config.violationTaskId;
         const taskResponses = [
             TasksLabels[config.lang].violation_disinfo,
             TasksLabels[config.lang].violation_misinfo,
