@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
     Controller,
@@ -134,9 +135,13 @@ export class AuthController {
         }
     }
 
-    @Get('wordpress')
+    @Get('saml')
     @UseGuards(WordpressAuthGuard)
     samlLogin() {}
+
+    @Get('wordpress')
+    @UseGuards(WordpressAuthGuard)
+    wordpressLogin() {}
 
     @Post('generateToken')
     @ApiBearerAuth()
