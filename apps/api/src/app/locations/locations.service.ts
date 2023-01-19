@@ -15,12 +15,9 @@ import {
     Repository,
     UpdateResult,
 } from 'typeorm';
-import { ArticlesService } from '../articles/articles.service';
+
 import { PaginationQueryDto } from '../common/pagination-query.dto';
-import { RolesService } from '../roles/roles.service';
-import { StatsService } from '../stats/stats.service';
-import { TriageService } from '../triage/triage.service';
-import { UsersService } from '../users/users.service';
+
 import { CreateLocationDto } from './dto/createLocation.dto';
 import { LocationDto } from './dto/location.dto';
 import { LocationClients } from './dto/locations.clients.dto';
@@ -34,22 +31,7 @@ export class LocationsService {
 
     constructor(
         @InjectRepository(Locations)
-        private locationsRepository: Repository<Locations>,
-
-        @Inject(forwardRef(() => RolesService))
-        private rolesService: RolesService,
-
-        @Inject(forwardRef(() => ArticlesService))
-        private articleService: ArticlesService,
-
-        @Inject(forwardRef(() => UsersService))
-        private userService: UsersService,
-
-        @Inject(forwardRef(() => StatsService))
-        private statsService: StatsService,
-
-        @Inject(forwardRef(() => TriageService))
-        private triageService: TriageService
+        private locationsRepository: Repository<Locations>
     ) {
         LocationsService.locationsRepositoryStatic = this.locationsRepository;
     }
