@@ -1,6 +1,6 @@
 {
     "extends": "./tsconfig.json",
-    "include": ["**/*.ts"],
+    "include": ["**/*.ts", "src/environments/.kenia-dev.ts"],
     "compilerOptions": {
         "types": ["jest", "node"]
     },

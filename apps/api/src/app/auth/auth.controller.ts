@@ -12,6 +12,7 @@ import {
     Logger,
     Req,
     UnauthorizedException,
+    Get,
 } from '@nestjs/common';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { AuthService } from './auth.service';
@@ -27,6 +28,7 @@ import { catchError } from 'rxjs/operators';
 
 import { lastValueFrom } from 'rxjs';
 import { WpConfigHandler } from '../handlers/wpConfigHandler.service';
+import { WordpressAuthGuard } from '../guards/Wordpress-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -131,6 +133,10 @@ export class AuthController {
             }
         }
     }
+
+    @Get('wordpress')
+    @UseGuards(WordpressAuthGuard)
+    samlLogin() {}
 
     @Post('generateToken')
     @ApiBearerAuth()
