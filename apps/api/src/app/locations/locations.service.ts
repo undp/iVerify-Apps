@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { CacheTTL, forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import {
+    CacheTTL,
+    forwardRef,
+    Inject,
+    Injectable,
+    Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { toArray } from 'lodash';
 import { isEmpty } from 'radash';
@@ -43,8 +49,7 @@ export class LocationsService {
         private statsService: StatsService,
 
         @Inject(forwardRef(() => TriageService))
-        private triageService: TriageService,
-
+        private triageService: TriageService
     ) {
         LocationsService.locationsRepositoryStatic = this.locationsRepository;
     }
@@ -218,6 +223,8 @@ export class LocationsService {
         // remove users, stats, roles
 
         // await this.userService.deleteUser()
+
+        return this.locationsRepository.delete(locationId);
     }
 
     public async addClient(
