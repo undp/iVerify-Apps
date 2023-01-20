@@ -27,6 +27,7 @@ export class ApiPublisherService {
 
     meedanId$: Observable<number> = this.report$.pipe(
         map((report) => {
+            this.logger.debug(`Meedan report ${JSON.stringify(report)}`);
             return report.dbid;
         })
     );
@@ -58,9 +59,10 @@ export class ApiPublisherService {
     );
 
     savePost$: Observable<any> = this.article$.pipe(
-        switchMap((article: any) =>
-            from(this.articlesService.saveOne({ ...article }))
-        ),
+        switchMap((article: any) => {
+            this.logger.debug(`savePost ${JSON.stringify(article)}`);
+            return from(this.articlesService.saveOne({ ...article }));
+        }),
         catchError((err) => {
             this.logger.error(`Problems saving article ${JSON.stringify(err)}`);
             return of(null);
