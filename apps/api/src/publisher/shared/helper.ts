@@ -62,6 +62,7 @@ export class SharedHelper {
 
     extractDbid(report: any) {
         report = this.extractReport(report);
+        console.log(`Extracting dbid ${JSON.stringify(report)}`);
         return report.dbid || '';
     }
 

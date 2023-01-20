@@ -40,9 +40,13 @@ export class WpPublisherService {
     );
 
     wpPostId$: Observable<number> = this.reportObject$.pipe(
-        switchMap((data: any) =>
-            this.wpClient.getPostByCheckId(data.locationId, data.report.dbid)
-        ),
+        switchMap((data: any) => {
+            this.logger.debug(`Wordpress post ${JSON.stringify(data)}`);
+            return this.wpClient.getPostByCheckId(
+                data.locationId,
+                data.report.dbid
+            );
+        }),
         map(({ data: res }) => (res && res.length ? res[0].id : null))
     );
 
