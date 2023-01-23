@@ -112,6 +112,51 @@ export class StatsService {
         return await this.statsRepository.save(statToSave);
     }
 
+    async setFakeData() {
+        const locations = await this.locationsService.findAll({
+            limit: 10,
+            offset: 0,
+        });
+
+        pMap(
+            locations,
+            async (location) => {
+                // insert 10 days of record information
+
+                const now = DateTime.now();
+
+                const rows = [];
+
+                const randomNumberInterval = (min, max) => {
+                    return Math.random() * (max - min) + min;
+                };
+
+                for (let i = 10; i > 0; i--) {
+                    const fakeDate = now
+                        .minus({ days: i })
+                        .toFormat('yyyy-M-d');
+
+                    const mockedRow = {
+                        category: 'Sin iniciar',
+                        count: randomNumberInterval(1, 20),
+                        countBy: 'verifiedByDay',
+                        day: fakeDate,
+                        locationId: location.id,
+                    } as unknown as any;
+
+                    rows.push(this.statsRepository.save(mockedRow));
+                }
+
+                await rows;
+
+                this.logger.log('Successfully inserted fake data');
+            },
+            {
+                concurrency: 2,
+            }
+        );
+    }
+
     async addToxicityStats(
         locationId: string,
         toxicCount: number,
@@ -393,7 +438,7 @@ export class StatsService {
                     );
                 },
                 {
-                    concurrency: 2,
+                    concurrency: 1,
                     stopOnError: false,
                 }
             );

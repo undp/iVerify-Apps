@@ -13,7 +13,12 @@ import {
 } from '@nestjs/common';
 
 import { StatsService } from './stats.service';
-import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
+import {
+    ApiBody,
+    ApiExcludeEndpoint,
+    ApiProperty,
+    ApiTags,
+} from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { StatsFormatService } from './stats-format.service';
 import { MeedanItemStatuses } from '@iverify/meedan-check-client/src';
@@ -134,5 +139,16 @@ export class StatsController {
             this.logger.error(e.message);
             throw new HttpException(e.message, 500);
         }
+    }
+
+    @Post('inject-test-data')
+    @UseGuards(JWTTokenAuthGuard)
+    @ApiExcludeEndpoint()
+    async createFakeStats() {
+        await this.statsService.setFakeData();
+
+        return {
+            status: 'ok',
+        };
     }
 }
