@@ -87,12 +87,11 @@ export class WpClientService {
     }
 
     getPostByCheckId(config: WpConfig, check_id: string) {
-        const params = { check_id };
         return this.http
-            .get(config.endpoints.posts, {
-                params,
+            .get(`${config.endpoints.posts}?check_id=${check_id}`, {
                 headers: {
                     locationId: config.locationId,
+                    'Accept-Encoding': 'gzip,deflate,compress',
                 },
             })
             .pipe(
