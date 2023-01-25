@@ -23,7 +23,7 @@ import { LocationsService } from '../../app/locations/locations.service';
 import { isEmpty } from 'radash';
 import { toArray } from 'lodash';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class WpPublisherService {
     private logger = new Logger(WpPublisherService.name);
 

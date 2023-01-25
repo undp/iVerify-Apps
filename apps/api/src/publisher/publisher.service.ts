@@ -1,10 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Scope } from '@nestjs/common';
 import { combineLatest, Observable } from 'rxjs';
 import { ApiPublisherService } from './api-publisher/api-publisher.service';
 import { SharedService } from './shared/shared.service';
 import { WpPublisherService } from './wp-publisher/wp-publisher.service';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class PublisherService {
     private readonly logger = new Logger(PublisherService.name);
 

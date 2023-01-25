@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { ApiClientService } from '@iverify/api-client/src';
 import { Article } from '@iverify/iverify-common';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Scope } from '@nestjs/common';
 import { combineLatest, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import {
     catchError,
@@ -18,7 +18,7 @@ import { LocationsService } from '../../app/locations/locations.service';
 import { SharedService } from '../shared/shared.service';
 import { ApiPublisherHelper } from './helper';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class ApiPublisherService {
     private logger = new Logger(ApiPublisherService.name);
 

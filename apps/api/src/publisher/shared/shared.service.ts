@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { Observable, Subject } from 'rxjs';
 import { shareReplay, switchMap, take } from 'rxjs/operators';
 import { CheckClientHandlerService } from '../../app/handlers/checkStatsClientHandler.service';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class SharedService {
     private _reportId: Subject<string> = new Subject<string>();
     private _report: Subject<{ locationId: string; reportId: string }> =

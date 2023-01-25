@@ -64,12 +64,11 @@ export class WpClientService {
     }
 
     getPostByTitle(config: WpConfig, title: string) {
-        const params = { title };
         return this.http
-            .get(config.endpoints.posts, {
-                params,
+            .get(`${config.endpoints.posts}?title=${title}`, {
                 headers: {
                     locationId: config.locationId,
+                    'Accept-Encoding': 'gzip,deflate,compress',
                 },
             })
             .pipe(
@@ -134,14 +133,11 @@ export class WpClientService {
     }
 
     listTags(config: WpConfig): Observable<any> {
-        const params = {
-            per_page: 100,
-        };
         return this.http
-            .get(config.endpoints.tags, {
-                params,
+            .get(`${config.endpoints.tags}?per_page=100`, {
                 headers: {
                     locationId: config.locationId,
+                    'Accept-Encoding': 'gzip,deflate,compress',
                 },
             })
             .pipe(
