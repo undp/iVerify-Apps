@@ -61,6 +61,7 @@ export class ApiPublisherService {
     savePost$: Observable<any> = this.article$.pipe(
         switchMap((article: any) => {
             this.logger.debug(`savePost ${JSON.stringify(article)}`);
+            this.logger.debug(`wpUrl ${article.wpUrl}`);
             return from(this.articlesService.saveOne({ ...article }));
         }),
         catchError((err) => {

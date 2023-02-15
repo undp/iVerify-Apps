@@ -110,14 +110,25 @@ export class WpPublisherService {
             };
         }),
         switchMap((report) => {
-            if (!report.url) {
-                report.url =
-                    'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png';
+            const defaultImage =
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png';
+            if (report.url.trim()) {
+                report.url = defaultImage;
             }
 
             return combineLatest(
                 this.http.get(report.url, { responseType: 'arraybuffer' }),
                 of(report.locationId)
+            ).pipe(
+                catchError((err) => {
+                    return combineLatest(
+                        this.http.get(defaultImage, {
+                            responseType: 'arraybuffer',
+                        }),
+                        of(report.locationId)
+                    );
+                    // throw err;
+                })
             );
 
             // return Promise.resolve({ data: null });
