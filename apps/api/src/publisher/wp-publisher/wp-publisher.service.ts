@@ -87,14 +87,14 @@ export class WpPublisherService {
 
     tagsIds$: Observable<number[]> = this.reportObject$.pipe(
         map((report: any) => ({
-            ...this.helper.extractTags(report.report),
+            tags: [...this.helper.extractTags(report.report)],
             locationId: report.locationId,
         })),
         switchMap((data: any) =>
             iif(
                 () => !!data.tags && !!data.tags.length,
                 this.tagsIds(data.locationId, data.tags),
-                of(null)
+                of([])
             )
         ),
         catchError((err) => {

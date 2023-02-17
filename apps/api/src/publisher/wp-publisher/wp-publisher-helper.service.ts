@@ -61,6 +61,8 @@ export class WpPublisherHelper {
         visualCard: string,
         lang: string
     ): CreatePostDto {
+        lang = 'en';
+
         if (meedanReport.report) {
             meedanReport = meedanReport.report;
         }
