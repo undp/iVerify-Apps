@@ -26,6 +26,7 @@ export class WpClientService {
                 auth: config.authParams,
                 headers: {
                     locationId: config.locationId,
+                    'Accept-Encoding': 'gzip,deflate,compress',
                 },
             })
             .pipe(
@@ -173,7 +174,9 @@ export class WpClientService {
 
     listCategories(config: WpConfig): Observable<any> {
         return this.http
-            .get(config.endpoints.categories, { auth: config.authParams })
+            .get(`${config.endpoints.categories}?per_page=100`, {
+                auth: config.authParams,
+            })
             .pipe(
                 map((res) => res.data),
                 catchError((err) => {

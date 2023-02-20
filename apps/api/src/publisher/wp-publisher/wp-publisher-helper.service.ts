@@ -63,8 +63,13 @@ export class WpPublisherHelper {
     ): CreatePostDto {
         // lang = 'en';
 
+        const locationId = report.locationId;
         if (meedanReport.report) {
             meedanReport = meedanReport.report;
+        }
+
+        if (!isEmpty(report.report)) {
+            report = report.report;
         }
 
         const status = PostStatus.publish;
@@ -118,7 +123,7 @@ export class WpPublisherHelper {
             fields,
             categories,
             _webdados_fb_open_graph_specific_image,
-            locationId: report.locationId,
+            locationId: locationId,
         };
 
         if (!post.featured_media) delete post.featured_media;

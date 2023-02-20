@@ -197,7 +197,7 @@ export class WpPublisherService {
                     categories,
                     visualCard,
                     // language
-                    'es'
+                    'en'
                 )
         ),
         filter((post) => !!post.title.length),
