@@ -105,14 +105,15 @@ export class WpPublisherService {
     private mediaId$: Observable<number> = this.meedanReport$.pipe(
         map((report) => {
             return {
-                url: report?.report?.image,
+                url: report?.report?.visual_card_url,
                 locationId: report.locationId,
             };
         }),
         switchMap((report) => {
             const defaultImage =
                 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png';
-            if (report.url.trim()) {
+
+            if (isEmpty(report.url.trim())) {
                 report.url = defaultImage;
             }
 
@@ -280,7 +281,7 @@ export class WpPublisherService {
     }
 
     private categoriesIds(locationId: string, categories: string[]) {
-        categories = categories.map((c) => c.toLowerCase());
+        categories = ['iVerify', ...categories.map((c) => c.toLowerCase())];
         const wpCategories$: Observable<any> =
             this.wpClient.listCategories(locationId);
         const existingCategoriesIds$: Observable<number[]> = wpCategories$.pipe(

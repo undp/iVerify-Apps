@@ -21,6 +21,8 @@ export class WpClientService {
         const endPoint = id
             ? `${config.endpoints.posts}/${id}`
             : config.endpoints.posts;
+
+        this.logger.log(`Publish Post ${JSON.stringify(post)}`);
         return this.http
             .post(endPoint, post, {
                 auth: config.authParams,
