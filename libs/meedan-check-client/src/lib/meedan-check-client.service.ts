@@ -92,7 +92,7 @@ export class MeedanCheckClientService {
         url: string,
         toxicityScores: ToxicityScores
     ): Observable<any> {
-        const folderId: number = +config.uploadFolderId;
+        const folderId: number = +config.crowdtangleUploadFolder;
         const set_tasks_responses: string =
             this.helper.buildTasksResponses(toxicityScores);
         const query: string = this.helper.buildCreateItemMutation(
@@ -119,11 +119,13 @@ export class MeedanCheckClientService {
         config: CheckApiConfig,
         url: string,
         content: string,
+        uploadFolderId: number,
         wp_key = 'message_from_website'
     ): Observable<any> {
         const query: string = this.helper.buildCreateItemFromWPMutation(
             url,
             content,
+            uploadFolderId,
             wp_key
         );
         console.log('query: ', query);

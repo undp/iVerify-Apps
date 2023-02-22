@@ -16,7 +16,8 @@ export interface CheckApiConfig {
     checkApiTeam: string;
     checkPublishFolder: string | number;
     headers: CheckApiConfigHeaders;
-    uploadFolderId: string | number;
+    wpUploadFolder: number;
     lang: string;
     violationTaskId: string;
+    crowdtangleUploadFolder: number;
 }

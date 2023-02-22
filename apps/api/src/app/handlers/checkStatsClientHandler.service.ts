@@ -61,7 +61,9 @@ export class CheckClientHandlerService {
             checkApiTeam: getParam('CHECK_API_TEAM')?.value ?? '',
             checkPublishFolder:
                 getParam('CHECK_API_PUBLISHED_FOLDER')?.value ?? '',
-            uploadFolderId: getParam('CHECK_FOLDER_ID')?.value ?? '',
+            wpUploadFolder: getParam('WP_UPLOAD_FOLDER')?.value ?? '',
+            crowdtangleUploadFolder:
+                getParam('CROWDTANGLE_UPLOAD_FOLDER')?.value ?? '',
             lang: getParam('LANGUAGE')?.value ?? 'es',
             violationTaskId: getParam('VIOLATION_TASK_ID')?.value ?? '',
         };
@@ -287,6 +289,7 @@ export class CheckClientHandlerService {
                     requestConfig,
                     url,
                     content,
+                    requestConfig.wpUploadFolder,
                     wp_key
                 );
             })
