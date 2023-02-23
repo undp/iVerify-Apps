@@ -281,7 +281,7 @@ export class WpPublisherService {
     }
 
     private categoriesIds(locationId: string, categories: string[]) {
-        categories = ['iVerify', ...categories.map((c) => c.toLowerCase())];
+        categories = ['iverify', ...categories.map((c) => c.toLowerCase())];
         const wpCategories$: Observable<any> =
             this.wpClient.listCategories(locationId);
         const existingCategoriesIds$: Observable<number[]> = wpCategories$.pipe(
