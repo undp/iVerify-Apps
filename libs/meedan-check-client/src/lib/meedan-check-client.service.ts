@@ -58,7 +58,10 @@ export class MeedanCheckClientService {
             map((res: any) => {
                 return {
                     locationId: res.config.headers.locationId,
-                    report: res.data.data.project_media.annotation.data.options,
+                    report: {
+                        ...res.data.data.project_media.annotation.data.options,
+                        picture: res.data.data.project_media.picture,
+                    },
                 };
             }),
             retry(3),

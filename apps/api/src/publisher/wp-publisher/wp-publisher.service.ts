@@ -105,7 +105,7 @@ export class WpPublisherService {
     private mediaId$: Observable<number> = this.meedanReport$.pipe(
         map((report) => {
             return {
-                url: report?.report?.visual_card_url,
+                url: report?.report?.picture,
                 locationId: report.locationId,
             };
         }),

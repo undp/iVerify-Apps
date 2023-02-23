@@ -44,6 +44,7 @@ export class CheckClientHelperService {
     buildGetMeedanReportQuery(id: string) {
         return `query {
        project_media(ids: "${id}"){
+        picture
          annotation(annotation_type: "report_design") {
            data
          }
