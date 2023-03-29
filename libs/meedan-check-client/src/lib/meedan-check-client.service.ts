@@ -37,8 +37,8 @@ export class MeedanCheckClientService {
     console.log('Getting meedan report query: ', query)
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
       tap(res => console.log('Getting meedan report res: ', JSON.stringify(res.data))),
-	map(res => res.data.data.project_media.annotation.data.options[0] ? res.data.data.project_media.annotation.data.options[0] : res.data.data.project_media.annotation.data.options),      
-	retry(3),
+      map(res => res.data.data.project_media.annotation.data.options[0] ? res.data.data.project_media.annotation.data.options[0] : res.data.data.project_media.annotation.data.options),
+      retry(3),
       catchError(err => {
         this.logger.error('Error getting meedan report by id: ', err.message)
 	console.log(query)

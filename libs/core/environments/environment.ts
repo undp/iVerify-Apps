@@ -38,7 +38,7 @@ export const environment = {
     "es"
   ],
   defaultLanguage: 'en',
-  defaultCountryCode: 'KE',
+  defaultCountryCode: 'SL',
   app_state_key: 'app_storage',
-  defaultCountryName: 'iVerify kenya'
+  defaultCountryName: 'iVerify Sierra Leone'
 };

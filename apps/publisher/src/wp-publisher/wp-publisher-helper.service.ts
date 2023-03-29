@@ -89,7 +89,7 @@ export class WpPublisherHelper{
       return `<ul>${lis}</ul>`
     }
 
-formatEvidenceV2(evidence: string) {
+    formatEvidenceV2(evidence: string) {
       // const words = evidence.split(' ');
       // let updated_test = '';
       // for (var word of words) {
@@ -108,7 +108,6 @@ formatEvidenceV2(evidence: string) {
         return evidence;
       }
     }
-
 }
 
 
