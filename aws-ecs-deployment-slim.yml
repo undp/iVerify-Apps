@@ -3,15 +3,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: IVerify Deployment ECS - Default VPC
 # Make sure to create Kinesis data firehose service that listening to Kinesis stream created in 'loginStream' and put data to ES domain
 Parameters:
-  CountryCode:
-    Description: An environment name that is prefixed to resource names
-    Type: String
-
-  ConfigFile:
-    Type: String
-    Description: System config file
-    Default: arn:aws:s3:::iverify-prod-configs/sl.env
-
   APIImage:
     Type: String
     Description: ECR name of the API docker image
@@ -32,41 +23,10 @@ Parameters:
     Description: Task definition task role arn
     Default: arn:aws:iam::427524370246:role/iverify-sl-task-role
 
-  DBEngine:
+  ConfigFile:
     Type: String
-    Default: "MySQL"
-
-  DBEngineVersion:
-    Type: String
-    Default: "8.0.28"
-
-  DBSourceRegion:
-    Type: String
-    Default: "us-east-1"
-
-  DBInstanceClass:
-    Type: String
-    Default: "db.t3.micro"
-
-  DBStorageType:
-    Type: String
-    Default: "gp2"
-
-  DBAllocatedStorage:
-    Type: Number
-    Default: 10
-
-  DBName:
-    Type: String
-    Default: "iverify"
-
-  DBUser:
-    Type: String
-    Default: "root"
-
-  DBPassword:
-    Type: String
-    NoEcho: True
+    Description: System config file
+    Default: arn:aws:s3:::iverify-prod-configs/sl.env
 
 Resources:
   Vpc:
@@ -121,15 +81,15 @@ Resources:
           Value: !Join ['-', [!Ref 'AWS::StackName', private-subnet-1]]
       VpcId: !Ref Vpc
 
-  SubnetPrivate2:
-    Type: AWS::EC2::Subnet
-    Properties:
-      AvailabilityZone: "us-east-1b"
-      CidrBlock: "10.0.4.0/24"
-      Tags: 
-        - Key: Name
-          Value: !Join ['-', [!Ref 'AWS::StackName', private-subnet-2]]
-      VpcId: !Ref Vpc
+  # SubnetPrivate2:
+  #   Type: AWS::EC2::Subnet
+  #   Properties:
+  #     AvailabilityZone: "us-east-1b"
+  #     CidrBlock: "10.0.4.0/24"
+  #     Tags: 
+  #       - Key: Name
+  #         Value: !Join ['-', [!Ref 'AWS::StackName', private-subnet-2]]
+  #     VpcId: !Ref Vpc
 
   NatIP:
     Type: AWS::EC2::EIP
@@ -172,11 +132,11 @@ Resources:
       RouteTableId: !Ref PublicRouteTable
       SubnetId: !Ref SubnetPublic1
 
-  PublicSubnet2RouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: !Ref PublicRouteTable
-      SubnetId: !Ref SubnetPublic2
+  # PublicSubnet2RouteTableAssociation:
+  #   Type: AWS::EC2::SubnetRouteTableAssociation
+  #   Properties:
+  #     RouteTableId: !Ref PublicRouteTable
+  #     SubnetId: !Ref SubnetPublic2
 
   PrivateRouteTable:
     Type: AWS::EC2::RouteTable
@@ -200,91 +160,11 @@ Resources:
       RouteTableId: !Ref PrivateRouteTable
       SubnetId: !Ref SubnetPrivate1
 
-  AlbSg:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Application loadbalancer security group 
-      GroupName: !Join ['-', [!Ref 'AWS::StackName', iverify-alb-sg]]
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 8000
-          ToPort: 8000
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 3334
-          ToPort: 3334
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 3335
-          ToPort: 3335
-          CidrIp: 0.0.0.0/0
-      VpcId: !Ref Vpc
-
-  ApiServiceSg:
-    Type: AWS::EC2::SecurityGroup
-    DependsOn: AlbSg
-    Properties:
-      GroupDescription: Api service security group 
-      GroupName: !Join ['-', [!Ref 'AWS::StackName', api-service-sg]]
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 0
-          ToPort: 65535
-          SourceSecurityGroupId: !GetAtt AlbSg.GroupId
-      VpcId: !Ref Vpc
-
-  NoIngressSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupName: "no-ingress-sg"
-      GroupDescription: "Security group with no ingress rule"
-      VpcId: !Ref Vpc
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 3306
-          ToPort: 3306
-          SourceSecurityGroupId: !GetAtt ApiServiceSg.GroupId
-
-  DBSubnetGroup:
-    Type: AWS::RDS::DBSubnetGroup
-    Properties:
-      DBSubnetGroupDescription: DBSubnetGroup for RDS instances
-      SubnetIds:
-        - Ref: SubnetPrivate1
-        - Ref: SubnetPrivate2
-
-  DBInstance:
-    Type: AWS::RDS::DBInstance
-    Properties:
-      DBInstanceIdentifier: !Sub iverify-${CountryCode}
-      DBName: !Sub iverify${CountryCode}
-      AllocatedStorage:
-        Ref: DBAllocatedStorage
-      DBInstanceClass:
-        Ref: DBInstanceClass
-      StorageType:
-        Ref: DBStorageType
-      Engine:
-        Ref: DBEngine
-      EngineVersion:
-        Ref: DBEngineVersion
-      MasterUsername:
-        Ref: DBUser
-      MasterUserPassword:
-        Ref: DBPassword
-      Tags:
-        - Key: Programme
-          Value: "RDS PostgreSQL"
-      VPCSecurityGroups:
-        - !Ref NoIngressSecurityGroup
-      DBSubnetGroupName:
-        Ref: DBSubnetGroup
-
-  PrivateSubnet2RouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: !Ref PrivateRouteTable
-      SubnetId: !Ref SubnetPrivate2
+  # PrivateSubnet2RouteTableAssociation:
+  #   Type: AWS::EC2::SubnetRouteTableAssociation
+  #   Properties:
+  #     RouteTableId: !Ref PrivateRouteTable
+  #     SubnetId: !Ref SubnetPrivate2
 
   Cluster:
     Type: AWS::ECS::Cluster
@@ -305,9 +185,6 @@ Resources:
             - ContainerPort: 8000
           Memory: 512
           MemoryReservation: 256
-          Environment:
-            - Name: DB_HOST
-              Value: !GetAtt 'DBInstance.Endpoint.Address'
           EnvironmentFiles:
             - Value: !Ref ConfigFile
               Type: s3
@@ -411,6 +288,26 @@ Resources:
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
         - 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
+
+  AlbSg:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Application loadbalancer security group 
+      GroupName: !Join ['-', [!Ref 'AWS::StackName', iverify-alb-sg]]
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3334
+          ToPort: 3334
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3335
+          ToPort: 3335
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref Vpc
 
   Alb:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -536,6 +433,19 @@ Resources:
       Port: 3335
       Protocol: HTTP
       TargetType: ip
+      VpcId: !Ref Vpc
+
+  ApiServiceSg:
+    Type: AWS::EC2::SecurityGroup
+    DependsOn: AlbSg
+    Properties:
+      GroupDescription: Api service security group 
+      GroupName: !Join ['-', [!Ref 'AWS::StackName', api-service-sg]]
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          SourceSecurityGroupId: !GetAtt AlbSg.GroupId
       VpcId: !Ref Vpc
 
   ApiService:

@@ -9,7 +9,7 @@ import { CreateTagDto } from "./interfaces/create-tag.dto";
 
 @Injectable()
 export class WpClientService{
-    
+
     private pendingPostCreates = {};
     
     constructor(private http: HttpService, private config: WpConfig){}
@@ -25,13 +25,13 @@ export class WpClientService{
             return;
         }
         this.pendingPostCreates[checkId] = true;
-	return this.http.post(endPoint, post, this.auth).pipe(
-            map(res => {
+        return this.http.post(endPoint, post, this.auth).pipe(
+            map(res => { 
                 setTimeout(() => {
                     console.log('publishing post done', checkId)
                     delete this.pendingPostCreates[checkId];
                 }, 20000);
-                return res.data
+                return res.data 
             }),
             catchError(err => {
                 setTimeout(() => {
