@@ -53,10 +53,11 @@ export class CheckClientHelperService{
      }` 
    }
     
-    buildCreateItemMutation(url: string, folderId: number, set_tasks_responses: string): string{
+    buildCreateItemMutation(url: string, folderId: number, set_tasks_responses: string, tags: string[]): string{
         const mutation = `mutation create{
             createProjectMedia(input: {
               project_id: ${folderId},
+              set_tags: ["${tags.join('", "')}"],
               url: "${url}",
               clientMutationId: "1",
               set_tasks_responses: ${JSON.stringify(set_tasks_responses)}
@@ -72,7 +73,7 @@ export class CheckClientHelperService{
 
     }
 
-    buildCreateItemFromWPMutation(url: string, content: string, wp_key = 'message_from_website'): string{
+    buildCreateItemFromWPMutation(url: string, content: string, wp_key = 'message_from_website', tags: string[]): string{
       const folderId = +process.env.CHECK_TIPLINE_FOLDER_ID;
       const taskResponse = JSON.stringify({
         [wp_key]: content
@@ -80,6 +81,7 @@ export class CheckClientHelperService{
       const mutation = `mutation create{
           createProjectMedia(input: {
             project_id: ${folderId},
+            set_tags: ["${tags.join('", "')}"],
             url: "${url}",
             set_tasks_responses: ${JSON.stringify(taskResponse)},
             clientMutationId: "1"
