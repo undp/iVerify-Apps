@@ -63,7 +63,7 @@ export class MeedanCheckClientService {
   createItem(url: string, toxicityScores: ToxicityScores): Observable<any>{
     const folderId: number = +this.config.uploadFolderId;
     const set_tasks_responses: string = this.helper.buildTasksResponses(toxicityScores);
-    const query: string = this.helper.buildCreateItemMutation(url, folderId, set_tasks_responses, ["CrowdTangle"]);
+    const query: string = this.helper.buildCreateItemMutation(url, folderId, set_tasks_responses, ["1 c - From CrowdTangle"]);
     const headers = this.config.headers;
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
       map(res => res.data),
@@ -77,7 +77,7 @@ export class MeedanCheckClientService {
   }
 
   createItemFromWp(url: string, content: string, wp_key='message_from_website'): Observable<any>{
-    const query: string = this.helper.buildCreateItemFromWPMutation(url, content, wp_key, ["Website"]);
+    const query: string = this.helper.buildCreateItemFromWPMutation(url, content, wp_key, ["1 d - From the website"]);
     console.log('query: ', query)
     const headers = this.config.headers;
     console.log('headers: ', headers)
