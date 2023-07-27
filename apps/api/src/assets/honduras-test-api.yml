@@ -9,7 +9,7 @@ tags:
 - name: iVerify
   description: ''
 servers:
-- url: 'https://api-iverify-honduras-js-test.rhone.un-icc.cloud/'
+- url: 'http://100.26.233.116:8000/'
 components:
   securitySchemes:
     bearer:

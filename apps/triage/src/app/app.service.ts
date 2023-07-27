@@ -24,6 +24,7 @@ export class AppService {
   async analyze(startDate: string, endDate: string): Promise<number> {
     try{
       const lists = await this.ctClient.getLists().toPromise();
+      this.logger.log('CT list of searches', JSON.stringify(lists))
       const savedSearches = lists.filter(list => list.type === 'SAVED_SEARCH');
       const listsIds = savedSearches.map(list => list.id);
       let toxicPosts = [];

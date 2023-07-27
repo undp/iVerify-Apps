@@ -1,28 +1,64 @@
-version: '3.8'
+version: '3.1'
 services:
+    db:
+        image: mysql
+        # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+        # (this is just an example, not intended to be a production configuration)
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        expose:
+            - '3306'
+        ports:
+            - '3306:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: db
+            MYSQL_USER: test
+            MYSQL_PASSWORD: test
     iverify:
         build:
             context: .
             dockerfile: apps/iverify/Dockerfile
         ports:
             - '8200:8200'
+        depends_on:
+            - db
     publisher:
         build:
             context: .
             dockerfile: apps/publisher/Dockerfile-prod
         environment: 
             - apiPath=http://api:3333
+            - language=en
+        env_file:
+          - .env
         ports:
             - '3334:3334'
+        depends_on:
+            - db
     api:
         build:
             context: .
             dockerfile: apps/api/Dockerfile-prod
         ports:
-            - '3333:3333'
+            - '8000:8000'
+        environment:
+            - language=en
+            - DB_HOST=db
+        env_file:
+            - .env
+        depends_on:
+            - db
     triage:
         build:
             context: .
             dockerfile: apps/triage/Dockerfile-prod
         ports:
             - '3335:3335'
+        environment:
+            - language=en
+        env_file:
+            - .env
+        depends_on:
+            - db
+

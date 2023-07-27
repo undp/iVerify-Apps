@@ -94,6 +94,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "~6.6.0",
     "save": "^2.4.0",
+    "showdown": "^2.1.0",
     "swagger-ui-express": "^4.1.6",
     "tailwindcss": "^2.2.4",
     "tslib": "^2.0.0",

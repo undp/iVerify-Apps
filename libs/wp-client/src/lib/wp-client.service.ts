@@ -10,23 +10,41 @@ import { CreateTagDto } from "./interfaces/create-tag.dto";
 @Injectable()
 export class WpClientService{
     
+    private pendingPostCreates = {};
+    
     constructor(private http: HttpService, private config: WpConfig){}
 
     private readonly auth = {auth: this.config.authParams};
 
     publishPost(post: CreatePostDto, id?: number): Observable<any>{
         const endPoint = id ? `${this.config.endpoints.posts}/${id}` : this.config.endpoints.posts;
-        return this.http.post(endPoint, post, this.auth).pipe(
-            map(res => res.data),
+
+        const checkId = post.fields.check_id;
+        if (checkId && this.pendingPostCreates[checkId]) {
+            console.log('Post already in pending create', checkId)
+            return;
+        }
+        this.pendingPostCreates[checkId] = true;
+	return this.http.post(endPoint, post, this.auth).pipe(
+            map(res => {
+                setTimeout(() => {
+                    console.log('publishing post done', checkId)
+                    delete this.pendingPostCreates[checkId];
+                }, 20000);
+                return res.data
+            }),
             catchError(err => {
-                console.log('Error publishing post', err)
+                setTimeout(() => {
+                    console.log('Error publishing post', err)
+                    delete this.pendingPostCreates[checkId];
+                }, 20000);
                 throw new HttpException(err.message, 500);
               })
         );
     }
 
     getPost(postId: number){
-        return this.http.get(this.config.endpoints.posts + '/' + postId).pipe( 
+        return this.http.get(this.config.endpoints.posts + '/' + postId, this.auth).pipe( 
             map(res => res.data),
             catchError(err => {
                 console.log('Error getting post', err)
@@ -37,7 +55,8 @@ export class WpClientService{
 
     getPostByTitle(title: string){
         const params = {title};
-        return this.http.get(this.config.endpoints.posts, {params}).pipe( 
+
+        return this.http.get(this.config.endpoints.posts, {params, ...this.auth}).pipe( 
             map(res => res.data),
             catchError(err => {
                 console.log('Error getting post', err)
@@ -48,7 +67,7 @@ export class WpClientService{
 
     getPostByCheckId(check_id: string){
         const params = {check_id};
-        return this.http.get(this.config.endpoints.posts, {params}).pipe( 
+        return this.http.get(this.config.endpoints.posts, {params, ...this.auth}).pipe( 
             map(res => res.data),
             catchError(err => {
                 console.log('Error getting post by check id', err)
@@ -73,9 +92,9 @@ export class WpClientService{
 
     listTags(): Observable<any>{
         const params = {
-            per_page: 100
+            per_page: 100,
         };
-        return this.http.get(this.config.endpoints.tags, {params}).pipe(
+        return this.http.get(this.config.endpoints.tags, {params, ...this.auth}).pipe(
             map(res => res.data),
             catchError(err => {
                 console.log('Error listing tags: ', err)

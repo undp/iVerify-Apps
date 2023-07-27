@@ -2,6 +2,7 @@ import { TasksLabels } from "@iverify/common/src";
 import { Injectable } from "@nestjs/common";
 import { CommentStatus, CreatePostDto, PostFields, PostFormat, PostStatus } from "libs/wp-client/src/lib/interfaces/create-post.dto";
 import { SharedHelper } from "../shared/helper";
+var showdown  = require('showdown')
 
 @Injectable()
 export class WpPublisherHelper{
@@ -68,6 +69,11 @@ export class WpPublisherHelper{
     }
 
     formatEvidence(evidence: string){
+
+      if (process.env.TEXT_PARSER === 'v2') {
+        return this.formatEvidenceV2(evidence)
+      }
+
       let blocksArr = evidence.split('DESCRIPTION');
       blocksArr.shift();
       const lis = blocksArr.reduce((acc, val) => {
@@ -82,6 +88,27 @@ export class WpPublisherHelper{
       }, '');
       return `<ul>${lis}</ul>`
     }
+
+formatEvidenceV2(evidence: string) {
+      // const words = evidence.split(' ');
+      // let updated_test = '';
+      // for (var word of words) {
+      //     if (word.startsWith('http://') || word.startsWith('https://') || word.startsWith('www.')) {
+      //         word = `<a href=${word} target="_blank" rel="noopener noreferrer">${word}</a>`
+      //     }
+          
+      //     updated_test += (word + ' ')
+      // }
+
+      try {
+        const converter = new showdown.Converter({simplifiedAutoLink: true, simpleLineBreaks: true, openLinksInNewWindow: true, emoji: true});
+        converter.setFlavor('github');
+        return converter.makeHtml(evidence); 
+      } catch (err) {
+        return evidence;
+      }
+    }
+
 }
 
 

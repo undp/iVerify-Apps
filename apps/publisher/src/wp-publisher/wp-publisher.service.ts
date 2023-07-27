@@ -123,6 +123,7 @@ export class WpPublisherService{
 
       private categoriesIds(categories: string[]){
         categories = categories.map(c => c.toLowerCase());
+        console.log('Article Categories', categories)
         const wpCategories$: Observable<any> = this.wpClient.listCategories();
         const existingCategoriesIds$: Observable<number[]> = wpCategories$.pipe(
           map(wpCategories => wpCategories.filter(category => categories.indexOf(category.name.toLowerCase()) > -1).map(category => category.id))
@@ -141,7 +142,7 @@ export class WpPublisherService{
     
         return existingCategoriesIds$;
       }
-    
+
       private createManyTags(tags: string[]): Observable<any>{
         const tagsDtos: CreateTagDto[] = tags.map(tag => ({name: tag})) 
         return from(tagsDtos).pipe(

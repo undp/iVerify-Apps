@@ -7,7 +7,7 @@ import { EmailService } from './email.service';
   imports: [
     MailerModule.forRoot({
       transport: {
-        host: 'email-smtp.eu-west-1.amazonaws.com',
+        host: process.env.SMTP_ENDPOINT,
         secure: false,
         auth: {
           user: process.env.SMTP_USER,
@@ -15,7 +15,7 @@ import { EmailService } from './email.service';
         },
       },
       defaults: {
-        from: '"No Reply" <noreply@example.com>',
+        from: '"No Reply" <admin@iverify-config.org>',
       },
     }),
   ],
@@ -23,3 +23,4 @@ import { EmailService } from './email.service';
   exports: [EmailService], 
 })
 export class EmailModule {}
+

@@ -8,7 +8,7 @@ export class WpConfig{
     readonly endpoints = {
         posts: `${this.apiBase}/posts`,
         tags: `${this.apiBase}/tags`,
-        categories: `${this.apiBase}/categories`,
+        categories: `${this.apiBase}/categories?per_page=20`,
         media: `${this.apiBase}/media`,
         currentUser: `${this.apiBase}/users/me`
 

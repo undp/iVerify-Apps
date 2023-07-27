@@ -42,12 +42,12 @@ export class EmailService {
     // 'Notes'
     // ]
     const csv = await converter.json2csvAsync(data);
-    const mailingList = process.env.EMAIL_LIST ? process.env.EMAIL_LIST.split(',') : ['admin@iverify-config.org'];
-    let env = process.env.ENV === 'prod' ? 'SL' : 'SL - test';
+    const mailingList = ['chiodigiovanni1@gmail.com', 'benet@unicc.org', 'almadhoun@unicc.org', 'chiodi@unicc.org', 'mark.belinsky@undp.org', 'mathilde.vougny@undp.org']
+    let env = process.env.ENV === 'prod' ? 'Honduras' : 'Honduras - test';
     if(process.env && process.env.EMAIL_SUBJECT_COUNTRY) env = process.env.EMAIL_SUBJECT_COUNTRY;
     await this.mailerService.sendMail({
       to: mailingList,
-      from: 'admin@iverify-config.org',
+      from: 'no_reply@un-icc.cloud',
       subject: `Daily iVerify publications - ${env}`,
       text: 'CSV report',
       attachments: [
@@ -59,4 +59,3 @@ export class EmailService {
     });
   }
 }
-
