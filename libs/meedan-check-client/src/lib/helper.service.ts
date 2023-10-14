@@ -56,7 +56,6 @@ export class CheckClientHelperService{
     buildCreateItemMutation(url: string, folderId: number, set_tasks_responses: string, tags: string[]): string{
         const mutation = `mutation create{
             createProjectMedia(input: {
-              project_id: ${folderId},
               set_tags: ["${tags.join('", "')}"],
               url: "${url}",
               clientMutationId: "1",
@@ -80,7 +79,6 @@ export class CheckClientHelperService{
       })
       const mutation = `mutation create{
           createProjectMedia(input: {
-            project_id: ${folderId},
             set_tags: ["${tags.join('", "')}"],
             url: "${url}",
             set_tasks_responses: ${JSON.stringify(taskResponse)},
