@@ -35,10 +35,14 @@ export class WpPublisherHelper{
         const check_id = report.dbid;
         const title = meedanReport.title;
         const subtitle = meedanReport.description;
-        const toxicField = this.sharedHelper.extractTask(report, TasksLabels[this.lang].toxic);
-        const toxic = !!toxicField ? 1 : 0;
+
+        const violation_type = this.sharedHelper.extractTask(report, TasksLabels[this.lang].violation_type);
+        // const toxicField = this.sharedHelper.extractTask(report, TasksLabels[this.lang].toxic);
+        // const toxic = !!toxicField ? 1 : 0;
+        const toxic = (violation_type === TasksLabels[this.lang].violation_hate_speech) ? 1 : 0;
         const factchecking_status = this.extractFactcheckingStatus(report);
-        const claim = this.sharedHelper.extractTask(report, TasksLabels[this.lang].claim);
+        const claim = this.sharedHelper.extractTitle(report);
+        // this.sharedHelper.extractTask(report, TasksLabels[this.lang].claim);
         const rating_justification = this.sharedHelper.extractTask(report, TasksLabels[this.lang].rating_justification);
         const evidence = this.sharedHelper.extractTask(report, TasksLabels[this.lang].evidences_and_references);
         const evidence_and_references = this.formatEvidence(evidence);
