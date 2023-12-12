@@ -81,7 +81,7 @@ export const TasksLabels = {
     fr: {
         claim: 'Affirmation',
         rating_justification: 'Verdict et Processus de Vérification',
-        evidences_and_references: 'Evidence and References',
+        evidences_and_references: 'Evidence and Réferences',
         card_title: 'Card Title',
         toxic: 'Toxic Score',
         threat_level: 'Threat level',
