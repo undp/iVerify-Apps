@@ -43,7 +43,8 @@ export class WpPublisherHelper{
         const factchecking_status = this.extractFactcheckingStatus(report);
         const claim = this.sharedHelper.extractTitle(report);
         // this.sharedHelper.extractTask(report, TasksLabels[this.lang].claim);
-        const rating_justification = this.sharedHelper.extractTask(report, TasksLabels[this.lang].rating_justification);
+        let rating_justification = this.sharedHelper.extractTask(report, TasksLabels[this.lang].rating_justification);
+        rating_justification = this.formatMarkupText(rating_justification);
         const evidence = this.sharedHelper.extractTask(report, TasksLabels[this.lang].evidences_and_references);
         const evidence_and_references = this.formatEvidence(evidence);
         const _webdados_fb_open_graph_specific_image = visualCard;
@@ -75,7 +76,7 @@ export class WpPublisherHelper{
     formatEvidence(evidence: string){
 
       if (process.env.TEXT_PARSER === 'v2') {
-        return this.formatEvidenceV2(evidence)
+        return this.formatMarkupText(evidence)
       }
 
       let blocksArr = evidence.split('DESCRIPTION');
@@ -93,7 +94,7 @@ export class WpPublisherHelper{
       return `<ul>${lis}</ul>`
     }
 
-    formatEvidenceV2(evidence: string) {
+    formatMarkupText(evidence: string) {
       // const words = evidence.split(' ');
       // let updated_test = '';
       // for (var word of words) {
