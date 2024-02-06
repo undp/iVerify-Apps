@@ -10,10 +10,10 @@ import { TranslateService } from './TranslateService/TranslateService';
 @Injectable()
 export class AppService {
   private readonly logger = new Logger('TriageAppService');
-  
+
 
   constructor(
-    private ctClient: CrowdtangleClientService, 
+    private ctClient: CrowdtangleClientService,
     private mlClient: MlServiceClientService,
     private perspectiveClient: PerspectiveClientService,
     private checkClient: MeedanCheckClientService,
@@ -26,13 +26,13 @@ export class AppService {
       const lists = await this.ctClient.getLists().toPromise();
       this.logger.log('CT list of searches', JSON.stringify(lists))
       const savedSearches = lists.filter(list => list.type === 'SAVED_SEARCH');
-      const listsIds = savedSearches.map(list => list.id);
+      const listsIds = savedSearches.map(list => ({ id: list.id, token: list.token }));
       let toxicPosts = [];
       for(const listId of listsIds){
         const pagination = {count: 100, offset: 0, iterations: 0};
-        const toxicPostsByList = await this.getToxicPostsByList(listId.toString(), pagination, startDate, endDate, []);
+        const toxicPostsByList = await this.getToxicPostsByList(listId.id.toString(), pagination, startDate, endDate, [],listId.token);
         toxicPosts = [...toxicPosts, ...toxicPostsByList]
-      } 
+      }
       if(!toxicPosts.length){
         this.logger.log('No toxic posts found.')
         return 0;
@@ -54,16 +54,17 @@ export class AppService {
     }
   }
 
-  private async getToxicPostsByList(listId: string, pagination: any, startDate: string, endDate: string, posts: any[]){
+  private async getToxicPostsByList(listId: string, pagination: any, startDate: string, endDate: string, posts: any[],token?:string){
     try{
-      this.logger.log(`Fething posts with params: 
-        listId - ${listId}, 
-        count - ${pagination.count}, 
-        offset - ${pagination.offset}, 
+      this.logger.log(`Fething posts with params:
+        listId - ${listId},
+        count - ${pagination.count},
+        offset - ${pagination.offset},
         startDate - ${startDate},
         endDate - ${endDate}`);
       this.logger.log(`Max post scan limit - ${this.config.postScanLimit}`)
-      const res = await this.ctClient.getPosts(listId, pagination.count, pagination.offset, startDate, endDate).toPromise();
+      const res = await this.ctClient.getPosts(listId, pagination.count, pagination.offset, startDate, endDate,token).toPromise();
+      console.log('getToxicPostsByList', res)
       this.logger.log(`Received ${res.posts.length} posts. Analyzing...`)
       let postsCount = 0;
       for(const post of res['posts']){
@@ -83,7 +84,7 @@ export class AppService {
         const iterations = pagination.iterations + 1;
         const offset = pagination.count * iterations;
         if(offset < this.config.postScanLimit) {
-          return await this.getToxicPostsByList(listId, {...pagination, offset, iterations}, startDate, endDate, posts);
+          return await this.getToxicPostsByList(listId, {...pagination, offset, iterations}, startDate, endDate, posts, token);
         } else {
           this.logger.log(`Max post scan limit reached ${this.config.postScanLimit} - skipping other posts`)
           return posts;
