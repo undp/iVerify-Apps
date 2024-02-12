@@ -11,7 +11,7 @@ env:
   CONTAINER_NAME_PUBLISHER : publisher-container
   ECS_SERVICE_API: iverify-prod-bd-api-service
   ECS_SERVICE_TRIAGE: iverify-prod-bd-triage-service
-  ECS_SERVICE_PUBLISHER: 	iverify-prod-bd-publisher-service
+  ECS_SERVICE_PUBLISHER: iverify-prod-bd-publisher-service
 
 jobs:
   deploy_all:
