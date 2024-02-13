@@ -1,4 +1,5 @@
 name: Deploy
+
 on:
   push:
     branch:
@@ -8,7 +9,7 @@ env:
   ECS_CLUSTER: iverify-prod-bd-cluster
   CONTAINER_NAME_API: api-container
   CONTAINER_NAME_TRIAGE: triage-container
-  CONTAINER_NAME_PUBLISHER : publisher-container
+  CONTAINER_NAME_PUBLISHER: publisher-container
   ECS_SERVICE_API: iverify-prod-bd-api-service
   ECS_SERVICE_TRIAGE: iverify-prod-bd-triage-service
   ECS_SERVICE_PUBLISHER: iverify-prod-bd-publisher-service
@@ -18,30 +19,32 @@ jobs:
     run-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [14.x]
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
       - name: Cache modules
-        uses: actions/cache@v1
-        id: yarn-cache
+        uses: actions/cache@v2
+        id: npm-cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-yarn-
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
-        # Check for changes in the api directory
       - name: Determine api changes
         id: api-changes
         run: |
@@ -55,7 +58,6 @@ jobs:
             echo "::set-output name=api-changes::false"
           fi
 
-      # Check for changes in the publisher directory
       - name: Determine publisher changes
         id: publisher-changes
         run: |
@@ -69,8 +71,6 @@ jobs:
             echo "::set-output name=publisher-changes::false"
           fi
 
-      # Check for changes in the triage directory
-
       - name: Determine triage changes
         id: triage-changes
         run: |
@@ -83,55 +83,72 @@ jobs:
             echo "No triage changes detected."
             echo "::set-output name=triage-changes::false"
           fi
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Install dependencies and build API
+        run: |
+          npm install
+          npx nx build api
+          npx nx build publisher
+          npx nx build triage
+
       - name: Build, tag, and push the api image to Amazon
         if: steps.api-changes.outputs.api-changes == 'true'
         id: build-image-api
-        working-directory: ./apps/api
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: iverify-api
           IMAGE_TAG: latest
         run: |
-          # Build a docker container and push it to ECR
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/api/Dockerfile .
           echo "Pushing image to ECR..."
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
       - name: Build, tag, and push the publisher image to Amazon
         if: steps.publisher-changes.outputs.publisher-changes == 'true'
         id: build-image-publisher
-        working-directory: ./apps/publisher
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: iverify-publisher
           IMAGE_TAG: latest
         run: |
-          # Build a docker container and push it to ECR
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/publisher/Dockerfile .
           echo "Pushing image to ECR..."
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
       - name: Build, tag, and push the triage image to Amazon
         if: steps.triage-changes.outputs.triage-changes == 'true'
         id: build-image-triage
-        working-directory: ./apps/triage
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: iverify-triage
           IMAGE_TAG: latest
         run: |
-          # Build a docker container and push it to ECR
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/triage/Dockerfile .
           echo "Pushing image to ECR..."
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
       - name: Download api task definition
+        if: steps.api-changes.outputs.api-changes == 'true'
         run: |
-          aws ecs describe-task-definition --task-definition "arn:aws:ecs:us-east-1:427524370246:task-definition/iverify-prod-bd-api-def:11" --query "taskDefinition" > task-definition-api.json
+          aws ecs describe-task-definition --task-definition iverify-prod-bd-api-def \
+          --query 'taskDefinition.revision' \
+          --output text > latest-task-revision.txt
+
+          LATEST_REVISION=$(cat latest-task-revision.txt)
+          echo "Latest Revision: $LATEST_REVISION"
+
+          aws ecs describe-task-definition --task-definition deploy-demo:$LATEST_REVISION \
+          --output json > task-definition-api.json
+
       - name: Fill in the new image ID in the Amazon ECS API task definition
+        if: steps.api-changes.outputs.api-changes == 'true'
         id: task-def-api
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
@@ -140,16 +157,29 @@ jobs:
           image: ${{ steps.build-image-api.outputs.image }}
 
       - name: Deploy Amazon api ECS task definition
+        if: steps.api-changes.outputs.api-changes == 'true'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def-api.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE_API }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
+
       - name: Download publisher task definition
+        if: steps.publisher-changes.outputs.publisher-changes == 'true'
         run: |
-          aws ecs describe-task-definition --task-definition "arn:aws:ecs:us-east-1:427524370246:task-definition/iverify-prod-bd-publisher-def:11" --query "taskDefinition" > task-definition-publisher.json
+          aws ecs describe-task-definition --task-definition iverify-prod-bd-publisher-def \
+          --query 'taskDefinition.revision' \
+          --output text > latest-task-revision.txt
+
+          LATEST_REVISION=$(cat latest-task-revision.txt)
+          echo "Latest Revision: $LATEST_REVISION"
+
+          aws ecs describe-task-definition --task-definition iverify-prod-bd-publisher-def:$LATEST_REVISION \
+          --output json > task-definition-publisher.json
+
       - name: Fill in the new image ID in the Amazon ECS publisher task definition
+        if: steps.publisher-changes.outputs.publisher-changes == 'true'
         id: task-def-publisher
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
@@ -158,16 +188,29 @@ jobs:
           image: ${{ steps.build-image-publisher.outputs.image }}
 
       - name: Deploy Amazon publisher ECS task definition
+        if: steps.publisher-changes.outputs.publisher-changes == 'true'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def-publisher.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE_PUBLISHER }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
+
       - name: Download triage task definition
+        if: steps.triage-changes.outputs.triage-changes == 'true'
         run: |
-          aws ecs describe-task-definition --task-definition "arn:aws:ecs:us-east-1:427524370246:task-definition/iverify-prod-bd-triage-def:11" --query "taskDefinition" > task-definition-triage.json
+          aws ecs describe-task-definition --task-definition iverify-prod-bd-triage-def \
+          --query 'taskDefinition.revision' \
+          --output text > latest-task-revision.txt
+
+          LATEST_REVISION=$(cat latest-task-revision.txt)
+          echo "Latest Revision: $LATEST_REVISION"
+
+          aws ecs describe-task-definition --task-definition iverify-prod-bd-triage-def:$LATEST_REVISION \
+          --output json > task-definition-triage.json
+
       - name: Fill in the new image ID in the Amazon ECS task definition
+        if: steps.triage-changes.outputs.triage-changes == 'true'
         id: task-def-triage
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
@@ -176,6 +219,7 @@ jobs:
           image: ${{ steps.build-image-triage.outputs.image }}
 
       - name: Deploy Amazon triage ECS task definition
+        if: steps.triage-changes.outputs.triage-changes == 'true'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def-triage.outputs.task-definition }}
