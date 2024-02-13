@@ -1,22 +1,23 @@
 name: Deploy
 
 on:
-  push:
-    branch:
-      - main
+  workflow_dispatch:
+    inputs:
+      cluster_type:
+        description: 'Enter the cluster type (bd,sl and etc)'
+        required: true
+      commit_sha:
+        description: 'Commit SHA to check for changes'
+        required: true
 
 env:
-  ECS_CLUSTER: iverify-prod-bd-cluster
   CONTAINER_NAME_API: api-container
   CONTAINER_NAME_TRIAGE: triage-container
   CONTAINER_NAME_PUBLISHER: publisher-container
-  ECS_SERVICE_API: iverify-prod-bd-api-service
-  ECS_SERVICE_TRIAGE: iverify-prod-bd-triage-service
-  ECS_SERVICE_PUBLISHER: iverify-prod-bd-publisher-service
 
 jobs:
   deploy_all:
-    run-on: ubuntu-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [14.x]
@@ -45,10 +46,30 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Set Variables
+        id: set_variables
+        run: |
+          json_data=$(cat clusters.json)
+          cluster_type="${{ github.event.inputs.cluster_type }}"
+          clusters=$(echo "$json_data" | jq -r ".clusters.\"$cluster_type\"")
+          api=$(echo "$json_data" | jq -r ".api.\"$cluster_type\"")
+          publisher=$(echo "$json_data" | jq -r ".publisher.\"$cluster_type\"")
+          triage=$(echo "$json_data" | jq -r ".triage.\"$cluster_type\"")
+          task_def_publisher=$(echo "$json_data" | jq -r ".\"task-def-publisher\".\"$cluster_type\"")
+          task_api=$(echo "$json_data" | jq -r ".\"task-def-api\".\"$cluster_type\"")
+          task_def_triage=$(echo "$json_data" | jq -r ".\"task-def-triage\".\"$cluster_type\"")
+          echo "::set-output name=clusters::$clusters"
+          echo "::set-output name=api::$api"
+          echo "::set-output name=publisher::$publisher"
+          echo "::set-output name=triage::$triage"
+          echo "::set-output name=task_def_publisher::$task_def_publisher"
+          echo "::set-output name=task_def_api::$task_def_api"
+          echo "::set-output name=task_def_triage::$task_def_triage"
+
       - name: Determine api changes
         id: api-changes
         run: |
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.inputs.commit_sha }}^ ${{ github.event.inputs.commit_sha }})
 
           if echo "$CHANGED_FILES" | grep -q "apps/api/"; then
             echo "API changes detected."
@@ -61,7 +82,7 @@ jobs:
       - name: Determine publisher changes
         id: publisher-changes
         run: |
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.inputs.commit_sha }}^ ${{ github.event.inputs.commit_sha }})
 
           if echo "$CHANGED_FILES" | grep -q "apps/publisher/"; then
             echo "Publisher changes detected."
@@ -74,7 +95,7 @@ jobs:
       - name: Determine triage changes
         id: triage-changes
         run: |
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.inputs.commit_sha }}^ ${{ github.event.inputs.commit_sha }})
 
           if echo "$CHANGED_FILES" | grep -q "apps/triage/"; then
             echo "Triage changes detected."
@@ -137,14 +158,14 @@ jobs:
       - name: Download api task definition
         if: steps.api-changes.outputs.api-changes == 'true'
         run: |
-          aws ecs describe-task-definition --task-definition iverify-prod-bd-api-def \
+          aws ecs describe-task-definition --task-definition ${{ steps.set_variables.outputs.task_def_api }} \
           --query 'taskDefinition.revision' \
           --output text > latest-task-revision.txt
 
           LATEST_REVISION=$(cat latest-task-revision.txt)
           echo "Latest Revision: $LATEST_REVISION"
 
-          aws ecs describe-task-definition --task-definition deploy-demo:$LATEST_REVISION \
+          aws ecs describe-task-definition --task-definition ${{ steps.set_variables.outputs.task_def_api }}:$LATEST_REVISION \
           --output json > task-definition-api.json
 
       - name: Fill in the new image ID in the Amazon ECS API task definition
@@ -161,21 +182,21 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def-api.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE_API }}
-          cluster: ${{ env.ECS_CLUSTER }}
+          service: ${{ steps.set_variables.outputs.api }}
+          cluster: ${{ steps.set_variables.outputs.clusters }}
           wait-for-service-stability: true
 
       - name: Download publisher task definition
         if: steps.publisher-changes.outputs.publisher-changes == 'true'
         run: |
-          aws ecs describe-task-definition --task-definition iverify-prod-bd-publisher-def \
+          aws ecs describe-task-definition --task-definition ${{ steps.set_variables.outputs.task_def_publisher }} \
           --query 'taskDefinition.revision' \
           --output text > latest-task-revision.txt
 
           LATEST_REVISION=$(cat latest-task-revision.txt)
           echo "Latest Revision: $LATEST_REVISION"
 
-          aws ecs describe-task-definition --task-definition iverify-prod-bd-publisher-def:$LATEST_REVISION \
+          aws ecs describe-task-definition --task-definition ${{ steps.set_variables.outputs.task_def_publisher }}:$LATEST_REVISION \
           --output json > task-definition-publisher.json
 
       - name: Fill in the new image ID in the Amazon ECS publisher task definition
@@ -192,21 +213,21 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def-publisher.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE_PUBLISHER }}
-          cluster: ${{ env.ECS_CLUSTER }}
+          service: ${{ steps.set_variables.outputs.publisher }}
+          cluster: ${{ steps.set_variables.outputs.clusters }}
           wait-for-service-stability: true
 
       - name: Download triage task definition
         if: steps.triage-changes.outputs.triage-changes == 'true'
         run: |
-          aws ecs describe-task-definition --task-definition iverify-prod-bd-triage-def \
+          aws ecs describe-task-definition --task-definition ${{ steps.set_variables.outputs.task_def_triage }} \
           --query 'taskDefinition.revision' \
           --output text > latest-task-revision.txt
 
           LATEST_REVISION=$(cat latest-task-revision.txt)
           echo "Latest Revision: $LATEST_REVISION"
 
-          aws ecs describe-task-definition --task-definition iverify-prod-bd-triage-def:$LATEST_REVISION \
+          aws ecs describe-task-definition --task-definition ${{ steps.set_variables.outputs.task_def_triage }}:$LATEST_REVISION \
           --output json > task-definition-triage.json
 
       - name: Fill in the new image ID in the Amazon ECS task definition
@@ -223,6 +244,6 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def-triage.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE_TRIAGE }}
-          cluster: ${{ env.ECS_CLUSTER }}
+          service: ${{ steps.set_variables.outputs.triage }}
+          cluster: ${{ steps.set_variables.outputs.clusters }}
           wait-for-service-stability: true

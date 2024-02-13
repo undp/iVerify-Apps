@@ -1,0 +1,24 @@
+{
+    "clusters" : {
+        "bd": "iverify-prod-bd-cluster"
+    },
+    "api": {
+        "bd": "iverify-prod-bd-api-service"
+    },
+    "publisher": {
+        "bd": "iverify-prod-bd-publisher-service"
+    },
+    "triage": {
+        "bd": "iverify-prod-bd-triage-service"
+    },
+    "task-def-publisher": {
+        "bd": "iverify-prod-bd-publisher-def"
+    },
+    "task-def-api": {
+        "bd": "iverify-prod-bd-api-def"
+    },
+    "task-def-triage": {
+        "bd": "iverify-prod-bd-triage-def"
+    }
+
+}
