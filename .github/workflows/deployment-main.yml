@@ -165,8 +165,7 @@ jobs:
           LATEST_REVISION=$(cat latest-task-revision.txt)
           echo "Latest Revision: $LATEST_REVISION"
 
-          aws ecs describe-task-definition --task-definition ${{ steps.set_variables.outputs.task_def_api }}:$LATEST_REVISION \
-          --output json > task-definition-api.json
+          aws ecs describe-task-definition --task-definition "arn:aws:ecs:us-east-1:427524370246:task-definition/${{ steps.set_variables.outputs.outputs.task_def_api }}:$LATEST_REVISION" --query "taskDefinition" > task-definition-api.json
 
       - name: Fill in the new image ID in the Amazon ECS API task definition
         if: steps.api-changes.outputs.api-changes == 'true'
@@ -196,8 +195,7 @@ jobs:
           LATEST_REVISION=$(cat latest-task-revision.txt)
           echo "Latest Revision: $LATEST_REVISION"
 
-          aws ecs describe-task-definition --task-definition ${{ steps.set_variables.outputs.task_def_publisher }}:$LATEST_REVISION \
-          --output json > task-definition-publisher.json
+          aws ecs describe-task-definition --task-definition "arn:aws:ecs:us-east-1:427524370246:task-definition/${{ steps.set_variables.outputs.task_def_publisher }}:$LATEST_REVISION" --query "taskDefinition" > task-definition-publisher.json
 
       - name: Fill in the new image ID in the Amazon ECS publisher task definition
         if: steps.publisher-changes.outputs.publisher-changes == 'true'
@@ -227,8 +225,7 @@ jobs:
           LATEST_REVISION=$(cat latest-task-revision.txt)
           echo "Latest Revision: $LATEST_REVISION"
 
-          aws ecs describe-task-definition --task-definition ${{ steps.set_variables.outputs.task_def_triage }}:$LATEST_REVISION \
-          --output json > task-definition-triage.json
+          aws ecs describe-task-definition --task-definition "arn:aws:ecs:us-east-1:427524370246:task-definition/${{ steps.set_variables.outputs.task_def_triage }}:$LATEST_REVISION" --query "taskDefinition" > task-definition-triage.json
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         if: steps.triage-changes.outputs.triage-changes == 'true'
