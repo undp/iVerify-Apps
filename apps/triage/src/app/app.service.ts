@@ -64,7 +64,7 @@ export class AppService {
         endDate - ${endDate}`);
       this.logger.log(`Max post scan limit - ${this.config.postScanLimit}`)
       const res = await this.ctClient.getPosts(listId, pagination.count, pagination.offset, startDate, endDate,token).toPromise();
-      console.log('getToxicPostsByList', res)
+      //console.log('getToxicPostsByList', res)
       this.logger.log(`Received ${res.posts.length} posts. Analyzing...`)
       let postsCount = 0;
       for(const post of res['posts']){
