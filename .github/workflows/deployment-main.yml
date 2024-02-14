@@ -109,12 +109,9 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Install dependencies and build API
+      - name: Install dependencies
         run: |
           npm install
-          npx nx build api
-          npx nx build publisher
-          npx nx build triage
 
       - name: Build, tag, and push the api image to Amazon
         if: steps.api-changes.outputs.api-changes == 'true'
@@ -124,6 +121,7 @@ jobs:
           ECR_REPOSITORY: iverify-api
           IMAGE_TAG: latest
         run: |
+          npx nx build api
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/api/Dockerfile .
           echo "Pushing image to ECR..."
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -137,6 +135,7 @@ jobs:
           ECR_REPOSITORY: iverify-publisher
           IMAGE_TAG: latest
         run: |
+          npx nx build publisher
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/publisher/Dockerfile .
           echo "Pushing image to ECR..."
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -150,6 +149,7 @@ jobs:
           ECR_REPOSITORY: iverify-triage
           IMAGE_TAG: latest
         run: |
+          npx nx build triage
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/triage/Dockerfile .
           echo "Pushing image to ECR..."
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
