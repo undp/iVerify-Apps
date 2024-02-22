@@ -324,6 +324,13 @@ Resources:
         - FARGATE
       TaskRoleArn: !Ref TaskRole
       ExecutionRoleArn: !Ref ExecutionRole
+      Tags:
+        - Key: group
+          Value: iVerify
+        - Key: Name
+          Value: !Sub iVerify-${CountryCode}
+        - Key: stack
+          Value: !Sub iVerify-${CountryCode}
 
   PublisherTaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -353,6 +360,13 @@ Resources:
         - FARGATE
       TaskRoleArn: !Ref TaskRole
       ExecutionRoleArn: !Ref ExecutionRole
+      Tags:
+        - Key: group
+          Value: iVerify
+        - Key: Name
+          Value: !Sub iVerify-${CountryCode}
+        - Key: stack
+          Value: !Sub iVerify-${CountryCode}
 
   TriageTaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -382,6 +396,13 @@ Resources:
         - FARGATE
       TaskRoleArn: !Ref TaskRole
       ExecutionRoleArn: !Ref ExecutionRole
+      Tags:
+        - Key: group
+          Value: iVerify
+        - Key: Name
+          Value: !Sub iVerify-${CountryCode}
+        - Key: stack
+          Value: !Sub iVerify-${CountryCode}
 
   LogGroupApi:
     Type: AWS::Logs::LogGroup
@@ -545,7 +566,7 @@ Resources:
       Cluster: !Ref Cluster
       DeploymentController:
         Type: ECS
-      DesiredCount: 1
+      DesiredCount: 0
       HealthCheckGracePeriodSeconds: 30
       LaunchType: FARGATE
       LoadBalancers:
@@ -561,6 +582,8 @@ Resources:
             # - !Ref SubnetPrivate2
       ServiceName: !Join ['-', [!Ref 'AWS::StackName', api-service]]
       TaskDefinition: !Ref ApiTaskDefinition
+      EnableECSManagedTags: true
+      PropagateTags: TASK_DEFINITION
 
   PublisherService:
     Type: AWS::ECS::Service
@@ -585,6 +608,8 @@ Resources:
             # - !Ref SubnetPrivate2
       ServiceName: !Join ['-', [!Ref 'AWS::StackName', publisher-service]]
       TaskDefinition: !Ref PublisherTaskDefinition
+      EnableECSManagedTags: true
+      PropagateTags: TASK_DEFINITION
 
   TriageService:
     Type: AWS::ECS::Service
@@ -609,6 +634,8 @@ Resources:
             # - !Ref SubnetPrivate2
       ServiceName: !Join ['-', [!Ref 'AWS::StackName', triage-service]]
       TaskDefinition: !Ref TriageTaskDefinition
+      EnableECSManagedTags: true
+      PropagateTags: TASK_DEFINITION
 
   S3BucketWeb:
     Type: AWS::S3::Bucket
