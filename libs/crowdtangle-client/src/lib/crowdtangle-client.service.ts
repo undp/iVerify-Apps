@@ -1,6 +1,6 @@
 import { HttpException, HttpService, Injectable, Logger } from "@nestjs/common";
 import { CrowdtangleClientConfig } from "./config";
-import { catchError,concatMap, map, retry} from 'rxjs/operators';
+import { catchError,concatMap, map, retry , reduce} from 'rxjs/operators';
 import { forkJoin } from "rxjs";
 
 @Injectable()
@@ -24,7 +24,8 @@ export class CrowdtangleClientService{
           )
         )
       ).pipe(
-        concatMap(listsArrays => listsArrays) // Flatten the arrays
+        concatMap(listsArrays => listsArrays), // Flatten the arrays
+        reduce((acc, curr) => acc.concat(curr), [])
       );
     }
 
@@ -41,3 +42,5 @@ export class CrowdtangleClientService{
     }
 
 }
+
+
