@@ -24,7 +24,8 @@ export class CrowdtangleClientService{
           )
         )
       ).pipe(
-        concatMap(listsArrays => listsArrays) // Flatten the arrays
+        concatMap(listsArrays => listsArrays), // Flatten the arrays
+        reduce((acc, curr) => acc.concat(curr), [])
       );
     }
 
@@ -41,3 +42,7 @@ export class CrowdtangleClientService{
     }
 
 }
+function reduce(arg0: (acc: any, curr: any) => any, arg1: undefined[]): any {
+  throw new Error("Function not implemented.");
+}
+
