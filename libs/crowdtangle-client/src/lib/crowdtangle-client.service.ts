@@ -1,6 +1,6 @@
 import { HttpException, HttpService, Injectable, Logger } from "@nestjs/common";
 import { CrowdtangleClientConfig } from "./config";
-import { catchError,concatMap, map, retry} from 'rxjs/operators';
+import { catchError,concatMap, map, retry , reduce} from 'rxjs/operators';
 import { forkJoin } from "rxjs";
 
 @Injectable()
@@ -42,7 +42,5 @@ export class CrowdtangleClientService{
     }
 
 }
-function reduce(arg0: (acc: any, curr: any) => any, arg1: undefined[]): any {
-  throw new Error("Function not implemented.");
-}
+
 
