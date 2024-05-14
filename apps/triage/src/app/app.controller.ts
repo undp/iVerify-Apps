@@ -26,7 +26,8 @@ export class AppController {
   @ApiBody({ type: SubmitStoryDto })
   async submitStory(@Body() body){
     const {url, content, secret} = body;
-    if(secret !== '1v3r1fy') return new HttpException('Not authorized.', 403);
+    const secretEnv = process.env.SECRET_ENV || '1v3r1fy';
+    if(secret !== secretEnv ) return new HttpException('Not authorized.', 403);
     try {
       return await this.appService.createItemFromWp(url, content)
     }catch(e){
