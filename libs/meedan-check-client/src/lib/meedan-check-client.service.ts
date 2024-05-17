@@ -69,7 +69,8 @@ export class MeedanCheckClientService {
       map(res => res.data),
       retry(3),
       catchError(err => {
-        this.logger.error('Error creating item: ', err.message);
+        console.log(err)
+        this.logger.error('Error creating item: ', err);
         return of({error: err.message, url})
         // throw new HttpException(err.message, 500);
       })
