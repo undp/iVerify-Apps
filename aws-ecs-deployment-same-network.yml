@@ -513,7 +513,7 @@ Resources:
     Properties:
       Actions:
         - Type: forward
-          TargetGroupArn: !Ref ApiTg
+          TargetGroupArn: !Ref PublisherTg
       Conditions:
         - Field: path-pattern
           Values: [/]
