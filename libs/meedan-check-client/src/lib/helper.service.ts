@@ -83,7 +83,7 @@ export class CheckClientHelperService{
             url: "${url}",
             set_tasks_responses: ${JSON.stringify(taskResponse)},
             clientMutationId: "1",
-            file_upload:"${files[0]}"
+            claim: "test add"
           }) {
             project_media {
               title
