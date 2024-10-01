@@ -40,7 +40,7 @@ export class CheckClientHelperService{
             }
           }
         }
-      }` 
+      }`
     }
 
     buildGetMeedanReportQuery(id: string){
@@ -50,9 +50,9 @@ export class CheckClientHelperService{
            data
          }
        }
-     }` 
+     }`
    }
-    
+
     buildCreateItemMutation(url: string, folderId: number, set_tasks_responses: string, tags: string[]): string{
         const mutation = `mutation create{
             createProjectMedia(input: {
@@ -72,10 +72,11 @@ export class CheckClientHelperService{
 
     }
 
-    buildCreateItemFromWPMutation(url: string, content: string, wp_key = 'message_from_website', tags: string[]): string{
+    buildCreateItemFromWPMutation(url: string, content: string, files?:string[] ,wp_key = 'message_from_website', tags?: any): string{
       const folderId = +process.env.CHECK_TIPLINE_FOLDER_ID;
       const taskResponse = JSON.stringify({
-        [wp_key]: content
+        [wp_key]: content,
+        ['file uploads'] : files
       })
       const mutation = `mutation create{
           createProjectMedia(input: {
@@ -97,12 +98,12 @@ export class CheckClientHelperService{
 
     buildTasksResponses(toxicityScores: ToxicityScores){
         return JSON.stringify({
-          detoxify_score: toxicityScores.toxicity, 
-          detoxify_severe_toxicity_score: toxicityScores.severe_toxicity, 
-          detoxify_obscene_score: toxicityScores.obscene, 
-          detoxify_identity_attack_score: toxicityScores.identity_attack, 
-          detoxify_insult_score: toxicityScores.insult, 
-          detoxify_threat_score: toxicityScores.threat, 
+          detoxify_score: toxicityScores.toxicity,
+          detoxify_severe_toxicity_score: toxicityScores.severe_toxicity,
+          detoxify_obscene_score: toxicityScores.obscene,
+          detoxify_identity_attack_score: toxicityScores.identity_attack,
+          detoxify_insult_score: toxicityScores.insult,
+          detoxify_threat_score: toxicityScores.threat,
           detoxify_sexual_explicit_score: toxicityScores.sexual_explicit
         })
     }
@@ -227,7 +228,7 @@ export class CheckClientHelperService{
 
     formatAllAgentsResponse(response: any){
       const isValid = response && response.team && response.team.users && response.team.users.edges;
-      if(!isValid) return [] 
+      if(!isValid) return []
       const edges = response.team.users.edges;
       return edges.reduce((acc, val) => {
         const node = val.node;
@@ -256,7 +257,7 @@ export class CheckClientHelperService{
 
     formatAllProjectsResponse(response: any){
       const isValid = response && response.team && response.team.projects && response.team.projects.edges;
-      if(!isValid) return [] 
+      if(!isValid) return []
       const edges = response.team.projects.edges;
       return edges.reduce((acc, val) => {
         const node = val.node;
@@ -288,7 +289,7 @@ export class CheckClientHelperService{
             end_time: endDate
           }
         },
-        archived: 0    
+        archived: 0
       });
 
       return `query {
@@ -323,7 +324,7 @@ export class CheckClientHelperService{
     }
 
     buildTicketsByTagQuery(tag) {
-      
+
       const searchQuery = JSON.stringify({
         tags: [tag],
         archived: 0

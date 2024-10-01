@@ -22,8 +22,9 @@ class SubmitStoryDto {
       type: 'string',
       format: 'binary',
     },
+    required: false,
   })
-  files: any[];
+  files?: any[];
 }
 
 @Controller()
@@ -36,9 +37,10 @@ export class AppController {
   async submitStory(@Body() body){
     const {url, content, secret , files} = body;
     console.log('Submit story', files)
-    if(secret !== '1v3r1fy') return new HttpException('Not authorized.', 403);
+    const secretEnv = process.env.SECRET_ENV || '1v3r1fy';
+    if(secret !== secretEnv ) return new HttpException('Not authorized.', 403);
     try {
-      return await this.appService.createItemFromWp(url, content)
+      return await this.appService.createItemFromWp(url, content ,files)
     }catch(e){
       return new HttpException(e.message, 500)
     }

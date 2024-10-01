@@ -6,12 +6,12 @@ import { CheckClientHelperService } from './helper.service';
 import { ToxicityScores } from './interfaces/toxicity-scores';
 
 @Injectable()
-export class MeedanCheckClientService {    
+export class MeedanCheckClientService {
 
   private readonly logger = new Logger('MeedanCheckClient');
 
     constructor(
-      private http: HttpService, 
+      private http: HttpService,
       private config: CheckClientConfig,
       private helper: CheckClientHelperService
       ){}
@@ -69,16 +69,15 @@ export class MeedanCheckClientService {
       map(res => res.data),
       retry(3),
       catchError(err => {
-        console.log(err)
-        this.logger.error('Error creating item: ', err);
+        this.logger.error('Error creating item: ', err.message);
         return of({error: err.message, url})
         // throw new HttpException(err.message, 500);
       })
     );
   }
 
-  createItemFromWp(url: string, content: string, wp_key='message_from_website'): Observable<any>{
-    const query: string = this.helper.buildCreateItemFromWPMutation(url, content, wp_key, [this.config.checkWebTag]);
+  createItemFromWp(url: string, content: string, files?:any , wp_key='message_from_website'): Observable<any>{
+    const query: string = this.helper.buildCreateItemFromWPMutation(url, content, files ,wp_key, [this.config.checkWebTag]);
     console.log('query: ', query)
     const headers = this.config.headers;
     console.log('headers: ', headers)
@@ -94,5 +93,5 @@ export class MeedanCheckClientService {
     );
   }
 
-  
+
 }
