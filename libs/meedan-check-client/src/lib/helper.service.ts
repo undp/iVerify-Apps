@@ -75,15 +75,15 @@ export class CheckClientHelperService{
     buildCreateItemFromWPMutation(url: string, content: string, files?:string[] ,wp_key = 'message_from_website', tags?: any): string{
       const folderId = +process.env.CHECK_TIPLINE_FOLDER_ID;
       const taskResponse = JSON.stringify({
-        [wp_key]: content,
-        ['file uploads'] : files
+        [wp_key]: content
       })
       const mutation = `mutation create{
           createProjectMedia(input: {
             set_tags: ["${tags.join('", "')}"],
             url: "${url}",
             set_tasks_responses: ${JSON.stringify(taskResponse)},
-            clientMutationId: "1"
+            clientMutationId: "1",
+            file_upload:"${files[0]}"
           }) {
             project_media {
               title
