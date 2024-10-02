@@ -110,11 +110,11 @@ export class AppService {
     }, false)
   }
 
-  async createItemFromWp(url: string, content: string, files?: any){
+  async createItemFromWp(url: string, content: string, files?: string[] , email?: string){
     const lang = process.env && process.env.language ? process.env.language : 'en';
     let wp_key = this.translate.get('message_from_website', lang);
     if(!wp_key) wp_key = 'message_from_website';
-    return await this.checkClient.createItemFromWp(url.trim(), content,wp_key,files);
+    return await this.checkClient.createItemFromWp(url.trim(), content,files,email,wp_key);
   }
 
   private async mlAnalyze(text: string){

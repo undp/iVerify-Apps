@@ -25,6 +25,9 @@ class SubmitStoryDto {
     required: false,
   })
   files?: any[];
+
+  @ApiProperty()
+  email: string;
 }
 
 @Controller()
@@ -35,12 +38,12 @@ export class AppController {
   @ApiTags('Submit story')
   @ApiBody({ type: SubmitStoryDto })
   async submitStory(@Body() body){
-    const {url, content, secret , files} = body;
-    console.log('Submit story', files)
+    const {url, content, secret , files , email} = body;
+    console.log('Submit story', body)
     const secretEnv = process.env.SECRET_ENV || '1v3r1fy';
     if(secret !== secretEnv ) return new HttpException('Not authorized.', 403);
     try {
-      return await this.appService.createItemFromWp(url, content ,files)
+      return await this.appService.createItemFromWp(url, content ,files , email)
     }catch(e){
       return new HttpException(e.message, 500)
     }
