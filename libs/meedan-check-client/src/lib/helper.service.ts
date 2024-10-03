@@ -143,36 +143,6 @@ export class CheckClientHelperService {
     return mutation;
   }
 
-  buildAnnotationItemFromWpMutation(
-    id2: string,
-    type: string,
-    set_field: string,
-    value1: string,
-    node?: string,
-    count?: number
-  ): string {
-    const clientMutationId = '2';
-    const id = 'VGFzay8zOTA5ODIxOA==';
-    const response = JSON.stringify({
-      annotation_type: 'task_response_free_text',
-      set_fields: {
-        response_free_text: 'abc@gmail.com',
-      },
-    });
-
-    const query = `updateTask(input: {
-                  clientMutationId: "2",
-                  id: "VGFzay8zOTA5ODIxOA==",
-                  response: ${response}
-              }) {
-                  task {
-                      id
-                  }
-              }`;
-
-    return query;
-  }
-
   buildTasksResponses(toxicityScores: ToxicityScores) {
     return JSON.stringify({
       detoxify_score: toxicityScores.toxicity,

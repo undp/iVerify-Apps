@@ -106,22 +106,40 @@ export class MeedanCheckClientService {
     const headers = this.config.headers;
     const isWpNewDesignOrNot = process.env.IS_WP_NEW_DESIGN ?? false;
 
+    // Send the initial post request
     const createMediaResponse = this.postData(query, headers);
 
+    // If the WP design is not new, return the response directly
     if (!isWpNewDesignOrNot) {
-      return this.handleResponse(createMediaResponse);
+      return createMediaResponse;
     }
 
+    // Process response and additional requests if WP design is new
     return createMediaResponse.pipe(
-      switchMap((response) =>
-        {
-          // Log the data to check if it has the expected structure
-          console.log('Response data from createMediaResponse:', response.data);
+      switchMap((response) => {
+        // Check if the response contains an error before proceeding
+        if (response.error) {
+          this.logger.error('Error in createMediaResponse:', response.error);
+          return of({ error: response.error });
+        }
 
-          // Proceed with processing additional requests
-          return this.processAdditionalRequests(response.data, email, files, headers);
-      }
-      )
+        // Log the data structure to check if it's as expected
+        console.log('Response data from createMediaResponse:', response.data);
+
+        // Ensure the response data is in the expected structure
+        if (!response.data || !response.data.createProjectMedia) {
+          this.logger.error('Unexpected response structure:', response);
+          return of({ error: 'Unexpected response structure' });
+        }
+
+        // Process additional requests for email and files
+        return this.processAdditionalRequests(response.data, email, files, headers);
+      }),
+      catchError((err) => {
+        // Catch and log any errors during the request processing
+        this.logger.error('Error in createItemFromWp:', err.message);
+        return of({ error: err.message });
+      })
     );
   }
 
@@ -171,8 +189,8 @@ export class MeedanCheckClientService {
         updateItemQuery.push({
           id: id,
           value: files[count - 1],
-          type: 'task_response_free_text',
-          set_field: 'response_free_text',
+          type: 'task_response_free_file_upload',
+          set_field: 'response_file_upload',
         });
       }
     }
