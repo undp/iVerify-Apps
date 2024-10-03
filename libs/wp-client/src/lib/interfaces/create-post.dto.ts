@@ -38,6 +38,7 @@ export interface PostFields{
     toxic: number
     subtitle: string
     _webdados_fb_open_graph_specific_image?: string
+    category: string
 }
 export interface CreatePostDto{
     date?: string
