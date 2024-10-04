@@ -15,12 +15,14 @@ export class S3Service {
     });
   }
 
-  async uploadFile(bucketName: string, fileName: string, fileContent: Buffer): Promise<string> {
+  async uploadFile(bucketName: string, fileName: string, fileContent: Buffer , mimeType:string,fileExtension:string): Promise<string> {
     const commandInput: PutObjectCommandInput = {
       Bucket: bucketName,
-      Key: fileName,
+      Key: `${fileName}.${fileExtension}`,
       Body: fileContent,
       ACL: 'public-read', // Set public access
+      ContentEncoding: 'base64',
+      ContentType: mimeType
     };
 
     const command = new PutObjectCommand(commandInput);

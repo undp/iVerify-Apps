@@ -290,8 +290,15 @@ export class MeedanCheckClientService {
     )
   }
 
-  async uploadFile(bucketName: string, fileName: string, fileContent: Buffer ) {
-    const fileUrl = await this.s3Service.uploadFile(bucketName, fileName, fileContent);
+  async uploadFile(bucketName: string, fileName: string, base64File: string ) {
+    const mimeTypeMatch = base64File.match(/^data:(.*?);base64,/);
+    if (!mimeTypeMatch) {
+      throw new Error('Invalid Base64 file format');
+    }
+    const mimeType = mimeTypeMatch[1];
+    const fileExtension = mimeType.split('/')[1]; // Get the extension (e.g., jpeg, png, pdf)
+    const buffer = Buffer.from(base64File.replace(/^data:.*;base64,/, ''), 'base64');
+    const fileUrl = await this.s3Service.uploadFile(bucketName, fileName, buffer, mimeType,fileExtension);
     return { fileUrl };
   }
 }
