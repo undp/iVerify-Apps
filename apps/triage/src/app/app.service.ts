@@ -53,7 +53,6 @@ export class AppService {
         this.logger.log('Creating item...')
         const item = await this.checkClient.createItemFromRadio(post?.clip_url, post?.clip_name, post?.source_text).toPromise();
         console.log('item: ', item)
-        break;
         if(!item.error) createdItems = [...createdItems, item];
       }
       this.logger.log(`Created ${createdItems.length} items.`)
