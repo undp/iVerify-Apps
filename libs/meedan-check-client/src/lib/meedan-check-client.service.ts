@@ -60,7 +60,7 @@ export class MeedanCheckClientService {
     const headers = this.config.headers;
     const query = this.helper.buildGetLatestFromTagQuery(tag);
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
-      map(res => res?.data),
+      map(res => res),
       retry(3),
       catchError(err => {
         this.logger.error('Error getting report by id: ', err.message)
