@@ -6,17 +6,11 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import * as fs from 'fs';
+
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
-  const httpsOptions = {
-    key: fs.readFileSync('../../../ssl/private.pem '),
-    cert: fs.readFileSync('../../../ssl/certificate.pem'),
-  };
-  const app = await NestFactory.create(AppModule ,{
-    httpsOptions,
-  });
+  const app = await NestFactory.create(AppModule);
   app.enableCors();
   const globalPrefix = 'publisher';
   app.setGlobalPrefix(globalPrefix);
