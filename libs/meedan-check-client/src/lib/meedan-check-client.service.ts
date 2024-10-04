@@ -205,7 +205,7 @@ export class MeedanCheckClientService {
         const url = await this.uploadFile(bucketName,files[count-1].name ,files[count-1].content );
         updateItemQuery.push({
           id: id,
-          value: url,
+          value: url.fileUrl,
           type: 'task_response_free_text',
           set_field: 'response_free_text',
         });
