@@ -28,9 +28,16 @@ export class AppService {
       this.logger.log('Radio messages feature disabled')
       return
     }
-    const lastMeedanReport = await this.checkClient.getLatestMeedanReport(this.config.checkRadioTag).toPromise()
-    this.logger.log('Latest Meedan Radio Report', JSON.stringify(lastMeedanReport))
-
+    let lastMeedanReport;
+    
+    try {
+      lastMeedanReport = await this.checkClient.getLatestMeedanReport(this.config.checkRadioTag).toPromise()
+      this.logger.log('Latest Meedan Radio Report', JSON.stringify(lastMeedanReport))
+    } catch(e){
+      this.logger.error('Latest Meedan Radio Report failed', e.message)
+      return;
+    }
+   
     let startTime = undefined
     if (lastMeedanReport && lastMeedanReport.length > 0) {
       const epochSeconds = lastMeedanReport[0].node?.created_at
