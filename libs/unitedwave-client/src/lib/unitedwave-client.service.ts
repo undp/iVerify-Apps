@@ -27,10 +27,11 @@ export class UnitedwaveClientService{
 
     
     getPosts(startDate?: Date){
-      let query = this.config.endpoints.search;
+      let query = this.config.endpoints.search + `?user[name]=${this.config.username}&user[secret]=${this.config.password}`;
       if (startDate) {
         query += `&clip[from_date]=${this.formatDate(startDate)}`
       }
+      this.logger.log('Query', query)
       return this.http.get(query).pipe(
           map(res => res.data.result),
           retry(3),
