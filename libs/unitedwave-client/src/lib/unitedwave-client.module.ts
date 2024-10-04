@@ -1,7 +1,11 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { UnitedwaveClientConfig } from './config';
+import { UnitedwaveClientService } from './unitedwave-client.service';
+import { HttpModule, Module } from '@nestjs/common';
 
-@NgModule({
-  imports: [CommonModule],
+@Module({
+  imports: [HttpModule],
+  controllers: [],
+  providers: [UnitedwaveClientService, UnitedwaveClientConfig],
+  exports: [UnitedwaveClientService], 
 })
 export class UnitedwaveClientModule {}
