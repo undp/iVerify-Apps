@@ -13,13 +13,14 @@ import { PerspectiveClientModule } from '@iverify/perspective-client/src';
 import { UnitedwaveClientModule } from '@iverify/unitedwave-client';
 import { ApiClientModule, ApiClientService } from '@iverify/api-client/src';
 import { TranslateService } from './TranslateService/TranslateService';
+import { S3Module } from '@iverify/s3/src/lib/s3.module';
 @Module({
   imports: [
-    HttpModule, 
-    CrowdtangleClientModule, 
-    MlServiceClientModule, 
+    HttpModule,
+    CrowdtangleClientModule,
+    MlServiceClientModule,
     PerspectiveClientModule,
-    MeedanCheckClientModule, 
+    MeedanCheckClientModule,
     UnitedwaveClientModule,
     ApiClientModule,
     ScheduleModule.forRoot()

@@ -73,6 +73,12 @@
     },
     "unitedwave-client": {
       "tags": []
+    },
+    "libs-s3": {
+      "tags": []
+    },
+    "s3": {
+      "tags": []
     }
   }
 }
