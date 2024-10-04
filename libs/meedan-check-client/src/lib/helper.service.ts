@@ -484,7 +484,6 @@ export class CheckClientHelperService {
     }
 
     buildGetLatestFromTagQuery(tag: string) {
-
       return `query {
         search(query: "{\\"tags\\": [\\"${tag}\\"]}") {
           number_of_results
