@@ -484,8 +484,13 @@ export class CheckClientHelperService {
     }
 
     buildGetLatestFromTagQuery(tag: string) {
+
+      const searchQuery = JSON.stringify({
+        tags: [tag],
+      })
+
       return `query {
-        search(query: "{\"tags\": [\"${tag}\"]}") {
+        search(query: ${JSON.stringify(searchQuery)}) {
           number_of_results
               medias(first: 1) {
                 edges {
