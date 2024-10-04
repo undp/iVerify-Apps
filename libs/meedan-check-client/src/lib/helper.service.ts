@@ -486,16 +486,18 @@ export class CheckClientHelperService {
     buildGetLatestFromTagQuery(tag: string) {
       return `query {
         search(query: "${tag}") {
-          number_of_results
-              medias {
-                edges {
-                  node {
-                      title,
-                      status,
-                      created_at
+              number_of_results
+                medias(first: 1) {
+                  edges {
+                    node {
+                        title,
+                        status,
+                        created_at
+                    }
                   }
+                
                 }
-              }
+          }
         }
       }`
     }
