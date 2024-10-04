@@ -39,7 +39,7 @@ export class AppService {
    
     let startTime = undefined
     if (meedanResp) {
-      const lastMeedanReport = meedanResp?.data?.data?.search?.medias?.edges
+      const lastMeedanReport = meedanResp?.data?.search?.medias?.edges
       const epochSeconds = lastMeedanReport[0].node?.created_at
       startTime = new Date(epochSeconds * 1000);
     }
