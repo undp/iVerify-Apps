@@ -24,6 +24,10 @@ export class AppService {
     ){}
 
   async pullRadioMessages(): Promise<number> {
+    if (this.config.enableRadioMessages != 'true') {
+      this.logger.log('Radio messages feature disabled')
+      return
+    }
     const lastMeedanReport = await this.checkClient.getLatestMeedanReport(this.config.checkRadioTag).toPromise()
     this.logger.log('Latest Meedan Radio Report', JSON.stringify(lastMeedanReport))
 
