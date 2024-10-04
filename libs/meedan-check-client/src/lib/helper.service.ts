@@ -82,15 +82,17 @@ export class CheckClientHelperService {
     }
 
     buildCreateItemFromRadioMessage(url: string, name: string, content: string, tag: string = 'Radio'): string{
+
+      const escapedMessage = JSON.stringify(content).slice(1, -1); // Removes surrounding quotes
+
       return `
         mutation {
           createProjectMedia(
             input: {
-              set_tags: ["${tag}"],
-              set_tasks_responses: "{\"audio_url\":\"${url}\",\"message\":\"${this.escapeDoubleQuotes(content)}\"}",
-              media_type: "Claim",
-              set_claim_description: "${this.escapeDoubleQuotes(content)}",
-              url: "",
+            set_tags: ["${tag}"],
+            set_tasks_responses: "{\"audio_url\":\"${url}\",\"message\":\"${escapedMessage}\"}",
+            media_type: "Claim",
+                url: "",
               quote: "${name}"
             }
           ) {
