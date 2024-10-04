@@ -33,7 +33,7 @@ export class UnitedwaveClientService{
       }
       this.logger.log('Query', query)
       return this.http.post(query).pipe(
-          map(res => res.data.result),
+          map(res => res.data),
           retry(3),
           catchError(err => {
               this.logger.error(`Error fetching posts: `, err.message);

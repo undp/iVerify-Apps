@@ -19,7 +19,7 @@ export class CronService{
     //     return await this.analyze(startDate, endDate);
     // }
     
-    @Cron("*/10 * * * *")
+    @Cron(CronExpression.EVERY_5_MINUTES)
     async handleCron(){
         const start = new Date();
         const startDate = start.toISOString();
