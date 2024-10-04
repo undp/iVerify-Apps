@@ -171,7 +171,7 @@ export class MeedanCheckClientService {
       : of(null);
     const filesRequest =
       files && files.length > 0
-        ? this.handleFiles(files, annotationList, headers)
+        ? this.handleFiles(files, headers,annotationList)
         : of(null);
 
     return forkJoin([emailRequest, filesRequest]).pipe(
@@ -187,6 +187,7 @@ export class MeedanCheckClientService {
   }
 
   private getAnnotationId(annotationList: any[], label: string): string {
+    console.log('getAnnotationId', annotationList)
     return annotationList
       .filter((edge) => edge.node.label === label)
       .map((edge) => edge.node.id)
