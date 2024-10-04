@@ -76,29 +76,32 @@ export class CheckClientHelperService {
 
     }
 
-    buildCreateItemFromRadioMessage(url: string, name: string, content: string): string{
-      const set_tasks_responses = JSON.stringify({
-        "audio_url": url,
-        "message": content,
-      })
-      const mutation = `mutation  {
-            createProjectMedia(input: {
-              set_tags: ["Radio"],
-              set_tasks_responses:${JSON.stringify(set_tasks_responses)},
-              media_type:"Claim",
-              set_claim_description:${content},
-              url:"",
-              quote:${name}
-              }) {
-              project_media {
-                dbid
-                id
-              }
-            }
-        }`
-      return mutation;
+    // Utility function to escape double quotes inside a string
+    escapeDoubleQuotes(str: string): string {
+      return str.replace(/"/g, '\\"');
+    }
 
-  }
+    buildCreateItemFromRadioMessage(url: string, name: string, content: string, tag: string = 'Radio'): string{
+      return `
+        mutation {
+          createProjectMedia(
+            input: {
+              set_tags: ["${tag}"],
+              set_tasks_responses: "{\"audio_url\":\"${url}\",\"message\":\"${this.escapeDoubleQuotes(content)}\"}",
+              media_type: "Claim",
+              set_claim_description: "${this.escapeDoubleQuotes(content)}",
+              url: "",
+              quote: "${name}"
+            }
+          ) {
+            project_media {
+              dbid
+              id
+            }
+          }
+        }
+      `;
+    }
 
 
   buildCreateItemFromWPMutation(
