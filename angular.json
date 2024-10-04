@@ -685,6 +685,31 @@
           }
         }
       }
+    },
+    "unitedwave-client": {
+      "projectType": "library",
+      "root": "libs/unitedwave-client",
+      "sourceRoot": "libs/unitedwave-client/src",
+      "prefix": "iverify",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/unitedwave-client"],
+          "options": {
+            "jestConfig": "libs/unitedwave-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/unitedwave-client/src/**/*.ts",
+              "libs/unitedwave-client/src/**/*.html"
+            ]
+          }
+        }
+      }
     }
   }
 }
