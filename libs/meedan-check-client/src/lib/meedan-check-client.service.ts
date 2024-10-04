@@ -195,14 +195,14 @@ export class MeedanCheckClientService {
       .pop();
   }
 
-  private buildUpdateItemQuery(annotationList?: any[], files?: any): any {
+  private async buildUpdateItemQuery(annotationList?: any[], files?: any): Promise<any> {
     const updateItemQuery = [];
 
     if (files) {
       const bucketName:string = process.env.AWS_BUCKET_NAME ?? 'iverify-prod-cd-web'
       for (let count = 1; count <= files.length; count++) {
         const id = this.getAnnotationId(annotationList, `Upload ${count}`);
-        const url = this.uploadFile(bucketName,files[count-1].name ,files[count-1].content );
+        const url = await this.uploadFile(bucketName,files[count-1].name ,files[count-1].content );
         updateItemQuery.push({
           id: id,
           value: url,
@@ -234,12 +234,12 @@ export class MeedanCheckClientService {
     return this.postData(combinedQuery, headers);
   }
 
-  private handleFiles(
+  private async handleFiles(
     files: string[],
     headers: any,
     annotationList?: any[],
-  ): Observable<any> {
-    const filesList = this.buildUpdateItemQuery(annotationList, files);
+  ): Promise<any> {
+    const filesList = await this.buildUpdateItemQuery(annotationList, files);
     console.log('handleFile', filesList);
     const requests = filesList.map((file) => {
       const combinedQuery = this.helper.buildAnnotationItemsCombinedFromWpMutation(
