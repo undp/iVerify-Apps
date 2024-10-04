@@ -57,7 +57,8 @@ export class MeedanCheckClientService {
 
   getLatestMeedanReport(tag: string) {
     const headers = this.config.headers;
-    return this.http.post(this.config.checkApiUrl, {this.helper.buildGetLatestFromTagQuery(tag)}, {headers}).pipe(
+    const query = this.helper.buildGetLatestFromTagQuery(tag);
+    return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
       map(res => res?.data?.search?.medias?.edges),
       retry(3),
       catchError(err => {
@@ -282,5 +283,6 @@ export class MeedanCheckClientService {
         return of({error: err.message})
         // throw new HttpException(err.message, 500);
       })
-    }
+    )
+  }
 }
