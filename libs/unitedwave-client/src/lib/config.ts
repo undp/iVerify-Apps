@@ -8,7 +8,7 @@ export class UnitedwaveClientConfig{
     readonly password = process.env.UW_PASSWORD;
 
     readonly endpoints = {
-        search: `${this.apiBase}/search?user[name]=${this.username}&user[secret]=${this.password}`,
+        search: `${this.apiBase}/search`,
     }
 
     
