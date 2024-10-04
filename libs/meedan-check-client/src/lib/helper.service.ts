@@ -485,7 +485,7 @@ export class CheckClientHelperService {
 
     buildGetLatestFromTagQuery(tag: string) {
       return `query {
-        search(query: "${tag}") {
+        search(query: "{\"tags\": [\"${tag}\"]}") {
           number_of_results
               medias(first: 1) {
                 edges {
@@ -498,7 +498,6 @@ export class CheckClientHelperService {
               
               }
         }
-      }
-      `
+      }`
     }
 }

@@ -28,22 +28,23 @@ export class AppService {
       this.logger.log('Radio messages feature disabled')
       return
     }
-    let lastMeedanReport;
-    
+    let meedanResp;
     try {
-      lastMeedanReport = await this.checkClient.getLatestMeedanReport(this.config.checkRadioTag).toPromise()
-      this.logger.log('Latest Meedan Radio Report', JSON.stringify(lastMeedanReport))
+      meedanResp = await this.checkClient.getLatestMeedanReport(this.config.checkRadioTag).toPromise()
+      this.logger.log('Latest Meedan Radio Report', JSON.stringify(meedanResp))
     } catch(e){
       this.logger.error('Latest Meedan Radio Report failed', e.message)
       return;
     }
    
     let startTime = undefined
-    if (lastMeedanReport && lastMeedanReport.length > 0) {
+    if (meedanResp) {
+      const lastMeedanReport = meedanResp?.data?.search?.medias?.edges
       const epochSeconds = lastMeedanReport[0].node?.created_at
       startTime = new Date(epochSeconds * 1000);
     }
     const list = await this.unitedwaveClient.getPosts(startTime).toPromise();
+    this.logger.log('United wave response', JSON.stringify(list))
     let createdItems = [];
       this.logger.log(`${list.length} posts found from radio. Creating Meedan Check items...`);
       for(const post of list){
