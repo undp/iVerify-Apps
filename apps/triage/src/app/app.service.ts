@@ -1,5 +1,6 @@
 import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
 import { CrowdtangleClientService } from 'libs/crowdtangle-client/src/lib/crowdtangle-client.service';
+import { UnitedwaveClientService } from 'libs/unitedwave-client/src/lib/unitedwave-client.service';
 import { MeedanCheckClientService, ToxicityScores } from '@iverify/meedan-check-client';
 import { MlServiceClientService } from 'libs/ml-service-client/src/lib/ml-service-client.service';
 import { TriageConfig } from './config';
@@ -16,11 +17,30 @@ export class AppService {
     private ctClient: CrowdtangleClientService,
     private mlClient: MlServiceClientService,
     private perspectiveClient: PerspectiveClientService,
+    private unitedwaveClient: UnitedwaveClientService,
     private checkClient: MeedanCheckClientService,
     private config: TriageConfig,
     private translate: TranslateService
     ){}
 
+  async pullRadioMessages(): Promise<number> {
+    const lastMeedanReport = await this.checkClient.getLatestMeedanReport(this.config.checkRadioTag).toPromise()
+    this.logger.log('Latest Meedan Radio Report', JSON.stringify(lastMeedanReport))
+
+    const list = await this.unitedwaveClient.getPosts().toPromise();
+    let createdItems = [];
+      this.logger.log(`${list.length} posts found from radio. Creating Meedan Check items...`);
+      for(const post of list){
+        this.logger.log('Creating item...')
+        const item = await this.checkClient.createItemFromRadio(post?.clip_url, post?.clip_name, post?.source_text).toPromise();
+        console.log('item: ', item)
+        break;
+        if(!item.error) createdItems = [...createdItems, item];
+      }
+      this.logger.log(`Created ${createdItems.length} items.`)
+      return createdItems.length;
+  }
+    
   async analyze(startDate: string, endDate: string): Promise<number> {
     try{
       const lists = await this.ctClient.getLists().toPromise();

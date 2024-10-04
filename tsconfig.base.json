@@ -32,7 +32,8 @@
       "@iverify/email": ["libs/email/src/index.ts"],
       "@iverify/perspective-client": ["libs/perspective-client/src/index.ts"],
       "@iverify/shared": ["libs/shared/src/index.ts"],
-      "@iverify/common": ["libs/common/src/index.ts"]
+      "@iverify/common": ["libs/common/src/index.ts"],
+      "@iverify/unitedwave-client": ["libs/unitedwave-client/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

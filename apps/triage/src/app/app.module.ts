@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { TriageConfig } from './config';
 import { CronService } from './cron.service';
 import { PerspectiveClientModule } from '@iverify/perspective-client/src';
+import { UnitedwaveClientModule } from '@iverify/unitedwave-client';
 import { ApiClientModule, ApiClientService } from '@iverify/api-client/src';
 import { TranslateService } from './TranslateService/TranslateService';
 @Module({
@@ -19,6 +20,7 @@ import { TranslateService } from './TranslateService/TranslateService';
     MlServiceClientModule, 
     PerspectiveClientModule,
     MeedanCheckClientModule, 
+    UnitedwaveClientModule,
     ApiClientModule,
     ScheduleModule.forRoot()
   ],

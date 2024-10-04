@@ -71,8 +71,56 @@ export class CheckClientHelperService {
                 id
               }
             }
-          }`;
-    return mutation;
+          }`
+        return mutation;
+
+    }
+
+    buildCreateItemFromRadioMessage(url: string, name: string, content: string): string{
+      const set_tasks_responses = JSON.stringify({
+        "audio_url": url,
+        "message": content,
+      })
+      const mutation = `mutation  {
+            createProjectMedia(input: {
+              set_tags: ["Radio"],
+              set_tasks_responses:${JSON.stringify(set_tasks_responses)},
+              media_type:"Claim",
+              set_claim_description:${content},
+              url:"",
+              quote:${name}
+              }) {
+              project_media {
+                dbid
+                id
+              }
+            }
+        }`
+      return mutation;
+
+  }
+
+    buildCreateItemFromWPMutation(url: string, content: string, wp_key = 'message_from_website', tags: string[]): string{
+      const folderId = +process.env.CHECK_TIPLINE_FOLDER_ID;
+      const taskResponse = JSON.stringify({
+        [wp_key]: content
+      })
+      const mutation = `mutation create{
+          createProjectMedia(input: {
+            set_tags: ["${tags.join('", "')}"],
+            url: "${url}",
+            set_tasks_responses: ${JSON.stringify(taskResponse)},
+            clientMutationId: "1"
+          }) {
+            project_media {
+              title
+              dbid
+              id
+            }
+          }
+        }`
+      return mutation;
+
   }
 
   buildCreateItemFromWPMutation(
@@ -454,6 +502,23 @@ export class CheckClientHelperService {
             }
           }
         }
-      }`;
-  }
+      }`
+    }
+
+    buildGetLatestFromTagQuery(tag: string) {
+      return `query {
+        search(query: "${tag}") {
+          number_of_results
+              medias {
+                edges {
+                  node {
+                      title,
+                      status,
+                      created_at
+                  }
+                }
+              }
+        }
+      }`
+    }
 }

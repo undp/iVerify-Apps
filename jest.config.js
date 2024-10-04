@@ -14,5 +14,6 @@ module.exports = {
     '<rootDir>/libs/perspective-client',
     '<rootDir>/libs/shared',
     '<rootDir>/libs/common',
+    '<rootDir>/libs/unitedwave-client',
   ],
 };

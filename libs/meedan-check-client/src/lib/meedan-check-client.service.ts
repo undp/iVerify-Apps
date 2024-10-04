@@ -55,6 +55,18 @@ export class MeedanCheckClientService {
     );
   }
 
+  getLatestMeedanReport(tag: string) {
+    const headers = this.config.headers;
+    return this.http.post(this.config.checkApiUrl, {this.helper.buildGetLatestFromTagQuery(tag)}, {headers}).pipe(
+      map(res => res?.data?.search?.medias?.edges),
+      retry(3),
+      catchError(err => {
+        this.logger.error('Error getting report by id: ', err.message)
+        throw new HttpException(err.message, 500);
+      })
+    );
+  }
+
   getReportWithQuery(query: string): Observable<any> {
     const headers = this.config.headers;
     return this.http.post(this.config.checkApiUrl, { query }, { headers }).pipe(
@@ -255,4 +267,20 @@ export class MeedanCheckClientService {
       })
     );
   }
+
+  createItemFromRadio(url: string, name: string, content: string): Observable<any>{
+    const query: string = this.helper.buildCreateItemFromRadioMessage(url, name, content);
+    console.log('query: ', query)
+    const headers = this.config.headers;
+    console.log('headers: ', headers)
+
+    return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
+      map(res => res.data),
+      retry(3),
+      catchError(err => {
+        this.logger.error('Error creating item: ', err.message);
+        return of({error: err.message})
+        // throw new HttpException(err.message, 500);
+      })
+    }
 }
