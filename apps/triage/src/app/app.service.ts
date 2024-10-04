@@ -57,7 +57,7 @@ export class AppService {
       this.logger.log(`Created ${createdItems.length} items.`)
       return createdItems.length;
   }
-    
+
   async analyze(startDate: string, endDate: string): Promise<number> {
     try{
       const lists = await this.ctClient.getLists().toPromise();

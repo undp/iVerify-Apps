@@ -4,7 +4,7 @@ import { catchError, map, retry, switchMap, tap } from 'rxjs/operators';
 import { CheckClientConfig } from './config';
 import { CheckClientHelperService } from './helper.service';
 import { ToxicityScores } from './interfaces/toxicity-scores';
-
+import { S3Service } from 'libs/s3/src/lib/s3.service'
 @Injectable()
 export class MeedanCheckClientService {
   private readonly logger = new Logger('MeedanCheckClient');
@@ -12,7 +12,8 @@ export class MeedanCheckClientService {
   constructor(
     private http: HttpService,
     private config: CheckClientConfig,
-    private helper: CheckClientHelperService
+    private helper: CheckClientHelperService,
+    private s3Service: S3Service
   ) {}
 
   getReport(id: string): Observable<any> {
@@ -193,17 +194,19 @@ export class MeedanCheckClientService {
       .pop();
   }
 
-  private buildUpdateItemQuery(annotationList: any[], files?: string[]): any {
+  private buildUpdateItemQuery(annotationList?: any[], files?: any): any {
     const updateItemQuery = [];
 
     if (files) {
+      const bucketName:string = process.env.AWS_BUCKET_NAME ?? 'iverify-prod-cd-web'
       for (let count = 1; count <= files.length; count++) {
         const id = this.getAnnotationId(annotationList, `Upload ${count}`);
+        const url = this.uploadFile(bucketName,files[count-1].name ,files[count-1].content );
         updateItemQuery.push({
           id: id,
-          value: files[count - 1],
-          type: 'task_response_free_file_upload',
-          set_field: 'response_file_upload',
+          value: url,
+          type: 'task_response_free_text',
+          set_field: 'response_free_text',
         });
       }
     }
@@ -232,8 +235,8 @@ export class MeedanCheckClientService {
 
   private handleFiles(
     files: string[],
-    annotationList: any[],
-    headers: any
+    headers: any,
+    annotationList?: any[],
   ): Observable<any> {
     const filesList = this.buildUpdateItemQuery(annotationList, files);
     console.log('handleFile', filesList);
@@ -284,5 +287,10 @@ export class MeedanCheckClientService {
         // throw new HttpException(err.message, 500);
       })
     )
+  }
+
+  async uploadFile(bucketName: string, fileName: string, fileContent: Buffer ) {
+    const fileUrl = await this.s3Service.uploadFile(bucketName, fileName, fileContent);
+    return { fileUrl };
   }
 }

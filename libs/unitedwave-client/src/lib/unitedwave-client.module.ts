@@ -6,6 +6,6 @@ import { HttpModule, Module } from '@nestjs/common';
   imports: [HttpModule],
   controllers: [],
   providers: [UnitedwaveClientService, UnitedwaveClientConfig],
-  exports: [UnitedwaveClientService], 
+  exports: [UnitedwaveClientService],
 })
 export class UnitedwaveClientModule {}

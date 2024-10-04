@@ -15,5 +15,7 @@ module.exports = {
     '<rootDir>/libs/shared',
     '<rootDir>/libs/common',
     '<rootDir>/libs/unitedwave-client',
+    '<rootDir>/libs/libs/s3',
+    '<rootDir>/libs/s3',
   ],
 };

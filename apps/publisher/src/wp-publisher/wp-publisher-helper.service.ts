@@ -20,15 +20,15 @@ export class WpPublisherHelper{
 
 
     buildPostFromReport(
-        report: any, 
+        report: any,
         meedanReport: any,
-        // categories: number[], 
+        // categories: number[],
         author: number,
         media: number,
         tags: number[],
         categories: number[],
         visualCard: string): CreatePostDto{
-        
+
         const status = PostStatus.publish;
         const comment_status = CommentStatus.open;
         const format = PostFormat.standard;
@@ -48,9 +48,10 @@ export class WpPublisherHelper{
         const evidence = this.sharedHelper.extractTask(report, TasksLabels[this.lang].evidences_and_references);
         const evidence_and_references = this.formatEvidence(evidence);
         const _webdados_fb_open_graph_specific_image = visualCard;
-        const fields: PostFields = {check_id, factchecking_status, claim, rating_justification, evidence_and_references, subtitle, toxic};
+        const category = this.sharedHelper.extractTask(report, TasksLabels[this.lang].category_checked);
+        const fields: PostFields = {check_id, factchecking_status, claim, rating_justification, evidence_and_references, subtitle, toxic,category};
         console.log('visual card url: ', _webdados_fb_open_graph_specific_image)
-    
+
         const post: CreatePostDto = {
           format,
           author,
@@ -67,7 +68,7 @@ export class WpPublisherHelper{
         if(!post.featured_media) delete post.featured_media;
 
         return post;
-    }    
+    }
 
     extractFactcheckingStatus(report: any){
       return this.sharedHelper.extractFactcheckingStatus(report);
@@ -101,14 +102,14 @@ export class WpPublisherHelper{
       //     if (word.startsWith('http://') || word.startsWith('https://') || word.startsWith('www.')) {
       //         word = `<a href=${word} target="_blank" rel="noopener noreferrer">${word}</a>`
       //     }
-          
+
       //     updated_test += (word + ' ')
       // }
 
       try {
         const converter = new showdown.Converter({simplifiedAutoLink: true, simpleLineBreaks: true, openLinksInNewWindow: true, emoji: true});
         converter.setFlavor('github');
-        return converter.makeHtml(evidence); 
+        return converter.makeHtml(evidence);
       } catch (err) {
         return evidence;
       }

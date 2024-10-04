@@ -51,7 +51,7 @@ export class EmailService {
       subject: `Daily iVerify publications - ${env}`,
       text: 'CSV report',
       attachments: [
-        {   
+        {
             filename: `iverify-publications-${date}.csv`,
             content: csv
         },

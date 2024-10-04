@@ -1,5 +1,3 @@
-
-
 export const TasksLabels = {
     en: {
         claim: 'Claim',
@@ -37,8 +35,8 @@ export const TasksLabels = {
         status_out_of_scope: 'Out of scope',
         status_partly_false: 'Partly false',
         status_inconclusive: 'Inconclusive',
-        status_pre_checked: 'Pre-checked'
-
+        status_pre_checked: 'Pre-checked',
+        category_checked:'Category'
     },
     es: {
         claim: 'Declaración',
@@ -76,7 +74,8 @@ export const TasksLabels = {
         status_out_of_scope: 'Fuera de perspectiva',
         status_partly_false: 'Sostenible',
         status_inconclusive: 'No confirmado',
-        status_pre_checked: 'Pre-comprobado'
+        status_pre_checked: 'Pre-comprobado',
+        category_checked:'Category'
     },
     fr: {
         claim: 'Affirmation',
@@ -114,7 +113,8 @@ export const TasksLabels = {
         status_out_of_scope: 'Out of scope',
         status_partly_false: 'A Moitié Vrai',
         status_inconclusive: 'Non Prouvé',
-        status_pre_checked: 'PRÉ-VÉRIFIÉ'
+        status_pre_checked: 'PRÉ-VÉRIFIÉ',
+        category_checked:'Category'
     },
     mkd: {
       claim: 'Тврдење',
@@ -152,6 +152,7 @@ export const TasksLabels = {
       status_out_of_scope: 'Надвор од опсег',
       status_partly_false: 'Делумно неточно',
       status_inconclusive: 'Не може да се донесе заклучок',
-      status_pre_checked: 'Однапред проверено'
+      status_pre_checked: 'Однапред проверено',
+      category_checked:'Category'
   },
 }
