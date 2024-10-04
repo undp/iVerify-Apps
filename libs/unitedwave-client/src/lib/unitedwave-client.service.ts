@@ -32,7 +32,7 @@ export class UnitedwaveClientService{
         query += `&clip[from_date]=${this.formatDate(startDate)}`
       }
       this.logger.log('Query', query)
-      return this.http.get(query).pipe(
+      return this.http.post(query).pipe(
           map(res => res.data.result),
           retry(3),
           catchError(err => {

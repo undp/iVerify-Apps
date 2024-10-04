@@ -31,7 +31,12 @@ export class AppService {
     const lastMeedanReport = await this.checkClient.getLatestMeedanReport(this.config.checkRadioTag).toPromise()
     this.logger.log('Latest Meedan Radio Report', JSON.stringify(lastMeedanReport))
 
-    const list = await this.unitedwaveClient.getPosts().toPromise();
+    let startTime = undefined
+    if (lastMeedanReport && lastMeedanReport.length > 0) {
+      const epochSeconds = lastMeedanReport[0].node?.created_at
+      startTime = new Date(epochSeconds * 1000);
+    }
+    const list = await this.unitedwaveClient.getPosts(startTime).toPromise();
     let createdItems = [];
       this.logger.log(`${list.length} posts found from radio. Creating Meedan Check items...`);
       for(const post of list){
