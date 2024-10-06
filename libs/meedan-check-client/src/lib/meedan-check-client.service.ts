@@ -107,10 +107,10 @@ export class MeedanCheckClientService {
   createItemFromWp(
     url: string,
     content: string,
-    files?: string[],
+    files?: any,
     email?: string,
     wp_key = 'message_from_website'
-  ): Observable<any> {
+  ): any {
     const query: string = this.helper.buildCreateItemFromWPMutation(
       url,
       content,
@@ -160,7 +160,7 @@ export class MeedanCheckClientService {
   private processAdditionalRequests(
     data: any,
     email: string | undefined,
-    files: string[] | undefined,
+    files: any | undefined,
     headers: any
   ): Observable<any> {
     console.log('createMediaResponse', data.createProjectMedia);
@@ -202,7 +202,7 @@ export class MeedanCheckClientService {
       const bucketName:string = process.env.AWS_BUCKET_NAME ?? 'iverify-prod-cd-web'
       for (let count = 1; count <= files.length; count++) {
         const id = this.getAnnotationId(annotationList, `Upload ${count}`);
-        const url = await this.uploadFile(bucketName,files[count-1].name ,files[count-1].content );
+        const url:any = await this.uploadFile(bucketName,files[count-1] );
         updateItemQuery.push({
           id: id,
           value: url.fileUrl,
@@ -290,15 +290,10 @@ export class MeedanCheckClientService {
     )
   }
 
-  async uploadFile(bucketName: string, fileName: string, base64File: string ) {
-    const mimeTypeMatch = base64File.match(/^data:(.*?);base64,/);
-    if (!mimeTypeMatch) {
-      throw new Error('Invalid Base64 file format');
-    }
-    const mimeType = mimeTypeMatch[1];
-    const fileExtension = mimeType.split('/')[1]; // Get the extension (e.g., jpeg, png, pdf)
-    const buffer = Buffer.from(base64File.replace(/^data:.*;base64,/, ''), 'base64');
-    const fileUrl = await this.s3Service.uploadFile(bucketName, fileName, buffer, mimeType,fileExtension);
+  async uploadFile(bucketName: string, file) {
+    const { originalname, buffer } = file;
+    const fileKey = `12344-${originalname}`;
+    const fileUrl = await this.s3Service.uploadFile(bucketName, originalname, buffer, file.mimetype,fileKey);
     return { fileUrl };
   }
 }

@@ -36,7 +36,7 @@ export class AppService {
       this.logger.error('Latest Meedan Radio Report failed', e.message)
       return;
     }
-   
+
     let startTime = undefined
     if (meedanResp) {
       const lastMeedanReport = meedanResp?.data?.search?.medias?.edges
@@ -148,7 +148,7 @@ export class AppService {
     }, false)
   }
 
-  async createItemFromWp(url: string, content: string, files?: string[] , email?: string){
+  async createItemFromWp(url: string, content: string, files?: any , email?: string){
     const lang = process.env && process.env.language ? process.env.language : 'en';
     let wp_key = this.translate.get('message_from_website', lang);
     if(!wp_key) wp_key = 'message_from_website';
