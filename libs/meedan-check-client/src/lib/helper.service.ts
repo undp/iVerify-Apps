@@ -79,15 +79,20 @@ export class CheckClientHelperService {
 
     buildCreateItemFromRadioMessage(url: string, name, content, tag = 'Radio') {
       // Escape special characters for GraphQL
-      const escapedString = JSON.stringify(content);
-      const escapedMessage = escapedString.replace(/"/g, '\\"');
+      // const escapedString = JSON.stringify(content);
+      // const escapedMessage = escapedString.replace(/"/g, '\\"');
     
+      const tasksResponses = JSON.stringify({
+        audio_url: url,
+        message: content
+      })
+
       return `
         mutation {
           createProjectMedia(
             input: {
               set_tags: ["${tag}"],
-              set_tasks_responses: "{\\"audio_url\\":\\"${url}\\",\\"message\\":\\"${escapedMessage}\\"}",
+              set_tasks_responses: ${tasksResponses},
               media_type: "Claim",
               url: "",
               quote: "${name}"
