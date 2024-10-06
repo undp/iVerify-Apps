@@ -76,23 +76,20 @@ export class CheckClientHelperService {
 
     }
 
-    // Utility function to escape double quotes inside a string
-    escapeDoubleQuotes(str: string): string {
-      return str.replace(/"/g, '\\"');
-    }
 
-    buildCreateItemFromRadioMessage(url: string, name: string, content: string, tag: string = 'Radio'): string{
-
-      const escapedMessage = encodeURIComponent(content); // Removes surrounding quotes
-
+    buildCreateItemFromRadioMessage(url: string, name, content, tag = 'Radio') {
+      // Escape special characters for GraphQL
+      const escapedString = JSON.stringify(content);
+      const escapedMessage = escapedString.replace(/"/g, '\\"');
+    
       return `
         mutation {
           createProjectMedia(
             input: {
-            set_tags: ["${tag}"],
-            set_tasks_responses: "{\"audio_url\":\"${url}\",\"message\":\"${escapedMessage}\"}",
-            media_type: "Claim",
-                url: "",
+              set_tags: ["${tag}"],
+              set_tasks_responses: "{\\"audio_url\\":\\"${url}\\",\\"message\\":\\"${escapedMessage}\\"}",
+              media_type: "Claim",
+              url: "",
               quote: "${name}"
             }
           ) {
