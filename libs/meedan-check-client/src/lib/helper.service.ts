@@ -83,7 +83,7 @@ export class CheckClientHelperService {
 
     buildCreateItemFromRadioMessage(url: string, name: string, content: string, tag: string = 'Radio'): string{
 
-      const escapedMessage = JSON.stringify(content).slice(1, -1); // Removes surrounding quotes
+      const escapedMessage = encodeURIComponent(content); // Removes surrounding quotes
 
       return `
         mutation {
