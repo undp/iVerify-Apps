@@ -82,10 +82,12 @@ export class CheckClientHelperService {
       // const escapedString = JSON.stringify(content);
       // const escapedMessage = escapedString.replace(/"/g, '\\"');
     
-      const tasksResponses = JSON.stringify({
+      let tasksResponses = JSON.stringify({
         audio_url: url,
         message: content
       })
+
+      tasksResponses = tasksResponses.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 
       return `
         mutation {
