@@ -77,11 +77,11 @@ export class WpPublisherService{
           this.shared.updateWpPost(wpPost);
           console.log('wpPost-12345', wpPost);
 
-          if (data.postDto.email_address) {
-            this.emailService.submittedFactCheckContent(data.postDto.email_address, 'www.google.com').catch(err => {
+        //  if (data.postDto.email_address) {
+            this.emailService.submittedFactCheckContent('janithr@xeptagon.com', wpPost.link).catch(err => {
               console.error('Error sending post published email:', err);
             });
-          }
+         // }
         }),
         catchError(err => {
           throw new HttpException(err.message, 500);
