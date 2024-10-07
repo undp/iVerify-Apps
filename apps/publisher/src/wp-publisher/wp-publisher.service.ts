@@ -75,13 +75,11 @@ export class WpPublisherService{
       switchMap(data => this.wpClient.publishPost(data.postDto, data.wpPostId).pipe(
         tap(wpPost => {
           this.shared.updateWpPost(wpPost);
-          console.log('wpPost-12345', wpPost);
-
-        //  if (data.postDto.email_address) {
-            this.emailService.submittedFactCheckContent('janithr@xeptagon.com', wpPost.link).catch(err => {
+         if (data.postDto.email_address) {
+            this.emailService.submittedFactCheckContent(data.postDto.email_address, wpPost.link).catch(err => {
               console.error('Error sending post published email:', err);
             });
-         // }
+         }
         }),
         catchError(err => {
           throw new HttpException(err.message, 500);

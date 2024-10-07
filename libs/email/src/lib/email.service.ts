@@ -64,7 +64,7 @@ export class EmailService {
       await this.mailerService.sendMail({
         to: email,
         subject: 'NOTIFICATION EMAIL FOR SUBMITTED FACT-CHECKED CONTENT',
-        template: './templates/email_template',
+        template: './templates/submitted-check',
         context: {
           factCheckedLink,
         },
