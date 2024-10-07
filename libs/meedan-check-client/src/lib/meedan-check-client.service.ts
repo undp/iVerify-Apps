@@ -208,11 +208,11 @@ export class MeedanCheckClientService {
         const url: any = await this.uploadFile(bucketName, files[count - 1]);
 
         // Concatenate the file URL to url_format, adding a newline character after each URL
-        url_format += url.fileUrl + '\n';
+        url_format += ` ${TasksLabels[this.lang].link}` + url.fileUrl + '\n';
       }
       updateItemQuery.push({
         id: id,
-        value: url_format.trim(),
+        value: url_format,
         type: 'task_response_free_text',
         set_field: 'response_free_text',
       });

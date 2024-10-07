@@ -38,7 +38,8 @@ export const TasksLabels = {
         status_pre_checked: 'Pre-checked',
         category_checked:'Category',
         email_address: 'Email Address',
-        upload_file: 'Upload Files'
+        upload_file: 'Upload Files',
+        link: 'Link : '
     },
     es: {
         claim: 'Declaración',
@@ -79,7 +80,8 @@ export const TasksLabels = {
         status_pre_checked: 'Pre-comprobado',
         category_checked:'Category',
         email_address: 'Email Address',
-        upload_file: 'Upload Files'
+        upload_file: 'Upload Files',
+        link: 'Link : '
     },
     fr: {
         claim: 'Affirmation',
@@ -120,7 +122,8 @@ export const TasksLabels = {
         status_pre_checked: 'PRÉ-VÉRIFIÉ',
         category_checked:'Category',
         email_address: 'Email Address',
-        upload_file: 'Upload Files'
+        upload_file: 'Upload Files',
+        link: 'Link : '
     },
     mkd: {
       claim: 'Тврдење',
@@ -161,6 +164,7 @@ export const TasksLabels = {
       status_pre_checked: 'Однапред проверено',
       category_checked:'Category',
       email_address: 'Email Address',
-      upload_file: 'Upload Files'
+      upload_file: 'Upload Files',
+      link: 'Link : '
   },
 }
