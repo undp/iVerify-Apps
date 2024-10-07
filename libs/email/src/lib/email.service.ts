@@ -75,6 +75,6 @@ export class EmailService {
       throw new Error('Email sending failed');
     }
   }
-  }
+
 }
 
