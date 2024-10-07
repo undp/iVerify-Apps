@@ -28,7 +28,7 @@ export class S3Service {
     await this.s3Client.send(command);
 
     // Return the public URL
-    return `https://${bucketName}.s3.amazonaws.com/${fileKey}}`;
+    return `https://${bucketName}.s3.amazonaws.com/${fileKey}`;
   }
 
 }

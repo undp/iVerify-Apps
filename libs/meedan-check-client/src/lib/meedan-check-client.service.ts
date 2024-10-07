@@ -158,12 +158,12 @@ export class MeedanCheckClientService {
     );
   }
 
-  private processAdditionalRequests(
+  private async processAdditionalRequests(
     data: any,
     email: string | undefined,
     files: any | undefined,
     headers: any
-  ): Observable<any> {
+  ): Promise<Observable<any>> {
     console.log('createMediaResponse', data.createProjectMedia);
     const annotationList = data.createProjectMedia.project_media.tasks.edges;
 
@@ -172,9 +172,12 @@ export class MeedanCheckClientService {
       : of(null);
     const filesRequest =
       files && files.length > 0
-        ? this.handleFiles(files, headers,annotationList)
+        ? await this.handleFiles(files, headers,annotationList)
         : of(null);
-    console.log('emailRequest,filesRequest', emailRequest,filesRequest)
+
+    console.log('emailRequest-', emailRequest)
+    console.log('filesRequest', filesRequest)
+
     return forkJoin([emailRequest, filesRequest]).pipe(
       map(([emailResponse, filesResponse]) => ({
         emailResponse,
