@@ -6,10 +6,11 @@ import { CheckClientHelperService } from './helper.service';
 import { ToxicityScores } from './interfaces/toxicity-scores';
 import { S3Service } from 'libs/s3/src/lib/s3.service';
 import { v4 as uuidv4 } from 'uuid';
+import { TasksLabels } from '@iverify/common/src';
 @Injectable()
 export class MeedanCheckClientService {
   private readonly logger = new Logger('MeedanCheckClient');
-
+  lang = process.env.language;
   constructor(
     private http: HttpService,
     private config: CheckClientConfig,
@@ -173,8 +174,7 @@ export class MeedanCheckClientService {
     const filesRequest = files && files.length > 0
     ? from(this.handleFiles(files, headers, annotationList)) // Convert Promise to Observable
     : of(null);
-        console.log('emailRequest', emailRequest)
-        console.log('filesRequest', filesRequest)
+
     return forkJoin([emailRequest, filesRequest]).pipe(
       map(([emailResponse, filesResponse]) => ({
         emailResponse,
@@ -201,16 +201,21 @@ export class MeedanCheckClientService {
 
     if (files) {
       const bucketName:string = process.env.AWS_BUCKET_NAME ?? 'iverify-prod-cd-web'
+      const id = this.getAnnotationId(annotationList, `${TasksLabels[this.lang].upload_file}`);
+      let url_format = '';
       for (let count = 1; count <= files.length; count++) {
-        const id = this.getAnnotationId(annotationList, `Upload ${count}`);
-        const url:any = await this.uploadFile(bucketName,files[count-1] );
-        updateItemQuery.push({
-          id: id,
-          value: url.fileUrl,
-          type: 'task_response_free_text',
-          set_field: 'response_free_text',
-        });
+        // Upload the current file to the bucket and get the file URL
+        const url: any = await this.uploadFile(bucketName, files[count - 1]);
+
+        // Concatenate the file URL to url_format, adding a newline character after each URL
+        url_format += url.fileUrl + '\n';
       }
+      updateItemQuery.push({
+        id: id,
+        value: url_format.trim(),
+        type: 'task_response_free_text',
+        set_field: 'response_free_text',
+      });
     }
 
     return updateItemQuery;
@@ -223,7 +228,7 @@ export class MeedanCheckClientService {
   ): Observable<any> {
     const emailAnnotationId = this.getAnnotationId(
       annotationList,
-      'Email Address'
+      TasksLabels[this.lang].email_address
     );
     const combinedQuery = this.helper.buildAnnotationItemsCombinedFromWpMutation(
       emailAnnotationId,

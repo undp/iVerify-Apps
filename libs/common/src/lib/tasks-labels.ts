@@ -36,7 +36,9 @@ export const TasksLabels = {
         status_partly_false: 'Partly false',
         status_inconclusive: 'Inconclusive',
         status_pre_checked: 'Pre-checked',
-        category_checked:'Category'
+        category_checked:'Category',
+        email_address: 'Email Address',
+        upload_file: 'Upload Files'
     },
     es: {
         claim: 'Declaración',
@@ -75,7 +77,9 @@ export const TasksLabels = {
         status_partly_false: 'Sostenible',
         status_inconclusive: 'No confirmado',
         status_pre_checked: 'Pre-comprobado',
-        category_checked:'Category'
+        category_checked:'Category',
+        email_address: 'Email Address',
+        upload_file: 'Upload Files'
     },
     fr: {
         claim: 'Affirmation',
@@ -114,7 +118,9 @@ export const TasksLabels = {
         status_partly_false: 'A Moitié Vrai',
         status_inconclusive: 'Non Prouvé',
         status_pre_checked: 'PRÉ-VÉRIFIÉ',
-        category_checked:'Category'
+        category_checked:'Category',
+        email_address: 'Email Address',
+        upload_file: 'Upload Files'
     },
     mkd: {
       claim: 'Тврдење',
@@ -153,6 +159,8 @@ export const TasksLabels = {
       status_partly_false: 'Делумно неточно',
       status_inconclusive: 'Не може да се донесе заклучок',
       status_pre_checked: 'Однапред проверено',
-      category_checked:'Category'
+      category_checked:'Category',
+      email_address: 'Email Address',
+      upload_file: 'Upload Files'
   },
 }
