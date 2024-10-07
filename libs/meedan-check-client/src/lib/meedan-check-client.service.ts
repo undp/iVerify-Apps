@@ -127,7 +127,7 @@ export class MeedanCheckClientService {
 
     // If the WP design is not new, return the response directly
     if (!isWpNewDesignOrNot) {
-      return createMediaResponse;
+      return  createMediaResponse;
     }
 
     // Process response and additional requests if WP design is new
@@ -136,25 +136,25 @@ export class MeedanCheckClientService {
         // Check if the response contains an error before proceeding
         if (response.error) {
           this.logger.error('Error in createMediaResponse:', response.error);
-          return of({ error: response.error });
+          return of({ error: response.error , statusCode: 400});
         }
 
         // Log the data structure to check if it's as expected
-        console.log('Response data from createMediaResponse:', response.data);
+        console.log('Response data from createMediaResponse:', response.data.data);
 
         // Ensure the response data is in the expected structure
-        if (!response.data || !response.data.createProjectMedia) {
-          this.logger.error('Unexpected response structure:', response);
-          return of({ error: 'Unexpected response structure' });
+        if (!response?.data?.data || !response?.data?.data.createProjectMedia) {
+          this.logger.error('Unexpected response structure:', response?.data);
+          return of({ error: 'Unexpected response structure' , statusCode: 400});
         }
 
         // Process additional requests for email and files
-        return this.processAdditionalRequests(response.data, email, files, headers);
+        return this.processAdditionalRequests(response?.data?.data, email, files, headers);
       }),
       catchError((err) => {
         // Catch and log any errors during the request processing
         this.logger.error('Error in createItemFromWp:', err.message);
-        return of({ error: err.message });
+        return of({ error: err.message, statusCode: 500 });
       })
     );
   }
@@ -179,10 +179,11 @@ export class MeedanCheckClientService {
       map(([emailResponse, filesResponse]) => ({
         emailResponse,
         filesResponse,
+        statusCode: 201
       })),
       catchError((err) => {
         this.logger.error('Error processing items: ', err.message);
-        return of({ error: err.message });
+        return of({ error: err.message, statusCode: 400 });
       })
     );
   }
@@ -207,8 +208,13 @@ export class MeedanCheckClientService {
         // Upload the current file to the bucket and get the file URL
         const url: any = await this.uploadFile(bucketName, files[count - 1]);
 
-        // Concatenate the file URL to url_format, adding a newline character after each URL
-        url_format += ` ${TasksLabels[this.lang].link}` + url.fileUrl + '\n';
+        // Concatenate the file URL to url_format
+        // For all but the last file, add a comma and a space
+        if (count < files.length) {
+          url_format += url.fileUrl + ', ';
+        } else {
+          url_format += url.fileUrl; // For the last file, don't add a comma
+        }
       }
       updateItemQuery.push({
         id: id,
@@ -262,11 +268,14 @@ export class MeedanCheckClientService {
 
   private postData(query: string, headers: any): Observable<any> {
     return this.http.post(this.config.checkApiUrl, { query }, { headers }).pipe(
-      map((res) => res.data),
+      map((res) => ({
+        data: res.data,
+        statusCode: 201
+      })),
       retry(3),
       catchError((err) => {
         this.logger.error('Error creating item: ', err.message);
-        return of({ error: err.message });
+        return of({ error: err.message, "statusCode":400 });
       })
     );
   }
