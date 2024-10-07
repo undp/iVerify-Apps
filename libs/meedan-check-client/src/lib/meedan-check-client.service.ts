@@ -4,7 +4,8 @@ import { catchError, map, retry, switchMap, tap } from 'rxjs/operators';
 import { CheckClientConfig } from './config';
 import { CheckClientHelperService } from './helper.service';
 import { ToxicityScores } from './interfaces/toxicity-scores';
-import { S3Service } from 'libs/s3/src/lib/s3.service'
+import { S3Service } from 'libs/s3/src/lib/s3.service';
+import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class MeedanCheckClientService {
   private readonly logger = new Logger('MeedanCheckClient');
@@ -173,7 +174,7 @@ export class MeedanCheckClientService {
       files && files.length > 0
         ? this.handleFiles(files, headers,annotationList)
         : of(null);
-
+    console.log('emailRequest,filesRequest', emailRequest,filesRequest)
     return forkJoin([emailRequest, filesRequest]).pipe(
       map(([emailResponse, filesResponse]) => ({
         emailResponse,
@@ -292,8 +293,9 @@ export class MeedanCheckClientService {
 
   async uploadFile(bucketName: string, file) {
     const { originalname, buffer } = file;
-    const fileKey = `12344-${originalname}`;
-    const fileUrl = await this.s3Service.uploadFile(bucketName, originalname, buffer, file.mimetype,fileKey);
+    const sanitizedOriginalname = originalname.replace(/\s+/g, '');
+    const fileKey = `${uuidv4()}-${sanitizedOriginalname}`;
+    const fileUrl = await this.s3Service.uploadFile(bucketName,buffer, file.mimetype,fileKey);
     return { fileUrl };
   }
 }

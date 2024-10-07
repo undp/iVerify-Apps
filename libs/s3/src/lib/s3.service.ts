@@ -15,7 +15,7 @@ export class S3Service {
     });
   }
 
-  async uploadFile(bucketName: string, fileName: string, buffer: Buffer , mimeType:string,fileKey:string): Promise<string> {
+  async uploadFile(bucketName: string,buffer: Buffer , mimeType:string,fileKey:string): Promise<string> {
     const commandInput: PutObjectCommandInput = {
       Bucket: bucketName,
       Key: fileKey,
@@ -28,7 +28,7 @@ export class S3Service {
     await this.s3Client.send(command);
 
     // Return the public URL
-    return `https://${bucketName}.s3.amazonaws.com/${fileName}`;
+    return `https://${bucketName}.s3.amazonaws.com/${fileKey}}`;
   }
 
 }
