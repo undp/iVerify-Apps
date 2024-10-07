@@ -158,26 +158,24 @@ export class MeedanCheckClientService {
     );
   }
 
-  private async processAdditionalRequests(
+  private processAdditionalRequests(
     data: any,
     email: string | undefined,
     files: any | undefined,
     headers: any
-  ): Promise<Observable<any>> {
+  ): Observable<any> {
     console.log('createMediaResponse', data.createProjectMedia);
     const annotationList = data.createProjectMedia.project_media.tasks.edges;
 
-    const emailRequest = email
-      ? this.handleEmail(email, annotationList, headers)
-      : of(null);
+    const emailRequest = email && email.trim() !== '' && this.isValidEmail(email)
+    ? this.handleEmail(email, annotationList, headers)  // Proceed with email handling
+    : of(null)
     const filesRequest =
       files && files.length > 0
-        ? await this.handleFiles(files, headers,annotationList)
+        ? this.handleFiles(files, headers,annotationList)
         : of(null);
-
-    console.log('emailRequest-', emailRequest)
-    console.log('filesRequest', filesRequest)
-
+        console.log('emailRequest', emailRequest)
+        console.log('filesRequest', filesRequest)
     return forkJoin([emailRequest, filesRequest]).pipe(
       map(([emailResponse, filesResponse]) => ({
         emailResponse,
@@ -269,13 +267,6 @@ export class MeedanCheckClientService {
     );
   }
 
-  private handleResponse(response$: Observable<any>): Observable<any> {
-    return response$.pipe(
-      tap((data) => {
-        console.log('createItemFromWp response data:', data);
-      })
-    );
-  }
 
   createItemFromRadio(url: string, name: string, content: string): Observable<any>{
     const query: string = this.helper.buildCreateItemFromRadioMessage(url, name, content);
@@ -300,5 +291,11 @@ export class MeedanCheckClientService {
     const fileKey = `${uuidv4()}-${sanitizedOriginalname}`;
     const fileUrl = await this.s3Service.uploadFile(bucketName,buffer, file.mimetype,fileKey);
     return { fileUrl };
+  }
+
+  private isValidEmail(email: string): boolean {
+    // Regular expression to validate basic email pattern
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);  // Returns true if email is valid, false otherwise
   }
 }
