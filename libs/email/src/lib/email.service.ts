@@ -64,11 +64,22 @@ export class EmailService {
       await this.mailerService.sendMail({
         to: email,
         subject: 'NOTIFICATION EMAIL FOR SUBMITTED FACT-CHECKED CONTENT',
-        template: './templates/submitted-check',
-        context: {
-          factCheckedLink,
-        },
-      });
+        html: `
+        <html>
+          <body style="font-family: Arial, sans-serif; color: #333;">
+            <div style="background-color: #f8f8f8; padding: 20px; border-radius: 10px;">
+              <h2 style="color: #0066cc;">Bonjour</h2>
+              <p>Vous avez récemment souscrit à notre service de notifications pour être informé lorsque du contenu est vérifié par l’equipe iVerify.</p>
+              <p>Nous vous informons que le contenu que vous aviez signalé ou suivi a été fact-checké. Vous pouvez consulter les résultats de notre analyse en suivant le lien ci-dessous :</p>
+              <p><a href="${factCheckedLink}" style="color: #0066cc; text-decoration: none;">${factCheckedLink}</a></p>
+              <p>Nous vous remercions pour votre engagement envers la vérification des informations et vous encourageons à partager ces résultats avec vos contacts sur les réseaux sociaux afin de contribuer à la diffusion d'informations fiables.</p>
+              <br>
+              <p>Cordialement,<br>L’équipe de vérification des faits iVerify</p>
+            </div>
+          </body>
+        </html>
+      `
+    });
       console.log('Email sent successfully');
     } catch (error) {
       console.error('Error sending email:', error);
