@@ -1,5 +1,5 @@
 import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
-import { forkJoin, iif, Observable, of } from 'rxjs';
+import { forkJoin, from, iif, Observable, of } from 'rxjs';
 import { catchError, map, retry, switchMap, tap } from 'rxjs/operators';
 import { CheckClientConfig } from './config';
 import { CheckClientHelperService } from './helper.service';
@@ -170,10 +170,9 @@ export class MeedanCheckClientService {
     const emailRequest = email && email.trim() !== '' && this.isValidEmail(email)
     ? this.handleEmail(email, annotationList, headers)  // Proceed with email handling
     : of(null)
-    const filesRequest =
-      files && files.length > 0
-        ? this.handleFiles(files, headers,annotationList)
-        : of(null);
+    const filesRequest = files && files.length > 0
+    ? from(this.handleFiles(files, headers, annotationList)) // Convert Promise to Observable
+    : of(null);
         console.log('emailRequest', emailRequest)
         console.log('filesRequest', filesRequest)
     return forkJoin([emailRequest, filesRequest]).pipe(
@@ -253,7 +252,7 @@ export class MeedanCheckClientService {
       return this.postData(combinedQuery, headers);
     });
 
-    return forkJoin(requests);
+    return forkJoin(requests).toPromise();
   }
 
   private postData(query: string, headers: any): Observable<any> {
