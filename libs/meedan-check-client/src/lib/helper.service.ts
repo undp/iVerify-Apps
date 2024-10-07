@@ -82,11 +82,8 @@ export class CheckClientHelperService {
         audio_url: url,
         message: content
       };
-      
       let setTasksResponses = JSON.stringify(tasksResponsesObj);
       setTasksResponses = setTasksResponses.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-      
-    
       return `
         mutation {
           createProjectMedia(

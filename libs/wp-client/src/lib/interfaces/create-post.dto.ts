@@ -61,4 +61,5 @@ export interface CreatePostDto{
     fields?: PostFields,
     meta?: any
     _webdados_fb_open_graph_specific_image?: string
+    email_address: string
 }

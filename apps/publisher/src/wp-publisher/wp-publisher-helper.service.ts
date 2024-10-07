@@ -51,7 +51,7 @@ export class WpPublisherHelper{
         const category = this.sharedHelper.extractTask(report, TasksLabels[this.lang].category_checked);
         const fields: PostFields = {check_id, factchecking_status, claim, rating_justification, evidence_and_references, subtitle, toxic,category};
         console.log('visual card url: ', _webdados_fb_open_graph_specific_image)
-
+        const email_address = this.sharedHelper.extractTask(report, TasksLabels[this.lang].email_address);
         const post: CreatePostDto = {
           format,
           author,
@@ -62,7 +62,8 @@ export class WpPublisherHelper{
           tags,
           fields,
           categories,
-          _webdados_fb_open_graph_specific_image
+          _webdados_fb_open_graph_specific_image,
+          email_address
         }
 
         if(!post.featured_media) delete post.featured_media;

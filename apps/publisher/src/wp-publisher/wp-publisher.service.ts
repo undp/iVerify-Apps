@@ -7,6 +7,7 @@ import { combineLatest, from, iif, Observable, of, zip } from "rxjs";
 import { catchError, concatMap, filter, map, reduce, scan, shareReplay, switchMap, take, tap, withLatestFrom } from "rxjs/operators";
 import { SharedService } from "../shared/shared.service";
 import { WpPublisherHelper } from "./wp-publisher-helper.service";
+import { EmailService } from "@iverify/email/src";
 
 @Injectable({ scope: Scope.REQUEST })
 export class WpPublisherService{
@@ -26,7 +27,7 @@ export class WpPublisherService{
         throw new HttpException(err.message, 500);
       })
     )
-    
+
     tagsIds$: Observable<number[]> = this.report$.pipe(
       map(report => this.helper.extractTags(report)),
       switchMap(tags => iif(() => !!tags && !!tags.length, this.tagsIds(tags), of(null))),
@@ -34,7 +35,7 @@ export class WpPublisherService{
         throw new HttpException(err.message, 500);
       })
     )
-    
+
     private mediaId$: Observable<number> = this.meedanReport$.pipe(
         map(report => report.image),
         switchMap(url => this.http.get(url, {responseType: 'arraybuffer'})),
@@ -43,10 +44,10 @@ export class WpPublisherService{
         map(res => res['id']),
         catchError(err => {
           return of(null)
-          // throw new HttpException(err.message, 500); 
+          // throw new HttpException(err.message, 500);
         })
       )
-  
+
     private author$: Observable<number> = this.wpClient.getAppUser().pipe(
       map(user => user.id),
       catchError(err => {
@@ -58,29 +59,42 @@ export class WpPublisherService{
       map(report => report.visual_card_url),
       catchError(err => {
         return of(null)
-        // throw new HttpException(err.message, 500); 
+        // throw new HttpException(err.message, 500);
       })
     )
-    
+
     post$: Observable<any> = combineLatest([this.report$, this.meedanReport$, this.author$, this.mediaId$, this.tagsIds$, this.categoriesIds$, this.visualCard$]).pipe(
-        map(([report, meedanReport, author, media, tags, categories, visualCard]) => this.helper.buildPostFromReport(report, meedanReport, author, media, tags, categories, visualCard)),
-        filter(post => !!post.title.length),
-        take(1),
-        tap(postDto => console.log('sending to WP publication: ', JSON.stringify(postDto))),
-        withLatestFrom(this.wpPostId$),
-        map(([postDto, wpPostId]) => ({postDto, wpPostId})),
-        switchMap(data => this.wpClient.publishPost(data.postDto, data.wpPostId)),
-        tap(wpPost => this.shared.updateWpPost(wpPost)),
+      map(([report, meedanReport, author, media, tags, categories, visualCard]) =>
+        this.helper.buildPostFromReport(report, meedanReport, author, media, tags, categories, visualCard)
+      ),
+      filter(post => !!post.title?.length), // Ensure post has a title
+      take(1),
+      tap(postDto => console.log('sending to WP publication: ', JSON.stringify(postDto))),
+      withLatestFrom(this.wpPostId$),
+      map(([postDto, wpPostId]) => ({ postDto, wpPostId })),
+      switchMap(data => this.wpClient.publishPost(data.postDto, data.wpPostId).pipe(
+        tap(wpPost => {
+          this.shared.updateWpPost(wpPost);
+          console.log('wpPost-12345', wpPost);
+
+          if (data.postDto.email_address) {
+            this.emailService.submittedFactCheckContent(data.postDto.email_address, 'www.google.com').catch(err => {
+              console.error('Error sending post published email:', err);
+            });
+          }
+        }),
         catchError(err => {
           throw new HttpException(err.message, 500);
         })
-      ) 
+      ))
+    );
 
     constructor(
         private http: HttpService,
         private shared: SharedService,
         private wpClient: WpClientService,
-        private helper: WpPublisherHelper
+        private helper: WpPublisherHelper,
+        private emailService: EmailService
     ){}
 
       private tagsIds(tags: string[]): Observable<number[]>{
@@ -106,7 +120,7 @@ export class WpPublisherService{
         //   map(wpTags => tags.filter(tag => wpTags.indexOf(tag.toLowerCase()) === -1)),
         //   tap(wpTags => console.log('new tags: ', wpTags)),
 
-        // ) 
+        // )
         // const newTagsIds$: Observable<number[]> = newTags$.pipe(
         //   switchMap(tags => iif(()=> !!tags.length, this.createManyTags(tags).pipe(map(tag => [tag.id])), of([]))),
         //   reduce((acc, val) => [...acc, ...val], [])
@@ -117,7 +131,7 @@ export class WpPublisherService{
         //     throw new HttpException(err.message, 500);
         //   })
         // )
-    
+
         return tagsIds$;
       }
 
@@ -131,7 +145,7 @@ export class WpPublisherService{
         // const newCategories$: Observable<string[]> = wpCategories$.pipe(
         //   map(wpCategories => wpCategories.map(category => category.name as string)),
         //   map(wpCategories => categories.filter(category => wpCategories.indexOf(category) === -1))
-        // ) 
+        // )
         // const newCategoriesIds$: Observable<number[]> = newCategories$.pipe(
         //   switchMap(categories => iif(()=> !!categories.length, this.createManyCategories(categories).pipe(map(category => [category.id])), of([]))),
         //   scan((acc, val) => [...acc, ...val], [])
@@ -139,12 +153,12 @@ export class WpPublisherService{
         // const categoriesIds$: Observable<number[]> = combineLatest([existingCategoriesIds$, newCategoriesIds$]).pipe(
         //   map(([existingIds, newIds]) => [...existingIds, ...newIds])
         // )
-    
+
         return existingCategoriesIds$;
       }
 
       private createManyTags(tags: string[]): Observable<any>{
-        const tagsDtos: CreateTagDto[] = tags.map(tag => ({name: tag})) 
+        const tagsDtos: CreateTagDto[] = tags.map(tag => ({name: tag}))
         return from(tagsDtos).pipe(
           tap(tag => console.log('sending tag to creation: ', tag)),
           concatMap(tag => this.createSingleTag(tag)),
@@ -152,18 +166,18 @@ export class WpPublisherService{
           reduce((acc, item) => [...acc, item], [])
         )
       }
-    
+
       private createSingleTag(tag: CreateTagDto): Observable<any>{
         return this.wpClient.createTag(tag)
       }
-    
+
       private createManyCategories(categories: string[]): Observable<any>{
-        const categoriesDtos: CreateCategoryDto[] = categories.map(category => ({name: category})) 
+        const categoriesDtos: CreateCategoryDto[] = categories.map(category => ({name: category}))
         return from(categoriesDtos).pipe(
           concatMap(category => this.createSingleCategory(category))
         )
       }
-    
+
       private createSingleCategory(category: CreateCategoryDto): Observable<any>{
         return this.wpClient.createCategory(category)
       }

@@ -58,5 +58,23 @@ export class EmailService {
         ]
     });
   }
+
+  async submittedFactCheckContent(email: string,factCheckedLink:string ): Promise<void> {
+    try {
+      await this.mailerService.sendMail({
+        to: email,
+        subject: 'NOTIFICATION EMAIL FOR SUBMITTED FACT-CHECKED CONTENT',
+        template: './templates/email_template',
+        context: {
+          factCheckedLink,
+        },
+      });
+      console.log('Email sent successfully');
+    } catch (error) {
+      console.error('Error sending email:', error);
+      throw new Error('Email sending failed');
+    }
+  }
+  }
 }
 
