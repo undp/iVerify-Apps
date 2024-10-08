@@ -46,11 +46,13 @@ export class AppService {
     }
     let list = await this.unitedwaveClient.getPosts(startTime).toPromise();
     let createdItems = [];
-    while(list.length !== 0) {
+    while(list && list.length !== 0) {
       this.logger.log(`${list.length} posts found from radio. Creating Meedan Check items...`);
       let lastTime;
-      for(const post of list){
+
+      for (let i = list.length - 1; i >= 0; i--) {
         this.logger.log('Creating item...')
+        const post = list[i]
         const item = await this.checkClient.createItemFromRadio(post?.clip_url, post?.clip_name, post?.source_text, post?.date_reported).toPromise();
         console.log('item: ', item)
         if(!item.error) createdItems = [...createdItems, item];
