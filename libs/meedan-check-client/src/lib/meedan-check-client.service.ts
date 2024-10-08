@@ -283,9 +283,7 @@ export class MeedanCheckClientService {
 
   createItemFromRadio(url: string, name: string, content: string, created_date: string): Observable<any>{
     const query: string = this.helper.buildCreateItemFromRadioMessage(url, name, content, created_date);
-    console.log('query: ', query)
     const headers = this.config.headers;
-    console.log('headers: ', headers)
 
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
       map(res => res.data),
