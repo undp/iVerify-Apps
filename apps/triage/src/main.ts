@@ -6,11 +6,18 @@
 import { Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
-
 import { AppModule } from './app/app.module';
+import * as fs from 'fs';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const httpsOptions = {
+    key: fs.readFileSync('private.key'),
+    cert: fs.readFileSync('certificate.crt'),
+  };
+  const app = await NestFactory.create(AppModule ,{
+    httpsOptions,
+  });
+  app.enableCors();
   const globalPrefix = 'triage';
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 3335;

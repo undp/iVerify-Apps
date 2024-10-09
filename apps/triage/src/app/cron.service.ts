@@ -21,19 +21,16 @@ export class CronService{
     
     @Cron(CronExpression.EVERY_2_HOURS)
     async handleCron(){
-        const endDate = new Date().toISOString();
         const start = new Date();
-        start.setHours(new Date().getHours() -2);
         const startDate = start.toISOString();
-        this.logger.log(`Running cron job with startDate ${startDate} and endDate ${endDate}`)
-        return await this.analyze(startDate, endDate);
+        this.logger.log(`Running cron job with startDate ${startDate}`)
+        return await this.analyze();
     }
 
-    async analyze(startDate, endDate){
+    async analyze(){
         try{            
-            const created: number = await this.appService.analyze(startDate, endDate);
+            const created: number = await this.appService.pullRadioMessages();
             console.log('Items created: ', created);
-            return await this.apiClient.postToxicStats(created).toPromise();
         } catch(e){
             this.logger.error('Cron job error: ', e.message);
             throw new HttpException(e.message, 500);

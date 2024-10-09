@@ -138,7 +138,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: iverify-publisher
-          IMAGE_TAG: latest
+          IMAGE_TAG: v2
         run: |
           npx nx build publisher
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/publisher/Dockerfile .
@@ -152,7 +152,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: iverify-triage
-          IMAGE_TAG: latest
+          IMAGE_TAG: v2
         run: |
           npx nx build triage
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/triage/Dockerfile .

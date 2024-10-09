@@ -51,12 +51,38 @@ export class EmailService {
       subject: `Daily iVerify publications - ${env}`,
       text: 'CSV report',
       attachments: [
-        {   
+        {
             filename: `iverify-publications-${date}.csv`,
             content: csv
         },
         ]
     });
   }
+
+  async submittedFactCheckContent(email: string,factCheckedLink:string ): Promise<void> {
+    try {
+      await this.mailerService.sendMail({
+        to: email,
+        subject: 'NOTIFICATION EMAIL FOR SUBMITTED FACT-CHECKED CONTENT',
+        text: `Bonjour,
+
+        Vous avez récemment souscrit à notre service de notifications pour être informé lorsque du contenu est vérifié par l’equipe iVerify.
+
+        Nous vous informons que le contenu que vous aviez signalé ou suivi a été fact-checké. Vous pouvez consulter les résultats de notre analyse en suivant le lien ci-dessous :
+
+        ${factCheckedLink}
+
+        Nous vous remercions pour votre engagement envers la vérification des informations et vous encourageons à partager ces résultats avec vos contacts sur les réseaux sociaux afin de contribuer à la diffusion d'informations fiables.
+
+        Cordialement,
+        L’équipe de vérification des faits iVerify`,
+    });
+      console.log('Email sent successfully');
+    } catch (error) {
+      console.error('Error sending email:', error);
+      throw new Error('Email sending failed');
+    }
+  }
+
 }
 

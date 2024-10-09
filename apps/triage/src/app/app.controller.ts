@@ -1,10 +1,11 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import {
   ApiBody,
   ApiTags,
   ApiProperty
 } from '@nestjs/swagger';
 import { AppService } from './app.service';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 class SubmitStoryDto {
   @ApiProperty()
@@ -15,6 +16,19 @@ class SubmitStoryDto {
 
   @ApiProperty()
   secret: string;
+
+  @ApiProperty({
+    type: 'array',
+    items: {
+      type: 'string',
+      format: 'binary',
+    },
+    required: false,
+  })
+  files?: any[];
+
+  @ApiProperty()
+  email: string;
 }
 
 @Controller()
@@ -24,12 +38,14 @@ export class AppController {
   @Post('submit-story')
   @ApiTags('Submit story')
   @ApiBody({ type: SubmitStoryDto })
-  async submitStory(@Body() body){
-    const {url, content, secret} = body;
+  @UseInterceptors(FilesInterceptor('files'))
+  async submitStory(@Body() body, @UploadedFiles() files: any){
+    const {url, content, secret , email} = body;
+    console.log('Submit story', body)
     const secretEnv = process.env.SECRET_ENV || '1v3r1fy';
     if(secret !== secretEnv ) return new HttpException('Not authorized.', 403);
     try {
-      return await this.appService.createItemFromWp(url, content)
+      return await this.appService.createItemFromWp(url, content ,files , email)
     }catch(e){
       return new HttpException(e.message, 500)
     }
