@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { throwIfEmpty } from 'rxjs/operators';
 import { ToxicityScores } from './interfaces/toxicity-scores';
+import { TasksLabels } from '@iverify/common/src';
 
 @Injectable()
 export class CheckClientHelperService {
+  lang = process.env.language;
   buildGetReportQuery(id: string) {
     return `query {
         project_media(ids: "${id}"){
@@ -79,8 +81,8 @@ export class CheckClientHelperService {
 
     buildCreateItemFromRadioMessage(url: string, name, content, tag = 'Radio') {
       const tasksResponsesObj = {
-        audio_url: url,
-        message: content
+        [TasksLabels[this.lang].audio_url]: url,
+        [TasksLabels[this.lang].message]: content
       };
       let setTasksResponses = JSON.stringify(tasksResponsesObj);
       setTasksResponses = setTasksResponses.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
