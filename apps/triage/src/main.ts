@@ -7,16 +7,17 @@ import { Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
-import * as fs from 'fs';
+//import * as fs from 'fs';
 
 async function bootstrap() {
-  const httpsOptions = {
-    key: fs.readFileSync('private.key'),
-    cert: fs.readFileSync('certificate.crt'),
-  };
-  const app = await NestFactory.create(AppModule ,{
-    httpsOptions,
-  });
+  // const httpsOptions = {
+  //   key: fs.readFileSync('private.key'),
+  //   cert: fs.readFileSync('certificate.crt'),
+  // };
+  // const app = await NestFactory.create(AppModule ,{
+  //   httpsOptions,
+  // });
+  const app = await NestFactory.create(AppModule);
   app.enableCors();
   const globalPrefix = 'triage';
   app.setGlobalPrefix(globalPrefix);

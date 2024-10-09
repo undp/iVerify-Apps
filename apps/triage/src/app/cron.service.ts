@@ -18,7 +18,7 @@ export class CronService{
     //     this.logger.log(`Running initial job with startDate ${startDate} and endDate ${endDate}`)
     //     return await this.analyze(startDate, endDate);
     // }
-    
+
     @Cron(CronExpression.EVERY_2_HOURS)
     async handleCron(){
         const start = new Date();
@@ -28,7 +28,7 @@ export class CronService{
     }
 
     async analyze(){
-        try{            
+        try{
             const created: number = await this.appService.pullRadioMessages();
             console.log('Items created: ', created);
         } catch(e){
