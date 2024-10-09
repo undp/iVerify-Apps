@@ -40,7 +40,8 @@ export const TasksLabels = {
         email_address: 'Email Address',
         upload_file: 'Upload Files',
         audio_url:'audio_url',
-        message:'message'
+        message:'message',
+        original_reported_date: 'original_reported_date'
     },
     es: {
         claim: 'Declaración',
@@ -83,7 +84,8 @@ export const TasksLabels = {
         email_address: 'Email Address',
         upload_file: 'Upload Files',
         audio_url:'audio_url',
-        message:'message'
+        message:'message',
+        original_reported_date: 'original_reported_date'
     },
     fr: {
         claim: 'Affirmation',
@@ -126,7 +128,8 @@ export const TasksLabels = {
         email_address: 'Adresse E-mail',
         upload_file: 'Téléchargements de fichiers',
         audio_url:'url_audio',
-        message:'message'
+        message:'message',
+        original_reported_date: 'date_de_rapport_originale'
     },
     mkd: {
       claim: 'Тврдење',
@@ -169,6 +172,7 @@ export const TasksLabels = {
       email_address: 'Email Address',
       upload_file: 'Upload Files',
       audio_url:'audio_url',
-      message:'message'
+      message:'message',
+      original_reported_date: 'original_reported_date'
   },
 }

@@ -41,22 +41,33 @@ export class AppService {
     if (meedanResp) {
       const lastMeedanReport = meedanResp?.data?.search?.medias?.edges
       if (lastMeedanReport.length > 0) {
-        const epochSeconds = lastMeedanReport[0].node?.created_at
-        startTime = new Date(epochSeconds * 1000);
+        startTime = lastMeedanReport[0].node?.tasks?.edges?.find(task => task.node?.label === this.config.originalPostTimeField).node?.first_response_value
       }
     }
-    const list = await this.unitedwaveClient.getPosts(startTime).toPromise();
-    this.logger.log('United wave response', JSON.stringify(list))
+    let list = await this.unitedwaveClient.getPosts(startTime).toPromise();
     let createdItems = [];
+    while(list && list.length !== 0) {
       this.logger.log(`${list.length} posts found from radio. Creating Meedan Check items...`);
-      for(const post of list){
+      let lastTime;
+
+      for (let i = list.length - 1; i >= 0; i--) {
         this.logger.log('Creating item...')
-        const item = await this.checkClient.createItemFromRadio(post?.clip_url, post?.clip_name, post?.source_text).toPromise();
+        const post = list[i]
+        const item = await this.checkClient.createItemFromRadio(post?.clip_url, post?.clip_name, post?.source_text, post?.date_reported).toPromise();
         console.log('item: ', item)
         if(!item.error) createdItems = [...createdItems, item];
+        lastTime = post?.date_reported
       }
-      this.logger.log(`Created ${createdItems.length} items.`)
-      return createdItems.length;
+      this.logger.log('United wave response', JSON.stringify(list))
+      if (lastTime) {
+        list = await this.unitedwaveClient.getPosts(lastTime).toPromise();
+      }
+      else {
+        list = []
+      }
+    }
+    this.logger.log(`Created ${createdItems.length} items.`)
+    return createdItems.length;
   }
 
   async analyze(startDate: string, endDate: string): Promise<number> {
