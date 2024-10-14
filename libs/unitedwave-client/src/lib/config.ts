@@ -9,7 +9,6 @@ export class UnitedwaveClientConfig{
 
     readonly endpoints = {
         search: `${this.apiBase}/clips/search`,
+        count: `${this.apiBase}/clips/count`
     }
-
-    
 }

@@ -44,28 +44,30 @@ export class AppService {
         startTime = lastMeedanReport[0].node?.tasks?.edges?.find(task => task.node?.label === this.config.originalPostTimeField).node?.first_response_value
       }
     }
-    let list = await this.unitedwaveClient.getPosts(startTime).toPromise();
-    let createdItems = [];
-    while(list && list.length !== 0) {
-      this.logger.log(`${list.length} posts found from radio. Creating Meedan Check items...`);
-      let lastTime;
+   console.log('unitedwaveClient startTime',startTime)
+   const postsCount = await this.unitedwaveClient.getPostsCount().toPromise();
+   this.logger.log('Latest unitedwaveClient count', postsCount)
+   const postsPerPage = 50;
+   const pageCount = Math.ceil(Number(postsCount) / postsPerPage);
+   const pageIndex = pageCount - 1;
 
-      for (let i = list.length - 1; i >= 0; i--) {
-        this.logger.log('Creating item...')
-        const post = list[i]
-        const item = await this.checkClient.createItemFromRadio(post?.clip_url, post?.clip_name, post?.source_text, post?.date_reported).toPromise();
-        console.log('item: ', item)
-        if(!item.error) createdItems = [...createdItems, item];
-        lastTime = post?.date_reported
+   let found = false;
+   let createdItems = [];
+   for(let page = pageIndex ; page >=0 ; page --) {
+       const list = await this.unitedwaveClient.getPosts(page).toPromise();
+       for (let i = list.length - 1; i >= 0; i--) {
+        const post = list[i];
+        console.log('post.date_reported',post.date_reported)
+        if(post.date_reported == startTime && !found) {
+          found = true;
+        }
+        if(found) {
+          const item = await this.checkClient.createItemFromRadio(post?.clip_url, post?.clip_name, post?.source_text, post?.date_reported).toPromise();
+          console.log('item: ', item)
+          if(!item.error) createdItems = [...createdItems, item];
+        }
       }
-      this.logger.log('United wave response', JSON.stringify(list))
-      if (lastTime) {
-        list = await this.unitedwaveClient.getPosts(lastTime).toPromise();
-      }
-      else {
-        list = []
-      }
-    }
+   }
     this.logger.log(`Created ${createdItems.length} items.`)
     return createdItems.length;
   }
