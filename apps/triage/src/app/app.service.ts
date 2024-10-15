@@ -50,26 +50,37 @@ export class AppService {
    const postsPerPage = 50;
    const pageCount = Math.ceil(Number(postsCount) / postsPerPage);
    const pageIndex = pageCount - 1;
-
-   let found = false;
    let createdItems = [];
+   let createdPosts = [];
    for(let page = pageIndex ; page >=0 ; page --) {
-       const list = await this.unitedwaveClient.getPosts(page).toPromise();
+       const list = await this.unitedwaveClient.getPosts(page,startTime).toPromise();
        for (let i = list.length - 1; i >= 0; i--) {
         const post = list[i];
-        console.log('post.date_reported',post.date_reported)
-        if(post.date_reported == startTime && !found) {
-          found = true;
-        }
-        if(found) {
+        console.log('post.date_reported',post?.clip_url,post.date_reported);
+        //check  duplication
+        const isDuplicate = this.isDuplicatePost(post, createdPosts);
+        if (!isDuplicate) {
           const item = await this.checkClient.createItemFromRadio(post?.clip_url, post?.clip_name, post?.source_text, post?.date_reported).toPromise();
           console.log('item: ', item)
-          if(!item.error) createdItems = [...createdItems, item];
+          if(!item.error) {
+            createdItems = [...createdItems, item];
+            console.log('item: ', post?.clip_url)
+            createdPosts = [...createdPosts, post];
+          }
         }
       }
    }
     this.logger.log(`Created ${createdItems.length} items.`)
     return createdItems.length;
+  }
+
+  private isDuplicatePost(post, createdPosts) {
+    return createdPosts.some((createdPost) =>
+      createdPost.clip_url === post?.clip_url &&
+      createdPost.clip_name === post?.clip_name &&
+      createdPost.source_text === post?.source_text &&
+      createdPost.date_reported === post?.date_reported
+    );
   }
 
   async analyze(startDate: string, endDate: string): Promise<number> {
