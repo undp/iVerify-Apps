@@ -8,7 +8,7 @@ export class CronService{
 
     constructor(private appService: AppService){}
 
-    @Cron(CronExpression.EVERY_MINUTE)
+    @Cron('0 30 3 * * *')
     async handleCron(){
         const start = new Date();
         const startDate = start.toISOString();
