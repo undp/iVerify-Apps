@@ -57,7 +57,7 @@ export class WpClientService{
 
     getPostsFromDate(date?: string){
       const start = new Date();
-      const startDate = date ?? start.toISOString().split('.')[0]; // Remove milliseconds
+      const startDate = date ?? start.toISOString().split('.')[0];
       console.log('getPostsFromDate', startDate);
       return this.http.get(this.config.endpoints.posts + '?after=' + startDate, this.auth).pipe(
           map(res => res.data),

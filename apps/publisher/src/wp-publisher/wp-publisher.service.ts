@@ -77,7 +77,7 @@ export class WpPublisherService{
         tap(wpPost => {
           this.shared.updateWpPost(wpPost);
          if (data.postDto.email_address) {
-            this.emailService.submittedFactCheckContent(data.postDto.email_address, wpPost.link).catch(err => {
+            this.emailService.submittedFactCheckContent(data.postDto.email_address,data.postDto.title,wpPost.link , this.formatDate(data.postDto.date)).catch(err => {
               console.error('Error sending post published email:', err);
             });
          }
@@ -90,7 +90,7 @@ export class WpPublisherService{
 
     subscribersList$:Observable<string[]> = this.wpClient.getWPSubscribers();
 
-    latestPosts$:Observable<string[]> = this.wpClient.getPostsFromDate('2024-10-07T10:50:13');
+    latestPosts$:Observable<string[]> = this.wpClient.getPostsFromDate();
 
     sendSubscribesEmail$: Observable<any> = combineLatest([this.subscribersList$, this.latestPosts$]).pipe(
       switchMap(([subscribersList, latestPosts]) => {

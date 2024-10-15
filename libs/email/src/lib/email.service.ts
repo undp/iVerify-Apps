@@ -63,24 +63,551 @@ export class EmailService {
 
   async submittedFactCheckContent(
     email: string,
-    factCheckedLink: string
+    title: string,
+    factCheckedLink: string,
+    date: string
   ): Promise<void> {
     try {
+      let htmlContent = `<div class="">
+<div class="aHl"></div>
+<div id=":36n" tabindex="-1"></div>
+<div
+  id=":36d"
+  class="ii gt"
+  jslog="20277; u014N:xr6bB; 1:WyIjdGhyZWFkLWY6MTgxMjY0MDI5OTA2NzcwNTI3MCJd; 4:WyIjbXNnLWY6MTgxMjY0MDI5OTA2NzcwNTI3MCIsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsbnVsbCxudWxsLDBd"
+>
+  <div id=":36c" class="a3s aiL msg7366731443651753137">
+    <u></u>
+
+    <div
+      style="margin: 0; padding: 0; line-height: normal; word-spacing: normal"
+      dir="ltr"
+    >
+      <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tbody>
+          <tr>
+            <td bgcolor="#ffffff" valign="top">
+              <table
+                role="presentation"
+                border="0"
+                cellpadding="0"
+                cellspacing="0"
+                align="center"
+                width="100%"
+                style="border-collapse: collapse; width: 100%"
+              >
+                <tbody>
+                  <tr>
+                    <td align="center" style="padding: 0">
+                      <table
+                        role="presentation"
+                        type="options"
+                        border="0"
+                        cellpadding="0"
+                        align="center"
+                        cellspacing="0"
+                        width="100%"
+                        style="
+                          border-collapse: separate !important;
+                          width: 100% !important;
+                          max-width: 600px !important;
+                        "
+                      >
+                        <tbody>
+                          <tr>
+                            <td
+                              align="center"
+                              style="
+                                text-align: center;
+                                line-height: normal !important;
+                                letter-spacing: normal;
+                                outline: none;
+                                padding: 20px 15px 20px 15px;
+                                background-color: #ffffff;
+                              "
+                              bgcolor="#ffffff"
+                            >
+                              <table
+                                width="100%"
+                                style="width: 100% !important"
+                                border="0"
+                                cellpadding="0"
+                                cellspacing="0"
+                              >
+                                <tbody>
+                                  <tr>
+                                    <td
+                                      width="100%"
+                                      valign="top"
+                                      align="left"
+                                      class="m_7366731443651753137text"
+                                      style="
+                                        font-size: 16px;
+                                        font-family: Verdana, Geneva,
+                                          sans-serif;
+                                        font-weight: normal;
+                                        color: #222222;
+                                        line-height: 1.5;
+                                      "
+                                    >
+                                      <p style="text-align: left">Bonjour,</p>
+                                      <p style="text-align: left">&nbsp;</p>
+                                      <p style="text-align: left">
+                                      Vous avez récemment souscrit à notre service de notifications pour être informé lorsque du contenu est vérifié par l’equipe iVerify.
+                                      </p>
+                                      <p style="text-align: left">&nbsp;</p>
+                                      <p style="text-align: left">
+                                      Nous vous informons que le contenu que vous aviez signalé ou suivi a été fact-checké. Vous pouvez consulter les résultats de notre analyse en suivant le lien ci-dessous :
+                                      </p>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+              </tbody>
+              </table>`;
+      htmlContent += ` <div style="text-align: center; font-size: 0">
+         <div
+           class="m_7366731443651753137max-width-100"
+           style="
+             width: 100%;
+             max-width: 558px;
+             display: inline-block;
+             vertical-align: top;
+             box-sizing: border-box;
+           "
+         >
+           <div style="padding: 10px">
+             <table
+               border="0"
+               cellspacing="0"
+               cellpadding="0"
+               width="100%"
+             >
+               <tbody>
+                 <tr>
+                   <td
+                     style="
+                       font-size: 14px;
+                       font-family: Verdana, Geneva,
+                         sans-serif;
+                       font-weight: normal;
+                       color: #222222;
+                       font-style: italic;
+                       padding: 0 0 10px 0;
+                       line-height: normal !important;
+                     "
+                     dir="ltr"
+                     align="left"
+                   >
+                   ${date}
+                   </td>
+                 </tr>
+
+                 <tr>
+                   <td
+                     align="left"
+                     style="padding: 0 0 5px 0"
+                   >
+                     <a
+                       href="${factCheckedLink}"
+                       style="
+                         font-size: 20px;
+                         font-family: Helvetica, Arial,
+                           sans-serif;
+                         font-weight: bold;
+                         color: #222222;
+                         line-height: normal !important;
+                         text-decoration: none;
+                       "
+                       dir="ltr"
+                       target="_blank"
+                       data-saferedirecturl="https://www.google.com/url?q=${factCheckedLink}"
+                       >${title}
+                     >
+                   </td>
+                 </tr>
+
+                 <tr>
+                   <td
+                     align="left"
+                     style="padding: 10px 0 15px 0"
+                   >
+                     <a
+                       href="${factCheckedLink}"
+                       style="
+                         font-size: 16px;
+                         font-family: Verdana, Geneva,
+                           sans-serif;
+                         font-weight: normal;
+                         color: #222222;
+                         line-height: 1.5 !important;
+                         text-decoration: none;
+                       "
+                       dir="ltr"
+                       target="_blank"
+                       data-saferedirecturl="https://www.google.com/url?q=${factCheckedLink}"
+                     ></a>
+                   </td>
+                 </tr>
+
+                 <tr>
+                   <td
+                     align="left"
+                     style="padding: 15px 0"
+                   >
+                     <table
+                       border="0"
+                       cellpadding="0"
+                       cellspacing="0"
+                       role="presentation"
+                       align="left"
+                       style="
+                         border-collapse: separate !important;
+                         line-height: 100%;
+                         width: autopx;
+                       "
+                     >
+                       <tbody>
+                         <tr>
+                           <td
+                             align="center"
+                             bgcolor="#0385ca"
+                             role="presentation"
+                             style="
+                               border-collapse: separate !important;
+                               background: #0385ca;
+                               border-radius: 5px;
+                             "
+                             valign="middle"
+                           >
+                             <a
+                               href="${factCheckedLink}"
+                               style="
+                                 display: inline-block;
+                                 color: #ffffff;
+                                 font-family: Helvetica,
+                                   Arial, sans-serif;
+                                 font-size: 12px;
+                                 font-weight: normal;
+                                 line-height: 120%;
+                                 margin: 0;
+                                 text-decoration: none;
+                                 text-transform: none;
+                                 padding: 10px 25px;
+                                 border-radius: 5px;
+                                 width: autopx;
+                               "
+                               target="_blank"
+                               data-saferedirecturl="https://www.google.com/url?q=${factCheckedLink}"
+                               >En savoir plus...</a
+                             >
+                           </td>
+                         </tr>
+                       </tbody>
+                     </table>
+                   </td>
+                 </tr>
+               </tbody>
+             </table>
+           </div>
+         </div>
+       </div>`;
+
+      htmlContent += ` <table
+              role="presentation"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              align="center"
+              width="100%"
+              style="border-collapse: collapse; width: 100%"
+            >
+              <tbody>
+                <tr>
+                  <td align="center" style="padding: 0">
+                    <table
+                      role="presentation"
+                      type="options"
+                      border="0"
+                      cellpadding="0"
+                      align="center"
+                      cellspacing="0"
+                      width="100%"
+                      style="
+                        border-collapse: separate !important;
+                        width: 100% !important;
+                        max-width: 600px !important;
+                      "
+                    >
+                      <tbody>
+                        <tr>
+                          <td
+                            align="center"
+                            style="
+                              text-align: center;
+                              line-height: normal !important;
+                              letter-spacing: normal;
+                              outline: none;
+                              padding: 20px 15px 20px 15px;
+                              background-color: #ffffff;
+                            "
+                            bgcolor="#ffffff"
+                          >
+                            <table
+                              width="100%"
+                              style="width: 100% !important"
+                              border="0"
+                              cellpadding="0"
+                              cellspacing="0"
+                            >
+                              <tbody>
+                                <tr>
+                                  <td
+                                    width="100%"
+                                    valign="top"
+                                    align="left"
+                                    class="m_7366731443651753137text"
+                                    style="
+                                      font-size: 16px;
+                                      font-family: Verdana, Geneva,
+                                        sans-serif;
+                                      font-weight: normal;
+                                      color: #222222;
+                                      line-height: 1.5;
+                                    "
+                                  >
+                                    <p>
+                                    Nous vous remercions pour votre engagement envers la vérification des informations et vous encourageons à partager ces résultats avec vos contacts sur les réseaux sociaux afin de contribuer à la diffusion d'informations fiables.
+                                    </p>
+                                    <p style="text-align: left">&nbsp;</p>
+                                    <p>
+                                      Cordialement,<br />L’équipe de
+                                      vérification des faits iVerify
+                                    </p>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table
+              role="presentation"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              align="center"
+              width="100%"
+              style="border-collapse: collapse; width: 100%"
+            >
+              <tbody>
+                <tr>
+                  <td align="center" style="padding: 0">
+                    <table
+                      role="presentation"
+                      type="options"
+                      border="0"
+                      cellpadding="0"
+                      align="center"
+                      cellspacing="0"
+                      width="100%"
+                      style="
+                        border-collapse: separate !important;
+                        width: 100% !important;
+                        max-width: 600px !important;
+                      "
+                    >
+                      <tbody>
+                        <tr>
+                          <td
+                            align="center"
+                            style="
+                              text-align: center;
+                              line-height: normal !important;
+                              letter-spacing: normal;
+                              outline: none;
+                              padding: 20px 20px 20px 20px;
+                              background-color: #ffffff;
+                            "
+                            bgcolor="#ffffff"
+                          >
+                            <table
+                              border="0"
+                              cellpadding="0"
+                              cellspacing="0"
+                              width="100%"
+                              role="presentation"
+                            >
+                              <tbody>
+                                <tr>
+                                  <td
+                                    style="border-bottom: 1px solid #dddddd"
+                                  ></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table
+              role="presentation"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              align="center"
+              width="100%"
+              style="border-collapse: collapse; width: 100%"
+            >
+              <tbody>
+                <tr>
+                  <td align="center" style="padding: 0">
+                    <table
+                      role="presentation"
+                      type="options"
+                      border="0"
+                      cellpadding="0"
+                      align="center"
+                      cellspacing="0"
+                      width="100%"
+                      style="
+                        border-collapse: separate !important;
+                        width: 100% !important;
+                        max-width: 600px !important;
+                      "
+                    >
+                      <tbody>
+                        <tr>
+                          <td
+                            align="center"
+                            style="
+                              text-align: center;
+                              line-height: normal !important;
+                              letter-spacing: normal;
+                              outline: none;
+                              padding: 24px 16px 24px 16px;
+                              background-color: #ffffff;
+                            "
+                            bgcolor="#ffffff"
+                          >
+                            <table
+                              border="0"
+                              cellpadding="0"
+                              cellspacing="0"
+                              width="100%"
+                              role="presentation"
+                            >
+                              <tbody>
+                                <tr>
+                                  <td
+                                    width="100%"
+                                    align="center"
+                                    style="padding-bottom: 24px"
+                                  >
+                                    <a
+                                      href="https://rdc.i-verify.org/"
+                                      rel="noopener nofollow"
+                                      style="
+                                        display: inline-block;
+                                        font-size: 0;
+                                        text-decoration: none;
+                                        line-height: normal !important;
+                                      "
+                                      target="_blank"
+                                      data-saferedirecturl="https://www.google.com/url?q=https://rdc.i-verify.org/"
+                                      ><img
+                                        src="https://ci3.googleusercontent.com/meips/ADKq_NYYMrB3tstWV09WOKKqxsb-tbvs09diYTnp1gn8gGZpl0wV8-8_ie7KDdHrhifrbdI8rU15C9Myh6hYWO2N2Er11c7dNnivvCH0Fy2B2K0Pexp5hzIN-vTKSRJnoUTP5tW2PzV6jmQhQ8DWZwcZbru1RVySnYEvFI8TmyVXgBUZvyzz2kidKdt2ETiyKi9MZJzcfMzkBjwA-wdBg1msY4ZyisZW=s0-d-e1-ft#https://rdc.i-verify.org/wp-content/uploads/2024/09/cropped-Graphic_Republique-Democratique-du-Congo_White_SVG-1-1iVerify_Logo-1.png"
+                                        width="120"
+                                        height="30"
+                                        alt="iVerify RÉPUBLIQUE DÉMOCRATIQUE DU CONGO"
+                                        border="0"
+                                        style="
+                                          display: inline-block;
+                                          max-width: 100% !important;
+                                          height: auto;
+                                          padding: 0;
+                                          border: 0;
+                                          font-size: 12px;
+                                        "
+                                        class="CToWUd"
+                                        data-bit="iit"
+                                    /></a>
+                                  </td>
+                                </tr>
+
+                                <tr>
+                                  <td
+                                    width="100%"
+                                    align="center"
+                                    dir="ltr"
+                                    style="padding-bottom: 24px"
+                                  >
+                                    <a
+                                      style="
+                                        font-size: 13px;
+                                        font-family: Verdana, Geneva,
+                                          sans-serif;
+                                        font-weight: normal;
+                                        color: #222222;
+                                        text-decoration: none;
+                                        line-height: normal;
+                                      "
+                                      href="https://rdc.i-verify.org/"
+                                      target="_blank"
+                                      data-saferedirecturl="https://www.google.com/url?q=https://rdc.i-verify.org/"
+                                      >Voir en ligne</a
+                                    >
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <img
+      width="1"
+      height="1"
+      alt=""
+      src="https://ci3.googleusercontent.com/meips/ADKq_NZvphq6xDO3jYunWUDVEJZ92uZu_LG7JV2vb8sDVdUQSK2XyqgjPzb41FEOeXsZaA_MXm4n58mtw76-xGMKFOHmA4T_24ukVr-51gn5H00SbSB1essLWkSPxfcv0JyIwB8LpUfxbNb6IEp05fGJQKeWk7EaNFYAMn_3hQCRP-t3akOzD9NTe2Kk5tVgzvYDsiVT=s0-d-e1-ft#https://rdc.i-verify.org/"
+      class="CToWUd"
+      data-bit="iit"
+    />
+  </div>
+  <div class="yj6qo"></div>
+  <div class="adL"></div>
+</div>
+</div>
+<div class="WhmR8e" data-hash="0"></div>
+      </div>`;
       await this.mailerService.sendMail({
         to: email,
         subject: 'NOTIFICATION EMAIL FOR SUBMITTED FACT-CHECKED CONTENT',
-        text: `Bonjour,
-
-        Vous avez récemment souscrit à notre service de notifications pour être informé lorsque du contenu est vérifié par l’equipe iVerify.
-
-        Nous vous informons que le contenu que vous aviez signalé ou suivi a été fact-checké. Vous pouvez consulter les résultats de notre analyse en suivant le lien ci-dessous :
-
-        ${factCheckedLink}
-
-        Nous vous remercions pour votre engagement envers la vérification des informations et vous encourageons à partager ces résultats avec vos contacts sur les réseaux sociaux afin de contribuer à la diffusion d'informations fiables.
-
-        Cordialement,
-        L’équipe de vérification des faits iVerify`,
+        html: htmlContent,
       });
       console.log('Email sent successfully');
     } catch (error) {
@@ -626,7 +1153,7 @@ export class EmailService {
                                     style="padding-bottom: 24px"
                                   >
                                     <a
-                                      href="https://staging3.rdc.i-verify.org/wp-admin/admin-ajax.php?action=tnptr&amp;nltr=MzsyO2h0dHBzOi8vc3RhZ2luZzMucmRjLmktdmVyaWZ5Lm9yZzs7YWIwMjJkYzBmMzcwYTg0YWFjMjAyMjM2NzdmNWMxMzE%3D"
+                                      href="https://rdc.i-verify.org/"
                                       rel="noopener nofollow"
                                       style="
                                         display: inline-block;
@@ -635,9 +1162,9 @@ export class EmailService {
                                         line-height: normal !important;
                                       "
                                       target="_blank"
-                                      data-saferedirecturl="https://www.google.com/url?q=https://staging3.rdc.i-verify.org/wp-admin/admin-ajax.php?action%3Dtnptr%26nltr%3DMzsyO2h0dHBzOi8vc3RhZ2luZzMucmRjLmktdmVyaWZ5Lm9yZzs7YWIwMjJkYzBmMzcwYTg0YWFjMjAyMjM2NzdmNWMxMzE%253D&amp;source=gmail&amp;ust=1729057669281000&amp;usg=AOvVaw00FjB29ZSwCy3gt8B0jHEw"
+                                      data-saferedirecturl="https://www.google.com/url?q=https://rdc.i-verify.org/"
                                       ><img
-                                        src="https://ci3.googleusercontent.com/meips/ADKq_NYYMrB3tstWV09WOKKqxsb-tbvs09diYTnp1gn8gGZpl0wV8-8_ie7KDdHrhifrbdI8rU15C9Myh6hYWO2N2Er11c7dNnivvCH0Fy2B2K0Pexp5hzIN-vTKSRJnoUTP5tW2PzV6jmQhQ8DWZwcZbru1RVySnYEvFI8TmyVXgBUZvyzz2kidKdt2ETiyKi9MZJzcfMzkBjwA-wdBg1msY4ZyisZW=s0-d-e1-ft#https://staging3.rdc.i-verify.org/wp-content/uploads/2024/09/cropped-Graphic_Republique-Democratique-du-Congo_White_SVG-1-1iVerify_Logo-1.png"
+                                        src="https://ci3.googleusercontent.com/meips/ADKq_NYYMrB3tstWV09WOKKqxsb-tbvs09diYTnp1gn8gGZpl0wV8-8_ie7KDdHrhifrbdI8rU15C9Myh6hYWO2N2Er11c7dNnivvCH0Fy2B2K0Pexp5hzIN-vTKSRJnoUTP5tW2PzV6jmQhQ8DWZwcZbru1RVySnYEvFI8TmyVXgBUZvyzz2kidKdt2ETiyKi9MZJzcfMzkBjwA-wdBg1msY4ZyisZW=s0-d-e1-ft#https://rdc.i-verify.org/wp-content/uploads/2024/09/cropped-Graphic_Republique-Democratique-du-Congo_White_SVG-1-1iVerify_Logo-1.png"
                                         width="120"
                                         height="30"
                                         alt="iVerify RÉPUBLIQUE DÉMOCRATIQUE DU CONGO"
@@ -673,9 +1200,9 @@ export class EmailService {
                                         text-decoration: none;
                                         line-height: normal;
                                       "
-                                      href="https://staging3.rdc.i-verify.org/wp-admin/admin-ajax.php?action=tnptr&amp;nltr=MzsyO2h0dHBzOi8vc3RhZ2luZzMucmRjLmktdmVyaWZ5Lm9yZy93cC1hZG1pbi9hZG1pbi1hamF4LnBocD9hY3Rpb249dG5wJm5hPXUmbms9Mi1iNWQwODY0Y2UzJm5laz0zLTE5YWEzZjExNzE7OzU5MWEwMjhlMTBhZjJmYTljODU3ODA5OTJmYjlmMTY2"
+                                      href="https://rdc.i-verify.org/"
                                       target="_blank"
-                                      data-saferedirecturl="https://www.google.com/url?q=https://staging3.rdc.i-verify.org/wp-admin/admin-ajax.php?action%3Dtnptr%26nltr%3DMzsyO2h0dHBzOi8vc3RhZ2luZzMucmRjLmktdmVyaWZ5Lm9yZy93cC1hZG1pbi9hZG1pbi1hamF4LnBocD9hY3Rpb249dG5wJm5hPXUmbms9Mi1iNWQwODY0Y2UzJm5laz0zLTE5YWEzZjExNzE7OzU5MWEwMjhlMTBhZjJmYTljODU3ODA5OTJmYjlmMTY2&amp;source=gmail&amp;ust=1729057669281000&amp;usg=AOvVaw3BjpcskTfMUOAC5JCPfyF6"
+                                      data-saferedirecturl="https://www.google.com/url?q=https://rdc.i-verify.org/"
                                       >Unsubscribe</a
                                     ><span
                                       style="
@@ -698,9 +1225,9 @@ export class EmailService {
                                         text-decoration: none;
                                         line-height: normal;
                                       "
-                                      href="https://staging3.rdc.i-verify.org/wp-admin/admin-ajax.php?action=tnptr&amp;nltr=MzsyO2h0dHBzOi8vc3RhZ2luZzMucmRjLmktdmVyaWZ5Lm9yZy93cC1hZG1pbi9hZG1pbi1hamF4LnBocD9hY3Rpb249dG5wJm5hPXYmbms9Mi1iNWQwODY0Y2UzJmlkPTM7OzYyMjI3NDljNDBmMmNlNDczYjczYjA4MDliMzU1OTU1"
+                                      href="https://rdc.i-verify.org/"
                                       target="_blank"
-                                      data-saferedirecturl="https://www.google.com/url?q=https://staging3.rdc.i-verify.org/wp-admin/admin-ajax.php?action%3Dtnptr%26nltr%3DMzsyO2h0dHBzOi8vc3RhZ2luZzMucmRjLmktdmVyaWZ5Lm9yZy93cC1hZG1pbi9hZG1pbi1hamF4LnBocD9hY3Rpb249dG5wJm5hPXYmbms9Mi1iNWQwODY0Y2UzJmlkPTM7OzYyMjI3NDljNDBmMmNlNDczYjczYjA4MDliMzU1OTU1&amp;source=gmail&amp;ust=1729057669282000&amp;usg=AOvVaw1c5gzTE7RULI0MO4cZ1XCm"
+                                      data-saferedirecturl="https://www.google.com/url?q=https://rdc.i-verify.org/"
                                       >View online</a
                                     >
                                   </td>
@@ -724,7 +1251,7 @@ export class EmailService {
       width="1"
       height="1"
       alt=""
-      src="https://ci3.googleusercontent.com/meips/ADKq_NZvphq6xDO3jYunWUDVEJZ92uZu_LG7JV2vb8sDVdUQSK2XyqgjPzb41FEOeXsZaA_MXm4n58mtw76-xGMKFOHmA4T_24ukVr-51gn5H00SbSB1essLWkSPxfcv0JyIwB8LpUfxbNb6IEp05fGJQKeWk7EaNFYAMn_3hQCRP-t3akOzD9NTe2Kk5tVgzvYDsiVT=s0-d-e1-ft#https://staging3.rdc.i-verify.org/wp-admin/admin-ajax.php?action=tnptr&amp;noti=MzsyOzU5MjEwOTU2MTk4N2Y4ZjljZjc5YzU3YTcyMzIzYjE3"
+      src="https://ci3.googleusercontent.com/meips/ADKq_NZvphq6xDO3jYunWUDVEJZ92uZu_LG7JV2vb8sDVdUQSK2XyqgjPzb41FEOeXsZaA_MXm4n58mtw76-xGMKFOHmA4T_24ukVr-51gn5H00SbSB1essLWkSPxfcv0JyIwB8LpUfxbNb6IEp05fGJQKeWk7EaNFYAMn_3hQCRP-t3akOzD9NTe2Kk5tVgzvYDsiVT=s0-d-e1-ft#https://rdc.i-verify.org/"
       class="CToWUd"
       data-bit="iit"
     />

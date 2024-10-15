@@ -51,16 +51,16 @@ export class AppController {
     }
   }
    // test end point for UW
-  @Get('radio-messages')
-  @ApiTags('Radio Messages')
-  async testRadioMessages(){
-    try{
-      const created: number = await this.appService.pullRadioMessages();
-      return created;
-      console.log('Items created: ', created);
-  } catch(e){
-      throw new HttpException(e.message, 500);
-  }
+  // @Get('radio-messages')
+  // @ApiTags('Radio Messages')
+  // async testRadioMessages(){
+  //   try{
+  //     const created: number = await this.appService.pullRadioMessages();
+  //     return created;
+  //     console.log('Items created: ', created);
+  // } catch(e){
+  //     throw new HttpException(e.message, 500);
+  // }
 
-  }
+  // }
 }

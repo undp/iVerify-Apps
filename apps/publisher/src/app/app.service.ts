@@ -6,24 +6,23 @@ import { WpPublisherService } from '../wp-publisher/wp-publisher.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class AppService {
-  itemsToBePublished$: Observable<any> = combineLatest(([
+  itemsToBePublished$: Observable<any> = combineLatest([
     this.wpPublsher.post$,
-    this.apiPublisher.postToApi$
-  ]))
+    this.apiPublisher.postToApi$,
+  ]);
 
   constructor(
     private shared: SharedService,
     private wpPublsher: WpPublisherService,
     private apiPublisher: ApiPublisherService
-    ){}
+  ) {}
 
-  publishReportById(id: string){
+  publishReportById(id: string) {
     this.shared.updateReportId(id);
     return this.itemsToBePublished$;
   }
 
-  notifySubscribers(){
-   return this.wpPublsher.sendSubscribesEmail$;
+  notifySubscribers() {
+    return this.wpPublsher.sendSubscribesEmail$;
   }
-
 }
