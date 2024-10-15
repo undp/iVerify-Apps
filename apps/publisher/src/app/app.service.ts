@@ -16,10 +16,14 @@ export class AppService {
     private wpPublsher: WpPublisherService,
     private apiPublisher: ApiPublisherService
     ){}
-  
+
   publishReportById(id: string){
     this.shared.updateReportId(id);
     return this.itemsToBePublished$;
-  } 
-    
+  }
+
+  notifySubscribers(){
+   return this.wpPublsher.sendSubscribesEmail$;
+  }
+
 }

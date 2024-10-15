@@ -55,6 +55,47 @@ export class WpClientService{
         );
     }
 
+    getPostsFromDate(date?: string){
+      const start = new Date();
+      const startDate = date ?? start.toISOString().split('.')[0]; // Remove milliseconds
+      console.log('getPostsFromDate', startDate);
+      return this.http.get(this.config.endpoints.posts + '?after=' + startDate, this.auth).pipe(
+          map(res => res.data),
+          catchError(err => {
+              console.log('Error getting post', err)
+              throw new HttpException(err.message, 500);
+            })
+      );
+    }
+
+    getPostsThumbnail(id){
+      return this.http.get(this.config.endpoints.media + '/' + id, this.auth).pipe(
+        map(res => res.data),
+        catchError(err => {
+            console.log('Error getting post', err)
+            throw new HttpException(err.message, 500);
+          })
+    );
+    }
+
+
+    getWPSubscribers():Observable<string[]> {
+      const key =  'xeptagon_secret_key'
+      const options = {
+        params: {
+          api_key: key,
+        },
+        ...this.auth
+      };
+      return this.http.get(this.config.endpoints.subscribers,  options).pipe(
+        map(res => res.data),
+        catchError(err => {
+            console.log('Error getting post', err)
+            throw new HttpException(err.message, 500);
+          })
+    );
+    }
+
     getPostByTitle(title: string){
         const params = {title};
 

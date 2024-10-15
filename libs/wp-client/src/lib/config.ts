@@ -10,8 +10,8 @@ export class WpConfig{
         tags: `${this.apiBase}/tags`,
         categories: `${this.apiBase}/categories?per_page=20`,
         media: `${this.apiBase}/media`,
-        currentUser: `${this.apiBase}/users/me`
-
+        currentUser: `${this.apiBase}/users/me`,
+        subscribers: `${this.apiBase}/newsletter/v1/get_subscribers`,
     }
 
     readonly authParams = {

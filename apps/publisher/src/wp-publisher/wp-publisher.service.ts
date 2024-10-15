@@ -3,11 +3,12 @@ import { CreateCategoryDto } from "libs/wp-client/src/lib/interfaces/create-cate
 import { CommentStatus, CreatePostDto, PostFormat, PostStatus } from "libs/wp-client/src/lib/interfaces/create-post.dto";
 import { CreateTagDto } from "libs/wp-client/src/lib/interfaces/create-tag.dto";
 import { WpClientService } from "libs/wp-client/src/lib/wp-client.service";
-import { combineLatest, from, iif, Observable, of, zip } from "rxjs";
+import { combineLatest, forkJoin, from, iif, Observable, of, zip } from "rxjs";
 import { catchError, concatMap, filter, map, reduce, scan, shareReplay, switchMap, take, tap, withLatestFrom } from "rxjs/operators";
 import { SharedService } from "../shared/shared.service";
 import { WpPublisherHelper } from "./wp-publisher-helper.service";
 import { EmailService } from "@iverify/email/src";
+import { DateTime } from 'luxon';
 
 @Injectable({ scope: Scope.REQUEST })
 export class WpPublisherService{
@@ -87,6 +88,44 @@ export class WpPublisherService{
       ))
     );
 
+    subscribersList$:Observable<string[]> = this.wpClient.getWPSubscribers();
+
+    latestPosts$:Observable<string[]> = this.wpClient.getPostsFromDate('2024-10-07T10:50:13');
+
+    sendSubscribesEmail$: Observable<any> = combineLatest([this.subscribersList$, this.latestPosts$]).pipe(
+      switchMap(([subscribersList, latestPosts]) => {
+        // Handle the case where latestPosts might be null or undefined
+        const postObservables = (latestPosts ?? []).map((post: any) =>
+          this.wpClient.getPostsThumbnail(post.featured_media).pipe(
+            map((thumbnail: any) => ({
+              link: post.link,
+              title: post.title.rendered,
+              thumbnail: thumbnail?.guid?.rendered || '',
+              date: this.formatDate(post.date)
+            })),
+            catchError(() => of({
+              link: post.link,
+              title: post.title.rendered,
+              thumbnail: '',
+              date: this.formatDate(post.date)
+            }))
+          )
+        );
+
+        return forkJoin(postObservables).pipe(
+          switchMap((formattedPosts) => {
+            if (subscribersList.length > 0 && formattedPosts.length > 0) {
+              return this.emailService.sendEmailForSubscribers(subscribersList.join(', '), formattedPosts);
+            } else {
+              return of(null);
+            }
+          })
+        );
+      })
+    );
+
+
+
     constructor(
         private http: HttpService,
         private shared: SharedService,
@@ -94,6 +133,11 @@ export class WpPublisherService{
         private helper: WpPublisherHelper,
         private emailService: EmailService
     ){}
+
+      private formatDate(inputDate) {
+        // Parse the input date and format it to the desired output
+        return DateTime.fromISO(inputDate).toFormat('MMMM d, yyyy');
+      }
 
       private tagsIds(tags: string[]): Observable<number[]>{
         const tagsIds$: Observable<number[]> = of(tags).pipe(
