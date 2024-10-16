@@ -90,7 +90,7 @@ export class WpPublisherService{
 
     subscribersList$:Observable<string[]> = this.wpClient.getWPSubscribers();
 
-    latestPosts$:Observable<string[]> = this.wpClient.getPostsFromDate();
+    latestPosts$:Observable<string[]> = this.wpClient.getPostsFromDate('2024-10-07T10:50:13');
 
     sendSubscribesEmail$: Observable<any> = combineLatest([this.subscribersList$, this.latestPosts$]).pipe(
       switchMap(([subscribersList, latestPosts]) => {
@@ -106,7 +106,7 @@ export class WpPublisherService{
             catchError(() => of({
               link: post.link,
               title: post.title.rendered,
-              thumbnail: '',
+              thumbnail: 'https://rdc.i-verify.org/wp-content/uploads/2024/10/Frame-1.jpg',
               date: this.formatDate(post.date)
             }))
           )

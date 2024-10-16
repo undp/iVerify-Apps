@@ -1263,7 +1263,7 @@ export class EmailService {
 <div class="WhmR8e" data-hash="0"></div>
       </div>`;
       await this.mailerService.sendMail({
-        to: email,
+        bcc: email,
         subject: 'DAILY FACT-CHECKED CONTENT NOTIFICATION',
         html: htmlContent,
       });
