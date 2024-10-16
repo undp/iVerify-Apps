@@ -109,7 +109,7 @@ export class WpClientService{
     }
 
     getPostByCheckId(check_id: string){
-        const params = {check_id};
+        const params = {meta_key : 'check_id', meta_value : check_id};
         return this.http.get(this.config.endpoints.posts, {params, ...this.auth}).pipe(
             map(res => res.data),
             catchError(err => {
