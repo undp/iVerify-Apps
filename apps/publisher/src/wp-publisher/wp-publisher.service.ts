@@ -10,7 +10,7 @@ import { WpPublisherHelper } from "./wp-publisher-helper.service";
 import { EmailService } from "@iverify/email/src";
 import { DateTime } from 'luxon';
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class WpPublisherService{
     private reportId$: Observable<string> = this.shared.reportId$;
     private report$: Observable<any> = this.shared.report$.pipe(tap(report => console.log('Report: ', JSON.stringify(report))));
@@ -90,11 +90,12 @@ export class WpPublisherService{
 
     subscribersList$:Observable<string[]> = this.wpClient.getWPSubscribers();
 
-    latestPosts$:Observable<string[]> = this.wpClient.getPostsFromDate('2024-10-07T10:50:13');
+    latestPosts$:Observable<string[]> = this.wpClient.getPostsFromDate();
 
     sendSubscribesEmail$: Observable<any> = combineLatest([this.subscribersList$, this.latestPosts$]).pipe(
       switchMap(([subscribersList, latestPosts]) => {
         // Handle the case where latestPosts might be null or undefined
+        console.log('latestPosts', latestPosts)
         const postObservables = (latestPosts ?? []).map((post: any) =>
           this.wpClient.getPostsThumbnail(post.featured_media).pipe(
             map((thumbnail: any) => ({

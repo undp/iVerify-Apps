@@ -1,28 +1,37 @@
-import { HttpException, Injectable, Logger } from "@nestjs/common";
-import { Cron, CronExpression} from '@nestjs/schedule';
-import { AppService } from "./app.service";
+import { HttpException,Injectable} from '@nestjs/common';
+import { Cron} from '@nestjs/schedule';
+import { AppService } from './app.service';
 
 @Injectable()
-export class CronService{
-    private readonly logger = new Logger('CronService');
-
-    constructor(private appService: AppService){}
-
-    @Cron('0 30 3 * * *')
-    async handleCron(){
-        const start = new Date();
-        const startDate = start.toISOString();
-        this.logger.log(`Running cron job with startDate ${startDate}`)
-        return await this.analyze();
+export class CronServicePublisher {
+  // Example cron job that runs every hour
+  @Cron('0 30 3 * * *')
+  async handleCron() {
+    const start = new Date();
+    const startDate = start.toISOString();
+    console.log('Running hourly job',startDate );
+    // Add your custom logic here
+    try {
+      await this.analyze();
+    } catch (error) {
+      // this.logger.error(`Failed to run analyze: ${error.message}`, error.stack);
     }
+  }
 
-    async analyze(){
-        try{
-            const created = await this.appService.notifySubscribers();
-            console.log('Items created: ', created);
-        } catch(e){
-            this.logger.error('Cron job error: ', e.message);
-            throw new HttpException(e.message, 500);
-        }
-    }
+  constructor(private appService: AppService) {}
+
+  private async analyze(): Promise<void> {
+    this.appService.notifySubscribers().subscribe({
+      next: (created) => {
+        console.log('Subscribers notified', created);
+      },
+      error: (error) => {
+        console.error(`Cron job error: ${error.message}`, error.stack);
+        throw new HttpException(error.message, 500);
+      },
+      complete: () => {
+        console.log('Notification process completed.');
+      },
+    });
+  }
 }

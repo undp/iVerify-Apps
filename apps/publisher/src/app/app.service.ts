@@ -1,10 +1,10 @@
-import { Injectable, Scope } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { combineLatest, Observable } from 'rxjs';
 import { ApiPublisherService } from '../api-publisher/api-publisher.service';
 import { SharedService } from '../shared/shared.service';
 import { WpPublisherService } from '../wp-publisher/wp-publisher.service';
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class AppService {
   itemsToBePublished$: Observable<any> = combineLatest([
     this.wpPublsher.post$,
@@ -14,7 +14,7 @@ export class AppService {
   constructor(
     private shared: SharedService,
     private wpPublsher: WpPublisherService,
-    private apiPublisher: ApiPublisherService
+    private apiPublisher: ApiPublisherService,
   ) {}
 
   publishReportById(id: string) {
@@ -23,6 +23,6 @@ export class AppService {
   }
 
   notifySubscribers() {
-    return this.wpPublsher.sendSubscribesEmail$;
+     return  this.wpPublsher.sendSubscribesEmail$;
   }
 }

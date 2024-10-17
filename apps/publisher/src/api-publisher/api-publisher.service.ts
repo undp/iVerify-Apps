@@ -10,7 +10,7 @@ import { catchError, concatMap, filter, map, reduce, scan, shareReplay, switchMa
 import { SharedService } from "../shared/shared.service";
 import { ApiPublisherHelper } from "./helper";
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class ApiPublisherService{
     private report$: Observable<any> = this.shared.report$;
     private meedanReport$: Observable<any> = this.shared.meedanReport$;

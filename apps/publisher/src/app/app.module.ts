@@ -8,11 +8,11 @@ import { MeedanCheckClientModule } from '@iverify/meedan-check-client';
 import { ApiClientModule } from '@iverify/api-client';
 import { WpClientModule } from '@iverify/wp-client';
 import { ApiPublisherModule } from '../api-publisher/api-publisher.module';
-import { CronService } from './cron.service';
+import { CronServicePublisher } from './cron.service';
 import { ScheduleModule } from '@nestjs/schedule';
-
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     SharedModule,
     WpPublisherModule,
     MeedanCheckClientModule,
@@ -20,9 +20,8 @@ import { ScheduleModule } from '@nestjs/schedule';
     ApiPublisherModule,
     ApiClientModule,
     HttpModule,
-    ScheduleModule.forRoot()
   ],
   controllers: [AppController],
-  providers: [AppService, CronService],
+  providers: [AppService,CronServicePublisher]
 })
 export class AppModule {}
