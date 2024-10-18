@@ -205,7 +205,6 @@ export class EmailService {
                      dir="ltr"
                      align="left"
                    >
-                   ${date}
                    </td>
                  </tr>
 
