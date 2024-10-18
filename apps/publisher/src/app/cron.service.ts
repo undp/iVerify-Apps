@@ -4,13 +4,13 @@ import { AppService } from './app.service';
 
 @Injectable()
 export class CronServicePublisher {
-  // Example cron job that runs every hour
-  @Cron('0 30 3 * * *')
+  @Cron('0 0 0 * * *', {
+    timeZone: process.env.CRON_TIMEZONE || 'UTC'
+  })
   async handleCron() {
     const start = new Date();
     const startDate = start.toISOString();
     console.log('Running hourly job',startDate );
-    // Add your custom logic here
     try {
       await this.analyze();
     } catch (error) {

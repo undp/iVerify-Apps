@@ -1182,60 +1182,6 @@ export class EmailService {
                                     /></a>
                                   </td>
                                 </tr>
-
-                                <tr>
-                                  <td
-                                    width="100%"
-                                    align="center"
-                                    dir="ltr"
-                                    style="padding-bottom: 24px"
-                                  >
-                                    <a
-                                      style="
-                                        font-size: 13px;
-                                        font-family: Verdana, Geneva,
-                                          sans-serif;
-                                        font-weight: normal;
-                                        color: #222222;
-                                        text-decoration: none;
-                                        line-height: normal;
-                                      "
-                                      href="https://rdc.i-verify.org/"
-                                      target="_blank"
-                                      data-saferedirecturl="https://www.google.com/url?q=https://rdc.i-verify.org/"
-                                      >Unsubscribe</a
-                                    ><span
-                                      style="
-                                        font-size: 13px;
-                                        font-family: Verdana, Geneva,
-                                          sans-serif;
-                                        font-weight: normal;
-                                        color: #222222;
-                                        text-decoration: none;
-                                        line-height: normal;
-                                      "
-                                      >&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span
-                                    ><a
-                                      style="
-                                        font-size: 13px;
-                                        font-family: Verdana, Geneva,
-                                          sans-serif;
-                                        font-weight: normal;
-                                        color: #222222;
-                                        text-decoration: none;
-                                        line-height: normal;
-                                      "
-                                      href="https://rdc.i-verify.org/"
-                                      target="_blank"
-                                      data-saferedirecturl="https://www.google.com/url?q=https://rdc.i-verify.org/"
-                                      >View online</a
-                                    >
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </td>
-                        </tr>
                       </tbody>
                     </table>
                   </td>

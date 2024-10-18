@@ -57,6 +57,7 @@ export class WpClientService{
 
     getPostsFromDate(date?: string){
       const start = new Date();
+      start.setHours(start.getHours() - 24);
       const startDate = date ?? start.toISOString().split('.')[0];
       console.log('getPostsFromDate', startDate);
       return this.http.get(this.config.endpoints.posts + '?after=' + startDate, this.auth).pipe(
@@ -80,7 +81,7 @@ export class WpClientService{
 
 
     getWPSubscribers():Observable<string[]> {
-      const key =  'xeptagon_secret_key'
+      const key =  process.env.SUBSCRIBE_API_KEY
       const options = {
         params: {
           api_key: key,
