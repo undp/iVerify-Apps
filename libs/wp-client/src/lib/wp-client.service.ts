@@ -59,8 +59,7 @@ export class WpClientService{
       const start = new Date();
       start.setHours(start.getHours() - 24);
       const startDate = date ?? start.toISOString().split('.')[0];
-      console.log('getPostsFromDate', startDate);
-      return this.http.get(this.config.endpoints.posts + '?after=' + startDate, this.auth).pipe(
+      return this.http.get(this.config.endpoints.posts + '?after=' + startDate  + '&per_page=100' , this.auth).pipe(
           map(res => res.data),
           catchError(err => {
               console.log('Error getting post', err)
