@@ -44,30 +44,39 @@ export class AppService {
         startTime = lastMeedanReport[0].node?.tasks?.edges?.find(task => task.node?.label === this.config.originalPostTimeField).node?.first_response_value
       }
     }
-    let list = await this.unitedwaveClient.getPosts(startTime).toPromise();
-    let createdItems = [];
-    while(list && list.length !== 0) {
-      this.logger.log(`${list.length} posts found from radio. Creating Meedan Check items...`);
-      let lastTime;
-
-      for (let i = list.length - 1; i >= 0; i--) {
-        this.logger.log('Creating item...')
-        const post = list[i]
-        const item = await this.checkClient.createItemFromRadio(post?.clip_url, post?.clip_name, post?.source_text, post?.date_reported).toPromise();
-        console.log('item: ', item)
-        if(!item.error) createdItems = [...createdItems, item];
-        lastTime = post?.date_reported
+   const postsCount = await this.unitedwaveClient.getPostsCount().toPromise();
+   this.logger.log('Latest unitedwaveClient count', postsCount)
+   const postsPerPage = 50;
+   const pageCount = Math.ceil(Number(postsCount) / postsPerPage);
+   const pageIndex = pageCount - 1;
+   let createdItems = [];
+   let createdPosts = [];
+   for(let page = pageIndex ; page >=0 ; page --) {
+       const list = await this.unitedwaveClient.getPosts(page,startTime).toPromise();
+       for (let i = list.length - 1; i >= 0; i--) {
+        const post = list[i];
+        //check  duplication
+        const isDuplicate = this.isDuplicatePost(post, createdPosts);
+        if (!isDuplicate) {
+          const item = await this.checkClient.createItemFromRadio(post?.clip_url, post?.clip_name, post?.source_text, post?.date_reported).toPromise();
+          if(!item.error) {
+            createdItems = [...createdItems, item];
+            createdPosts = [...createdPosts, post];
+          }
+        }
       }
-      this.logger.log('United wave response', JSON.stringify(list))
-      if (lastTime) {
-        list = await this.unitedwaveClient.getPosts(lastTime).toPromise();
-      }
-      else {
-        list = []
-      }
-    }
+   }
     this.logger.log(`Created ${createdItems.length} items.`)
     return createdItems.length;
+  }
+
+  private isDuplicatePost(post, createdPosts) {
+    return createdPosts.some((createdPost) =>
+      createdPost.clip_url === post?.clip_url &&
+      createdPost.clip_name === post?.clip_name &&
+      createdPost.source_text === post?.source_text &&
+      createdPost.date_reported === post?.date_reported
+    );
   }
 
   async analyze(startDate: string, endDate: string): Promise<number> {
@@ -92,7 +101,6 @@ export class AppService {
       for(const post of uniqueToxicPosts){
         this.logger.log('Creating item...')
         const item = await this.checkClient.createItem(post.postUrl, post.toxicScores).toPromise();
-        console.log('item: ', item)
         if(!item.error) createdItems = [...createdItems, item];
       }
       this.logger.log(`Created ${createdItems.length} items.`)
@@ -113,7 +121,6 @@ export class AppService {
         endDate - ${endDate}`);
       this.logger.log(`Max post scan limit - ${this.config.postScanLimit}`)
       const res = await this.ctClient.getPosts(listId, pagination.count, pagination.offset, startDate, endDate,token).toPromise();
-      //console.log('getToxicPostsByList', res)
       this.logger.log(`Received ${res.posts.length} posts. Analyzing...`)
       let postsCount = 0;
       for(const post of res['posts']){

@@ -3,13 +3,14 @@ import { CreateCategoryDto } from "libs/wp-client/src/lib/interfaces/create-cate
 import { CommentStatus, CreatePostDto, PostFormat, PostStatus } from "libs/wp-client/src/lib/interfaces/create-post.dto";
 import { CreateTagDto } from "libs/wp-client/src/lib/interfaces/create-tag.dto";
 import { WpClientService } from "libs/wp-client/src/lib/wp-client.service";
-import { combineLatest, from, iif, Observable, of, zip } from "rxjs";
+import { combineLatest, forkJoin, from, iif, Observable, of, zip } from "rxjs";
 import { catchError, concatMap, filter, map, reduce, scan, shareReplay, switchMap, take, tap, withLatestFrom } from "rxjs/operators";
 import { SharedService } from "../shared/shared.service";
 import { WpPublisherHelper } from "./wp-publisher-helper.service";
 import { EmailService } from "@iverify/email/src";
+import { DateTime } from 'luxon';
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class WpPublisherService{
     private reportId$: Observable<string> = this.shared.reportId$;
     private report$: Observable<any> = this.shared.report$.pipe(tap(report => console.log('Report: ', JSON.stringify(report))));
@@ -76,7 +77,7 @@ export class WpPublisherService{
         tap(wpPost => {
           this.shared.updateWpPost(wpPost);
          if (data.postDto.email_address) {
-            this.emailService.submittedFactCheckContent(data.postDto.email_address, wpPost.link).catch(err => {
+            this.emailService.submittedFactCheckContent(data.postDto.email_address,data.postDto.title,wpPost.link , this.formatDate(data.postDto.date)).catch(err => {
               console.error('Error sending post published email:', err);
             });
          }
@@ -87,6 +88,45 @@ export class WpPublisherService{
       ))
     );
 
+    subscribersList$:Observable<string[]> = this.wpClient.getWPSubscribers();
+
+    latestPosts$:Observable<string[]> = this.wpClient.getPostsFromDate();
+
+    sendSubscribesEmail$: Observable<any> = combineLatest([this.subscribersList$, this.latestPosts$]).pipe(
+      switchMap(([subscribersList, latestPosts]) => {
+        // Handle the case where latestPosts might be null or undefined
+        console.log('latestPosts', latestPosts)
+        const postObservables = (latestPosts ?? []).map((post: any) =>
+          this.wpClient.getPostsThumbnail(post.featured_media).pipe(
+            map((thumbnail: any) => ({
+              link: post.link,
+              title: post.title.rendered,
+              thumbnail: thumbnail?.guid?.rendered || '',
+              date: this.formatDate(post.date)
+            })),
+            catchError(() => of({
+              link: post.link,
+              title: post.title.rendered,
+              thumbnail: 'https://rdc.i-verify.org/wp-content/uploads/2024/10/Frame-1.jpg',
+              date: this.formatDate(post.date)
+            }))
+          )
+        );
+
+        return forkJoin(postObservables).pipe(
+          switchMap((formattedPosts) => {
+            if (subscribersList.length > 0 && formattedPosts.length > 0) {
+              return this.emailService.sendEmailForSubscribers(subscribersList.join(', '), formattedPosts);
+            } else {
+              return of(null);
+            }
+          })
+        );
+      })
+    );
+
+
+
     constructor(
         private http: HttpService,
         private shared: SharedService,
@@ -94,6 +134,11 @@ export class WpPublisherService{
         private helper: WpPublisherHelper,
         private emailService: EmailService
     ){}
+
+      private formatDate(inputDate) {
+        // Parse the input date and format it to the desired output
+        return DateTime.fromISO(inputDate).toFormat('MMMM d, yyyy');
+      }
 
       private tagsIds(tags: string[]): Observable<number[]>{
         const tagsIds$: Observable<number[]> = of(tags).pipe(

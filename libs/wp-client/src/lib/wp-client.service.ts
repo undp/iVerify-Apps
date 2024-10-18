@@ -55,6 +55,48 @@ export class WpClientService{
         );
     }
 
+    getPostsFromDate(date?: string){
+      const start = new Date();
+      start.setHours(start.getHours() - 24);
+      const startDate = date ?? start.toISOString().split('.')[0];
+      console.log('getPostsFromDate', startDate);
+      return this.http.get(this.config.endpoints.posts + '?after=' + startDate, this.auth).pipe(
+          map(res => res.data),
+          catchError(err => {
+              console.log('Error getting post', err)
+              throw new HttpException(err.message, 500);
+            })
+      );
+    }
+
+    getPostsThumbnail(id){
+      return this.http.get(this.config.endpoints.media + '/' + id, this.auth).pipe(
+        map(res => res.data),
+        catchError(err => {
+            console.log('Error getting post', err)
+            throw new HttpException(err.message, 500);
+          })
+    );
+    }
+
+
+    getWPSubscribers():Observable<string[]> {
+      const key =  process.env.SUBSCRIBE_API_KEY
+      const options = {
+        params: {
+          api_key: key,
+        },
+        ...this.auth
+      };
+      return this.http.get(this.config.endpoints.subscribers,  options).pipe(
+        map(res => res.data),
+        catchError(err => {
+            console.log('Error getting post', err)
+            throw new HttpException(err.message, 500);
+          })
+    );
+    }
+
     getPostByTitle(title: string){
         const params = {title};
 
@@ -68,7 +110,7 @@ export class WpClientService{
     }
 
     getPostByCheckId(check_id: string){
-        const params = {check_id};
+        const params = {meta_key : 'check_id', meta_value : check_id};
         return this.http.get(this.config.endpoints.posts, {params, ...this.auth}).pipe(
             map(res => res.data),
             catchError(err => {
