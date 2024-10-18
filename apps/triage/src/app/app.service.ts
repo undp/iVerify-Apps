@@ -44,7 +44,6 @@ export class AppService {
         startTime = lastMeedanReport[0].node?.tasks?.edges?.find(task => task.node?.label === this.config.originalPostTimeField).node?.first_response_value
       }
     }
-   console.log('unitedwaveClient startTime',startTime)
    const postsCount = await this.unitedwaveClient.getPostsCount().toPromise();
    this.logger.log('Latest unitedwaveClient count', postsCount)
    const postsPerPage = 50;
@@ -56,15 +55,12 @@ export class AppService {
        const list = await this.unitedwaveClient.getPosts(page,startTime).toPromise();
        for (let i = list.length - 1; i >= 0; i--) {
         const post = list[i];
-        console.log('post.date_reported',post?.clip_url,post.date_reported);
         //check  duplication
         const isDuplicate = this.isDuplicatePost(post, createdPosts);
         if (!isDuplicate) {
           const item = await this.checkClient.createItemFromRadio(post?.clip_url, post?.clip_name, post?.source_text, post?.date_reported).toPromise();
-          console.log('item: ', item)
           if(!item.error) {
             createdItems = [...createdItems, item];
-            console.log('item: ', post?.clip_url)
             createdPosts = [...createdPosts, post];
           }
         }
@@ -105,7 +101,6 @@ export class AppService {
       for(const post of uniqueToxicPosts){
         this.logger.log('Creating item...')
         const item = await this.checkClient.createItem(post.postUrl, post.toxicScores).toPromise();
-        console.log('item: ', item)
         if(!item.error) createdItems = [...createdItems, item];
       }
       this.logger.log(`Created ${createdItems.length} items.`)
@@ -126,7 +121,6 @@ export class AppService {
         endDate - ${endDate}`);
       this.logger.log(`Max post scan limit - ${this.config.postScanLimit}`)
       const res = await this.ctClient.getPosts(listId, pagination.count, pagination.offset, startDate, endDate,token).toPromise();
-      //console.log('getToxicPostsByList', res)
       this.logger.log(`Received ${res.posts.length} posts. Analyzing...`)
       let postsCount = 0;
       for(const post of res['posts']){
