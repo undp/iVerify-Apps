@@ -55,8 +55,10 @@ export class AppService {
        const list = await this.unitedwaveClient.getPosts(page,startTime).toPromise();
        for (let i = list.length - 1; i >= 0; i--) {
         const post = list[i];
-        const title = `${post?.clip_name || ''}${post?.clip_name && post?.keywords ? ' ' : ''}${post?.keywords || ''}`;
-        //check  duplication
+        const title = [post?.clip_name, post?.keywords, post?.date_reported]
+        .filter(Boolean)
+        .join(' - ');
+       // check  duplication
         const isDuplicate = this.isDuplicatePost(post, createdPosts);
         if (!isDuplicate) {
           const item = await this.checkClient.createItemFromRadio(post?.clip_url, title, post?.source_text, post?.date_reported).toPromise();
