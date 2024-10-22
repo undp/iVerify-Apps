@@ -44,7 +44,7 @@ export class AppService {
         startTime = lastMeedanReport[0].node?.tasks?.edges?.find(task => task.node?.label === this.config.originalPostTimeField).node?.first_response_value
       }
     }
-   const postsCount = await this.unitedwaveClient.getPostsCount().toPromise();
+   const postsCount = await this.unitedwaveClient.getPostsCount(startTime).toPromise();
    this.logger.log('Latest unitedwaveClient count', postsCount)
    const postsPerPage = 50;
    const pageCount = Math.ceil(Number(postsCount) / postsPerPage);

@@ -24,10 +24,13 @@ export class UnitedwaveClientService{
       return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
 
-    getPostsCount(filter?:string) {
+    getPostsCount(startDate?: string,filter?:string) {
       let query = this.config.endpoints.count + `?user[name]=${this.config.username}&user[secret]=${this.config.password}`;
       if(filter) {
         query += `&clip[filters]=${filter}`
+      }
+      if (startDate) {
+        query += `&clip[from_date]=${startDate}`
       }
       return this.http.post(query).pipe(
           map(res => res.data),
