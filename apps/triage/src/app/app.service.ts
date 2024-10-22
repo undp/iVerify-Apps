@@ -44,7 +44,7 @@ export class AppService {
         startTime = lastMeedanReport[0].node?.tasks?.edges?.find(task => task.node?.label === this.config.originalPostTimeField).node?.first_response_value
       }
     }
-   const postsCount = await this.unitedwaveClient.getPostsCount().toPromise();
+   const postsCount = await this.unitedwaveClient.getPostsCount(startTime).toPromise();
    this.logger.log('Latest unitedwaveClient count', postsCount)
    const postsPerPage = 50;
    const pageCount = Math.ceil(Number(postsCount) / postsPerPage);
@@ -55,10 +55,13 @@ export class AppService {
        const list = await this.unitedwaveClient.getPosts(page,startTime).toPromise();
        for (let i = list.length - 1; i >= 0; i--) {
         const post = list[i];
-        //check  duplication
+        const title = [post?.clip_name, post?.keywords, post?.date_reported]
+        .filter(Boolean)
+        .join(' - ');
+       // check  duplication
         const isDuplicate = this.isDuplicatePost(post, createdPosts);
         if (!isDuplicate) {
-          const item = await this.checkClient.createItemFromRadio(post?.clip_url, post?.clip_name, post?.source_text, post?.date_reported).toPromise();
+          const item = await this.checkClient.createItemFromRadio(post?.clip_url, title, post?.source_text, post?.date_reported).toPromise();
           if(!item.error) {
             createdItems = [...createdItems, item];
             createdPosts = [...createdPosts, post];
