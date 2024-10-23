@@ -55,7 +55,7 @@ export class AppService {
        const list = await this.unitedwaveClient.getPosts(page,startTime).toPromise();
        for (let i = list.length - 1; i >= 0; i--) {
         const post = list[i];
-        const title = [post?.clip_name, post?.keywords, post?.date_reported]
+        const title = ['radio', post?.keywords, post?.date_reported]
         .filter(Boolean)
         .join(' - ');
        // check  duplication
