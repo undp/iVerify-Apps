@@ -1,12 +1,13 @@
 import { HttpException,Injectable} from '@nestjs/common';
-import { Cron} from '@nestjs/schedule';
+import { Cron, CronExpression} from '@nestjs/schedule';
 import { AppService } from './app.service';
 
 @Injectable()
 export class CronServicePublisher {
-  @Cron('0 0 0 * * *', {
-    timeZone: process.env.CRON_TIMEZONE || 'UTC'
-  })
+  // @Cron('0 0 0 * * *', {
+  //   timeZone: process.env.CRON_TIMEZONE || 'UTC'
+  // })
+  @Cron(CronExpression.EVERY_HOUR)
   async handleCron() {
     const start = new Date();
     const startDate = start.toISOString();
