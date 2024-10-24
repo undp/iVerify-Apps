@@ -57,7 +57,7 @@ export class WpClientService{
     }
 
     getPostsFromDate(date?: string){
-      const start = DateTime.now().minus({ hours: 1 });
+      const start = DateTime.now().minus({ hours: 24 });
       const startDate = date ?? start.toISO({ includeOffset: false }).split('.')[0];
       console.log('getPostsFromDate',startDate)
       return this.http.get(this.config.endpoints.posts + '?after=' + startDate  + '&per_page=100' , this.auth).pipe(

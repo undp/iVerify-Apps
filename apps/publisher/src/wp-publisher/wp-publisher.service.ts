@@ -175,7 +175,6 @@ export class WpPublisherService {
           return forkJoin(postObservables).pipe(
             switchMap((formattedPosts) => {
               if (subscribersList.length > 0 && formattedPosts.length > 0) {
-                // Uncomment the below line to send emails once emailService is ready
                 return this.emailService.sendEmailForSubscribers(subscribersList.join(', '), formattedPosts);
               } else {
                 return of(null);
