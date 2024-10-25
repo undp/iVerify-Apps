@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - main
+      - pakistan-iverify-v1
 
 # on:
 #   workflow_dispatch:
@@ -16,7 +16,6 @@ on:
 #         required: true
 
 env:
-  CONTAINER_NAME_API: api-container
   CONTAINER_NAME_TRIAGE: triage-container
   CONTAINER_NAME_PUBLISHER: publisher-container
 
@@ -118,19 +117,19 @@ jobs:
         run: |
           npm install
 
-      - name: Build, tag, and push the api image to Amazon
-        # if: steps.api-changes.outputs.api-changes == 'true'
-        id: build-image-api
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: iverify-api
-          IMAGE_TAG: latest
-        run: |
-          npx nx build api
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/api/Dockerfile .
-          echo "Pushing image to ECR..."
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+      # - name: Build, tag, and push the api image to Amazon
+      #   # if: steps.api-changes.outputs.api-changes == 'true'
+      #   id: build-image-api
+      #   env:
+      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     ECR_REPOSITORY: iverify-api
+      #     IMAGE_TAG: latest
+      #   run: |
+      #     npx nx build api
+      #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/api/Dockerfile .
+      #     echo "Pushing image to ECR..."
+      #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      #     echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
       - name: Build, tag, and push the publisher image to Amazon
         # if: steps.publisher-changes.outputs.publisher-changes == 'true'
