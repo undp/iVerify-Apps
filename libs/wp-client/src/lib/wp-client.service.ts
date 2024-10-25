@@ -6,6 +6,7 @@ import { CreateCategoryDto } from "./interfaces/create-category.dto";
 import { CreateMediaDto } from "./interfaces/create-media.dto";
 import { CreatePostDto } from "./interfaces/create-post.dto";
 import { CreateTagDto } from "./interfaces/create-tag.dto";
+import { DateTime } from 'luxon';
 
 @Injectable()
 export class WpClientService{
@@ -56,9 +57,9 @@ export class WpClientService{
     }
 
     getPostsFromDate(date?: string){
-      const start = new Date();
-      start.setHours(start.getHours() - 24);
-      const startDate = date ?? start.toISOString().split('.')[0];
+      const start = DateTime.now().minus({ hours: 24 });
+      const startDate = date ?? start.toISO({ includeOffset: false }).split('.')[0];
+      console.log('getPostsFromDate',startDate)
       return this.http.get(this.config.endpoints.posts + '?after=' + startDate  + '&per_page=100' , this.auth).pipe(
           map(res => res.data),
           catchError(err => {
