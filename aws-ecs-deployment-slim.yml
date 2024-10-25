@@ -12,10 +12,10 @@ Parameters:
     Description: System config file
     Default: arn:aws:s3:::iverify-prod-configs/sl.env
 
-  APIImage:
-    Type: String
-    Description: ECR name of the API docker image
-    Default: 427524370246.dkr.ecr.us-east-1.amazonaws.com/iverify-api:latest
+  # APIImage:
+  #   Type: String
+  #   Description: ECR name of the API docker image
+  #   Default: 427524370246.dkr.ecr.us-east-1.amazonaws.com/iverify-api:latest
 
   PublisherImage:
     Type: String
