@@ -79,11 +79,12 @@ export class CheckClientHelperService {
     }
 
 
-    buildCreateItemFromRadioMessage(url: string, name, content, created_date, tag = 'Radio') {
+    buildCreateItemFromRadioMessage(url: string, name, content, created_date, category:string,tag = 'Radio') {
       const tasksResponsesObj = {
         [TasksLabels[this.lang].audio_url]: url,
         [TasksLabels[this.lang].message]: content,
         [TasksLabels[this.lang].original_reported_date]: created_date,
+        [TasksLabels[this.lang].meedan_category]: category
       };
       let setTasksResponses = JSON.stringify(tasksResponsesObj);
       setTasksResponses = setTasksResponses.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
