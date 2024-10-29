@@ -132,7 +132,7 @@ export const TasksLabels = {
         audio_url:'url_audio',
         message:'message',
         original_reported_date: 'date_de_rapport_originale',
-        meedan_category:'catégorie'
+        meedan_category:'type_de_categorie'
     },
     mkd: {
       claim: 'Тврдење',
