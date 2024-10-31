@@ -30,7 +30,7 @@ export class AppService {
     private translate: TranslateService
     ){}
 
-  async pullRadioMessages(): Promise<number> {
+  async pullRadioMessages(): Promise<any> {
     if (this.config.enableRadioMessages != 'true') {
       this.logger.log('Radio messages feature disabled')
       return
@@ -72,24 +72,32 @@ export class AppService {
        const realValue = arr.find((item) => RadioFilterConvert[item]) || '';
        const category:string = RadioFilterConvert[realValue] || '';
 
-       console.log('posts-category', category, post.cl_id);
+       console.log('posts-category', category, title);
        // check  duplication
        const isDuplicate = this.isDuplicatePost(post, createdPosts);
        if (!isDuplicate) {
-         const item = await this.checkClient
-           .createItemFromRadio(
-             post?.clip_url,
-             title,
-             post?.source_text,
-             post?.date_reported,
-             category
-           )
-           .toPromise();
-         if (!item.error) {
-           createdItems = [...createdItems, item];
-           createdPosts = [...createdPosts, post];
-         }
-       }
+        try {
+          const item = await this.checkClient.createItemFromRadio(
+            post?.clip_url,
+            title,
+            post?.source_text,
+            post?.date_reported
+          ).toPromise();
+
+          if (item && !item.error) {
+            createdItems = [...createdItems, item];
+            createdPosts = [...createdPosts, post];
+
+            if (category) {
+              const annotationList = item.data.createProjectMedia.project_media.tasks.edges;
+
+              await this.checkClient.UpdateRadioCategory(category, annotationList).toPromise();
+            }
+          }
+        } catch (error) {
+          console.error('Error while creating item:', error);
+        }
+      }
      }
    }
     this.logger.log(`Created ${createdItems.length} items.`)

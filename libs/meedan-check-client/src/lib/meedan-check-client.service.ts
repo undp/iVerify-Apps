@@ -189,7 +189,7 @@ export class MeedanCheckClientService {
   }
 
   private getAnnotationId(annotationList: any[], label: string): string {
-    console.log('getAnnotationId', annotationList)
+ //   console.log('getAnnotationId', annotationList)
     return annotationList
       .filter((edge) => edge.node.label === label)
       .map((edge) => edge.node.id)
@@ -246,6 +246,26 @@ export class MeedanCheckClientService {
     return this.postData(combinedQuery, headers);
   }
 
+   UpdateRadioCategory(
+    category: string,
+    annotationList?: any[],
+  ): Observable<any> {
+    const headers = this.config.headers;
+    const categoryId = this.getAnnotationId(
+      annotationList,
+      TasksLabels[this.lang].meedan_category
+    );
+    console.log('UpdateRadioCategory',categoryId,category)
+    const combinedQuery = this.helper.buildAnnotationItemsCombinedFromWpMutation(
+      categoryId,
+      'task_response_single_choice',
+      'response_single_choice',
+      category
+    );
+
+    return this.postData(combinedQuery, headers);
+  }
+
   private async handleFiles(
     files: string[],
     headers: any,
@@ -281,8 +301,8 @@ export class MeedanCheckClientService {
   }
 
 
-  createItemFromRadio(url: string, name: string, content: string, created_date: string, category:string): Observable<any>{
-    const query: string = this.helper.buildCreateItemFromRadioMessage(url, name, content, created_date, category);
+  createItemFromRadio(url: string, name: string, content: string, created_date: string): Observable<any>{
+    const query: string = this.helper.buildCreateItemFromRadioMessage(url, name, content, created_date);
     const headers = this.config.headers;
 
     return this.http.post(this.config.checkApiUrl, {query}, {headers}).pipe(
