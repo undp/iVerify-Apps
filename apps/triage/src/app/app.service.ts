@@ -13,6 +13,7 @@ const RadioFilterConvert = {
   "Désinfo - Sécurité": "SÉCURITÉ",
   "Désinfo - Genre et Société":"GENRE ET SOCIÉTÉ",
   "Désinfo - Environment et Santé":"ENVIRONNEMENT ET SANTÉ",
+  "Désinfo - Economie":"ECONOMIE"
 }
 
 @Injectable()
