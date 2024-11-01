@@ -8,6 +8,13 @@ import { PerspectiveClientService } from '@iverify/perspective-client/src/lib/pe
 import { MlServiceType } from '@iverify/iverify-common';
 import { TranslateService } from './TranslateService/TranslateService';
 
+const RadioFilterConvert = {
+  "Désinfo - Politique": "POLITIQUE",
+  "Désinfo - Sécurité": "SÉCURITÉ",
+  "Désinfo - Genre et Société":"GENRE ET SOCIÉTÉ",
+  "Désinfo - Environment et Santé":"ENVIRONNEMENT ET SANTÉ",
+}
+
 @Injectable()
 export class AppService {
   private readonly logger = new Logger('TriageAppService');
@@ -23,7 +30,7 @@ export class AppService {
     private translate: TranslateService
     ){}
 
-  async pullRadioMessages(): Promise<number> {
+  async pullRadioMessages(): Promise<any> {
     if (this.config.enableRadioMessages != 'true') {
       this.logger.log('Radio messages feature disabled')
       return
@@ -51,23 +58,47 @@ export class AppService {
    const pageIndex = pageCount - 1;
    let createdItems = [];
    let createdPosts = [];
-   for(let page = pageIndex ; page >=0 ; page --) {
-       const list = await this.unitedwaveClient.getPosts(page,startTime).toPromise();
-       for (let i = list.length - 1; i >= 0; i--) {
-        const post = list[i];
-        const title = ['radio', post?.keywords, post?.date_reported]
-        .filter(Boolean)
-        .join(' - ');
+   for (let page = pageIndex; page >= 0; page--) {
+     const list = await this.unitedwaveClient
+       .getPosts(page, startTime)
+       .toPromise();
+     for (let i = list.length - 1; i >= 0; i--) {
+       const post = list[i];
+       const title = ['radio', post?.keywords, post?.date_reported]
+         .filter(Boolean)
+         .join(' - ');
+       const arr = post.filters.split(',');
+
+       const realValue = arr.find((item) => RadioFilterConvert[item]) || '';
+       const category:string = RadioFilterConvert[realValue] || '';
+
+       console.log('posts-category', category, title);
        // check  duplication
-        const isDuplicate = this.isDuplicatePost(post, createdPosts);
-        if (!isDuplicate) {
-          const item = await this.checkClient.createItemFromRadio(post?.clip_url, title, post?.source_text, post?.date_reported).toPromise();
-          if(!item.error) {
+       const isDuplicate = this.isDuplicatePost(post, createdPosts);
+       if (!isDuplicate) {
+        try {
+          const item = await this.checkClient.createItemFromRadio(
+            post?.clip_url,
+            title,
+            post?.source_text,
+            post?.date_reported
+          ).toPromise();
+
+          if (item && !item.error) {
             createdItems = [...createdItems, item];
             createdPosts = [...createdPosts, post];
+
+            if (category) {
+              const annotationList = item.data.createProjectMedia.project_media.tasks.edges;
+
+              await this.checkClient.UpdateRadioCategory(category, annotationList).toPromise();
+            }
           }
+        } catch (error) {
+          console.error('Error while creating item:', error);
         }
       }
+     }
    }
     this.logger.log(`Created ${createdItems.length} items.`)
     return createdItems.length;

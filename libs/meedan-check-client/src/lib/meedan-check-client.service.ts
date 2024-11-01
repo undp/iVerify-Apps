@@ -189,7 +189,7 @@ export class MeedanCheckClientService {
   }
 
   private getAnnotationId(annotationList: any[], label: string): string {
-    console.log('getAnnotationId', annotationList)
+ //   console.log('getAnnotationId', annotationList)
     return annotationList
       .filter((edge) => edge.node.label === label)
       .map((edge) => edge.node.id)
@@ -241,6 +241,26 @@ export class MeedanCheckClientService {
       'task_response_free_text',
       'response_free_text',
       email
+    );
+
+    return this.postData(combinedQuery, headers);
+  }
+
+   UpdateRadioCategory(
+    category: string,
+    annotationList?: any[],
+  ): Observable<any> {
+    const headers = this.config.headers;
+    const categoryId = this.getAnnotationId(
+      annotationList,
+      TasksLabels[this.lang].meedan_category
+    );
+    console.log('UpdateRadioCategory',categoryId,category)
+    const combinedQuery = this.helper.buildAnnotationItemsCombinedFromWpMutation(
+      categoryId,
+      'task_response_single_choice',
+      'response_single_choice',
+      category
     );
 
     return this.postData(combinedQuery, headers);

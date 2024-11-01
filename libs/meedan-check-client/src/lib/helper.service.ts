@@ -101,6 +101,15 @@ export class CheckClientHelperService {
             project_media {
               dbid
               id
+              tasks {
+              edges {
+                node {
+                  id
+                  fieldset
+                  label
+                }
+              }
+            }
             }
           }
         }

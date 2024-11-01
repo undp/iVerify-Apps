@@ -41,7 +41,8 @@ export const TasksLabels = {
         upload_file: 'Upload Files',
         audio_url:'audio_url',
         message:'message',
-        original_reported_date: 'original_reported_date'
+        original_reported_date: 'original_reported_date',
+        meedan_category:'category'
     },
     es: {
         claim: 'Declaración',
@@ -85,7 +86,8 @@ export const TasksLabels = {
         upload_file: 'Upload Files',
         audio_url:'audio_url',
         message:'message',
-        original_reported_date: 'original_reported_date'
+        original_reported_date: 'original_reported_date',
+        meedan_category:'categoria'
     },
     fr: {
         claim: 'Affirmation',
@@ -129,7 +131,8 @@ export const TasksLabels = {
         upload_file: 'Téléchargements de fichiers',
         audio_url:'url_audio',
         message:'message',
-        original_reported_date: 'date_de_rapport_originale'
+        original_reported_date: 'date_de_rapport_originale',
+        meedan_category:'Catégorie'
     },
     mkd: {
       claim: 'Тврдење',
@@ -173,6 +176,7 @@ export const TasksLabels = {
       upload_file: 'Upload Files',
       audio_url:'audio_url',
       message:'message',
-      original_reported_date: 'original_reported_date'
+      original_reported_date: 'original_reported_date',
+      meedan_category:'category'
   },
 }
