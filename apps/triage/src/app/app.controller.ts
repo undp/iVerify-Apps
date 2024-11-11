@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import {
   ApiBody,
   ApiTags,
@@ -6,6 +6,8 @@ import {
 } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { AuthService } from '@iverify/auth/src/lib/auth.service';
+import { JwtAuthGuard } from '@iverify/auth/src/lib/guard/JwtAuthGuard.guard';
 
 class SubmitStoryDto {
   @ApiProperty()
@@ -33,10 +35,11 @@ class SubmitStoryDto {
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService , private authService : AuthService) {}
 
   @Post('submit-story')
   @ApiTags('Submit story')
+  @UseGuards(JwtAuthGuard)
   @ApiBody({ type: SubmitStoryDto })
   @UseInterceptors(FilesInterceptor('files'))
   async submitStory(@Body() body, @UploadedFiles() files: any){
@@ -49,6 +52,12 @@ export class AppController {
     }catch(e){
       return new HttpException(e.message, 500)
     }
+  }
+
+  @Get('get-token')
+  @ApiTags('Get Submit Story Token')
+  generateToken() {
+    return this.authService.createSubmitStoryToken()
   }
    // test end point for UW
   // @Get('radio-messages')

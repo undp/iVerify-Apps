@@ -35,7 +35,9 @@
       "@iverify/common": ["libs/common/src/index.ts"],
       "@iverify/unitedwave-client": ["libs/unitedwave-client/src/index.ts"],
       "@iverify/libs/s3": ["libs/libs/s3/src/index.ts"],
-      "@iverify/s3": ["libs/s3/src/index.ts"]
+      "@iverify/s3": ["libs/s3/src/index.ts"],
+      "@iverify/libs/auth": ["libs/libs/auth/src/index.ts"],
+      "@iverify/auth": ["libs/auth/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
