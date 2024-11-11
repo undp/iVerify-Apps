@@ -56,8 +56,9 @@ export class AppController {
 
   @Get('get-token')
   @ApiTags('Get Submit Story Token')
-  generateToken() {
-    return this.authService.createSubmitStoryToken()
+  async generateToken() {
+    const token = await this.authService.createSubmitStoryToken();
+    return { token };
   }
    // test end point for UW
   // @Get('radio-messages')
