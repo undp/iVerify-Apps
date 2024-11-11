@@ -3,23 +3,22 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
+  constructor(private readonly jwtService: JwtService) {}
   async createSubmitStoryToken() {
     const payload = {
       timestamp: Date.now(),
     };
-    const expiresIn = process.env.SUBMIT_STORY_TOKEN_EXPIRE_TIME || '30m';
-    const accessToken = jwt.sign(payload, process.env.SECRET_ENV, {
-      expiresIn,
-    });
+    const accessToken = this.jwtService.sign(payload);
     return accessToken;
   }
 
   async validateSubmitStoryToken(token: string): Promise<any> {
     try {
       // Decode and verify the token
-      const decoded:any = jwt.verify(token, process.env.SECRET_ENV);
+      const decoded:any = this.jwtService.verify(token);
 
       // Optional: Check timestamp for specific requirements
       const currentTime = Date.now();
