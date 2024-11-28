@@ -6,7 +6,11 @@ import { shareReplay, switchMap, take, tap } from "rxjs/operators";
 @Injectable()
 export class SharedService{
     private _reportId: Subject<string> = new Subject<string>();
-    reportId$: Observable<string> = this._reportId.asObservable().pipe(take(1), shareReplay(1));
+    reportId$: Observable<string> = this._reportId.asObservable().pipe(
+      take(1),
+      tap(value => console.log('Report ID emitted:', value)),
+      shareReplay(1)
+    );
 
     private _wpPost: Subject<any> = new Subject<any>();
     wpPost$: Observable<string> = this._wpPost.asObservable().pipe(take(1), shareReplay(1));
@@ -30,7 +34,10 @@ export class SharedService{
 
     updateReportId(id: string){
       console.log('updateReportId', id)
-        this._reportId.next(id);
+      this._reportId.next(id);
+      this._reportId.subscribe((id: string) => {
+        console.log(`Report ID updated: ${id}`);
+      });
     }
 
     updateWpPost(wpPost: any){
