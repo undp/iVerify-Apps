@@ -7,7 +7,7 @@ import { shareReplay, switchMap, take, tap } from "rxjs/operators";
 export class SharedService{
     private _reportId: Subject<string> = new Subject<string>();
     reportId$: Observable<string> = this._reportId.asObservable().pipe(
-      take(1),
+      // take(1),
       tap(value => console.log('Report ID emitted:', value)),
       shareReplay(1)
     );
