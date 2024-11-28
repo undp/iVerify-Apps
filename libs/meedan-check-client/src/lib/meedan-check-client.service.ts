@@ -19,6 +19,7 @@ export class MeedanCheckClientService {
   ) {}
 
   getReport(id: string): Observable<any> {
+    console.log(' getReport',id)
     const query: string = this.helper.buildGetReportQuery(id);
     const headers = this.config.headers;
     console.log('Getting report query: ', query);
@@ -36,6 +37,7 @@ export class MeedanCheckClientService {
   }
 
   getMeedanReport(id: string): Observable<any> {
+    console.log('Getting meedan reportid: ', id);
     const query: string = this.helper.buildGetMeedanReportQuery(id);
     const headers = this.config.headers;
     console.log('Getting meedan report query: ', query);

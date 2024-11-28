@@ -29,7 +29,9 @@ import { DateTime } from 'luxon';
 
 @Injectable()
 export class WpPublisherService {
-  private reportId$: Observable<string> = this.shared.reportId$;
+  private reportId$: Observable<string> = this.shared.reportId$.pipe(
+    tap(id => console.log('Shared reportId$', id)) // Log the emitted report ID
+);
   private report$: Observable<any> = this.shared.report$.pipe(
     tap((report) => console.log('Report: ', JSON.stringify(report)))
   );
