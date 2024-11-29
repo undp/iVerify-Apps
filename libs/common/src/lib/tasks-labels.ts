@@ -42,7 +42,7 @@ export const TasksLabels = {
         audio_url:'audio_url',
         message:'message',
         original_reported_date: 'original_reported_date',
-        meedan_category:'category'
+        meedan_category:'Category'
     },
     es: {
         claim: 'Declaración',
@@ -87,7 +87,7 @@ export const TasksLabels = {
         audio_url:'audio_url',
         message:'message',
         original_reported_date: 'original_reported_date',
-        meedan_category:'categoria'
+        meedan_category:'Categoria'
     },
     fr: {
         claim: 'Affirmation',
