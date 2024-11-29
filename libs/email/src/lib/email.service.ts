@@ -1,10 +1,12 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { Article } from '@iverify/iverify-common';
+import { EmailTranslations } from './templates/email-translations';
 let converter = require('json-2-csv');
 
 @Injectable()
 export class EmailService {
+  lang = process.env.language;
   constructor(private mailerService: MailerService) {}
 
   async sendCsvReport(data: Article[], date: string) {
@@ -67,6 +69,7 @@ export class EmailService {
     factCheckedLink: string,
     date?: string
   ): Promise<void> {
+    const t = EmailTranslations[this.lang];
     try {
       let htmlContent = `<div class="">
 <div class="aHl"></div>
@@ -150,14 +153,14 @@ export class EmailService {
                                         line-height: 1.5;
                                       "
                                     >
-                                      <p style="text-align: left">Bonjour,</p>
+                                      <p style="text-align: left">${t.greeting}</p>
                                       <p style="text-align: left">&nbsp;</p>
                                       <p style="text-align: left">
-                                      Vous avez récemment souscrit à notre service de notifications pour être informé lorsque du contenu est vérifié par l’equipe iVerify.
+                                       ${t.introSubmit}
                                       </p>
                                       <p style="text-align: left">&nbsp;</p>
                                       <p style="text-align: left">
-                                      Nous vous informons que le contenu que vous aviez signalé ou suivi a été fact-checké. Vous pouvez consulter les résultats de notre analyse en suivant le lien ci-dessous :
+                                      ${t.factCheckedNotification}
                                       </p>
                                     </td>
                                   </tr>
@@ -304,7 +307,7 @@ export class EmailService {
                                "
                                target="_blank"
                                data-saferedirecturl="https://www.google.com/url?q=${factCheckedLink}"
-                               >En savoir plus...</a
+                               >${t.learnMore}</a
                              >
                            </td>
                          </tr>
@@ -382,12 +385,11 @@ export class EmailService {
                                     "
                                   >
                                     <p>
-                                    Nous vous remercions pour votre engagement envers la vérification des informations et vous encourageons à partager ces résultats avec vos contacts sur les réseaux sociaux afin de contribuer à la diffusion d'informations fiables.
+                                    ${t.thanksSubmit}
                                     </p>
                                     <p style="text-align: left">&nbsp;</p>
                                     <p>
-                                      Cordialement,<br />L’équipe de
-                                      vérification des faits iVerify
+                                      ${t.regards}<br /> ${t.team}
                                     </p>
                                   </td>
                                 </tr>
@@ -591,6 +593,7 @@ export class EmailService {
   }
 
   async sendEmailForSubscribers(email: string, lists: any): Promise<void> {
+    const t = EmailTranslations[this.lang];
     try {
       let htmlContent = `<div class="">
 <div class="aHl"></div>
@@ -674,18 +677,14 @@ export class EmailService {
                                         line-height: 1.5;
                                       "
                                     >
-                                      <p style="text-align: left">Bonjour,</p>
+                                      <p style="text-align: left">${t.greeting}</p>
                                       <p style="text-align: left">&nbsp;</p>
                                       <p style="text-align: left">
-                                        Merci de vous être abonné à notre
-                                        service de notifications pour suivre
-                                        les dernières vérifications effectuées
-                                        par l’équipe iVerify.
+                                        ${t.intro}
                                       </p>
                                       <p style="text-align: left">&nbsp;</p>
                                       <p style="text-align: left">
-                                        Voici les contenus qui ont été
-                                        fact-checkés aujourd'hui :
+                                        ${t.todayFactCheck}
                                       </p>
                                     </td>
                                   </tr>
@@ -749,7 +748,7 @@ export class EmailService {
                                                     <tr>
                                                       <td align="center" bgcolor="#0385ca" role="presentation" style="border-collapse: separate !important; background: #0385ca; border-radius: 5px;" valign="middle">
                                                         <a href="${list.link}" style="display: inline-block; color: #ffffff; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: normal; line-height: 120%; margin: 0; text-decoration: none; text-transform: none; padding: 10px 25px; border-radius: 5px; width: auto;" target="_blank">
-                                                          En savoir plus...
+                                                        ${t.learnMore}
                                                         </a>
                                                       </td>
                                                     </tr>
@@ -905,7 +904,7 @@ export class EmailService {
                                "
                                target="_blank"
                                data-saferedirecturl="https://www.google.com/url?q=${list.link}"
-                               >En savoir plus...</a
+                               >${t.learnMore}</a
                              >
                            </td>
                          </tr>
@@ -985,17 +984,11 @@ export class EmailService {
                                     "
                                   >
                                     <p>
-                                      Nous vous remercions pour votre
-                                      engagement dans la lutte contre la
-                                      désinformation et vous invitons à
-                                      partager ces résultats sur vos réseaux
-                                      sociaux pour contribuer à la diffusion
-                                      d'informations fiables.
+                                    ${t.thanks}
                                     </p>
                                     <p style="text-align: left">&nbsp;</p>
                                     <p>
-                                      Cordialement,<br />L’équipe de
-                                      vérification des faits iVerify
+                                      ${t.regards}<br />${t.team}
                                     </p>
                                   </td>
                                 </tr>
