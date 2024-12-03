@@ -1,4 +1,4 @@
-import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { CrowdtangleClientService } from 'libs/crowdtangle-client/src/lib/crowdtangle-client.service';
 import { UnitedwaveClientService } from 'libs/unitedwave-client/src/lib/unitedwave-client.service';
 import { MeedanCheckClientService, ToxicityScores } from '@iverify/meedan-check-client';

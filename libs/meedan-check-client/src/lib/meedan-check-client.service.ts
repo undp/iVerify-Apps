@@ -1,16 +1,16 @@
 import { HttpException, HttpService, Injectable, Logger } from '@nestjs/common';
-import { forkJoin, from, iif, Observable, of } from 'rxjs';
+import { forkJoin, from, Observable, of } from 'rxjs';
 import { catchError, map, retry, switchMap, tap } from 'rxjs/operators';
 import { CheckClientConfig } from './config';
 import { CheckClientHelperService } from './helper.service';
 import { ToxicityScores } from './interfaces/toxicity-scores';
 import { S3Service } from 'libs/s3/src/lib/s3.service';
 import { v4 as uuidv4 } from 'uuid';
-import { TasksLabels } from '@iverify/common/src';
+import { getLabel, MeedanLabels} from '@iverify/common/src';
 @Injectable()
 export class MeedanCheckClientService {
   private readonly logger = new Logger('MeedanCheckClient');
-  lang = process.env.language;
+  lang = process.env.language + `-` + process.env.COUNTRY_CODE;
   constructor(
     private http: HttpService,
     private config: CheckClientConfig,
@@ -204,7 +204,7 @@ export class MeedanCheckClientService {
 
     if (files) {
       const bucketName:string = process.env.AWS_BUCKET_NAME ?? 'iverify-prod-cd-web'
-      const id = this.getAnnotationId(annotationList, `${TasksLabels[this.lang].upload_file}`);
+      const id = this.getAnnotationId(annotationList, `${getLabel(this.lang, MeedanLabels.UPLOAD_FILE)}`);
       let url_format = '';
       for (let count = 1; count <= files.length; count++) {
         // Upload the current file to the bucket and get the file URL
@@ -236,7 +236,7 @@ export class MeedanCheckClientService {
   ): Observable<any> {
     const emailAnnotationId = this.getAnnotationId(
       annotationList,
-      TasksLabels[this.lang].email_address
+      getLabel(this.lang, MeedanLabels.EMAIL_ADDRESS)
     );
     const combinedQuery = this.helper.buildAnnotationItemsCombinedFromWpMutation(
       emailAnnotationId,
@@ -255,7 +255,7 @@ export class MeedanCheckClientService {
     const headers = this.config.headers;
     const categoryId = this.getAnnotationId(
       annotationList,
-      TasksLabels[this.lang].meedan_category
+      getLabel(this.lang, MeedanLabels.MEEDAN_CATEGORY)
     );
     console.log('UpdateRadioCategory',categoryId,category)
     const combinedQuery = this.helper.buildAnnotationItemsCombinedFromWpMutation(

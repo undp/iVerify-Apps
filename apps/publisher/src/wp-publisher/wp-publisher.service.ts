@@ -114,30 +114,30 @@ export class WpPublisherService {
     tap((postDto) =>
       console.log('sending to WP publication: ', JSON.stringify(postDto))
     ),
-    withLatestFrom(this.wpPostId$),
-    map(([postDto, wpPostId]) => ({ postDto, wpPostId })),
-    switchMap((data) =>
-      this.wpClient.publishPost(data.postDto, data.wpPostId).pipe(
-        tap((wpPost) => {
-          this.shared.updateWpPost(wpPost);
-          if (data.postDto.email_address) {
-            this.emailService
-              .submittedFactCheckContent(
-                data.postDto.email_address,
-                data.postDto.title,
-                wpPost.link,
-                this.formatDate(data.postDto.date)
-              )
-              .catch((err) => {
-                console.error('Error sending post published email:', err);
-              });
-          }
-        }),
-        catchError((err) => {
-          throw new HttpException(err.message, 500);
-        })
-      )
-    )
+    // withLatestFrom(this.wpPostId$),
+    // map(([postDto, wpPostId]) => ({ postDto, wpPostId })),
+    // switchMap((data) =>
+    //   this.wpClient.publishPost(data.postDto, data.wpPostId).pipe(
+    //     tap((wpPost) => {
+    //       this.shared.updateWpPost(wpPost);
+    //       if (data.postDto.email_address) {
+    //         this.emailService
+    //           .submittedFactCheckContent(
+    //             data.postDto.email_address,
+    //             data.postDto.title,
+    //             wpPost.link,
+    //             this.formatDate(data.postDto.date)
+    //           )
+    //           .catch((err) => {
+    //             console.error('Error sending post published email:', err);
+    //           });
+    //       }
+    //     }),
+    //     catchError((err) => {
+    //       throw new HttpException(err.message, 500);
+    //     })
+    //   )
+    // )
   );
 
   subscribersList$: Observable<string[]> = this.wpClient.getWPSubscribers();
