@@ -13,6 +13,8 @@ import { PerspectiveClientModule } from '@iverify/perspective-client/src';
 import { UnitedwaveClientModule } from '@iverify/unitedwave-client';
 import { ApiClientModule, ApiClientService } from '@iverify/api-client/src';
 import { TranslateService } from './TranslateService/TranslateService';
+import { AuthModule } from '@iverify/auth';
+import { AuthService } from '@iverify/auth/src/lib/auth.service';
 @Module({
   imports: [
     HttpModule,
@@ -22,9 +24,10 @@ import { TranslateService } from './TranslateService/TranslateService';
     MeedanCheckClientModule,
     UnitedwaveClientModule,
     ApiClientModule,
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
+    AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService, TriageConfig, CronService, TranslateService],
+  providers: [AppService, TriageConfig, CronService, TranslateService, AuthService],
 })
 export class AppModule {}

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import {
   ApiBody,
   ApiTags,
@@ -6,6 +6,8 @@ import {
 } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { AuthService } from '@iverify/auth/src/lib/auth.service';
+import { JwtAuthGuard } from '@iverify/auth/src/lib/guard/JwtAuthGuard.guard';
 
 class SubmitStoryDto {
   @ApiProperty()
@@ -15,7 +17,7 @@ class SubmitStoryDto {
   content: string;
 
   @ApiProperty()
-  secret: string;
+  secret?: string;
 
   @ApiProperty({
     type: 'array',
@@ -33,22 +35,30 @@ class SubmitStoryDto {
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService , private authService : AuthService) {}
 
   @Post('submit-story')
   @ApiTags('Submit story')
+  @UseGuards(JwtAuthGuard)
   @ApiBody({ type: SubmitStoryDto })
   @UseInterceptors(FilesInterceptor('files'))
   async submitStory(@Body() body, @UploadedFiles() files: any){
-    const {url, content, secret , email} = body;
+    const {url, content,email} = body;
     console.log('Submit story', body)
-    const secretEnv = process.env.SECRET_ENV || '1v3r1fy';
-    if(secret !== secretEnv ) return new HttpException('Not authorized.', 403);
+    // const secretEnv = process.env.SECRET_ENV || '1v3r1fy';
+    // if(secret !== secretEnv ) return new HttpException('Not authorized.', 403);
     try {
       return await this.appService.createItemFromWp(url, content ,files , email)
     }catch(e){
       return new HttpException(e.message, 500)
     }
+  }
+
+  @Get('get-token')
+  @ApiTags('Get Submit Story Token')
+  async generateToken() {
+    const token = await this.authService.createSubmitStoryToken();
+    return { token };
   }
    // test end point for UW
   // @Get('radio-messages')
