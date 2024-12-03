@@ -1,4 +1,4 @@
-import { TasksLabels } from "@iverify/common/src";
+import { getLabel, MeedanLabels,} from "@iverify/common/src";
 import { Injectable } from "@nestjs/common";
 import { CommentStatus, CreatePostDto, PostFields, PostFormat, PostStatus } from "libs/wp-client/src/lib/interfaces/create-post.dto";
 import { SharedHelper } from "../shared/helper";
@@ -6,7 +6,7 @@ var showdown  = require('showdown')
 
 @Injectable()
 export class WpPublisherHelper{
-    lang = process.env.language;
+    lang = process.env.language + `-` + process.env.COUNTRY_CODE;
 
     constructor(private sharedHelper: SharedHelper){}
 
@@ -36,22 +36,22 @@ export class WpPublisherHelper{
         const title = meedanReport.title;
         const subtitle = meedanReport.description;
 
-        const violation_type = this.sharedHelper.extractTask(report, TasksLabels[this.lang].violation_type);
+        const violation_type = this.sharedHelper.extractTask(report, getLabel(this.lang, MeedanLabels.VIOLATION_TYPE));
         // const toxicField = this.sharedHelper.extractTask(report, TasksLabels[this.lang].toxic);
         // const toxic = !!toxicField ? 1 : 0;
-        const toxic = (violation_type === TasksLabels[this.lang].violation_hate_speech) ? 1 : 0;
+        const toxic = (violation_type === getLabel(this.lang, MeedanLabels.VIOLATION_HATE_SPEECH)) ? 1 : 0;
         const factchecking_status = this.extractFactcheckingStatus(report);
         const claim = this.sharedHelper.extractTitle(report);
         // this.sharedHelper.extractTask(report, TasksLabels[this.lang].claim);
-        let rating_justification = this.sharedHelper.extractTask(report, TasksLabels[this.lang].rating_justification);
+        let rating_justification = this.sharedHelper.extractTask(report, getLabel(this.lang, MeedanLabels.RATING_JUSTIFICATION));
         rating_justification = this.formatMarkupText(rating_justification);
-        const evidence = this.sharedHelper.extractTask(report, TasksLabels[this.lang].evidences_and_references);
+        const evidence = this.sharedHelper.extractTask(report,getLabel(this.lang, MeedanLabels.EVIDENCES_AND_REFERENCES));
         const evidence_and_references = this.formatEvidence(evidence);
         const _webdados_fb_open_graph_specific_image = visualCard;
-        const category = this.sharedHelper.extractTask(report, TasksLabels[this.lang].category_checked);
+        const category = this.sharedHelper.extractTask(report, getLabel(this.lang, MeedanLabels.CATEGORY_CHECKED));
         const fields: PostFields = {check_id, factchecking_status, claim, rating_justification, evidence_and_references, subtitle, toxic,category};
         console.log('visual card url: ', _webdados_fb_open_graph_specific_image)
-        const email_address = this.sharedHelper.extractTask(report, TasksLabels[this.lang].email_address);
+        const email_address = this.sharedHelper.extractTask(report, getLabel(this.lang, MeedanLabels.EMAIL_ADDRESS));
         const post: CreatePostDto = {
           format,
           author,

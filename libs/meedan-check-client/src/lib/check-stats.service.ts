@@ -1,7 +1,7 @@
 import { TasksLabels } from "@iverify/common/src";
 import { HttpException, HttpService, Injectable, Logger } from "@nestjs/common";
 import { combineLatest, from, Observable } from "rxjs";
-import { catchError, concatMap, filter, first, map, reduce, retry, take, tap } from "rxjs/operators";
+import { catchError, concatMap, filter, map, reduce, retry} from "rxjs/operators";
 import { CheckClientConfig } from "./config";
 import { CheckClientHelperService } from "./helper.service";
 // import { StatusesMap, TasksLabels } from "@iverify/iverify-common";
@@ -12,12 +12,12 @@ export class CheckStatsService{
     lang = process.env.language;
 
     constructor(
-        private http: HttpService, 
+        private http: HttpService,
         private config: CheckClientConfig,
         private helper: CheckClientHelperService
         ){}
 
-    
+
 
     getTicketsByAgent(statuses: string[]): Observable<any>{
         const teamSlug = this.config.checkApiTeam;
@@ -29,7 +29,7 @@ export class CheckStatsService{
                 this.logger.error(`Error getting tickets by agents: `, err.message)
                 throw new HttpException(err.message, 500);
             })
-        )         
+        )
     }
 
     getByAgentAllStatuses(agent: any, statuses: string[]){
@@ -57,7 +57,7 @@ export class CheckStatsService{
             this.logger.error(`Error getting tickets for agentId ${agentId} and status ${status}: `, err.message)
             throw new HttpException(err.message, 500);
             })
-        );  
+        );
     }
 
     getAllAgents(teamSlug: string){
@@ -71,7 +71,7 @@ export class CheckStatsService{
             this.logger.error('Error getting all agents: ', err.message)
             throw new HttpException(err.message, 500);
             })
-        );  
+        );
     }
 
     getTicketsByInputProjects(){
@@ -116,7 +116,7 @@ export class CheckStatsService{
             this.logger.error(`Error getting tickets for projectId ${projectId}: `, err.message)
             throw new HttpException(err.message, 500);
             })
-        );  
+        );
     }
 
     getAllProjects(teamSlug: string){
@@ -130,7 +130,7 @@ export class CheckStatsService{
             this.logger.error('Error getting all agents: ', err.message)
             throw new HttpException(err.message, 500);
             })
-        );  
+        );
     }
 
     getTicketsByTags(): Observable<any>{

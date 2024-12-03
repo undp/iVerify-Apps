@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { throwIfEmpty } from 'rxjs/operators';
+// import { throwIfEmpty } from 'rxjs/operators';
 import { ToxicityScores } from './interfaces/toxicity-scores';
-import { TasksLabels } from '@iverify/common/src';
+import { getLabel, MeedanLabels} from '@iverify/common/src';
 
 @Injectable()
 export class CheckClientHelperService {
-  lang = process.env.language;
+  lang = process.env.language + `-` + process.env.COUNTRY_CODE;
   buildGetReportQuery(id: string) {
     return `query {
         project_media(ids: "${id}"){
@@ -81,9 +81,9 @@ export class CheckClientHelperService {
 
     buildCreateItemFromRadioMessage(url: string, name, content, created_date, tag = 'Radio') {
       const tasksResponsesObj = {
-        [TasksLabels[this.lang].audio_url]: url,
-        [TasksLabels[this.lang].message]: content,
-        [TasksLabels[this.lang].original_reported_date]: created_date,
+        [getLabel(this.lang, MeedanLabels.AUDIO_URL)]: url,
+        [getLabel(this.lang, MeedanLabels.MESSAGE)]: content,
+        [getLabel(this.lang, MeedanLabels.ORIGINAL_REPORTED_DATE)]: created_date,
       };
       let setTasksResponses = JSON.stringify(tasksResponsesObj);
       setTasksResponses = setTasksResponses.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
