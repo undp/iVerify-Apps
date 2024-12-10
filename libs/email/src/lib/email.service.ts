@@ -593,6 +593,7 @@ export class EmailService {
   }
 
   async sendEmailForSubscribers(email: string, lists: any): Promise<void> {
+    console.log('subscriber list', lists)
     const t = EmailTranslations[this.lang];
     try {
       let htmlContent = `<div class="">

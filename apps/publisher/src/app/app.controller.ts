@@ -74,14 +74,14 @@ export class AppController {
   }
 
   // only for test
-  // @Get('subscribers')
-  // @ApiTags('subscribers')
-  // async subscribers(){
-  //   try{
-  //    return this.appService.notifySubscribers();
-  //   }catch(e){
-  //     return new HttpException(e.message, 500)
-  //   }
-  // }
+  @Get('subscribers')
+  @ApiTags('subscribers')
+  async subscribers(){
+    try{
+     return this.appService.notifySubscribers();
+    }catch(e){
+      return new HttpException(e.message, 500)
+    }
+  }
 
 }
