@@ -167,7 +167,7 @@ export class WpPublisherService {
                   link: post.link,
                   title: post.title.rendered,
                   thumbnail:
-                    'https://rdc.i-verify.org/wp-content/uploads/2024/10/Frame-1.jpg',
+                  process.env.COUNTRY_CODE,
                   date: this.formatDate(post.date),
                 })
               )

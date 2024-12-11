@@ -279,11 +279,11 @@ export class EmailService {
                          <tr>
                            <td
                              align="center"
-                             bgcolor="#0385ca"
+                             bgcolor="${process.env.IVERIFY_COUNTRY_COLOR_CODE}"
                              role="presentation"
                              style="
                                border-collapse: separate !important;
-                               background: #0385ca;
+                               background: ${process.env.IVERIFY_COUNTRY_COLOR_CODE};
                                border-radius: 5px;
                              "
                              valign="middle"
@@ -532,7 +532,7 @@ export class EmailService {
                                       target="_blank"
                                       data-saferedirecturl="https://www.google.com/url?q=https://rdc.i-verify.org/"
                                       ><img
-                                        src="https://ci3.googleusercontent.com/meips/ADKq_NYYMrB3tstWV09WOKKqxsb-tbvs09diYTnp1gn8gGZpl0wV8-8_ie7KDdHrhifrbdI8rU15C9Myh6hYWO2N2Er11c7dNnivvCH0Fy2B2K0Pexp5hzIN-vTKSRJnoUTP5tW2PzV6jmQhQ8DWZwcZbru1RVySnYEvFI8TmyVXgBUZvyzz2kidKdt2ETiyKi9MZJzcfMzkBjwA-wdBg1msY4ZyisZW=s0-d-e1-ft#https://rdc.i-verify.org/wp-content/uploads/2024/09/cropped-Graphic_Republique-Democratique-du-Congo_White_SVG-1-1iVerify_Logo-1.png"
+                                        src="${process.env.IVERIFY_LOGO_URL}"
                                         width="120"
                                         height="30"
                                         alt="iVerify RÉPUBLIQUE DÉMOCRATIQUE DU CONGO"
@@ -747,7 +747,7 @@ export class EmailService {
                                                 <table border="0" cellpadding="0" cellspacing="0" role="presentation" align="left" style="border-collapse: separate !important; line-height: 100%; width: auto;">
                                                   <tbody>
                                                     <tr>
-                                                      <td align="center" bgcolor="#0385ca" role="presentation" style="border-collapse: separate !important; background: #0385ca; border-radius: 5px;" valign="middle">
+                                                      <td align="center" bgcolor="${process.env.IVERIFY_COUNTRY_COLOR_CODE}" role="presentation" style="border-collapse: separate !important; background: ${process.env.IVERIFY_COUNTRY_COLOR_CODE}; border-radius: 5px;" valign="middle">
                                                         <a href="${list.link}" style="display: inline-block; color: #ffffff; font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: normal; line-height: 120%; margin: 0; text-decoration: none; text-transform: none; padding: 10px 25px; border-radius: 5px; width: auto;" target="_blank">
                                                         ${t.learnMore}
                                                         </a>
@@ -877,11 +877,11 @@ export class EmailService {
                          <tr>
                            <td
                              align="center"
-                             bgcolor="#0385ca"
+                             bgcolor="${process.env.IVERIFY_COUNTRY_COLOR_CODE}"
                              role="presentation"
                              style="
                                border-collapse: separate !important;
-                               background: #0385ca;
+                               background: ${process.env.IVERIFY_COUNTRY_COLOR_CODE};
                                border-radius: 5px;
                              "
                              valign="middle"
@@ -1132,7 +1132,7 @@ export class EmailService {
                                       target="_blank"
                                       data-saferedirecturl="https://www.google.com/url?q=https://rdc.i-verify.org/"
                                       ><img
-                                        src="https://ci3.googleusercontent.com/meips/ADKq_NYYMrB3tstWV09WOKKqxsb-tbvs09diYTnp1gn8gGZpl0wV8-8_ie7KDdHrhifrbdI8rU15C9Myh6hYWO2N2Er11c7dNnivvCH0Fy2B2K0Pexp5hzIN-vTKSRJnoUTP5tW2PzV6jmQhQ8DWZwcZbru1RVySnYEvFI8TmyVXgBUZvyzz2kidKdt2ETiyKi9MZJzcfMzkBjwA-wdBg1msY4ZyisZW=s0-d-e1-ft#https://rdc.i-verify.org/wp-content/uploads/2024/09/cropped-Graphic_Republique-Democratique-du-Congo_White_SVG-1-1iVerify_Logo-1.png"
+                                        src="${process.env.IVERIFY_LOGO_URL}"
                                         width="120"
                                         height="30"
                                         alt="iVerify RÉPUBLIQUE DÉMOCRATIQUE DU CONGO"
