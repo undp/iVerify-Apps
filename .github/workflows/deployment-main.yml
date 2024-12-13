@@ -1,0 +1,251 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       cluster_type:
+#         description: 'Enter the cluster type (bd,sl and etc)'
+#         required: true
+#       commit_sha:
+#         description: 'Commit SHA to check for changes'
+#         required: true
+
+env:
+  CONTAINER_NAME_API: api-container
+  CONTAINER_NAME_TRIAGE: triage-container
+  CONTAINER_NAME_PUBLISHER: publisher-container
+
+jobs:
+  deploy_all:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Cache modules
+        uses: actions/cache@v2
+        id: npm-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # - name: Set Variables
+      #   id: set_variables
+      #   run: |
+      #     json_data=$(cat clusters.json)
+      #     cluster_type="${{ github.event.inputs.cluster_type }}"
+      #     clusters=$(echo "$json_data" | jq -r ".clusters.\"$cluster_type\"")
+      #     api=$(echo "$json_data" | jq -r ".api.\"$cluster_type\"")
+      #     publisher=$(echo "$json_data" | jq -r ".publisher.\"$cluster_type\"")
+      #     triage=$(echo "$json_data" | jq -r ".triage.\"$cluster_type\"")
+      #     task_def_publisher=$(echo "$json_data" | jq -r ".\"task-def-publisher\".\"$cluster_type\"")
+      #     task_api=$(echo "$json_data" | jq -r ".\"task-def-api\".\"$cluster_type\"")
+      #     task_def_triage=$(echo "$json_data" | jq -r ".\"task-def-triage\".\"$cluster_type\"")
+      #     echo "::set-output name=clusters::$clusters"
+      #     echo "::set-output name=api::$api"
+      #     echo "::set-output name=publisher::$publisher"
+      #     echo "::set-output name=triage::$triage"
+      #     echo "::set-output name=task_def_publisher::$task_def_publisher"
+      #     echo "::set-output name=task_def_api::$task_def_api"
+      #     echo "::set-output name=task_def_triage::$task_def_triage"
+
+      # - name: Determine api changes
+      #   id: api-changes
+      #   run: |
+      #     CHANGED_FILES=$(git diff --name-only ${{ github.event.inputs.commit_sha }}^ ${{ github.event.inputs.commit_sha }})
+
+      #     if echo "$CHANGED_FILES" | grep -q "apps/api/"; then
+      #       echo "API changes detected."
+      #       echo "::set-output name=api-changes::true"
+      #     else
+      #       echo "No API changes detected."
+      #       echo "::set-output name=api-changes::false"
+      #     fi
+
+      # - name: Determine publisher changes
+      #   id: publisher-changes
+      #   run: |
+      #     CHANGED_FILES=$(git diff --name-only ${{ github.event.inputs.commit_sha }}^ ${{ github.event.inputs.commit_sha }})
+
+      #     if echo "$CHANGED_FILES" | grep -q "apps/publisher/"; then
+      #       echo "Publisher changes detected."
+      #       echo "::set-output name=publisher-changes::true"
+      #     else
+      #       echo "No publisher changes detected."
+      #       echo "::set-output name=publisher-changes::false"
+      #     fi
+
+      # - name: Determine triage changes
+      #   id: triage-changes
+      #   run: |
+      #     CHANGED_FILES=$(git diff --name-only ${{ github.event.inputs.commit_sha }}^ ${{ github.event.inputs.commit_sha }})
+
+      #     if echo "$CHANGED_FILES" | grep -q "apps/triage/"; then
+      #       echo "Triage changes detected."
+      #       echo "::set-output name=triage-changes::true"
+      #     else
+      #       echo "No triage changes detected."
+      #       echo "::set-output name=triage-changes::false"
+      #     fi
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Build, tag, and push the api image to Amazon
+        # if: steps.api-changes.outputs.api-changes == 'true'
+        id: build-image-api
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: iverify-api
+          IMAGE_TAG: latest
+        run: |
+          npx nx build api
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/api/Dockerfile .
+          echo "Pushing image to ECR..."
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Build, tag, and push the publisher image to Amazon
+        # if: steps.publisher-changes.outputs.publisher-changes == 'true'
+        id: build-image-publisher
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: iverify-publisher
+          IMAGE_TAG: v2
+        run: |
+          npx nx build publisher
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/publisher/Dockerfile .
+          echo "Pushing image to ECR..."
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Build, tag, and push the triage image to Amazon
+        # if: steps.triage-changes.outputs.triage-changes == 'true'
+        id: build-image-triage
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: iverify-triage
+          IMAGE_TAG: v2
+        run: |
+          npx nx build triage
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./apps/triage/Dockerfile .
+          echo "Pushing image to ECR..."
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      # - name: Download api task definition
+      #   # if: steps.api-changes.outputs.api-changes == 'true'
+      #   run: |
+      #     aws ecs describe-task-definition --task-definition ${{ steps.set_variables.outputs.task_def_api }} \
+      #     --query 'taskDefinition.revision' \
+      #     --output text > latest-task-revision.txt
+
+      #     LATEST_REVISION=$(cat latest-task-revision.txt)
+      #     echo "Latest Revision: $LATEST_REVISION"
+
+      #     aws ecs describe-task-definition --task-definition "arn:aws:ecs:us-east-1:427524370246:task-definition/${{ steps.set_variables.outputs.outputs.task_def_api }}:$LATEST_REVISION" --query "taskDefinition" > task-definition-api.json
+
+      # - name: Fill in the new image ID in the Amazon ECS API task definition
+      #   # if: steps.api-changes.outputs.api-changes == 'true'
+      #   id: task-def-api
+      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+      #   with:
+      #     task-definition: task-definition-api.json
+      #     container-name: ${{ env.CONTAINER_NAME_API }}
+      #     image: ${{ steps.build-image-api.outputs.image }}
+
+      # - name: Deploy Amazon api ECS task definition
+      #   # if: steps.api-changes.outputs.api-changes == 'true'
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      #   with:
+      #     task-definition: ${{ steps.task-def-api.outputs.task-definition }}
+      #     service: ${{ steps.set_variables.outputs.api }}
+      #     cluster: ${{ steps.set_variables.outputs.clusters }}
+      #     wait-for-service-stability: true
+
+      # - name: Download publisher task definition
+      #   # if: steps.publisher-changes.outputs.publisher-changes == 'true'
+      #   run: |
+      #     aws ecs describe-task-definition --task-definition ${{ steps.set_variables.outputs.task_def_publisher }} \
+      #     --query 'taskDefinition.revision' \
+      #     --output text > latest-task-revision.txt
+
+      #     LATEST_REVISION=$(cat latest-task-revision.txt)
+      #     echo "Latest Revision: $LATEST_REVISION"
+
+      #     aws ecs describe-task-definition --task-definition "arn:aws:ecs:us-east-1:427524370246:task-definition/${{ steps.set_variables.outputs.task_def_publisher }}:$LATEST_REVISION" --query "taskDefinition" > task-definition-publisher.json
+
+      # - name: Fill in the new image ID in the Amazon ECS publisher task definition
+      #   # if: steps.publisher-changes.outputs.publisher-changes == 'true'
+      #   id: task-def-publisher
+      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+      #   with:
+      #     task-definition: task-definition-publisher.json
+      #     container-name: ${{ env.CONTAINER_NAME_PUBLISHER }}
+      #     image: ${{ steps.build-image-publisher.outputs.image }}
+
+      # - name: Deploy Amazon publisher ECS task definition
+      #   # if: steps.publisher-changes.outputs.publisher-changes == 'true'
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      #   with:
+      #     task-definition: ${{ steps.task-def-publisher.outputs.task-definition }}
+      #     service: ${{ steps.set_variables.outputs.publisher }}
+      #     cluster: ${{ steps.set_variables.outputs.clusters }}
+      #     wait-for-service-stability: true
+
+      # - name: Download triage task definition
+      #   # if: steps.triage-changes.outputs.triage-changes == 'true'
+      #   run: |
+      #     aws ecs describe-task-definition --task-definition ${{ steps.set_variables.outputs.task_def_triage }} \
+      #     --query 'taskDefinition.revision' \
+      #     --output text > latest-task-revision.txt
+
+      #     LATEST_REVISION=$(cat latest-task-revision.txt)
+      #     echo "Latest Revision: $LATEST_REVISION"
+
+      #     aws ecs describe-task-definition --task-definition "arn:aws:ecs:us-east-1:427524370246:task-definition/${{ steps.set_variables.outputs.task_def_triage }}:$LATEST_REVISION" --query "taskDefinition" > task-definition-triage.json
+
+      # - name: Fill in the new image ID in the Amazon ECS task definition
+      #   # if: steps.triage-changes.outputs.triage-changes == 'true'
+      #   id: task-def-triage
+      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+      #   with:
+      #     task-definition: task-definition-triage.json
+      #     container-name: ${{ env.CONTAINER_NAME_TRIAGE }}
+      #     image: ${{ steps.build-image-triage.outputs.image }}
+
+      # - name: Deploy Amazon triage ECS task definition
+      #   # if: steps.triage-changes.outputs.triage-changes == 'true'
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      #   with:
+      #     task-definition: ${{ steps.task-def-triage.outputs.task-definition }}
+      #     service: ${{ steps.set_variables.outputs.triage }}
+      #     cluster: ${{ steps.set_variables.outputs.clusters }}
+      #     wait-for-service-stability: true

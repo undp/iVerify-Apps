@@ -34,6 +34,10 @@ export class PerspectiveClientService{
                     PROFANITY: {scoreThreshold: threshold}
                 } 
            }
+        if (process.env.language != 'en') {
+            body.languages.push(process.env.language)
+        } 
+        console.log('Analyze body', body)
         return body;
     }
 

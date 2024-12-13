@@ -1,6 +1,7 @@
 import { HttpException, HttpService, Injectable, Logger } from "@nestjs/common";
 import { CrowdtangleClientConfig } from "./config";
-import { catchError, map, retry, tap } from 'rxjs/operators';
+import { catchError,concatMap, map, retry , reduce} from 'rxjs/operators';
+import { forkJoin } from "rxjs";
 
 @Injectable()
 export class CrowdtangleClientService{
@@ -9,20 +10,28 @@ export class CrowdtangleClientService{
     constructor(private http: HttpService, private config: CrowdtangleClientConfig){}
 
     getLists(){
-        const params = {token: this.config.apiKey};
-        return this.http.get(`${this.config.endpoints.lists}`, {params}).pipe(
-            map(res => res.data.result.lists),
+      const paramsLists = this.config.apiKey.split(',');
+      return forkJoin(
+        paramsLists.map(param =>
+          this.http.get(`${this.config.endpoints.lists}`, { params: { token: param } }).pipe(
+            map(res => res.data.result.lists.map(list => ({ ...list, token: param }))),
+           // map(res => res.data.result.lists),
             retry(3),
             catchError(err => {
-                this.logger.error(`Error fetching CrowdTangle lists: `, err.message);
-                throw new HttpException(err.message, 500);
+              this.logger.error(`Error fetching CrowdTangle lists: `, err.message);
+              throw new HttpException(err.message, 500);
             })
-        ) 
+          )
+        )
+      ).pipe(
+        concatMap(listsArrays => listsArrays), // Flatten the arrays
+        reduce((acc, curr) => acc.concat(curr), [])
+      );
     }
 
-    getPosts(listIds: string, count: number, offset: number, startDate: string, endDate: string){
-        const params = {token: this.config.apiKey, count, offset, startDate, sortBy: 'date', endDate, listIds};
-        return this.http.get(`${this.config.endpoints.posts}`, {params}).pipe(           
+    getPosts(listIds: string, count: number, offset: number, startDate: string, endDate: string,token?:string){
+        const params = {token: token, count, offset, startDate, sortBy: 'date', endDate, listIds};
+        return this.http.get(`${this.config.endpoints.posts}`, {params}).pipe(
             map(res => res.data.result),
             retry(3),
             catchError(err => {
@@ -30,7 +39,8 @@ export class CrowdtangleClientService{
                 throw new HttpException(err.message, 500);
             })
         )
-
     }
 
 }
+
+

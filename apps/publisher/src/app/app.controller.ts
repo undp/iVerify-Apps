@@ -26,7 +26,7 @@ class PublishReportDto {
 @Controller()
 export class AppController {
   private readonly logger = new Logger('PublisherAppService');
-  
+
   constructor(
     private readonly appService: AppService,
     ) {}
@@ -67,9 +67,21 @@ export class AppController {
           this.logger.error(err);
           throw new HttpException(err.message, 500);
         })
-      );      
+      );
     }catch(e){
       return new HttpException(e.message, 500)
     }
   }
+
+  // only for test
+  @Get('subscribers')
+  @ApiTags('subscribers')
+  async subscribers(){
+    try{
+     return this.appService.notifySubscribers();
+    }catch(e){
+      return new HttpException(e.message, 500)
+    }
+  }
+
 }

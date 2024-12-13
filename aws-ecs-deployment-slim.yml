@@ -1,0 +1,709 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: IVerify Deployment ECS -  VPC - Slim
+# Make sure to create Kinesis data firehose service that listening to Kinesis stream created in 'loginStream' and put data to ES domain
+Parameters:
+  CountryCode:
+    Description: An environment name that is prefixed to resource names
+    Type: String
+
+  ConfigFile:
+    Type: String
+    Description: System config file
+    Default: arn:aws:s3:::iverify-prod-configs/sl.env
+
+  APIImage:
+    Type: String
+    Description: ECR name of the API docker image
+    Default: 427524370246.dkr.ecr.us-east-1.amazonaws.com/iverify-api:latest
+
+  PublisherImage:
+    Type: String
+    Description: ECR name of the API docker image
+    Default: 427524370246.dkr.ecr.us-east-1.amazonaws.com/iverify-publisher
+
+  TriageImage:
+    Type: String
+    Description: ECR name of the API docker image
+    Default: 427524370246.dkr.ecr.us-east-1.amazonaws.com/iverify-triage
+
+  TaskRole:
+    Type: String
+    Description: Task definition task role arn
+    Default: arn:aws:iam::427524370246:role/iverify-sl-task-role
+
+  # DBEngine:
+  #   Type: String
+  #   Default: "MySQL"
+
+  # DBEngineVersion:
+  #   Type: String
+  #   Default: "8.0.28"
+
+  # DBSourceRegion:
+  #   Type: String
+  #   Default: "us-east-1"
+
+  # DBInstanceClass:
+  #   Type: String
+  #   Default: "db.t3.micro"
+
+  # DBStorageType:
+  #   Type: String
+  #   Default: "gp2"
+
+  # DBAllocatedStorage:
+  #   Type: Number
+  #   Default: 10
+
+  # DBName:
+  #   Type: String
+  #   Default: "iverify"
+
+  # DBUser:
+  #   Type: String
+  #   Default: "root"
+
+  # VpcId:
+  #   Type: String
+  #   Default: "vpc-0eb85dee0c9f310d5"
+
+  # SubnetPublic1:
+  #   Type: String
+  #   Default: "subnet-0ed0d34e3f856eeb4"
+
+  # SubnetPublic2:
+  #   Type: String
+  #   Default: "subnet-07d847cb19607d23e"
+
+  # SubnetPrivate1:
+  #   Type: String
+  #   Default: "subnet-06adf729473da99eb"
+
+  # DBPassword:
+  #   Type: String
+  #   NoEcho: True
+
+Resources:
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: "10.0.0.0/16"
+      InstanceTenancy: "default"
+      Tags: 
+        - Key: Name
+          Value: !Join ['-', [!Ref 'AWS::StackName', vpc]]
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Join ['-', [!Ref 'AWS::StackName', igw]]
+
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref Vpc
+
+  SubnetPublic1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1a"
+      CidrBlock: "10.0.1.0/24"
+      Tags: 
+        - Key: Name
+          Value: !Join ['-', [!Ref 'AWS::StackName', public-subnet-1]]
+      VpcId: !Ref Vpc
+
+  SubnetPublic2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1b"
+      CidrBlock: "10.0.2.0/24"
+      Tags: 
+        - Key: Name
+          Value: !Join ['-', [!Ref 'AWS::StackName', public-subnet-2]]
+      VpcId: !Ref Vpc
+
+  SubnetPrivate1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1a"
+      CidrBlock: "10.0.3.0/24"
+      Tags: 
+        - Key: Name
+          Value: !Join ['-', [!Ref 'AWS::StackName', private-subnet-1]]
+      VpcId: !Ref Vpc
+
+  # SubnetPrivate2:
+  #   Type: AWS::EC2::Subnet
+  #   Properties:
+  #     AvailabilityZone: "us-east-1b"
+  #     CidrBlock: "10.0.4.0/24"
+  #     Tags: 
+  #       - Key: Name
+  #         Value: !Join ['-', [!Ref 'AWS::StackName', private-subnet-2]]
+  #     VpcId: !Ref Vpc
+
+  NatIP:
+    Type: AWS::EC2::EIP
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: !Join ['-', [!Ref 'AWS::StackName', nat-eip]]
+
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    DependsOn: NatIP
+    Properties:
+      AllocationId: !GetAtt NatIP.AllocationId
+      SubnetId: !Ref SubnetPublic1
+      Tags:
+        - Key: Name
+          Value: !Join ['-', [!Ref 'AWS::StackName', ngw]]
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+      Tags:
+        - Key: Name
+          Value: !Join ['-', [!Ref 'AWS::StackName', public-rt]]
+
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref SubnetPublic1
+
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref SubnetPublic2
+
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+      Tags:
+        - Key: Name
+          Value: !Join ['-', [!Ref 'AWS::StackName', private-rt]]
+
+  DefaultPrivateRoute:
+    Type: AWS::EC2::Route
+    DependsOn: NatGateway
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway
+
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      SubnetId: !Ref SubnetPrivate1
+
+  AlbSg:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Application loadbalancer security group 
+      GroupName: !Join ['-', [!Ref 'AWS::StackName', iverify-alb-sg]]
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3334
+          ToPort: 3334
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3335
+          ToPort: 3335
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref Vpc
+
+  ApiServiceSg:
+    Type: AWS::EC2::SecurityGroup
+    DependsOn: AlbSg
+    Properties:
+      GroupDescription: Api service security group 
+      GroupName: !Join ['-', [!Ref 'AWS::StackName', api-service-sg]]
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          SourceSecurityGroupId: !GetAtt AlbSg.GroupId
+      VpcId: !Ref Vpc
+
+  NoIngressSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: "no-ingress-sg"
+      GroupDescription: "Security group with no ingress rule"
+      VpcId: !Ref Vpc
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          SourceSecurityGroupId: !GetAtt ApiServiceSg.GroupId
+
+  # DBSubnetGroup:
+  #   Type: AWS::RDS::DBSubnetGroup
+  #   Properties:
+  #     DBSubnetGroupDescription: DBSubnetGroup for RDS instances
+  #     SubnetIds:
+  #       - Ref: SubnetPrivate1
+  #       - Ref: SubnetPrivate2
+
+  # DBInstance:
+  #   Type: AWS::RDS::DBInstance
+  #   Properties:
+  #     DBInstanceIdentifier: !Sub iverify-${CountryCode}
+  #     DBName: !Sub iverify${CountryCode}
+  #     AllocatedStorage:
+  #       Ref: DBAllocatedStorage
+  #     DBInstanceClass:
+  #       Ref: DBInstanceClass
+  #     StorageType:
+  #       Ref: DBStorageType
+  #     Engine:
+  #       Ref: DBEngine
+  #     EngineVersion:
+  #       Ref: DBEngineVersion
+  #     MasterUsername:
+  #       Ref: DBUser
+  #     MasterUserPassword:
+  #       Ref: DBPassword
+  #     Tags:
+  #       - Key: Programme
+  #         Value: "RDS PostgreSQL"
+  #     VPCSecurityGroups:
+  #       - !Ref NoIngressSecurityGroup
+  #     DBSubnetGroupName:
+  #       Ref: DBSubnetGroup
+
+  # PrivateSubnet2RouteTableAssociation:
+  #   Type: AWS::EC2::SubnetRouteTableAssociation
+  #   Properties:
+  #     RouteTableId: !Ref PrivateRouteTable
+  #     SubnetId: !Ref SubnetPrivate2
+
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      CapacityProviders:
+        - FARGATE
+      ClusterName: !Join ['-', [!Ref 'AWS::StackName', cluster]]
+
+  # ApiTaskDefinition:
+  #   Type: AWS::ECS::TaskDefinition
+  #   DependsOn: [LogGroupApi, ExecutionRole]
+  #   Properties:
+  #     Family: !Join ['-', [!Ref 'AWS::StackName', api-def]]
+  #     ContainerDefinitions:
+  #       - Name: api-container
+  #         Image: !Ref APIImage
+  #         PortMappings:
+  #           - ContainerPort: 8000
+  #         Memory: 512
+  #         MemoryReservation: 256
+  #         Environment:
+  #           - Name: DB_HOST
+  #             Value: iverify-sl.cq3yvsqxpn0x.us-east-1.rds.amazonaws.com
+  #         EnvironmentFiles:
+  #           - Value: !Ref ConfigFile
+  #             Type: s3
+  #         LogConfiguration:
+  #           LogDriver: awslogs
+  #           Options:
+  #             awslogs-region: !Ref AWS::Region
+  #             awslogs-group: !Ref LogGroupApi
+  #             awslogs-stream-prefix: ecs
+  #     Cpu: 256
+  #     Memory: 0.5GB
+  #     NetworkMode: awsvpc
+  #     RequiresCompatibilities:
+  #       - FARGATE
+  #     TaskRoleArn: !Ref TaskRole
+  #     ExecutionRoleArn: !Ref ExecutionRole
+  #     Tags:
+  #       - Key: group
+  #         Value: iVerify
+  #       - Key: Name
+  #         Value: !Sub iVerify-${CountryCode}
+  #       - Key: stack
+  #         Value: !Sub iVerify-${CountryCode}
+
+  PublisherTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    DependsOn: [LogGroupPublisher, ExecutionRole]
+    Properties:
+      Family: !Join ['-', [!Ref 'AWS::StackName', publisher-def]]
+      ContainerDefinitions:
+        - Name: publisher-container
+          Image: !Ref PublisherImage
+          PortMappings:
+            - ContainerPort: 3334
+          Memory: 512
+          MemoryReservation: 256
+          EnvironmentFiles:
+            - Value: !Ref ConfigFile
+              Type: s3
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-region: !Ref AWS::Region
+              awslogs-group: !Ref LogGroupPublisher
+              awslogs-stream-prefix: ecs
+      Cpu: 256
+      Memory: 0.5GB
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      TaskRoleArn: !Ref TaskRole
+      ExecutionRoleArn: !Ref ExecutionRole
+      Tags:
+        - Key: group
+          Value: iVerify
+        - Key: Name
+          Value: !Sub iVerify-${CountryCode}
+        - Key: stack
+          Value: !Sub iVerify-${CountryCode}
+
+  TriageTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    DependsOn: [LogGroupTriage, ExecutionRole]
+    Properties:
+      Family: !Join ['-', [!Ref 'AWS::StackName', triage-def]]
+      ContainerDefinitions:
+        - Name: triage-container
+          Image: !Ref TriageImage
+          PortMappings:
+            - ContainerPort: 3335
+          Memory: 512
+          MemoryReservation: 256
+          EnvironmentFiles:
+            - Value: !Ref ConfigFile
+              Type: s3
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-region: !Ref AWS::Region
+              awslogs-group: !Ref LogGroupTriage
+              awslogs-stream-prefix: ecs
+      Cpu: 256
+      Memory: 0.5GB
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      TaskRoleArn: !Ref TaskRole
+      ExecutionRoleArn: !Ref ExecutionRole
+      Tags:
+        - Key: group
+          Value: iVerify
+        - Key: Name
+          Value: !Sub iVerify-${CountryCode}
+        - Key: stack
+          Value: !Sub iVerify-${CountryCode}
+
+  LogGroupApi:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join ['/', [/ecs, !Ref 'AWS::StackName', api-def]]
+
+  LogGroupPublisher:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join ['/', [/ecs, !Ref 'AWS::StackName', publisher-def]]
+
+  LogGroupTriage:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join ['/', [/ecs, !Ref 'AWS::StackName', triage-def]]
+
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Join ['-', [!Ref 'AWS::StackName', ExecutionRole]]
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
+        - 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
+
+  Alb:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    DependsOn: AlbSg
+    Properties:
+      IpAddressType: ipv4
+      Name: !Join ['-', [!Ref 'AWS::StackName', api-alb]]
+      Scheme: internet-facing
+      SecurityGroups:
+        - !Ref AlbSg
+      Subnets: [!Ref SubnetPublic1, !Ref SubnetPublic2]
+      Type: application
+
+  # ApiAlbListner:
+  #   Type: AWS::ElasticLoadBalancingV2::Listener
+  #   DependsOn: [ApiTg, Alb]
+  #   Properties:
+  #     DefaultActions:
+  #       - Type: forward
+  #         TargetGroupArn: !Ref ApiTg
+  #     LoadBalancerArn: !Ref Alb
+  #     Port: 8000
+  #     Protocol: HTTP
+
+  PublisherAlbListner:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn: [PublisherTg, Alb]
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref PublisherTg
+      LoadBalancerArn: !Ref Alb
+      Port: 3334
+      Protocol: HTTP
+
+  TriageAlbListner:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn: [TriageTg, Alb]
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TriageTg
+      LoadBalancerArn: !Ref Alb
+      Port: 3335
+      Protocol: HTTP
+
+  # ApiAlbListnerRule:
+  #   Type: AWS::ElasticLoadBalancingV2::ListenerRule
+  #   DependsOn: [ApiAlbListner, ApiTg]
+  #   Properties:
+  #     Actions:
+  #       - Type: forward
+  #         TargetGroupArn: !Ref ApiTg
+  #     Conditions:
+  #       - Field: path-pattern
+  #         Values: [/]
+  #     ListenerArn: !Ref ApiAlbListner
+  #     Priority: 1
+
+  PublisherAlbListnerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    DependsOn: [PublisherAlbListner, PublisherTg]
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref PublisherTg
+      Conditions:
+        - Field: path-pattern
+          Values: [/]
+      ListenerArn: !Ref PublisherAlbListner
+      Priority: 1
+
+  TriageAlbListnerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    DependsOn: [TriageAlbListner, TriageTg]
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref TriageTg
+      Conditions:
+        - Field: path-pattern
+          Values: [/]
+      ListenerArn: !Ref TriageAlbListner
+      Priority: 1
+
+  # ApiTg:
+  #   Type: AWS::ElasticLoadBalancingV2::TargetGroup
+  #   DependsOn: Alb 
+  #   Properties:
+  #     HealthCheckIntervalSeconds: 30
+  #     HealthCheckPath: /hello
+  #     HealthCheckPort: 8000
+  #     HealthCheckProtocol: HTTP
+  #     Name: !Join ['-', [!Ref 'AWS::StackName', api-tg]]
+  #     Port: 8000
+  #     Protocol: HTTP
+  #     TargetType: ip
+  #     VpcId: !Ref Vpc
+
+  PublisherTg:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: Alb 
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: /api/
+      HealthCheckPort: 3334
+      HealthCheckProtocol: HTTP
+      Name: !Join ['-', [!Ref 'AWS::StackName', publisher-tg]]
+      Port: 3334
+      Protocol: HTTP
+      TargetType: ip
+      VpcId: !Ref Vpc
+
+  TriageTg:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: Alb 
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: /api/
+      HealthCheckPort: 3335
+      HealthCheckProtocol: HTTP
+      Name: !Join ['-', [!Ref 'AWS::StackName', triage-tg]]
+      Port: 3335
+      Protocol: HTTP
+      TargetType: ip
+      VpcId: !Ref Vpc
+
+  # ApiService:
+  #   Type: AWS::ECS::Service
+  #   DependsOn: ApiAlbListner
+  #   Properties:
+  #     Cluster: !Ref Cluster
+  #     DeploymentController:
+  #       Type: ECS
+  #     DesiredCount: 0
+  #     HealthCheckGracePeriodSeconds: 30
+  #     LaunchType: FARGATE
+  #     LoadBalancers:
+  #       - ContainerName: api-container
+  #         ContainerPort: 8000
+  #         TargetGroupArn: !Ref ApiTg
+  #     NetworkConfiguration:
+  #       AwsvpcConfiguration:
+  #         SecurityGroups: 
+  #           - !Ref ApiServiceSg
+  #         Subnets: 
+  #           - !Ref SubnetPrivate1
+  #           # - !Ref SubnetPrivate2
+  #     ServiceName: !Join ['-', [!Ref 'AWS::StackName', api-service]]
+  #     TaskDefinition: !Ref ApiTaskDefinition
+  #     EnableECSManagedTags: true
+  #     PropagateTags: TASK_DEFINITION
+
+  PublisherService:
+    Type: AWS::ECS::Service
+    DependsOn: PublisherAlbListner
+    Properties:
+      Cluster: !Ref Cluster
+      DeploymentController:
+        Type: ECS
+      DesiredCount: 1
+      HealthCheckGracePeriodSeconds: 30
+      LaunchType: FARGATE
+      LoadBalancers:
+        - ContainerName: publisher-container
+          ContainerPort: 3334
+          TargetGroupArn: !Ref PublisherTg
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          SecurityGroups: 
+            - !Ref ApiServiceSg
+          Subnets: 
+            - !Ref SubnetPrivate1
+            # - !Ref SubnetPrivate2
+      ServiceName: !Join ['-', [!Ref 'AWS::StackName', publisher-service]]
+      TaskDefinition: !Ref PublisherTaskDefinition
+      EnableECSManagedTags: true
+      PropagateTags: TASK_DEFINITION
+
+  TriageService:
+    Type: AWS::ECS::Service
+    DependsOn: TriageAlbListner
+    Properties:
+      Cluster: !Ref Cluster
+      DeploymentController:
+        Type: ECS
+      DesiredCount: 1
+      HealthCheckGracePeriodSeconds: 30
+      LaunchType: FARGATE
+      LoadBalancers:
+        - ContainerName: triage-container
+          ContainerPort: 3335
+          TargetGroupArn: !Ref TriageTg
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          SecurityGroups: 
+            - !Ref ApiServiceSg
+          Subnets: 
+            - !Ref SubnetPrivate1
+            # - !Ref SubnetPrivate2
+      ServiceName: !Join ['-', [!Ref 'AWS::StackName', triage-service]]
+      TaskDefinition: !Ref TriageTaskDefinition
+      EnableECSManagedTags: true
+      PropagateTags: TASK_DEFINITION
+
+  S3BucketWeb:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: ObjectWriter
+      BucketName: !Join ['-', [!Ref 'AWS::StackName', web]]
+      WebsiteConfiguration:
+        ErrorDocument: 'index.html'
+        IndexDocument: 'index.html'
+
+  S3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3BucketWeb
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Action: 's3:GetObject'
+            Principal: '*'
+            Resource: !Sub '${S3BucketWeb.Arn}/*'
+
+Outputs:
+  # vpc: 
+  #   Value: !Ref Vpc
+
+  # ecscluster:
+  #   Value: !Ref Cluster
+
+  taskexecutionrole:
+    Value: !Ref ExecutionRole
+
+  # apiservice:
+  #   Value: !Ref ApiService
+
+  publisherservice:
+    Value: !Ref PublisherService
+
+  triageservice:
+    Value: !Ref TriageService
+
+  # apitaskdef:
+  #   Value: !Ref ApiTaskDefinition
+
+  apiloggroup:
+    Value: !Ref LogGroupApi
+
+  BucketUrl:
+    Description: 'S3 Web Bucket Url'
+    Value: !GetAtt 'S3BucketWeb.WebsiteURL'

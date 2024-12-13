@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   api: {
-    base: 'https://api-undpjtf-iverify-honduras-js.leman.un-icc.cloud',
+    base: 'http://100.26.233.116:8000',
     version: 'v3'
   },
   authentication: {

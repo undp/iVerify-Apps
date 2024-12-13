@@ -6,12 +6,12 @@ import {catchError, map, retry, switchMap, tap} from 'rxjs/operators'
 
 
 @Injectable()
-export class ApiClientService {    
+export class ApiClientService {
 
   private readonly logger = new Logger('ApiClient');
 
     constructor(
-      private http: HttpService, 
+      private http: HttpService,
       private config: ApiClientConfig,
       ){}
 
@@ -19,11 +19,12 @@ export class ApiClientService {
     return this.http.post(this.config.postArticleUrl, {article}).pipe(
       retry(3),
       catchError(err => {
-        this.logger.error('Error posting article: ', err.message)
+        this.logger.error('Error posting article: ', err.message);
+        console.log('postArticle error',err.message)
         throw new HttpException(err.message, 500);
       })
     );
-  }  
+  }
 
   postToxicStats(toxicCount: number): Observable<any> {
     return this.http.post(this.config.postToxicStatsUrl, {toxicCount}).pipe(
@@ -33,6 +34,6 @@ export class ApiClientService {
         throw new HttpException(err.message, 500);
       })
     );
-  }  
-  
+  }
+
 }

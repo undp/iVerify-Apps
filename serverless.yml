@@ -1,0 +1,31 @@
+service: iverify-services
+
+provider:
+  name: aws
+  region: us-east-1
+  stage: ${opt:stage, 'prod'}
+  environment:
+    NODE_ENV: ${opt:stage, 'prod'}
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "ecr:InitiateLayerUpload"
+            - "ecr:SetRepositoryPolicy"
+            - "ecr:GetRepositoryPolicy"
+          Resource: [ "arn:aws:ecr:us-east-1:427524370246:iverify-api/*" ]
+  vpc:
+    subnetIds:
+      - subnet-099e793c9cef176f7
+    securityGroupIds:
+      - sg-01be966f3c9158f9d
+
+functions:
+  api:
+    image: 427524370246.dkr.ecr.us-east-1.amazonaws.com/iverify-api:latest
+    timeout: 900
+    events:
+      - http:
+          method: any
+          path: /api/{any+}

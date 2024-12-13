@@ -14,5 +14,10 @@ module.exports = {
     '<rootDir>/libs/perspective-client',
     '<rootDir>/libs/shared',
     '<rootDir>/libs/common',
+    '<rootDir>/libs/unitedwave-client',
+    '<rootDir>/libs/libs/s3',
+    '<rootDir>/libs/s3',
+    '<rootDir>/libs/libs/auth',
+    '<rootDir>/libs/auth',
   ],
 };

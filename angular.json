@@ -685,6 +685,127 @@
           }
         }
       }
+    },
+    "unitedwave-client": {
+      "projectType": "library",
+      "root": "libs/unitedwave-client",
+      "sourceRoot": "libs/unitedwave-client/src",
+      "prefix": "iverify",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/unitedwave-client"],
+          "options": {
+            "jestConfig": "libs/unitedwave-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/unitedwave-client/src/**/*.ts",
+              "libs/unitedwave-client/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "libs-s3": {
+      "projectType": "library",
+      "root": "libs/libs/s3",
+      "sourceRoot": "libs/libs/s3/src",
+      "prefix": "iverify",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/libs/s3"],
+          "options": {
+            "jestConfig": "libs/libs/s3/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/libs/s3/src/**/*.ts",
+              "libs/libs/s3/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "s3": {
+      "root": "libs/s3",
+      "sourceRoot": "libs/s3/src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/s3/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/s3"],
+          "options": {
+            "jestConfig": "libs/s3/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "libs-auth": {
+      "projectType": "library",
+      "root": "libs/libs/auth",
+      "sourceRoot": "libs/libs/auth/src",
+      "prefix": "iverify",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/libs/auth"],
+          "options": {
+            "jestConfig": "libs/libs/auth/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/libs/auth/src/**/*.ts",
+              "libs/libs/auth/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "auth": {
+      "projectType": "library",
+      "root": "libs/auth",
+      "sourceRoot": "libs/auth/src",
+      "prefix": "iverify",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/auth"],
+          "options": {
+            "jestConfig": "libs/auth/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/auth/src/**/*.ts",
+              "libs/auth/src/**/*.html"
+            ]
+          }
+        }
+      }
     }
   }
 }

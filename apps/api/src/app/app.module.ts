@@ -43,7 +43,8 @@ import { ArticlesService } from './articles/articles.service';
       database: process.env.DB_NAME,
       insecureAuth: true,
       autoLoadEntities: true,
-      synchronize: true
+      synchronize: true,
+      logging: "all"
     }),
     TypeOrmModule.forFeature([User, Roles, Stats, Article]),
 
