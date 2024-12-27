@@ -521,7 +521,7 @@ export class EmailService {
                                     style="padding-bottom: 24px"
                                   >
                                     <a
-                                      href="https://rdc.i-verify.org/"
+                                      href="${process.env.WP_URL}"
                                       rel="noopener nofollow"
                                       style="
                                         display: inline-block;
@@ -530,7 +530,7 @@ export class EmailService {
                                         line-height: normal !important;
                                       "
                                       target="_blank"
-                                      data-saferedirecturl="https://www.google.com/url?q=https://rdc.i-verify.org/"
+                                      data-saferedirecturl="https://www.google.com/url?q=${process.env.WP_URL}"
                                       ><img
                                         src="${process.env.IVERIFY_LOGO_URL}"
                                         width="120"
@@ -569,7 +569,7 @@ export class EmailService {
       width="1"
       height="1"
       alt=""
-      src="https://ci3.googleusercontent.com/meips/ADKq_NZvphq6xDO3jYunWUDVEJZ92uZu_LG7JV2vb8sDVdUQSK2XyqgjPzb41FEOeXsZaA_MXm4n58mtw76-xGMKFOHmA4T_24ukVr-51gn5H00SbSB1essLWkSPxfcv0JyIwB8LpUfxbNb6IEp05fGJQKeWk7EaNFYAMn_3hQCRP-t3akOzD9NTe2Kk5tVgzvYDsiVT=s0-d-e1-ft#https://rdc.i-verify.org/"
+      src="https://ci3.googleusercontent.com/meips/ADKq_NZvphq6xDO3jYunWUDVEJZ92uZu_LG7JV2vb8sDVdUQSK2XyqgjPzb41FEOeXsZaA_MXm4n58mtw76-xGMKFOHmA4T_24ukVr-51gn5H00SbSB1essLWkSPxfcv0JyIwB8LpUfxbNb6IEp05fGJQKeWk7EaNFYAMn_3hQCRP-t3akOzD9NTe2Kk5tVgzvYDsiVT=s0-d-e1-ft#${process.env.WP_URL}"
       class="CToWUd"
       data-bit="iit"
     />
@@ -1121,7 +1121,7 @@ export class EmailService {
                                     style="padding-bottom: 24px"
                                   >
                                     <a
-                                      href="https://rdc.i-verify.org/"
+                                      href="${process.env.WP_URL}"
                                       rel="noopener nofollow"
                                       style="
                                         display: inline-block;
@@ -1130,7 +1130,7 @@ export class EmailService {
                                         line-height: normal !important;
                                       "
                                       target="_blank"
-                                      data-saferedirecturl="https://www.google.com/url?q=https://rdc.i-verify.org/"
+                                      data-saferedirecturl="https://www.google.com/url?q=${process.env.WP_URL}"
                                       ><img
                                         src="${process.env.IVERIFY_LOGO_URL}"
                                         width="120"
@@ -1165,7 +1165,7 @@ export class EmailService {
       width="1"
       height="1"
       alt=""
-      src="https://ci3.googleusercontent.com/meips/ADKq_NZvphq6xDO3jYunWUDVEJZ92uZu_LG7JV2vb8sDVdUQSK2XyqgjPzb41FEOeXsZaA_MXm4n58mtw76-xGMKFOHmA4T_24ukVr-51gn5H00SbSB1essLWkSPxfcv0JyIwB8LpUfxbNb6IEp05fGJQKeWk7EaNFYAMn_3hQCRP-t3akOzD9NTe2Kk5tVgzvYDsiVT=s0-d-e1-ft#https://rdc.i-verify.org/"
+      src="https://ci3.googleusercontent.com/meips/ADKq_NZvphq6xDO3jYunWUDVEJZ92uZu_LG7JV2vb8sDVdUQSK2XyqgjPzb41FEOeXsZaA_MXm4n58mtw76-xGMKFOHmA4T_24ukVr-51gn5H00SbSB1essLWkSPxfcv0JyIwB8LpUfxbNb6IEp05fGJQKeWk7EaNFYAMn_3hQCRP-t3akOzD9NTe2Kk5tVgzvYDsiVT=s0-d-e1-ft#${process.env.WP_URL}"
       class="CToWUd"
       data-bit="iit"
     />
