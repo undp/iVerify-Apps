@@ -4,16 +4,15 @@ on:
   push:
     branches:
       - pakistan-iverify-v1
+  workflow_dispatch: # Allows manual triggering
 
-# on:
-#   workflow_dispatch:
-#     inputs:
-#       cluster_type:
-#         description: 'Enter the cluster type (bd,sl and etc)'
-#         required: true
-#       commit_sha:
-#         description: 'Commit SHA to check for changes'
-#         required: true
+    # inputs:
+    #   cluster_type:
+    #     description: 'Enter the cluster type (bd,sl and etc)'
+    #     required: true
+    #   commit_sha:
+    #     description: 'Commit SHA to check for changes'
+    #     required: true
 
 env:
   CONTAINER_NAME_TRIAGE: triage-container
