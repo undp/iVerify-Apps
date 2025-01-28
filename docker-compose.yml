@@ -12,10 +12,8 @@ services:
     publisher:
         build:
             context: .
-            dockerfile: apps/triage/Dockerfile
+            dockerfile: apps/publisher/Dockerfile
         image: publisher
-        environment: 
-            - apiPath=http://api:3333
         ports:
             - '3334:3334'
         env_file: 
