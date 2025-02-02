@@ -1,16 +1,16 @@
 ## **Index**
 * [**Solution**](#solution)
-* [**Technical Overview**](#overview)
+* [**Technical Overview**](#technical-overview)
 * [**Components**](#components)
-* [**Functionalities**](#funcs)
-* [**Deployment**](#installation)
-	* [Pre-requisites](#prereq)
-	* [Environment variables](#envs)
-	* [Installation and development ](#inst_dev)
-	* [Deployment ](#deploy)
-* [**API reference**](#api_ref)
-* [**Release notes**](#rel_notes) 
-* [**Support**](#support)
+* [**Functionalities**](#main-functionalities)
+* [**Deployment**](#deployment)
+	* [Pre-requisites](#pre-requisites)
+	* [Environment variables](#environment-variables)
+	* [Installation and development ](#installation-and-development)
+	* [Deployment ](#deployment-1)
+* [**API reference**](#api-reference)
+* [**Release notes**](#release-notes) 
+* [**Support**](#governance-and-support)
 
 <a name="solution"></a>
 ## **Solution** 
@@ -27,22 +27,22 @@ The solution is currently using CrowdTangle, a public tool from Meta that allows
 
 The solution comprises of 5 custom components (iVerify Dashboard, WordPress website, Dashboard API, Publisher bot, Triage bot) plus 3 external components integrated in the solution (Meedan Check, CrowdTangle, Perspective/Detoxify). Each custom component is deployed as an independent application within a dedicated Docker container. These are
 *	The WordPress website container
-*	The iVerify Dashboard container
-*	The Dashboard API container
 *	The Publisher bot container
 *	The Triage bot container
+<!-- *	The iVerify Dashboard container
+*	The Dashboard API container -->
 
-**This repository**,iVerifyApps is the set of [Node.js](https://nodejs.org/en/) apps responsible for the integration and data analytics layers in the iVerify toolset to be used in addressing information pollution (misinformation) and hate speech nationally.
+**This repository**, undp-iverify is the set of [Node.js](https://nodejs.org/en/) apps responsible for the integration and data analytics layers in the iVerify toolset to be used in addressing information pollution (misinformation) and hate speech nationally.
 
-For the **portal** component please visit [IVerify Website](https://github.com/undp/iVerify-Website).
+For the **WordPress website** component please visit [undp-iVerify-web](https://github.com/undp/undp-iVerify-web).
 
 <a name="components"></a>
 ## **Components** 
  
-There are 4 different apps, conveniently held in a single [Nrwl/Nx](https://nx.dev/getting-started/intro) monorepo:
+There are 2 different apps, conveniently held in a single [Nrwl/Nx](https://nx.dev/getting-started/intro) monorepo:
  
-*  **api**: the backend for the Dashboard, build with [Nest.js](https://nestjs.com/)
-*  **iverify**: the frontend for the Dashboard, built with [Angular](https://angular.io/)
+<!-- *  **api**: the backend for the Dashboard, build with [Nest.js](https://nestjs.com/) -->
+<!-- *  **iverify**: the frontend for the Dashboard, built with [Angular](https://angular.io/) -->
 *  **publisher**: a backend app built with [Nest.js](https://nestjs.com/) responsible for publishing data externally (primarily on WordPress)
 *  **triage**: a backend app built with [Nest.js](https://nestjs.com/) responsible for the triage of toxic social media content 
 
@@ -62,7 +62,7 @@ The system integrates with the fact-checking portal [Meedan Check](https://meeda
 		<br></br>
 
 
-		When a fact-checking report is published in Meedan Check, a webhook triggers the publication of a corresponding article on a WordPress site.
+		When a fact-checking report is published in Meedan Check, a webhook triggers the publication of a corresponding article on the WordPress site.
 		<br></br>
 	
 
@@ -74,11 +74,23 @@ The system integrates with the fact-checking portal [Meedan Check](https://meeda
 		<br></br>
 
 
-		The WordPress site can also serve as a tipline source for Meedan Check. The public can submit a url for a story to fact-check and a corresponding fact-checking item will be created on Meedan Check. 
+		The WordPress site can also serve as a tipline source for Meedan Check. The public can submit a url with or without related images and a discription for a story to fact-check and a corresponding fact-checking item will be created on Meedan Check. 
 	<br></br>
 
 
 		![Image](./docs/submit-a-story.drawio.svg)
+
+	<br></br>
+
+	* Fact checking result as a feedback:
+		<br></br>
+
+
+		If the fack checked content is submitted through the iVerify Wordpress and if the user has requested to notify after the fact checking process, User will be notified to the provided email about the publication of the content with results. 
+	<br></br>
+
+
+		![Image](./docs/fact-checking-result.drawio.svg)
 
 	<br></br>
 
@@ -95,13 +107,13 @@ The system integrates with the fact-checking portal [Meedan Check](https://meeda
 
 
 
-**Data Analytics:**
+<!-- **Data Analytics:**
 
 The Dashboard front-end offers data visualizations of several indicators giving a pulse of the fact-checking and publication activity. This is achieved by a combination of scheduled jobs that interrogate the Meedan Check DB and webhooks that receive data from Check when something happens (e.g. when an item has changed state Check will notify the **api** server so that it can calculate ticket response and resolution velocity).
 <br></br>
 
 
-![Image](./docs/stats.drawio.svg)
+![Image](./docs/stats.drawio.svg) -->
 
 <br></br>
 
@@ -111,7 +123,7 @@ The Dashboard front-end offers data visualizations of several indicators giving 
 ## **Deployment** 
 
 <a name="prereq"></a>
-**Pre-requisites** 
+#### **Pre-requisites** 
 
 * A working instance of Meedan Check
 * Meedan check folders and annotation structure as per the Iverify Standard.
@@ -119,14 +131,14 @@ The Dashboard front-end offers data visualizations of several indicators giving 
 	*  Event `report_published` sends data to the endpoint:  `PUBLISHER_URL/publish/publish-webhook`
 	*  Event `update_annotation_verification_status` sends data to the endpoint:  `API_URL/stats/item-status-changed`
 
-* Both endpoints receive a minimum payload containing the dbid of the item that triggered the event. iVerifyApps will subsequently fetch the additional data it needs from Meedan Check. Instructions for how to set up a webhook (or *bot*) are on the [Check Wiki](https://github.com/meedan/check/wiki/Create-Bots-on-Check)
-* A WordPress website with [Advanced Custom Fields](https://www.advancedcustomfields.com/) plugin enabled (see [iVerifyWebSite](https://github.com/undp/iVerify-Website) for detailed instructions on how to set up the WordPress site)
+* Both endpoints receive a minimum payload containing the dbid of the item that triggered the event. <!-- iVerifyApps will subsequently fetch the additional data it needs from Meedan Check. --> Instructions for how to set up a webhook (or *bot*) are on the [Check Wiki](https://github.com/meedan/check/wiki/Create-Bots-on-Check)
+* A WordPress website with [Secure Custom Fields](https://www.advancedcustomfields.com/) plugin enabled (see [undp-iVerify-web](https://github.com/undp/undp-iVerify-web) for detailed instructions on how to set up the WordPress site)
 
 * A [CrowdTangle](https://www.crowdtangle.com/) account with Saved Searches and an API token
 * A Perspective API Key [Perspective](https://perspectiveapi.com/)
 
 <a name="envs"></a>
-**Environment variables**
+#### **Environment variables**
 
 The apps need a number of environment variables that can be stored in a single `.env` file at the root of the project. This is the list of the variables needed:
 
@@ -135,21 +147,25 @@ The apps need a number of environment variables that can be stored in a single `
 - `CHECK_API_TEAM`: Meedan Check team's slug
 - `CHECK_FOLDER_ID`: ID of the Meedan Check folder where items from CrowdTangle are loaded
 - `CHECK_TIPLINE_FOLDER_ID`: ID of the Meedan Check folder for items from WordPress tipline
+<!--  -->
 - `WP_SECRET`: secret token for the authentication of iVerify WordPress on Triage
 - `WP_URL`: url of iVerify WordPress
 - `WP_USERNAME`: login for iVerify WordPress REST API
 - `WP_PASSWORD`: login for iVerify WordPress REST API
 - `WP_PUBLISHED_FOLDER`: ID of the Meedan Check folder where published items are moved to
+<!--  -->
 - `CT_API_URL`: CrowdTangle API URL
 - `CT_API_KEY`: CrowdTangle authentication token
 - `ML_SERVICE_API_BASE`: base URL of the Detoxify server
 - `DETOXIFY_TRESHOLD`: toxicity cutoff
+<!--  -->
 - `DB_USER`: Database credentials
 - `DB_PORT`: Database credentials
 - `DB_HOST`: Database credentials
 - `DB_NAME`: Database credentials
 - `DB_PASSWORD`: Database credentials
 - `language`: language ('en' or 'es')
+<!--  -->
 - `VIOLATION_TASK_ID`: ID for task 'Violation Type' on Meedan Check
 - `UNSTARTED_VALUE`: 'value' property of validation statuses on Meedan Check
 - `IN_PROGRESS_VALUE`: 'value' property of validation statuses on Meedan Check
@@ -160,7 +176,7 @@ The apps need a number of environment variables that can be stored in a single `
 - `PARTLY_FALSE_VALUE`: 'value' property of validation statuses on Meedan Check
 - `INCONCLUSIVE_VALUE`: 'value' property of validation statuses on Meedan Check
 - `PRE_CHECKED_VALUE`: 'value' property of validation statuses on Meedan Check
-- `API_URL`: base url of the Dashboard API
+<!-- - `API_URL`: base url of the Dashboard API -->
 - `JWT_SECRET`: secrets for Dashboard authentication through iVerify WordPress
 - `WT_SECRET_TOKEN`: secrets for Dashboard authentication through iVerify WordPress
 - `CLIENT_ID`: secrets for Dashboard authentication through iVerify WordPress
@@ -168,16 +184,16 @@ The apps need a number of environment variables that can be stored in a single `
 - `REDIRECT_URI`: secrets for Dashboard authentication through iVerify WordPress. 
 
 <a name="inst_dev"></a>
-**Installation and development** 
+#### **Installation and development** 
 
 * To install dependencies: `npm i`
-* To run **api** locally: `npx nx serve api` 
-* To run **iverify** locally: `npx nx serve iverify`
 * To run **publisher** locally: `npx nx serve publisher`
 * To run **triage** locally: `npx nx serve triage`
+<!-- * To run **api** locally: `npx nx serve api` 
+* To run **iverify** locally: `npx nx serve iverify` -->
 
 <a name="devploy"></a>
-**Deployment** 
+#### **Deployment** 
 
 All the apps need to be built before deployment. The build command is:
 
