@@ -14,18 +14,16 @@
 
 <a name="solution"></a>
 ## **Solution** 
-IVerify processes articles and outputs reports with a determination of their veracity. The inputs are either manual, by members of the public or the iVerify team, or automated. People can submit articles for review via text (WhatsApp, SMS, and more) or directly through the iVerify platform. Leveraging CrowdTangle, which allows iVerify to track public content across social media, iVerify also automatically reviews articles in Facebook, Instagram, and Reddit daily, running them through Detoxify, an open-source algorithm which uses machine learning to detect hate speech. 
+IVerify processes articles and outputs reports with a determination of their veracity. The inputs are either manual, by members of the public or the iVerify team, or automated. People can submit articles for review via text (WhatsApp, SMS, and more) or directly through the iVerify platform.  
 
 These reports are then sent to the team of in-person fact-checkers, composed of individuals linked to one or several national counterparts that have been capacitated and equipped through the iVerify’s initiative. As part of their fact-checking assignment, the team follows up with the people or institutions mentioned in a story to determine the veracity of the claims made. If those in-person verifiers find hate speech, disinformation, or misinformation, they flag it and publish an article on the iVerify website to let the world know. iVerify leverages open-source technology, Meedan Check, to help. It uses human-in-the-loop machine learning to match content so that anything already labeled false doesn't have to be reviewed again, improving efficiency. All these tools and approaches are open and available to anyone to use.
 
 The idea is a set of integrations built around the Meedan Check platform, providing additional features to facilitate the fact-checking process and the dissemination of fact-checked stories to the public.
 
-The solution is currently using CrowdTangle, a public tool from Meta that allows collecting of posted content and based on specified set of filters and how it is being shared. The collected information is then processed through an AI open-source algorithm called Detoxify , to get an indicator on toxicity. Human fact-checkers will access Meedan and review the information to contrast and validate it finally, indicate if it is valid or fake news. The publishing process use a WordPress site that receives the reviewed and categorized information for the public user. 
-
 <a name="overview"></a>
 ## **Technical Overview** 
 
-The solution comprises of 5 custom components (iVerify Dashboard, WordPress website, Dashboard API, Publisher bot, Triage bot) plus 3 external components integrated in the solution (Meedan Check, CrowdTangle, Perspective/Detoxify). Each custom component is deployed as an independent application within a dedicated Docker container. These are
+The solution comprises of 5 custom components (iVerify Dashboard, WordPress website, Dashboard API, Publisher bot, Triage bot) plus 3 external components integrated in the solution (Meedan Check, Perspective/Detoxify). Each custom component is deployed as an independent application within a dedicated Docker container. These are
 *	The WordPress website container
 *	The Publisher bot container
 *	The Triage bot container
@@ -53,7 +51,7 @@ Additionally, a **MySql database** is required for persistence.
 
 **Integration features:**
 
-The system integrates with the fact-checking portal [Meedan Check](https://meedan.com/check) and provides extra channels for both the publication of fact-checking reports and the tipline for incoming stories. Additionally, the system provides a triaging workflow of toxic social media content by integrating [CrowdTangle](https://www.crowdtangle.com/), Detoxify/[Perspective](https://www.perspectiveapi.com/) and Meedan Check.
+The system integrates with the fact-checking portal [Meedan Check](https://meedan.com/check) and provides extra channels for both the publication of fact-checking reports and the tipline for incoming stories.
 	
 * **Meedan Check - WordPress:**
 	<br></br>
@@ -95,17 +93,6 @@ The system integrates with the fact-checking portal [Meedan Check](https://meeda
 	<br></br>
 
 
-* **CrowdTangle - Detoxify/Perspective - Meedan Check:**
-	<br></br>
-
-
-	* Based on CrowdTangle saved searches, the Triage app scans social media content, analyzes it for toxicity using either Detotify or Perspective and finally creates items on Meedan Check if toxicity levels are above the user defined treshold.
-	<br></br>
-
-
-		![Image](./docs/triage.drawio.svg)
-
-
 
 <!-- **Data Analytics:**
 
@@ -134,7 +121,6 @@ The Dashboard front-end offers data visualizations of several indicators giving 
 * Both endpoints receive a minimum payload containing the dbid of the item that triggered the event. <!-- iVerifyApps will subsequently fetch the additional data it needs from Meedan Check. --> Instructions for how to set up a webhook (or *bot*) are on the [Check Wiki](https://github.com/meedan/check/wiki/Create-Bots-on-Check)
 * A WordPress website with [Secure Custom Fields](https://www.advancedcustomfields.com/) plugin enabled (see [undp-iVerify-web](https://github.com/undp/undp-iVerify-web) for detailed instructions on how to set up the WordPress site)
 
-* A [CrowdTangle](https://www.crowdtangle.com/) account with Saved Searches and an API token
 * A Perspective API Key [Perspective](https://perspectiveapi.com/)
 
 <a name="envs"></a>
@@ -145,7 +131,6 @@ The apps need a number of environment variables that can be stored in a single `
 - `CHECK_API_URL`: URL of the Meedan Check instance
 - `CHECK_API_TOKEN`: Meedan Check authentication token
 - `CHECK_API_TEAM`: Meedan Check team's slug
-- `CHECK_FOLDER_ID`: ID of the Meedan Check folder where items from CrowdTangle are loaded
 - `CHECK_TIPLINE_FOLDER_ID`: ID of the Meedan Check folder for items from WordPress tipline
 <!--  -->
 - `WP_SECRET`: secret token for the authentication of iVerify WordPress on Triage
@@ -154,8 +139,6 @@ The apps need a number of environment variables that can be stored in a single `
 - `WP_PASSWORD`: login for iVerify WordPress REST API
 - `WP_PUBLISHED_FOLDER`: ID of the Meedan Check folder where published items are moved to
 <!--  -->
-- `CT_API_URL`: CrowdTangle API URL
-- `CT_API_KEY`: CrowdTangle authentication token
 - `ML_SERVICE_API_BASE`: base URL of the Detoxify server
 - `DETOXIFY_TRESHOLD`: toxicity cutoff
 <!--  -->
