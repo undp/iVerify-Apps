@@ -24,6 +24,10 @@ export class UnitedwaveClientService{
       return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
 
+    private replaceSpaces(str:String) {
+      return str.replace(/ /g, '%20');
+    }
+
     getPostsCount(startDate?: string,filter?:string) {
       let query = this.config.endpoints.count + `?user[name]=${this.config.username}&user[secret]=${this.config.password}`;
       if(filter) {
@@ -43,6 +47,7 @@ export class UnitedwaveClientService{
     }
 
     getPosts(page?: number,startDate?: string){
+      const radios = ['TOP CONGO', 'HK6', 'MALAIKA', 'RADIO OKAPI']
       this.logger.log('Query United Wave posts page ', page.toString())
       let query = this.config.endpoints.search + `?user[name]=${this.config.username}&user[secret]=${this.config.password}`;
       if (page) {
@@ -51,7 +56,15 @@ export class UnitedwaveClientService{
       if (startDate) {
         query += `&clip[from_date]=${startDate}`
       }
-      return this.http.post(query).pipe(
+      if (radios.length>0) {
+          radios.forEach(radio => {
+            query += `&clip[radio_name][]=${radio}`
+          });
+      }
+
+      const finalQuery = this.replaceSpaces(query);
+
+      return this.http.post(finalQuery).pipe(
           map(res => res.data),
           retry(3),
           catchError(err => {
