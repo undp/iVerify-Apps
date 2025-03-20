@@ -30,18 +30,33 @@ import { DateTime } from 'luxon';
 @Injectable()
 export class WpPublisherService {
   private reportId$: Observable<string> = this.shared.reportId$.pipe(
-    tap(id => console.log('Shared reportId$', id)) // Log the emitted report ID
-);
+    tap((id) => console.log('WP Publisher Received Report ID:', id)) // Log the emitted report ID
+  );
   private report$: Observable<any> = this.shared.report$.pipe(
-    tap((report) => console.log('Report: ', JSON.stringify(report)))
+    tap((report) =>
+      console.log('WP Publisher Received Report:', JSON.stringify(report))
+    )
   );
   private meedanReport$: Observable<any> = this.shared.meedanReport$.pipe(
-    tap((report) => console.log('Meedan report: ', JSON.stringify(report)))
+    tap((meedanReport) =>
+      console.log(
+        'WP Publisher Received Meedan report:',
+        JSON.stringify(meedanReport)
+      )
+    )
   );
 
   wpPostId$: Observable<number> = this.reportId$.pipe(
+    tap((id) => console.log('Fetch Posts with the same Check ID')),
     switchMap((id) => this.wpClient.getPostByCheckId(id)),
-    map((res) => (res && res.length ? res[0].id : null))
+    map((res) => (res && res.length ? res[0].id : null)),
+    tap((id) => {
+      if (id !== null) {
+        console.log('WP Post Found With ID: ', id);
+      } else {
+        console.log('WP Post Not Found for this meedan ID');
+      }
+    })
   );
 
   categoriesIds$: Observable<number[]> = this.report$.pipe(
@@ -89,30 +104,44 @@ export class WpPublisherService {
     })
   );
 
+  private emits = 0;
+
   post$: Observable<any> = combineLatest([
     this.report$,
     this.meedanReport$,
-    this.author$,
     this.mediaId$,
     this.tagsIds$,
     this.categoriesIds$,
     this.visualCard$,
   ]).pipe(
-    map(([report, meedanReport, author, media, tags, categories, visualCard]) =>
-      this.helper.buildPostFromReport(
-        report,
-        meedanReport,
+    tap((x) => {
+      this.emits++;
+      console.log('Combined Emits', this.emits);
+    }),
+    withLatestFrom(this.author$),
+    map(
+      ([
+        [report, meedanReport, media, tags, categories, visualCard],
         author,
-        media,
-        tags,
-        categories,
-        visualCard
-      )
+      ]) => {
+        console.log(report.title);
+        console.log(meedanReport.title);
+        console.log(visualCard);
+        return this.helper.buildPostFromReport(
+          report,
+          meedanReport,
+          author,
+          media,
+          tags,
+          categories,
+          visualCard
+        );
+      }
     ),
     filter((post) => !!post.title?.length), // Ensure post has a title
     take(1),
     tap((postDto) =>
-      console.log('sending to WP publication: ', JSON.stringify(postDto))
+      console.log('Sending to WP publication: ', JSON.stringify(postDto))
     ),
     withLatestFrom(this.wpPostId$),
     map(([postDto, wpPostId]) => ({ postDto, wpPostId })),
@@ -137,7 +166,8 @@ export class WpPublisherService {
           throw new HttpException(err.message, 500);
         })
       )
-    )
+    ),
+    tap((res) => console.log(res))
   );
 
   subscribersList$: Observable<string[]> = this.wpClient.getWPSubscribers();
@@ -166,8 +196,7 @@ export class WpPublisherService {
                 of({
                   link: post.link,
                   title: post.title.rendered,
-                  thumbnail:
-                  process.env.COUNTRY_CODE,
+                  thumbnail: process.env.COUNTRY_CODE,
                   date: this.formatDate(post.date),
                 })
               )
@@ -177,7 +206,10 @@ export class WpPublisherService {
           return forkJoin(postObservables).pipe(
             switchMap((formattedPosts) => {
               if (subscribersList.length > 0 && formattedPosts.length > 0) {
-                return this.emailService.sendEmailForSubscribers(subscribersList.join(', '), formattedPosts);
+                return this.emailService.sendEmailForSubscribers(
+                  subscribersList.join(', '),
+                  formattedPosts
+                );
               } else {
                 return of(null);
               }
