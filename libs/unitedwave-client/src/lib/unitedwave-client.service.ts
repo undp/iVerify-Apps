@@ -42,7 +42,7 @@ export class UnitedwaveClientService{
           map(res => res.data),
           retry(3),
           catchError(err => {
-              this.logger.error(`Error fetching posts: `, err.message);
+              this.logger.error(`Error fetching posts: `, err.message, query);
               throw new HttpException(err.message, 500);
           })
       )
@@ -133,7 +133,7 @@ export class UnitedwaveClientService{
           map(res => res.data),
           retry(3),
           catchError(err => {
-              this.logger.error(`Error fetching posts: `, err.message);
+              this.logger.error(`Error fetching posts: `, err.message, query);
               throw new HttpException(err.message, 500);
           })
       ).toPromise()
