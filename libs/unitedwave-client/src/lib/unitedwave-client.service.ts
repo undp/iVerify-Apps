@@ -8,6 +8,7 @@ type Schedule = { [day: string]: TimeSlot[] };
 @Injectable()
 export class UnitedwaveClientService{
     private readonly logger = new Logger('UnitedwaveClient');
+    private radios = ['Top Congo FM', 'HK6', 'MALAIKA', 'Radio Okapi']
 
     constructor(private http: HttpService, private config: UnitedwaveClientConfig){}
 
@@ -38,7 +39,16 @@ export class UnitedwaveClientService{
       if (startDate) {
         query += `&clip[from_date]=${startDate}`
       }
-      return this.http.post(query).pipe(
+
+      if (this.radios.length>0) {
+          this.radios.forEach(radio => {
+            query += `&clip[radio_name][]=${radio}`
+          });
+      }
+
+      const finalQuery = this.replaceSpaces(query);
+
+      return this.http.post(finalQuery).pipe(
           map(res => res.data),
           retry(3),
           catchError(err => {
@@ -74,40 +84,38 @@ export class UnitedwaveClientService{
     }
 
     async getPosts(page?: number,startDate?: string){
-      const radios = ['Top Congo FM', 'HK6', 'MALAIKA', 'RADIO OKAPI']
-
       const schedule: Schedule = {
         Monday: [
           { time: "10:30", radio: "Top Congo FM" },
           { time: "08:30", radio: "Top Congo FM" },
-          { time: "18:00", radio: "RADIO OKAPI" }
+          { time: "18:00", radio: "Radio Okapi" }
         ],
         Tuesday: [
           { time: "10:30", radio: "Top Congo FM" },
           { time: "08:30", radio: "Top Congo FM" },
           { time: "17:30", radio: "Top Congo FM" },
-          { time: "18:00", radio: "RADIO OKAPI" }
+          { time: "18:00", radio: "Radio Okapi" }
         ],
         Wednesday: [
           { time: "10:30", radio: "Top Congo FM" },
           { time: "08:30", radio: "Top Congo FM" },
-          { time: "18:00", radio: "RADIO OKAPI" }
+          { time: "18:00", radio: "Radio Okapi" }
         ],
         Thursday: [
           { time: "10:30", radio: "Top Congo FM" },
           { time: "08:30", radio: "Top Congo FM" },
           { time: "17:15", radio: "HK6" },
-          { time: "18:00", radio: "RADIO OKAPI" }
+          { time: "18:00", radio: "Radio Okapi" }
         ],
         Friday: [
           { time: "10:30", radio: "Top Congo FM" },
           { time: "08:30", radio: "Top Congo FM" },
-          { time: "18:00", radio: "RADIO OKAPI" }
+          { time: "18:00", radio: "Radio Okapi" }
         ],
         Saturday: [
           { time: "08:30", radio: "Top Congo FM" },
           { time: "18:00", radio: "Top Congo FM" },
-          { time: "18:00", radio: "RADIO OKAPI" }
+          { time: "18:00", radio: "Radio Okapi" }
         ],
         Sunday: [
           { time: "08:30", radio: "Top Congo FM" }
@@ -121,8 +129,8 @@ export class UnitedwaveClientService{
       if (startDate) {
         query += `&clip[from_date]=${startDate}`
       }
-      if (radios.length>0) {
-          radios.forEach(radio => {
+      if (this.radios.length>0) {
+          this.radios.forEach(radio => {
             query += `&clip[radio_name][]=${radio}`
           });
       }
