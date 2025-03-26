@@ -129,7 +129,6 @@ export class UnitedwaveClientService{
 
       const finalQuery = this.replaceSpaces(query);
 
-      
       const posts = await this.http.post(finalQuery).pipe(
           map(res => res.data),
           retry(3),

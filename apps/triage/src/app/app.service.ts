@@ -61,8 +61,7 @@ export class AppService {
    let createdPosts = [];
    for (let page = pageIndex; page >= 0; page--) {
      const list = await this.unitedwaveClient
-       .getPosts(page, startTime)
-       .toPromise();
+       .getPosts(page, startTime);
      for (let i = list.length - 1; i >= 0; i--) {
        const post = list[i];
        const title = ['radio', post?.keywords, post?.date_reported]
