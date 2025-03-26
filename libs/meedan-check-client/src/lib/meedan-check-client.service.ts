@@ -19,13 +19,12 @@ export class MeedanCheckClientService {
   ) {}
 
   getReport(id: string): Observable<any> {
-    console.log(' getReport',id)
+    console.log('Fetching Report with id:',id)
     const query: string = this.helper.buildGetReportQuery(id);
     const headers = this.config.headers;
-    console.log('Getting report query: ', query);
     return this.http.post(this.config.checkApiUrl, { query }, { headers }).pipe(
       tap((res) =>
-        console.log('Getting report res: ', JSON.stringify(res.data))
+        console.log('Fetched Report: ', JSON.stringify(res.data))
       ),
       map((res) => res.data.data.project_media),
       retry(3),
@@ -37,13 +36,12 @@ export class MeedanCheckClientService {
   }
 
   getMeedanReport(id: string): Observable<any> {
-    console.log('Getting meedan reportid: ', id);
+    console.log('Fetching Meedan Report with id:', id);
     const query: string = this.helper.buildGetMeedanReportQuery(id);
     const headers = this.config.headers;
-    console.log('Getting meedan report query: ', query);
     return this.http.post(this.config.checkApiUrl, { query }, { headers }).pipe(
       tap((res) =>
-        console.log('Getting meedan report res: ', JSON.stringify(res.data))
+        console.log('Fetched Meedan Report: ', JSON.stringify(res.data))
       ),
       map((res) =>
         res.data.data.project_media.annotation.data.options[0]
@@ -248,7 +246,7 @@ export class MeedanCheckClientService {
     return this.postData(combinedQuery, headers);
   }
 
-   UpdateRadioCategory(
+  UpdateRadioCategory(
     category: string,
     annotationList?: any[],
   ): Observable<any> {
