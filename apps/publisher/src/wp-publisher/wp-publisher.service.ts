@@ -1,4 +1,4 @@
-import { HttpException, HttpService, Injectable, Scope } from "@nestjs/common";
+import { HttpException, HttpService, Injectable, Logger, Scope } from "@nestjs/common";
 import { CreateCategoryDto } from "libs/wp-client/src/lib/interfaces/create-category.dto";
 import { CommentStatus, CreatePostDto, PostFormat, PostStatus } from "libs/wp-client/src/lib/interfaces/create-post.dto";
 import { CreateTagDto } from "libs/wp-client/src/lib/interfaces/create-tag.dto";
@@ -10,9 +10,10 @@ import { WpPublisherHelper } from "./wp-publisher-helper.service";
 
 @Injectable({ scope: Scope.REQUEST })
 export class WpPublisherService{
+    private logger = new Logger("WP-PublisherService");
     private reportId$: Observable<string> = this.shared.reportId$;
-    private report$: Observable<any> = this.shared.report$.pipe(tap(report => console.log('Report: ', JSON.stringify(report))));
-    private meedanReport$: Observable<any> = this.shared.meedanReport$.pipe(tap(report => console.log('Meedan report: ', JSON.stringify(report))));
+    private report$: Observable<any> = this.shared.report$.pipe(tap(report => this.logger.log(`Report: ${JSON.stringify(report)}`)));
+    private meedanReport$: Observable<any> = this.shared.meedanReport$.pipe(tap(report => this.logger.log(`Meedan report: ${JSON.stringify(report)}`)));
 
     wpPostId$: Observable<number> = this.reportId$.pipe(
       switchMap(id => this.wpClient.getPostByCheckId(id)),
@@ -62,11 +63,12 @@ export class WpPublisherService{
       })
     )
     
-    post$: Observable<any> = combineLatest([this.report$, this.meedanReport$, this.author$, this.mediaId$, this.tagsIds$, this.categoriesIds$, this.visualCard$]).pipe(
-        map(([report, meedanReport, author, media, tags, categories, visualCard]) => this.helper.buildPostFromReport(report, meedanReport, author, media, tags, categories, visualCard)),
+    post$: Observable<any> = combineLatest([this.report$, this.meedanReport$, this.mediaId$, this.tagsIds$, this.categoriesIds$, this.visualCard$]).pipe(
+        withLatestFrom(this.author$),
+        map(([[report, meedanReport, media, tags, categories, visualCard], author]) => this.helper.buildPostFromReport(report, meedanReport, author, media, tags, categories, visualCard)),
         filter(post => !!post.title.length),
         take(1),
-        tap(postDto => console.log('sending to WP publication: ', JSON.stringify(postDto))),
+        tap(postDto => this.logger.log(`Sending to WP publication: ${JSON.stringify(postDto)}`)),
         withLatestFrom(this.wpPostId$),
         map(([postDto, wpPostId]) => ({postDto, wpPostId})),
         switchMap(data => this.wpClient.publishPost(data.postDto, data.wpPostId)),
@@ -123,7 +125,7 @@ export class WpPublisherService{
 
       private categoriesIds(categories: string[]){
         categories = categories.map(c => c.toLowerCase());
-        console.log('Article Categories', categories)
+        this.logger.log(`Article Categories: ${categories}`)
         const wpCategories$: Observable<any> = this.wpClient.listCategories();
         const existingCategoriesIds$: Observable<number[]> = wpCategories$.pipe(
           map(wpCategories => wpCategories.filter(category => categories.indexOf(category.name.toLowerCase()) > -1).map(category => category.id))
@@ -146,9 +148,9 @@ export class WpPublisherService{
       private createManyTags(tags: string[]): Observable<any>{
         const tagsDtos: CreateTagDto[] = tags.map(tag => ({name: tag})) 
         return from(tagsDtos).pipe(
-          tap(tag => console.log('sending tag to creation: ', tag)),
+          tap(tag => this.logger.log(`sending tag to creation: ${tag}`)),
           concatMap(tag => this.createSingleTag(tag)),
-          tap(tag => console.log('Returning tag from creation: ', tag)),
+          tap(tag => this.logger.log(`Returning tag from creation: ${tag}`)),
           reduce((acc, item) => [...acc, item], [])
         )
       }
