@@ -48,6 +48,7 @@ export class UnitedwaveClientService{
 
       const finalQuery = this.replaceSpaces(query);
 
+      this.logger.log('Post count query', query)
       return this.http.post(finalQuery).pipe(
           map(res => res.data),
           retry(3),
@@ -137,6 +138,7 @@ export class UnitedwaveClientService{
 
       const finalQuery = this.replaceSpaces(query);
 
+      this.logger.log('Post query', finalQuery)
       const posts = await this.http.post(finalQuery).pipe(
           map(res => res.data),
           retry(3),
