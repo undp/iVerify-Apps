@@ -1,4 +1,4 @@
-<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="731px" height="60px" viewBox="-0.5 -0.5 731 60" content="&lt;mxfile&gt;&lt;diagram id=&quot;7kpoM2RQ2ybjVXcjU9Yn&quot; name=&quot;Page-1&quot;&gt;1VdNb+IwEP01HLvKBwF6pEC7K7USWg49m2RIvJtkIsd89dfvmIwb3FAJ7VbAXiL7ZezMvHl+SXrhpNg9KVFlL5hA3gu8ZNcLp70giMIBXQ2wb4BRdN8AqZJJA/ktsJBvwKDH6FomUDuBGjHXsnLBGMsSYu1gQincumErzN2nViKFDrCIRd5FX2WiM64iGLb4d5BpZp/sD7i+QthgrqTORILbIyic9cKJQtTNqNhNIDfcWV6adY+f3H1PTEGpz1kQNAs2Il9zbZyX3ttiIaHaeYpKZ5hiKfJZiz4oXJcJmB09mrUxz4gVgT6Bv0DrPTdSrDUSlOki57vdrLmQGtcq5jz63GihUtCuHkyKR+u41CfAArTaU4CCXGi5cdsnWAXpe1xLFA2Yq9O8hR3efkJFlZsy1stc1hnxEXhbWGaIv09y+iyWdCocHkQu05LGMfEAioANKC1Jd2O+UcgkaSiHWr6J5WE/Q3qFstSHeqKHXjQ9yantNe0Ju1PnhPdzpOjQyKvuvG9+FDIFfITveKuzmebd5ybxoxBcrWpq78dWvCdxVnf6ne68ACSiJGySQdzth6vgbSY1LCpxUN6WHOxMtXaY/ZTB0HPIG/B025qJbx0iOzISG/cvyo063ExFnS1RKCPY8fzH9ckZuuz4owvSM/h/DNG6n+OI/rUccdgh7nVuasBa34b92c5+if350cC1v+CG7G90ExquSZd6bL62CCixBIs9SpP5Ydu/1nl0LZnfd7hdaEHSM4+KUSVmhOWHzwByzKK+jVNgtfElp6A/HN6Q7K1Ojnoz5yaom3upXfKVb18Kx95MUp2Tfoxca6r96vwM+hfjh6btD1ajs/YvNZz9AQ==&lt;/diagram&gt;&lt;/mxfile&gt;">
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="731px" height="181px" viewBox="-0.5 -0.5 731 181" content="&lt;mxfile&gt;&lt;diagram id=&quot;7kpoM2RQ2ybjVXcjU9Yn&quot; name=&quot;Page-1&quot;&gt;1VdNb+IwEP01HLvKBwF6pEC7K7USWg49m2RIvJtkIsd89dfvmIwb3FAJ7VbAXiL7ZezMvHl+SXrhpNg9KVFlL5hA3gu8ZNcLp70giMIBXQ2wb4BRdN8AqZJJA/ktsJBvwKDH6FomUDuBGjHXsnLBGMsSYu1gQincumErzN2nViKFDrCIRd5FX2WiM64iGLb4d5BpZp/sD7i+QthgrqTORILbIyic9cKJQtTNqNhNIDfcWV6adY+f3H1PTEGpz1kQNAs2Il9zbZyX3ttiIaHaeYpKZ5hiKfJZiz4oXJcJmB09mrUxz4gVgT6Bv0DrPTdSrDUSlOki57vdrLmQGtcq5jz63GihUtCuHkyKR+u41CfAArTaU4CCXGi5cdsnWAXpe1xLFA2Yq9O8hR3efkJFlZsy1stc1hnxEXhbWGaIv09y+iyWdCocHkQu05LGMfEAioANKC1Jd2O+UcgkaSiHWr6J5WE/Q3qFstSHeqKHXjQ9yantNe0Ju1PnhPdzpOjQyKvuvG9+FDIFfITveKuzmebd5ybxoxBcrWpq78dWvCdxVnf6ne68ACSiJGySQdzth6vgbSY1LCpxUN6WHOxMtXaY/ZTB0HPIG/B025qJbx0iOzISG/cvyo063ExFnS1RKCPY8fzH9ckZuuz4owvSM/h/DNG6n+OI/rUccdgh7nVuasBa34b92c5+if350cC1v+CG7G90ExquSZd6bL62CCixBIs9SpP5Ydu/1nl0LZnfd7hdaEHSM4+KUSVmhOWHzwByzKK+jVNgtfElp6A/HN6Q7K1Ojnoz5yaom3upXfKVb18Kx95MUp2Tfoxca6r96vwM+hfjh6btD1ajs/YvNZz9AQ==&lt;/diagram&gt;&lt;/mxfile&gt;">
     <defs/>
     <g>
         <path d="M 120 30 L 333.63 30" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
@@ -36,23 +36,23 @@
                 </text>
             </switch>
         </g>
-        <!-- <rect x="340" y="120" width="120" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <rect x="340" y="120" width="120" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
         <g transform="translate(-0.5 -0.5)">
             <switch>
                 <foreignObject pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility" style="overflow: visible; text-align: left;">
                     <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 150px; margin-left: 341px;">
                         <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
                             <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: all; white-space: normal; overflow-wrap: normal;">
-                                Dashboard API
+                                Story Submitted User
                             </div>
                         </div>
                     </div>
                 </foreignObject>
                 <text x="400" y="154" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
-                    Dashboard API
+                    Story Submitted User
                 </text>
             </switch>
-        </g> -->
+        </g>
         <path d="M 460 30 L 603.63 30" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
         <path d="M 608.88 30 L 601.88 33.5 L 603.63 30 L 601.88 26.5 Z" fill="rgb(0, 0, 0)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/>
         <g transform="translate(-0.5 -0.5)">
@@ -71,15 +71,15 @@
                 </text>
             </switch>
         </g>
-        <!-- <path d="M 400 60 L 400 113.63" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/> -->
-        <!-- <path d="M 400 118.88 L 396.5 111.88 L 400 113.63 L 403.5 111.88 Z" fill="rgb(0, 0, 0)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/> -->
-        <!-- <g transform="translate(-0.5 -0.5)">
+        <path d="M 400 60 L 400 113.63" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 400 118.88 L 396.5 111.88 L 400 113.63 L 403.5 111.88 Z" fill="rgb(0, 0, 0)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
             <switch>
                 <foreignObject pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility" style="overflow: visible; text-align: left;">
                     <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 1px; height: 1px; padding-top: 87px; margin-left: 401px;">
                         <div data-drawio-colors="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
                             <div style="display: inline-block; font-size: 11px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: all; background-color: rgb(255, 255, 255); white-space: nowrap;">
-                                Stats records on published items
+                                Email containing fact checked results
                             </div>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                     Stats records on published items
                 </text>
             </switch>
-        </g> -->
+        </g>
         <rect x="340" y="0" width="120" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
         <g transform="translate(-0.5 -0.5)">
             <switch>

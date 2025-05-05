@@ -52,6 +52,8 @@ export class AppService {
         startTime = lastMeedanReport[0].node?.tasks?.edges?.find(task => task.node?.label === this.config.originalPostTimeField).node?.first_response_value
       }
     }
+
+  this.logger.log('Latest Meedan Radio Report Start time', startTime)
    const postsCount = await this.unitedwaveClient.getPostsCount(startTime).toPromise();
    this.logger.log('Latest unitedwaveClient count', postsCount)
    const postsPerPage = 50;
@@ -61,8 +63,7 @@ export class AppService {
    let createdPosts = [];
    for (let page = pageIndex; page >= 0; page--) {
      const list = await this.unitedwaveClient
-       .getPosts(page, startTime)
-       .toPromise();
+       .getPosts(page, startTime);
      for (let i = list.length - 1; i >= 0; i--) {
        const post = list[i];
        const title = ['radio', post?.keywords, post?.date_reported]
