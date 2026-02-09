@@ -1,0 +1,8 @@
+{
+  "simulated": {
+    "description": "Simulation mode for development",
+    "channels": 8,
+    "sampling_rate": 256,
+    "features": ["eeg_simulation", "noise_generation"]
+  }
+}

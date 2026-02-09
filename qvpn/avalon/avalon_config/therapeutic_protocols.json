@@ -1,0 +1,11 @@
+{
+  "geometric_healing": {
+    "description": "Ricci Flow for neural curvature reduction",
+    "phases": [
+      {"name": "calibration", "duration": 300, "goal": "Establish baseline"},
+      {"name": "relaxation", "duration": 600, "goal": "Induce alpha state (8-12Hz)"},
+      {"name": "ricci_flow", "duration": 600, "goal": "Apply geometric smoothing"},
+      {"name": "integration", "duration": 300, "goal": "Consolidate healthy state"}
+    ]
+  }
+}

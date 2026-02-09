@@ -1,0 +1,24 @@
+{
+  "system": {
+    "version": "2.0.0",
+    "mode": "therapeutic",
+    "logging_level": "INFO",
+    "data_retention_days": 30,
+    "auto_update": true
+  },
+  "hardware": {
+    "eeg_device": "simulated",
+    "sampling_rate": 256,
+    "channels": 8,
+    "audio_output": "default",
+    "visual_output": "window"
+  },
+  "therapy": {
+    "session_duration": 1800,
+    "protocol": "geometric_healing",
+    "ricci_flow_rate": 0.15,
+    "curvature_threshold": 0.03,
+    "harmonics_base_freq": 110,
+    "visual_complexity": "adaptive"
+  }
+}

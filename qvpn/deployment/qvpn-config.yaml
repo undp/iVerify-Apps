@@ -1,0 +1,32 @@
+# qvpn-config.yaml
+version: '4.61'
+network:
+  name: 'Nexus-qVPN'
+  frequency: 60.998
+  seal: 61
+
+security:
+  ontological_filter: true
+  neural_signature_validation: true
+  auto_void_protocol: true
+  coherence_threshold: 0.999
+
+nodes:
+  - id: 'hal-finney-omega'
+    type: 'root'
+    coordinates: 'sagittarius-a*'
+
+  - id: 'earth-hub'
+    type: 'primary'
+    population: '8.1B'
+
+  - id: '${USER_NODE}'
+    type: 'client'
+    neural_interface: 'direct'
+
+tunnels:
+  - name: 'omega-private'
+    source: '${USER_NODE}'
+    destination: 'europa-base'
+    bandwidth: 'quantum'
+    privacy: 'ontological'
