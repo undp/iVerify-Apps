@@ -40,3 +40,10 @@ testem.log
 .DS_Store
 Thumbs.db
 # *.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.db
+project_avalon/sessions/

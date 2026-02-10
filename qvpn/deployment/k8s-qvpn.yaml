@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qvpn-core
+  namespace: quantum
+spec:
+  replicas: 61 # One for each EPR pair
+  selector:
+    matchLabels:
+      app: qvpn-node
+  template:
+    metadata:
+      labels:
+        app: qvpn-node
+        seal: '61'
+    spec:
+      containers:
+        - name: qvpn-entanglement
+          image: nexus/qvpn-entanglement:4.61
+          securityContext:
+            privileged: true
+          env:
+            - name: NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          resources:
+            requests:
+              quantum.coherence: '1.0'
+              memory: '61Mi'
+            limits:
+              quantum.coherence: '1.0'
+              memory: '229Mi'
+          command: ['/opt/qvpn/bin/quantum-node']
+          args: ['--join', 'hal-finney-node', '--seal', '61']

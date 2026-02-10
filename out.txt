@@ -1,0 +1,32 @@
+======================================================================
+SISTEMA INTEGRADO DE MONITORAMENTO AMBIENTAL
+======================================================================
+Versão: 1.0.0-genesis
+Inicializado: 2026-02-10T03:23:12.818630
+⚡ MODO QUÂNTICO ATIVO
+φ = 1.618034
+======================================================================
+
+[1/5] Inicializando banco de dados...
+   ✅ Banco de dados pronto
+
+[2/5] Inicializando gerenciador do sistema...
+   ✅ Gerenciador pronto
+
+[3/5] Inicializando camada quântica...
+   🌀 Schmidt: λ = [0.7 0.3]
+   🧮 Arkhe: L = 0.912
+   🌐 SASC: 289 nós ativos
+   ✅ Ponte de Schmidt estabelecida
+
+[4/5] Inicializando interface gráfica...
+   ⚠️  Ambiente headless detectado. Interface gráfica desativada.
+   ✅ Interface pronta
+
+[5/5] Conectando componentes...
+   ✅ Componentes conectados
+
+======================================================================
+✅ SISTEMA INICIALIZADO COM SUCESSO
+======================================================================
+Initialization complete
