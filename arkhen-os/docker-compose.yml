@@ -1,0 +1,37 @@
+# arkhen-os/docker-compose.yml
+version: '3.8'
+
+services:
+  arkhen-os:
+    build: .
+    container_name: arkhe-os
+    hostname: arkhen
+    cap_add:
+      - SYS_ADMIN
+      - IPC_LOCK
+      - SYS_PTRACE
+    security_opt:
+      - seccomp=unconfined
+      - apparmor=unconfined
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=2G
+      - /run:rw,noexec,nosuid,size=1G
+    volumes:
+      - ./shared/biogenesis:/opt/arkhe/shared/biogenesis
+      - ./shared/logs:/opt/arkhe/logs
+      - arkhe-shm:/dev/shm
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    ports:
+      - "8080:8080"
+      - "5900:5900"
+    restart: unless-stopped
+    networks:
+      - arkhe-net
+
+volumes:
+  arkhe-shm:
+    driver: local
+
+networks:
+  arkhe-net:
+    driver: bridge

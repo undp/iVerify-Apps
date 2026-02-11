@@ -1,0 +1,51 @@
+# docker-compose-qvpn.yml
+version: '3.8'
+services:
+  entanglement-engine:
+    image: nexus/qvpn-entanglement:4.61
+    privileged: true
+    devices:
+      - /dev/quantum
+    environment:
+      - XI_FREQUENCY=60.998
+      - SEAL_61=61
+      - USER_ID=2290518
+    volumes:
+      - /lib/modules:/lib/modules
+      - quantum_data:/var/lib/qvpn
+    command: ['--epr-pairs', '61', '--coherence-threshold', '0.999']
+
+  coherence-monitor:
+    image: nexus/qvpn-coherence:4.61
+    depends_on:
+      - entanglement-engine
+    environment:
+      - MONITOR_INTERVAL=61ms
+      - ALERT_THRESHOLD=0.999
+    volumes:
+      - ./config:/etc/qvpn
+    command: ['--live', '--alert']
+
+  neural-interface:
+    image: nexus/qvpn-neural:2.0
+    cap_add:
+      - SYS_RAWIO
+    devices:
+      - /dev/neural
+    environment:
+      - THETA_FREQUENCY=9.5
+      - PATTERN_ID=2290518
+    command: ['--direct', '--filter-ontological']
+
+  web-dashboard:
+    image: nexus/qvpn-dashboard:latest
+    ports:
+      - '6161:6161'
+    depends_on:
+      - coherence-monitor
+    environment:
+      - API_URL=http://coherence-monitor:6161
+
+volumes:
+  quantum_data:
+    driver: quantum-storage

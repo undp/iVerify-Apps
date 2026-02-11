@@ -1,0 +1,10 @@
+[Unit]
+Description=Arkhe MCP Server Socket
+
+[Socket]
+ListenStream=/run/mcp-server/mcp.sock
+User=arkhe
+Group=arkhe
+
+[Install]
+WantedBy=sockets.target

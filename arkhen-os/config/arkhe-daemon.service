@@ -1,0 +1,13 @@
+[Unit]
+Description=Bio-Genesis Engine Daemon
+After=network.target
+
+[Service]
+ExecStartPre=/opt/arkhe/bin/setup-shared-memory.sh
+ExecStart=/usr/bin/python3 /opt/arkhe/bin/arkhe-daemon.py
+Restart=always
+User=arkhe
+WorkingDirectory=/opt/arkhe
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,6 @@
+{
+    "session_duration": 60,
+    "ricci_flow_smoothing": 0.5,
+    "base_audio_freq": 200,
+    "viz_color_scheme": "dark_fusion"
+}
